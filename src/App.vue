@@ -1,16 +1,31 @@
-<template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+<template lang="pug">
+	v-app
+		Header
+		v-content
+		v-container(fluid)
+			router-view
+		Footer
 </template>
 
+<script lang="ts">
+import Vue from 'vue';
+import Header from './components/global/Header.vue';
+import Footer from './components/global/Footer.vue';
+
+export default Vue.extend({
+  name: 'App',
+  components: {
+    Header,
+    Footer,
+  },
+  data: () => ({
+    //
+  }),
+});
+</script>
 <style lang="scss">
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
