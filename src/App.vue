@@ -1,10 +1,10 @@
 <template lang="pug">
-	v-app
-		Header
-		v-content
-		v-container(fluid)
-			router-view
-		Footer
+  v-app
+    Header
+    v-content
+      v-container
+        router-view
+    Footer
 </template>
 
 <script lang="ts">
