@@ -65,4 +65,7 @@ li a {
   color: inherit; /* blue colors for links too */
   text-decoration: inherit; /* no underline */
 }
+.v-toolbar {
+	flex: unset;
+}
 </style>
