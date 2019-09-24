@@ -1,0 +1,12 @@
+diff a/src/views/Contributors.vue b/src/views/Contributors.vue	(rejected hunks)
+@@ -6 +6 @@
+-import Vue from "vue";
++import Vue from 'vue';
+@@ -9 +9 @@ export default Vue.extend({
+-  name: "Contributors",
++  name: 'Contributors',
+@@ -11,2 +11,2 @@ export default Vue.extend({
+-    msg: String
+-  }
++    msg: String,
++  },

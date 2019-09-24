@@ -1,20 +1,21 @@
+
 <template lang="pug">
-	div
-		Main
+  div
+    MainContent
+    WhatsItGoodFor
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import Main from '@/components/info/about/Main.vue';
-
-export default {
-  props: {
-    msg: String,
-  },
+import { Component, Vue } from 'vue-property-decorator';
+import MainContent from '@/components/info/about/MainContent.vue';
+import WhatsItGoodFor from '@/components/info/about/WhatsItGoodFor.vue';
+export default Vue.extend({
+  name: 'home',
   components: {
-    Main,
+    MainContent,
+    WhatsItGoodFor,
   },
-};
+});
 </script>
 
 <style scoped lang="scss">
