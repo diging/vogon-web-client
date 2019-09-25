@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import './plugins/axios';
 import moment from 'moment';
 
 import App from './App.vue';
