@@ -1,17 +1,17 @@
 <template>
   <div class="main">
-    <Main />
+    <ProjectList />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import Main from '@/components/project/Main.vue';
+import ProjectList from '@/components/project/ProjectList.vue';
 
 export default Vue.extend({
   name: 'project',
   components: {
-    Main,
+    ProjectList,
   },
 });
 </script>

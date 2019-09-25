@@ -1,6 +1,6 @@
 <template lang="pug">
 	v-app-bar(app fixed elevate-on-scroll)
-		v-app-bar-nav-icon
+		v-app-bar-nav-icon(to="/")
 			img(src="../../assets/images/logos/VogonTiny_beta.png")
 		v-toolbar-title(class="ml-4") Vogon Web
 		v-menu(class="ml-3" offset-y open-on-hover)
@@ -8,7 +8,7 @@
 				v-btn(text v-on="on") Annotate
 					v-icon mdi-menu-down
 			v-list
-				v-list-item(v-for="item in annotate_items" :key="item.title" @click="")
+				v-list-item(v-for="item in annotate_items" :key="item.title" v-bind:to="item.link")
 					v-list-item-title(v-text="item.title")
 		v-btn(text large to="/contributors" class="subheading font-weight-medium") Contributors
 		v-btn(text large to="/about" class="subheading font-weight-medium") About
@@ -38,7 +38,7 @@ export default Vue.extend({
   data() {
     return {
       activeIndex: '1',
-      annotate_items: [{ title: 'Text' }, { title: 'Projects' }],
+      annotate_items: [{ title: 'Text', link: '/text' }, { title: 'Projects', link: '/project' }],
       data_items: [{ title: 'Concepts' }, { title: 'Annotations' }],
       info_items: [
         { title: 'Overview' },
