@@ -10,6 +10,19 @@ const config = {
   // baseURL: process.env.baseURL || process.env.apiUrl || ""
   // timeout: 60 * 1000, // Timeout
   // withCredentials: true, // Check cross-site Access-Control
+  baseURL: 'http://localhost:8000/rest',
+  headers: {
+    'Content-Type': 'application/json',
+    'xsrfCookieName': 'csrftoken',
+    'xsrfHeaderName': 'X-CSRFToken',
+    'withCredentials': true,
+    Authorization: {
+      toString() {
+        return `bearer ${localStorage.getItem('token')}`;
+      },
+    },
+  },
+  
 };
 
 const _axios = axios.create(config);
