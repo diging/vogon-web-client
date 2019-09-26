@@ -34,10 +34,10 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { AxiosResponse } from 'axios';
 
-import CreateUpdateProject from './CreateUpdateProject.vue';
+import CreateUpdateProject from '@/components/project/CreateUpdateProject.vue';
 import Loading from '@/components/global/Loading.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
-import { Project, Text } from './models';
+import { Project, Text } from '@/components/project/models';
 
 @Component({
   name: 'ProjectDetails',

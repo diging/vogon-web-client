@@ -35,10 +35,10 @@ import { Component, Vue } from 'vue-property-decorator';
 import { AxiosResponse } from 'axios';
 import { Location } from 'vue-router';
 
-import CreateUpdateProject from './CreateUpdateProject.vue';
+import CreateUpdateProject from '@/components/project/CreateUpdateProject.vue';
 import Loading from '@/components/global/Loading.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
-import { Project, Text } from './models';
+import { Project, Text } from '@/components/project/models';
 import { VForm, PaginatedResult } from '@/models';
 
 @Component({
@@ -61,8 +61,8 @@ export default class ProjectList extends Vue {
   private getProjectList() {
     Vue.$axios.get('/project')
       .then((response: AxiosResponse) => {
-          const data: PaginatedResult<Project> = response.data as PaginatedResult<Project>;
-          this.projects = data.results;
+        const data: PaginatedResult<Project> = response.data as PaginatedResult<Project>;
+        this.projects = data.results;
       })
       .catch(() => this.error = true)
       .finally(() => this.loading = false);
