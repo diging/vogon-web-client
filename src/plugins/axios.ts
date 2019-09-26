@@ -16,13 +16,13 @@ const config = {
     'xsrfCookieName': 'csrftoken',
     'xsrfHeaderName': 'X-CSRFToken',
     'withCredentials': true,
-    Authorization: {
+    "Authorization": {
       toString() {
         return `bearer ${localStorage.getItem('token')}`;
       },
     },
   },
-  
+
 };
 
 const _axios = axios.create(config);
