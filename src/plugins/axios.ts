@@ -16,7 +16,7 @@ const config = {
     'xsrfCookieName': 'csrftoken',
     'xsrfHeaderName': 'X-CSRFToken',
     'withCredentials': true,
-    "Authorization": {
+    'Authorization': {
       toString() {
         return `bearer ${localStorage.getItem('token')}`;
       },
