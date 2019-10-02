@@ -24,10 +24,10 @@
                 v-card-text
                   div(class="text--primary") {{project.description}}
                   | Created by 
-                  strong "user"
+                  strong "{{project.ownedBy.username}}"
                   | on {{moment(project.created).format('lll')}}
                   div(class="teal--text") 
-                    strong {{project.texts.length}} texts, 0 relations
+                    strong {{project.num_texts}} texts, {{project.num_relations}} relations
 </template>
 
 <script lang="ts">

@@ -1,3 +1,5 @@
+import { IUser } from '@/models';
+
 export interface IText {
   id: number;
   title: string;
@@ -12,6 +14,8 @@ export interface IProject {
   description?: string;
   created?: string;
   quadriga_id?: string;
-  ownedBy?: number;
+  ownedBy?: IUser;
   texts?: Text[] | number[];
+  num_texts?: number;
+  num_relations?: number;
 }

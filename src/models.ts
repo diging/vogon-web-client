@@ -8,3 +8,8 @@ export interface IPaginatedResult<T> {
   previous?: number;
   results: T[];
 }
+
+export interface IUser {
+  id: number;
+  username: string;
+}

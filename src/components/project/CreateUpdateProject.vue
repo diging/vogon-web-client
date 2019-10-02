@@ -53,7 +53,10 @@ export default class CreateUpdateProject extends Vue {
     name: '',
     description: '',
     quadriga_id: '',
-    ownedBy: 1, // ToDo: Change with token
+    ownedBy: {
+      id: 1,
+      username: 'user',
+    }, // ToDo: Change with token
   };
   private updating: boolean = false;
   private valid: boolean = false;
