@@ -6,7 +6,7 @@
           h2(class="display-1") Projects
         v-col(md="6")
           div(class="float-right")
-            CreateUpdateProject(v-bind:onFinish="onFinish")
+            CreateUpdateProject(v-bind:getProjectDetails="getProjectDetails")
       ErrorIndicator(v-if="error") Error while loading projects!
       div(v-else)
         Loading(v-if="loading")
@@ -38,8 +38,8 @@ import { Location } from 'vue-router';
 import CreateUpdateProject from '@/components/project/CreateUpdateProject.vue';
 import Loading from '@/components/global/Loading.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
-import { Project, Text } from '@/components/project/models';
-import { VForm, PaginatedResult } from '@/models';
+import { IProject } from '@/components/project/models';
+import { VForm } from '@/models';
 
 @Component({
   name: 'ProjectList',
@@ -50,7 +50,7 @@ import { VForm, PaginatedResult } from '@/models';
   },
 })
 export default class ProjectList extends Vue {
-  private projects: Project[] = [];
+  private projects: IProject[] = [];
   private loading: boolean = true;
   private error: boolean = false;
 
@@ -61,14 +61,13 @@ export default class ProjectList extends Vue {
   private getProjectList() {
     Vue.$axios.get('/project')
       .then((response: AxiosResponse) => {
-        const data: PaginatedResult<Project> = response.data as PaginatedResult<Project>;
-        this.projects = data.results;
+        this.projects = response.data.results;
       })
       .catch(() => this.error = true)
       .finally(() => this.loading = false);
   }
 
-  private onFinish(project: Project) {
+  private getProjectDetails(project: IProject) {
     if (project.id) {
       this.$router.push({ name: 'project-details', params: { id: project.id.toString() } });
     }

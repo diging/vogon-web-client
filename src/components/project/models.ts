@@ -1,4 +1,4 @@
-export interface Text {
+export interface IText {
   id: number;
   title: string;
   added: string;
@@ -6,7 +6,7 @@ export interface Text {
   repository_source_id: number;
 }
 
-export interface Project {
+export interface IProject {
   id?: number;
   name: string;
   description?: string;

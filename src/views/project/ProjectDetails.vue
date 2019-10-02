@@ -13,7 +13,7 @@
             span(class="overline") Created by "user" on {{moment(project.created).format('lll')}}
           v-col(md="6")
             div(class="float-right")
-              CreateUpdateProject(update :project="Object.assign({}, project)" v-bind:onFinish="onFinish")
+              CreateUpdateProject(update :project="Object.assign({}, project)" v-bind:getProjectDetails="getProjectDetails")
               v-btn(tile depressed color="teal" large class="ma-2" dark)
                 v-icon(left) mdi-plus
                 span Add text
@@ -37,7 +37,7 @@ import { AxiosResponse } from 'axios';
 import CreateUpdateProject from '@/components/project/CreateUpdateProject.vue';
 import Loading from '@/components/global/Loading.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
-import { Project, Text } from '@/components/project/models';
+import { IProject } from '@/components/project/models';
 
 @Component({
   name: 'ProjectDetails',
@@ -48,7 +48,7 @@ import { Project, Text } from '@/components/project/models';
   },
 })
 export default class ProjectDetails extends Vue {
-  private project: Project = { name: ''};
+  private project: IProject = { name: ''};
   private loading: boolean = true;
   private error: boolean = false;
   private textHeaders = [{text: 'Title', value: 'title'}, {text: 'Added', value: 'added'}];
@@ -60,14 +60,10 @@ export default class ProjectDetails extends Vue {
   private getProjectDetails() {
     Vue.$axios.get(`/project/${this.$route.params.id}`)
       .then((response: AxiosResponse) => {
-        this.project = response.data as Project;
+        this.project = response.data as IProject;
       })
       .catch(() => this.error = true)
       .finally(() => this.loading = false);
-  }
-
-  private onFinish() {
-    this.getProjectDetails();
   }
 }
 </script>

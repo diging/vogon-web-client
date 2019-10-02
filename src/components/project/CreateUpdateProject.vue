@@ -26,7 +26,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator';
 import { AxiosResponse } from 'axios';
 
 import { VForm } from '@/models';
-import { Project, Text } from './models';
+import { IProject } from './models';
 
 
 @Component({
@@ -34,8 +34,8 @@ import { Project, Text } from './models';
 })
 export default class CreateUpdateProject extends Vue {
   @Prop({ default: false, type: Boolean }) private readonly update: boolean | undefined;
-  @Prop() private readonly project!: Project;
-  @Prop({ type: Function }) private readonly onFinish!: (project: Project) => void;
+  @Prop() private readonly project!: IProject;
+  @Prop({ type: Function }) private readonly getProjectDetails!: (project: IProject) => void;
 
   private settings = this.update ? {
     action: 'Update',
@@ -49,7 +49,7 @@ export default class CreateUpdateProject extends Vue {
     outlined: false,
   };
   private show: boolean = false; // To show dialog
-  private currentProject: Project = this.project ? this.project : {
+  private currentProject: IProject = this.project ? this.project : {
     name: '',
     description: '',
     quadriga_id: '',
@@ -79,7 +79,7 @@ export default class CreateUpdateProject extends Vue {
         .then((response: AxiosResponse) => {
           this.updating = false;
           this.show = false;
-          this.onFinish(response.data as Project);
+          this.getProjectDetails(response.data as IProject);
         })
         .catch(() => this.failed = true)
         .finally(() => this.updating = false);
