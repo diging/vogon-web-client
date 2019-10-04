@@ -5,6 +5,7 @@ import Contributors from './views/Contributors.vue';
 import About from './views/info/About.vue';
 import ProjectList from './views/project/ProjectList.vue';
 import ProjectDetails from './views/project/ProjectDetails.vue';
+import Login from './views/auth/Login.vue';
 
 Vue.use(Router);
 
@@ -36,6 +37,11 @@ export default new Router({
       path: '/about',
       name: 'about',
       component: About,
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: Login,
     },
   ],
 });

@@ -2,7 +2,7 @@
   v-app
     Header
     v-content
-      v-container
+      v-container(fill-height)
         router-view
     Footer
 </template>
