@@ -14,30 +14,31 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import axios from 'axios';
-
-import { VForm, Project, Text, PaginatedResult } from '@/models';
-
 @Component({
   name: 'LoginForm',
 })
 export default class Login extends Vue {
   private password: string = '';
   private username: string = '';
-  private loading: boolean = true;
   private error: boolean = false;
 
   private valid: boolean = false;
 
   public async login(): Promise<void> {
     if ((this.$refs.loginForm as VForm).validate()) {
-      try {
-
-      } catch (e) {
-
-      } finally {
-
-      }
+    Vue.$axios.post('api/token/',
+    {
+      username: this.username,
+      password: this.password,
+    })
+    .then((result) => {
+      localStorage.setItem('token', result.data.access);
+      this.$api.defaults.headers.common.Authorization = `Bearer ${result.data.token}`;
+    })
+    .catch((error) => {
+      // TODO: deal with errors
+      this.error = true;
+    });
     }
   }
 }
@@ -47,9 +48,6 @@ export default class Login extends Vue {
 .project-item {
 	padding: 0;
 	margin: 10px 0;
-}
-.loading {
-	margin-top: 70px;
 }
 #title {
 	background: grey;
