@@ -19,7 +19,7 @@ import axios from 'axios';
 import { VForm, Project, Text, PaginatedResult } from '@/models';
 
 @Component({
-  name: 'Login',
+  name: 'LoginForm',
 })
 export default class Login extends Vue {
   private password: string = '';

@@ -1,15 +1,15 @@
 
 <template lang="pug">
-	Login
+	LoginForm
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import Login from '@/components/auth/Login.vue';
+import LoginForm from '@/components/auth/LoginForm.vue';
 export default Vue.extend({
   name: 'login',
   components: {
-    Login,
+    LoginForm,
   },
 });
 </script>
