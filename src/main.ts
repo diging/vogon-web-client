@@ -11,8 +11,8 @@ Vue.config.productionTip = false;
 Vue.prototype.moment = moment;
 
 new Vue({
-  router,
-  store,
-  vuetify,
-  render: (h) => h(App),
+	router,
+	store,
+	vuetify,
+	render: (h) => h(App),
 }).$mount('#app');
