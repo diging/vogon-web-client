@@ -1,8 +1,8 @@
 <template lang="pug">
-  div(class="text-center indicator")
-    v-icon(x-large color="red") mdi-alert-circle-outline
-    div(class="error-text")
-      slot
+	div(class="text-center indicator")
+		v-icon(x-large color="red") mdi-alert-circle-outline
+		div(class="error-text")
+			slot
 </template>
 
 <script>
@@ -11,9 +11,9 @@ export default {};
 
 <style scoped>
 .indicator {
-  margin-top: 70px;
+	margin-top: 70px;
 }
 .error-text {
-  margin-top: 1em;
+	margin-top: 1em;
 }
 </style>

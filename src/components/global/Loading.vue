@@ -1,6 +1,6 @@
 <template lang="pug">
-  div(class="text-center indicator")
-    v-progress-circular(indeterminate :size="70" :width="7" color="teal")
+	div(class="text-center indicator")
+		v-progress-circular(indeterminate :size="70" :width="7" color="teal")
 </template>
 
 <script>
@@ -9,6 +9,6 @@ export default {};
 
 <style scoped>
 .indicator {
-  margin-top: 70px;
+	margin-top: 70px;
 }
 </style>

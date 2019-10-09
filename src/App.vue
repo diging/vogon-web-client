@@ -9,8 +9,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import Header from './components/global/Header.vue';
 import Footer from './components/global/Footer.vue';
+import Header from './components/global/Header.vue';
 
 import '@fortawesome/fontawesome-free/css/all.css';
 import '@fortawesome/fontawesome-free/js/all.js';
@@ -19,11 +19,11 @@ import '@fortawesome/fontawesome-free/js/all.js';
 export default Vue.extend({
   name: 'App',
   components: {
-    Header,
-    Footer,
+	Header,
+	Footer,
   },
   data: () => ({
-    //
+	//
   }),
 });
 </script>

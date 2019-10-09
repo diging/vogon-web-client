@@ -31,39 +31,42 @@
 import Vue from 'vue';
 
 export default Vue.extend({
-  name: 'Header',
-  props: {
-    msg: String,
-  },
-  data() {
-    return {
-      activeIndex: '1',
-      annotate_items: [{ title: 'Text', link: '/text' }, { title: 'Projects', link: '/project' }],
-      data_items: [{ title: 'Concepts' }, { title: 'Annotations' }],
-      info_items: [
-        { title: 'Overview' },
-        { title: 'Use Cases' },
-        { title: 'Our Team' },
-      ],
-    };
+	name: 'Header',
+	props: {
+		msg: String,
+	},
+	data() {
+		return {
+			activeIndex: '1',
+			annotate_items: [{ title: 'Text', link: '/text' }, { title: 'Projects', link: '/project' }],
+			data_items: [{ title: 'Concepts' }, { title: 'Annotations' }],
+			info_items: [
+				{ title: 'Overview' },
+				{ title: 'Use Cases' },
+				{ title: 'Our Team' },
+			],
+		};
   },
 
-  methods: {
-    handleSelect(key: string, keyPath: string[]) {
-      this.activeIndex = key;
-    },
-    pushHome() {
-      this.$router.push('/');
-    },
-  },
+	methods: {
+		handleSelect(key: string, keyPath: string[]) {
+			this.activeIndex = key;
+		},
+		pushHome() {
+			this.$router.push('/');
+		},
+		login() {
+			window.location.href = 'http://127.0.0.1:8000/github/login/';
+		},
+	},
 });
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 li a {
-  color: inherit; /* blue colors for links too */
-  text-decoration: inherit; /* no underline */
+	color: inherit; /* blue colors for links too */
+	text-decoration: inherit; /* no underline */
 }
 .v-toolbar {
 	flex: unset;
