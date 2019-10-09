@@ -80,9 +80,6 @@ export default class ProjectList extends Vue {
 </script>
 
 <style scoped>
-.main {
-	text-align: left;
-}
 .project-item {
 	padding: 0;
 	margin: 10px 0;

@@ -2,7 +2,7 @@
 	v-app
 		Header
 		v-content
-			v-container(fill-height)
+			v-container
 				router-view
 		Footer
 </template>
@@ -72,5 +72,9 @@ export default Vue.extend({
 			color: #42b983;
 		}
 	}
+}
+.main {
+	text-align: left;
+	width: 100%;
 }
 </style>
