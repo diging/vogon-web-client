@@ -27,7 +27,7 @@ export default class Login extends Vue {
 
   public async login(): Promise<void> {
 	if ((this.$refs.loginForm as VForm).validate()) {
-	Vue.$axios.post('api/token/',
+	Vue.$axios.post('/token/',
 	{
 		username: this.username,
 		password: this.password,

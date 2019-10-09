@@ -69,9 +69,6 @@ export default class ProjectDetails extends Vue {
 </script>
 
 <style scoped>
-.main {
-	text-align: left;
-}
 .project-details {
 	padding: 20px;
 }
