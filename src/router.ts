@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import LoginView from './views/auth/LoginView.vue';
+import SignUpView from './views/auth/SignUpView.vue';
 import Contributors from './views/Contributors.vue';
 import Home from './views/Home.vue';
 import About from './views/info/About.vue';
@@ -36,6 +38,16 @@ export default new Router({
 			path: '/about',
 			name: 'about',
 			component: About,
+		},
+		{
+			path: '/login',
+			name: 'login',
+			component: LoginView,
+		},
+		{
+			path: '/signup',
+			name: 'signup',
+			component: SignUpView,
 		},
 	],
 });
