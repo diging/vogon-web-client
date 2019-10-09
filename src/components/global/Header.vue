@@ -33,28 +33,28 @@ import Vue from 'vue';
 export default Vue.extend({
   name: 'Header',
   props: {
-    msg: String,
+	msg: String,
   },
   data() {
-    return {
-      activeIndex: '1',
-      annotate_items: [{ title: 'Text' }, { title: 'Projects' }],
-      data_items: [{ title: 'Concepts' }, { title: 'Annotations' }],
-      info_items: [
-        { title: 'Overview' },
-        { title: 'Use Cases' },
-        { title: 'Our Team' },
-      ],
-    };
+	return {
+		activeIndex: '1',
+		annotate_items: [{ title: 'Text' }, { title: 'Projects' }],
+		data_items: [{ title: 'Concepts' }, { title: 'Annotations' }],
+		info_items: [
+		{ title: 'Overview' },
+		{ title: 'Use Cases' },
+		{ title: 'Our Team' },
+		],
+	};
   },
 
   methods: {
-    handleSelect(key: string, keyPath: string[]) {
-      this.activeIndex = key;
-    },
-    pushHome() {
-      this.$router.push('/');
-    },
+	handleSelect(key: string, keyPath: string[]) {
+		this.activeIndex = key;
+	},
+	pushHome() {
+		this.$router.push('/');
+	},
   },
 });
 </script>

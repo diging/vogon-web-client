@@ -29,31 +29,31 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
 import axios from 'axios';
+import { Component, Vue } from 'vue-property-decorator';
 
 import { Project, Text } from '@/models';
 import { getProjectDetails } from '@/services/project';
 
 @Component({
-    name: 'Main',
+	name: 'Main',
 })
 export default class Main extends Vue {
-    private project?: Project;
-    private loading: boolean = true;
-    private error: boolean = false;
-    private textHeaders = [{text: 'Title', value: 'title'}, {text: 'Added', value: 'added'}];
+	private project?: Project;
+	private loading: boolean = true;
+	private error: boolean = false;
+	private textHeaders = [{text: 'Title', value: 'title'}, {text: 'Added', value: 'added'}];
 
-    public async mounted(): Promise<void>  {
-        try {
-            const project: Project = await getProjectDetails(this.$route.params.id);
-            this.project = project;
-        } catch (e) {
-            this.error = true;
-        } finally {
-            this.loading = false;
-        }
-    }
+	public async mounted(): Promise<void>  {
+		try {
+			const project: Project = await getProjectDetails(this.$route.params.id);
+			this.project = project;
+		} catch (e) {
+			this.error = true;
+		} finally {
+			this.loading = false;
+		}
+	}
 }
 </script>
 

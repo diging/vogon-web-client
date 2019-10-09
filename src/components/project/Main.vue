@@ -43,65 +43,65 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
 import axios from 'axios';
+import { Component, Vue } from 'vue-property-decorator';
 
-import { getProjects, createProject } from '@/services/project';
-import { VForm, Project, Text, PaginatedResult } from '@/models';
+import { PaginatedResult, Project, Text, VForm } from '@/models';
+import { createProject, getProjects } from '@/services/project';
 
 @Component({
-    name: 'Main',
+	name: 'Main',
 })
 export default class Main extends Vue {
-    private projects: Project[] = [];
-    private loading: boolean = true;
-    private error: boolean = false;
+	private projects: Project[] = [];
+	private loading: boolean = true;
+	private error: boolean = false;
 
-    private showCreateProject: boolean = false; // To show `Create project` modal
-    private newProject: Project = {
-        name: '',
-        description: '',
-        quadriga_id: '',
-        ownedBy: 1, // ToDo: Change with token
-    };
-    private creatingProject: boolean = false; // To show `loading` symbol in `CREATE` button
-    private createProjectValid: boolean = false; // Is `Create Project` form valid?
-    private projectNameRules = [
-        (v: boolean) => !!v || 'Name is required',
-    ];
-    private showSnackbar: boolean = false;
-    private snackbarText: string = '';
-    private snackbarColor: string = 'success';
-    private createProjectFailed: boolean = false;
+	private showCreateProject: boolean = false; // To show `Create project` modal
+	private newProject: Project = {
+		name: '',
+		description: '',
+		quadriga_id: '',
+		ownedBy: 1, // ToDo: Change with token
+	};
+	private creatingProject: boolean = false; // To show `loading` symbol in `CREATE` button
+	private createProjectValid: boolean = false; // Is `Create Project` form valid?
+	private projectNameRules = [
+		(v: boolean) => !!v || 'Name is required',
+	];
+	private showSnackbar: boolean = false;
+	private snackbarText: string = '';
+	private snackbarColor: string = 'success';
+	private createProjectFailed: boolean = false;
 
-    public async mounted(): Promise<void>  {
-        try {
-            const projects: Project[] = await getProjects();
-            this.projects = projects;
-        } catch (e) {
-            this.error = true;
-        } finally {
-            this.loading = false;
-        }
-    }
+	public async mounted(): Promise<void>  {
+		try {
+			const projects: Project[] = await getProjects();
+			this.projects = projects;
+		} catch (e) {
+			this.error = true;
+		} finally {
+			this.loading = false;
+		}
+	}
 
-    public async saveProject(): Promise<void> {
-        if ((this.$refs.createProject as VForm).validate()) {
-            try {
-                this.creatingProject = true;
-                const response: Project = await createProject(this.newProject);
-                this.creatingProject = false;
-                this.showCreateProject = false;
-                this.showSnackbar = true;
-                this.snackbarText = 'Successfully created new project';
-                this.snackbarColor = 'success';
-            } catch (e) {
-                this.createProjectFailed = true;
-            } finally {
-                this.creatingProject = false;
-            }
-        }
-    }
+	public async saveProject(): Promise<void> {
+		if ((this.$refs.createProject as VForm).validate()) {
+			try {
+				this.creatingProject = true;
+				const response: Project = await createProject(this.newProject);
+				this.creatingProject = false;
+				this.showCreateProject = false;
+				this.showSnackbar = true;
+				this.snackbarText = 'Successfully created new project';
+				this.snackbarColor = 'success';
+			} catch (e) {
+				this.createProjectFailed = true;
+			} finally {
+				this.creatingProject = false;
+			}
+		}
+	}
 }
 </script>
 

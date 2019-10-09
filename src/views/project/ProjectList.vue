@@ -1,23 +1,23 @@
 <template>
-  <div class="main">
-    <Main />
-  </div>
+	<div class="main">
+		<Main />
+	</div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
 import Main from '@/components/project/Main.vue';
+import Vue from 'vue';
 
 export default Vue.extend({
-  name: 'project',
-  components: {
-    Main,
-  },
+	name: 'project',
+	components: {
+		Main,
+	},
 });
 </script>
 
 <style scoped>
 .main {
-  text-align: left;
+	text-align: left;
 }
 </style>

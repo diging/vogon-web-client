@@ -6,14 +6,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
 import MainContent from '@/components/info/about/MainContent.vue';
 import WhatsItGoodFor from '@/components/info/about/WhatsItGoodFor.vue';
+import { Component, Vue } from 'vue-property-decorator';
 export default Vue.extend({
   name: 'home',
   components: {
-    MainContent,
-    WhatsItGoodFor,
+	MainContent,
+	WhatsItGoodFor,
   },
 });
 </script>

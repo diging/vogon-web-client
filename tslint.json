@@ -6,15 +6,21 @@
   "linterOptions": {
     "exclude": [
       "node_modules/**",
-      "src/plugins/axios.ts"
+      "src/plugins/**",
+      "tests/unit/example.spec.ts"
     ]
   },
   "rules": {
-    "indent": [true, "spaces", 2],
-    "interface-name": false,
+    "indent": [true, "tabs", 4],
+    "interface-name": [true, "never-prefix"],
     "no-consecutive-blank-lines": false,
     "object-literal-sort-keys": false,
-    "ordered-imports": false,
-    "quotemark": [true, "single"]
+    "ordered-imports": true,
+    "quotemark": [true, "single"],
+    "no-unused-expression": true,
+    "no-var-keyword": true,
+    "class-name": true,
+    "import-spacing": true,
+    "semicolon": [true, "always"]
   }
 }

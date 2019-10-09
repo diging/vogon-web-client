@@ -5,13 +5,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
 import Main from '@/components/home/Main.vue'; // @ is an alias to /src
+import Vue from 'vue';
 
 export default Vue.extend({
   name: 'home',
   components: {
-    Main,
+	Main,
   },
 });
 </script>

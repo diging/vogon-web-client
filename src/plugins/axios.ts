@@ -21,7 +21,7 @@ const config = {
   },
   xsrfCookieName: 'csrftoken',
   xsrfHeaderName: 'X-CSRFToken',
-  withCredentials: 'true',
+  withCredentials: true,
 
 };
 

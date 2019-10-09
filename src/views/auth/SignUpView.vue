@@ -1,15 +1,15 @@
 
 <template lang="pug">
-	LoginForm
+	SignUpForm
 </template>
 
 <script lang="ts">
-import LoginForm from '@/components/auth/LoginForm.vue';
+import SignUpForm from '@/components/auth/SignUpForm.vue';
 import { Component, Vue } from 'vue-property-decorator';
 export default Vue.extend({
-  name: 'login',
+  name: 'signup',
   components: {
-	LoginForm,
+	SignUpForm,
   },
 });
 </script>

@@ -66,7 +66,7 @@ import Vue from 'vue';
 export default Vue.extend({
   name: 'MainContent',
   props: {
-    msg: String,
+	msg: String,
   },
 });
 </script>

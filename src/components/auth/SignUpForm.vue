@@ -16,7 +16,7 @@
 import { VForm } from '@/models';
 import { Component, Vue } from 'vue-property-decorator';
 @Component({
-  name: 'LoginForm',
+  name: 'SignUpForm',
 })
 export default class Login extends Vue {
   private password: string = '';
