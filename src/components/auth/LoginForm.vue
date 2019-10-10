@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { VForm } from '@/models';
+import { VForm } from '@/interfaces/GlobalTypes';
 import { Component, Vue } from 'vue-property-decorator';
 @Component({
   name: 'LoginForm',

@@ -22,13 +22,10 @@
 </template>
 
 <script lang="ts">
+import { VForm } from '@/interfaces/GlobalTypes';
+import { Project } from '@/interfaces/ProjectTypes';
 import { AxiosResponse } from 'axios';
 import { Component, Prop, Vue } from 'vue-property-decorator';
-
-import { VForm } from '@/models';
-import { Project } from './models';
-
-
 @Component({
 	name: 'CreateUpdateProject',
 })

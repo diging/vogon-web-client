@@ -10,7 +10,7 @@ const config = {
   // baseURL: process.env.baseURL || process.env.apiUrl || ""
   // timeout: 60 * 1000, // Timeout
   // withCredentials: true, // Check cross-site Access-Control
-  baseURL: 'http://localhost:8000/',
+  baseURL: 'http://localhost:8000/api/v2/',
   headers: {
     'Content-Type': 'application/json',
     'Authorization': {
