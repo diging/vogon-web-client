@@ -40,7 +40,7 @@ export default Vue.extend({
 	data() {
 		return {
 			activeIndex: '1',
-			annotate_items: [{ title: 'Text', link: '/text' }, { title: 'Projects', link: '/project' }],
+			annotate_items: [{ title: 'Text', link: '/repository' }, { title: 'Projects', link: '/project' }],
 			data_items: [{ title: 'Concepts' }, { title: 'Annotations' }],
 			info_items: [
 				{ title: 'Overview' },
