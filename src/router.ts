@@ -10,6 +10,8 @@ import Home from './views/Home.vue';
 import About from './views/info/About.vue';
 import ProjectDetails from './views/project/ProjectDetails.vue';
 import ProjectList from './views/project/ProjectList.vue';
+import RepoDetails from './views/texts/RepoDetails.vue';
+import RepoList from './views/texts/RepoList.vue';
 
 Vue.use(Router);
 
@@ -31,6 +33,16 @@ export default new Router({
 			path: '/project/:id',
 			name: 'project-details',
 			component: ProjectDetails,
+		},
+		{
+			path: '/repository',
+			name: 'repo-list',
+			component: RepoList,
+		},
+		{
+			path: '/repository/:id',
+			name: 'repo-details',
+			component: RepoDetails,
 		},
 		{
 			path: '/contributors',

@@ -21,3 +21,20 @@ export interface TokenDto {
 	user_id: number;
 	github_token: boolean;
   }
+export interface Repository {
+	id: number;
+	name: string;
+	description?: string;
+	configuration?: string;
+	collections?: TextCollection[];
+}
+
+export interface TextCollection {
+	id: number;
+	name: string;
+	description?: string;
+	raw?: string;
+	url?: string;
+	uri?: string;
+	size?: number;
+}
