@@ -10,6 +10,7 @@ import Home from './views/Home.vue';
 import About from './views/info/About.vue';
 import ProjectDetails from './views/project/ProjectDetails.vue';
 import ProjectList from './views/project/ProjectList.vue';
+import CollectionDetails from './views/texts/CollectionDetails.vue';
 import RepoDetails from './views/texts/RepoDetails.vue';
 import RepoList from './views/texts/RepoList.vue';
 
@@ -43,6 +44,11 @@ export default new Router({
 			path: '/repository/:id',
 			name: 'repo-details',
 			component: RepoDetails,
+		},
+		{
+			path: '/repository/:repoId/collections/:colId',
+			name: 'collection-details',
+			component: CollectionDetails,
 		},
 		{
 			path: '/contributors',
