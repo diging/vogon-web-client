@@ -13,12 +13,7 @@
 				v-card(class="card-project-text")
 					v-card-title Collections
 					template(v-if="!repo.collections.length")
-						br
-						div(class="text-center")
-							v-icon(x-large) mdi-file-document-outline
-							br
-							div No collections found!
-							br
+						EmptyView No collections found!
 					RepoCollections(v-else v-bind:collections="repo.collections" v-bind:repoId="$route.params.id")
 
 </template>
@@ -27,6 +22,7 @@
 import { AxiosResponse } from 'axios';
 import { Component, Vue } from 'vue-property-decorator';
 
+import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
 import RepoCollections from '@/components/texts/RepoCollections.vue';
@@ -38,6 +34,7 @@ import { Repository } from '@/models';
 		Loading,
 		ErrorIndicator,
 		RepoCollections,
+		EmptyView,
 	},
 })
 export default class RepoDetails extends Vue {
