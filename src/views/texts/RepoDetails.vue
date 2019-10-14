@@ -9,7 +9,6 @@
 				v-card(tile outlined class="repo-details")
 					h3(class="headline") {{ repo.name }}
 					h4(class="subtitle-1") {{ repo.description }}
-
 				br
 				v-card(class="card-project-text")
 					v-card-title Collections
@@ -20,7 +19,7 @@
 							br
 							div No collections found!
 							br
-					RepoCollections(v-else v-bind:collections="repo.collections")
+					RepoCollections(v-else v-bind:collections="repo.collections" v-bind:repoId="$route.params.id")
 
 </template>
 
