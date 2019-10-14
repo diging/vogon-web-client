@@ -13,6 +13,7 @@ import ProjectList from './views/project/ProjectList.vue';
 import CollectionDetails from './views/texts/CollectionDetails.vue';
 import RepoDetails from './views/texts/RepoDetails.vue';
 import RepoList from './views/texts/RepoList.vue';
+import TextDetails from './views/texts/TextDetails.vue';
 
 Vue.use(Router);
 
@@ -49,6 +50,11 @@ export default new Router({
 			path: '/repository/:repoId/collections/:colId',
 			name: 'collection-details',
 			component: CollectionDetails,
+		},
+		{
+			path: '/repository/:repoId/text/:textId',
+			name: 'text-details',
+			component: TextDetails,
 		},
 		{
 			path: '/contributors',

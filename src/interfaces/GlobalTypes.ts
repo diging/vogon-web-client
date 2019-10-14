@@ -36,9 +36,28 @@ export interface TextCollection {
 export interface TextResource {
 	id: number;
 	title: string;
-	content_types: string[];
+	content_types?: string[];
 	url?: string;
 	uri?: string;
 	public?: boolean;
 	raw?: string;
+	aggregate_content?: TextAggregatedContent[];
+	parts?: number[];
+	content?: TextContentResource[];
+}
+
+export interface TextAggregatedContent {
+	raw?: string;
+	content_type?: string;
+	resources?: TextContentResource[];
+}
+
+export interface TextContentResource {
+	id: number;
+	raw?: string;
+	name: string;
+	location?: number;
+	content_type?: string;
+	source?: string;
+	content_for?: number;
 }

@@ -1,7 +1,7 @@
 <template lang="pug">
 	v-list(two-line)
 		template(v-for="(resource, index) in resources")
-			v-list-item(:key="resource.id" v-bind:href="`sdf`")
+			v-list-item(:key="resource.id" v-bind:href="`/repository/${repoId}/text/${resource.id}`")
 				v-list-item-content
 					v-list-item-title(class="font-weight-medium" v-text="resource.title")
 					v-list-item-subtitle(class="text--primary" v-text="resource.uri")
@@ -22,5 +22,6 @@ import { TextResource } from '@/models';
 })
 export default class TextResources extends Vue {
 	@Prop() private readonly resources!: TextResource[];
+	@Prop() private readonly repoId!: string;
 }
 </script>
