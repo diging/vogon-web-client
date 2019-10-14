@@ -37,4 +37,15 @@ export interface TextCollection {
 	url?: string;
 	uri?: string;
 	size?: number;
+	resources?: TextResource[];
+}
+
+export interface TextResource {
+	id: number;
+	title: string;
+	content_types: string[];
+	url?: string;
+	uri?: string;
+	public?: boolean;
+	raw?: string;
 }
