@@ -11,19 +11,15 @@
 				v-card(tile outlined class="col-details")
 					v-card-title Text resources
 					template(v-if="!collection.resources.length")
-						br
-						div(class="text-center")
-							v-icon(x-large) mdi-file-document-outline
-							br
-							div No text resources found!
-							br
-					TextResources(v-else v-bind:resources="collection.resources")
+						EmptyView No text resources found!
+					TextResources(v-else v-bind:resources="collection.resources" v-bind:repoId="$route.params.repoId")
 </template>
 
 <script lang="ts">
 import { AxiosResponse } from 'axios';
 import { Component, Vue } from 'vue-property-decorator';
 
+import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
 import TextResources from '@/components/texts/TextResources.vue';
@@ -33,6 +29,7 @@ import { TextCollection } from '@/models';
 	name: 'CollectionDetails',
 	components: {
 		Loading,
+		EmptyView,
 		ErrorIndicator,
 		TextResources,
 	},

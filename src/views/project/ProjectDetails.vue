@@ -21,11 +21,7 @@
 			v-card(class="card-project-text")
 				v-card-title Texts
 				template(v-if="!project.texts.length")
-					br
-					div(class="text-center")
-						v-icon(x-large) mdi-file-document-outline
-						br
-						div No texts found! Perhaps, add one?
+					EmptyView No texts found! Perhaps, add one?
 				template(v-else)
 					v-data-table(:headers="textHeaders" :items="project.texts")
 </template>
@@ -34,6 +30,7 @@
 import { AxiosResponse } from 'axios';
 import { Component, Vue } from 'vue-property-decorator';
 
+import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
 import CreateUpdateProject from '@/components/project/CreateUpdateProject.vue';
@@ -43,6 +40,7 @@ import { Project } from '@/interfaces/ProjectTypes';
 	name: 'ProjectDetails',
 	components: {
 		CreateUpdateProject,
+		EmptyView,
 		ErrorIndicator,
 		Loading,
 	},
