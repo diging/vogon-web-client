@@ -3,34 +3,57 @@
 		v-col(cols="6")
 			v-card
 				v-form(ref="loginForm" v-model="valid")
-					v-card-title#title Login
+					v-card-title#title Github Authorization
 					v-card-text
-						v-text-field(class="mt-4" label="Username" required outlined v-model="username" :rules="[() => !!username || 'Username Required.']")
-						v-text-field(label="Password" required outlined password :type="show1 ? 'text' : 'password'" v-model="password" :rules="[() => !!password || 'Password Required.']")
-					v-card-actions()
-						div(class="flex-grow-1")    
-						v-btn(class="mr-4" color="teal" :disabled="!valid" large depressed @click="login") Login
+						a(href="https://github.com/login/oauth/authorize?scope=user&client_id=ba7c54943f8cbf9f3ab4") authorize
+					v-card-actions
+
 </template>
 
 <script lang="ts">
 import { VForm } from '@/interfaces/GlobalTypes';
 import { Component, Vue } from 'vue-property-decorator';
+import axios from 'axios'
 @Component({
-  name: 'LoginForm',
+  name: 'GithubForm',
 })
-export default class Login extends Vue {
+export default class GithubForm extends Vue {
   private password: string = '';
   private username: string = '';
   private error: boolean = false;
 
   private valid: boolean = false;
+  private gits: null;
+
+mounted() {
+	if(this.$route.query.code){
+		console.log("Works");
+		this.getAccessToken();
+	}
+}
+
+getAccessToken() {
+	Vue.$axios.get('snippet/', {
+		params: {
+			code: this.$route.query.code
+		}
+	})
+	.then((result) => {
+		console.log(result.data)
+	})
+	.catch((error) => {
+		// TODO: deal with errors
+		this.error = true;
+	});
+}
 
   public async login(): Promise<void> {
 	if ((this.$refs.loginForm as VForm).validate()) {
-	Vue.$axios.post('token/',
+	Vue.$axios.post('api/token/',
 	{
 		username: this.username,
 		password: this.password,
+		
 	})
 	.then((result) => {
 		localStorage.setItem('token', result.data.access);

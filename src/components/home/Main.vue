@@ -64,13 +64,45 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { Component, Vue } from 'vue-property-decorator';
 
-export default Vue.extend({
-	name: 'Main',
-	props: {
-		msg: String,
-	},
-});
+@Component({
+  name: 'Main',
+})
+export default class Main extends Vue {
+  private password: string = '';
+  private username: string = '';
+  private error: boolean = false;
+
+  private valid: boolean = false;
+  private gits: null;
+
+mounted() {
+	if(this.$route.query.code){
+		console.log("Works");
+		this.getAccessToken();
+	}
+}
+
+getAccessToken() {
+	axios.get('https://github.com/login/oauth/access_token',
+	{
+		params: {
+			client_id: 'ba7c54943f8cbf9f3ab4&',
+			client_secret: '7776b85b22f03982843b40458e05366487eb1ee4',
+			code: this.$route.query.code
+		}
+	})
+	.then((result) => {
+		console.log(result.data)
+		this.gits = results.data['git']
+	})
+	.catch((error) => {
+		// TODO: deal with errors
+		this.error = true;
+	});
+}
+}
 </script>
 
 <style scoped lang="scss">
