@@ -77,25 +77,25 @@ export default class Main extends Vue {
   private valid: boolean = false;
   private gits: null;
 
-mounted() {
-	if(this.$route.query.code){
-		console.log("Works");
+public mounted() {
+	if (this.$route.query.code) {
+		console.log('Works');
 		this.getAccessToken();
 	}
 }
 
-getAccessToken() {
+public getAccessToken() {
 	axios.get('https://github.com/login/oauth/access_token',
 	{
 		params: {
 			client_id: 'ba7c54943f8cbf9f3ab4&',
 			client_secret: '7776b85b22f03982843b40458e05366487eb1ee4',
-			code: this.$route.query.code
-		}
+			code: this.$route.query.code,
+		},
 	})
 	.then((result) => {
-		console.log(result.data)
-		this.gits = results.data['git']
+		console.log(result.data);
+		this.gits = results.data.git;
 	})
 	.catch((error) => {
 		// TODO: deal with errors

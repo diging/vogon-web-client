@@ -12,8 +12,8 @@
 
 <script lang="ts">
 import { VForm } from '@/interfaces/GlobalTypes';
+import axios from 'axios';
 import { Component, Vue } from 'vue-property-decorator';
-import axios from 'axios'
 @Component({
   name: 'GithubForm',
 })
@@ -25,21 +25,21 @@ export default class GithubForm extends Vue {
   private valid: boolean = false;
   private gits: null;
 
-mounted() {
-	if(this.$route.query.code){
-		console.log("Works");
+public mounted() {
+	if (this.$route.query.code) {
+		console.log('Works');
 		this.getAccessToken();
 	}
 }
 
-getAccessToken() {
+public getAccessToken() {
 	Vue.$axios.get('snippet/', {
 		params: {
-			code: this.$route.query.code
-		}
+			code: this.$route.query.code,
+		},
 	})
 	.then((result) => {
-		console.log(result.data)
+		console.log(result.data);
 	})
 	.catch((error) => {
 		// TODO: deal with errors
@@ -53,7 +53,7 @@ getAccessToken() {
 	{
 		username: this.username,
 		password: this.password,
-		
+
 	})
 	.then((result) => {
 		localStorage.setItem('token', result.data.access);
