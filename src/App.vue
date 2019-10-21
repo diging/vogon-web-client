@@ -8,6 +8,7 @@
 </template>
 
 <script lang="ts">
+import router from '@/router';
 import Vue from 'vue';
 import Footer from './components/global/Footer.vue';
 import Header from './components/global/Header.vue';
@@ -23,8 +24,23 @@ export default Vue.extend({
 		Footer,
 	},
 	data: () => ({
-		//
+		loggedIn: false,
 	}),
+	beforeCreate() {
+		if (this.$route.path !== 'signup') {
+			this.$verify(router);
+		}
+	},
+	created() {
+		router.beforeEach((to, from, next) => {
+			if (to.path === '/signup') {
+				next();
+			} else {
+				this.$verify(router);
+				next();
+			}
+		});
+	},
 });
 </script>
 <style lang="scss">

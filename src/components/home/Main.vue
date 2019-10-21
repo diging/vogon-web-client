@@ -79,7 +79,6 @@ export default class Main extends Vue {
 
 public mounted() {
 	if (this.$route.query.code) {
-		console.log('Works');
 		this.getAccessToken();
 	}
 }
@@ -94,7 +93,6 @@ public getAccessToken() {
 		},
 	})
 	.then((result) => {
-		console.log(result.data);
 		this.gits = results.data.git;
 	})
 	.catch((error) => {

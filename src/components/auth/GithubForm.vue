@@ -25,46 +25,26 @@ export default class GithubForm extends Vue {
   private valid: boolean = false;
   private gits: null;
 
-public mounted() {
-	if (this.$route.query.code) {
-		console.log('Works');
-		this.getAccessToken();
+	public mounted() {
+		if (this.$route.query.code) {
+			this.getAccessToken();
+		}
 	}
-}
 
-public getAccessToken() {
-	Vue.$axios.get('snippet/', {
-		params: {
-			code: this.$route.query.code,
-		},
-	})
-	.then((result) => {
-		console.log(result.data);
-	})
-	.catch((error) => {
-		// TODO: deal with errors
-		this.error = true;
-	});
-}
-
-  public async login(): Promise<void> {
-	if ((this.$refs.loginForm as VForm).validate()) {
-	Vue.$axios.post('api/token/',
-	{
-		username: this.username,
-		password: this.password,
-
-	})
-	.then((result) => {
-		localStorage.setItem('token', result.data.access);
-		Vue.$axios.defaults.headers.common.Authorization = `Bearer ${result.data.token}`;
-	})
-	.catch((error) => {
-		// TODO: deal with errors
-		this.error = true;
-	});
+	public getAccessToken() {
+		Vue.$axios.get('snippet/', {
+			params: {
+				code: this.$route.query.code,
+			},
+		})
+		.then((result) => {
+			this.$router.push('home');
+		})
+		.catch((error) => {
+			// TODO: deal with errors
+			this.error = true;
+		});
 	}
-  }
 }
 </script>
 
