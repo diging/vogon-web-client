@@ -63,8 +63,9 @@
 </template>
 
 <script lang="ts">
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import Vue from 'vue';
-import { Component, Vue } from 'vue-property-decorator';
+import { Component } from 'vue-property-decorator';
 
 @Component({
   name: 'Main',
@@ -75,7 +76,6 @@ export default class Main extends Vue {
   private error: boolean = false;
 
   private valid: boolean = false;
-  private gits: null;
 
 public mounted() {
 	if (this.$route.query.code) {
@@ -92,10 +92,7 @@ public getAccessToken() {
 			code: this.$route.query.code,
 		},
 	})
-	.then((result) => {
-		this.gits = results.data.git;
-	})
-	.catch((error) => {
+	.catch((error: AxiosError) => {
 		// TODO: deal with errors
 		this.error = true;
 	});

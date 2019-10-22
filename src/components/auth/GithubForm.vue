@@ -12,7 +12,6 @@
 
 <script lang="ts">
 import { VForm } from '@/interfaces/GlobalTypes';
-import axios from 'axios';
 import { Component, Vue } from 'vue-property-decorator';
 @Component({
   name: 'GithubForm',
@@ -21,9 +20,7 @@ export default class GithubForm extends Vue {
   private password: string = '';
   private username: string = '';
   private error: boolean = false;
-
   private valid: boolean = false;
-  private gits: null;
 
 	public mounted() {
 		if (this.$route.query.code) {

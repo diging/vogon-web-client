@@ -28,7 +28,7 @@ export default Vue.extend({
 	}),
 	beforeCreate() {
 		if (this.$route.path !== 'signup') {
-			this.$verify(router);
+			Vue.$verify(router);
 		}
 	},
 	created() {
@@ -36,7 +36,7 @@ export default Vue.extend({
 			if (to.path === '/signup') {
 				next();
 			} else {
-				this.$verify(router);
+				Vue.$verify(router);
 				next();
 			}
 		});
