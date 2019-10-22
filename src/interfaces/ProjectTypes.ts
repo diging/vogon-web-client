@@ -1,4 +1,4 @@
-import { User } from '@/models';
+import { User } from '@/interfaces/GlobalTypes';
 
 export interface Text {
 	id: number;

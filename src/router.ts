@@ -1,7 +1,10 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+
+import GithubView from './views/auth/GithubView.vue';
 import LoginView from './views/auth/LoginView.vue';
 import SignUpView from './views/auth/SignUpView.vue';
+
 import Contributors from './views/Contributors.vue';
 import Home from './views/Home.vue';
 import About from './views/info/About.vue';
@@ -48,6 +51,11 @@ export default new Router({
 			path: '/signup',
 			name: 'signup',
 			component: SignUpView,
+		},
+		{
+			path: '/github',
+			name: 'github',
+			component: GithubView,
 		},
 	],
 });

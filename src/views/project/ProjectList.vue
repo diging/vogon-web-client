@@ -37,8 +37,9 @@ import { Location } from 'vue-router';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
 import CreateUpdateProject from '@/components/project/CreateUpdateProject.vue';
-import { Project } from '@/components/project/models';
-import { VForm } from '@/models';
+import { VForm } from '@/interfaces/GlobalTypes';
+import { Project } from '@/interfaces/ProjectTypes';
+
 
 @Component({
 	name: 'ProjectList',

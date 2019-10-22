@@ -8,6 +8,7 @@
 </template>
 
 <script lang="ts">
+import router from '@/router';
 import Vue from 'vue';
 import Footer from './components/global/Footer.vue';
 import Header from './components/global/Header.vue';
@@ -23,8 +24,24 @@ export default Vue.extend({
 		Footer,
 	},
 	data: () => ({
-		//
 	}),
+	beforeCreate() {
+		// run verify on pages other than signup and home during app setup
+		if (this.$route.path !== '/signup' && this.$route.path !== '/') {
+			Vue.$verify(router);
+		}
+	},
+	created() {
+		// run verify on pages other than signup and home between page changes
+		router.beforeEach((to, from, next) => {
+			if (to.path === '/signup' || to.path === '/') {
+				next();
+			} else {
+				Vue.$verify(router);
+				next();
+			}
+		});
+	},
 });
 </script>
 <style lang="scss">

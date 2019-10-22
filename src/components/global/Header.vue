@@ -21,7 +21,9 @@
 					v-list-item-title(v-text="item.title")
 		v-spacer
 		v-toolbar-items.hidden-sm-and-down
-			v-btn(text) Link One
+			v-btn(text v-if="!this.$store.getters.loggedIn" @click="login") Login
+			v-btn(text v-if="!this.$store.getters.loggedIn" @click="signup") Sign Up
+			v-btn(text v-if="this.$store.getters.loggedIn" @click="logout") Log Out
 			v-btn(text) Link Two
 			v-btn(text) Link 3
 			
@@ -56,7 +58,14 @@ export default Vue.extend({
 			this.$router.push('/');
 		},
 		login() {
-			window.location.href = 'http://127.0.0.1:8000/github/login/';
+			this.$router.push('login');
+		},
+		signup() {
+			this.$router.push('signup');
+		},
+		logout() {
+			localStorage.removeItem('token');
+			this.login();
 		},
 	},
 });
