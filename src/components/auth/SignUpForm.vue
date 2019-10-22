@@ -18,7 +18,6 @@
 
 <script lang="ts">
 import { VForm } from '@/interfaces/GlobalTypes';
-import axios from 'axios';
 import { Component, Vue } from 'vue-property-decorator';
 @Component({
   name: 'SignUpForm',
@@ -36,7 +35,7 @@ export default class Login extends Vue {
 
   public async signUp(): Promise<void> {
 	if ((this.$refs.signUpForm as VForm).validate()) {
-	axios.post('http://127.0.0.1:8000/api/v2/users',
+	Vue.$axios.post('/users',
 	{
 		username: this.username,
 		password: this.password,

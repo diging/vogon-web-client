@@ -1,5 +1,6 @@
 import Vue, { PluginObject } from 'vue';
 import VueRouter from 'vue-router';
+import store from './../store';
 
 
 const _verify = function(router: VueRouter):void {
@@ -15,7 +16,11 @@ const _verify = function(router: VueRouter):void {
 				},
 			},
 		)
+		.then((result) => {
+			store.commit('loggedInMutation', true);
+		})
 		.catch(() => {
+			store.commit('loggedInMutation', false);
 			localStorage.removeItem('token');
 			router.push({ path: '/login' });
 		});
