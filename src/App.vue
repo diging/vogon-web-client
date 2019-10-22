@@ -24,7 +24,6 @@ export default Vue.extend({
 		Footer,
 	},
 	data: () => ({
-		loggedIn: false,
 	}),
 	beforeCreate() {
 		// run verify on pages other than signup and home during app setup
