@@ -76,27 +76,6 @@ export default class Main extends Vue {
   private error: boolean = false;
 
   private valid: boolean = false;
-
-public mounted() {
-	if (this.$route.query.code) {
-		this.getAccessToken();
-	}
-}
-
-public getAccessToken() {
-	axios.get('https://github.com/login/oauth/access_token',
-	{
-		params: {
-			client_id: 'ba7c54943f8cbf9f3ab4&',
-			client_secret: '7776b85b22f03982843b40458e05366487eb1ee4',
-			code: this.$route.query.code,
-		},
-	})
-	.catch((error: AxiosError) => {
-		// TODO: deal with errors
-		this.error = true;
-	});
-}
 }
 </script>
 

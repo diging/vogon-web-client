@@ -5,7 +5,7 @@
 				v-form(ref="loginForm" v-model="valid")
 					v-card-title#title Github Authorization
 					v-card-text
-						a(href="https://github.com/login/oauth/authorize?scope=user&client_id=ba7c54943f8cbf9f3ab4") authorize
+						a(href=`https://github.com/login/oauth/authorize?scope=user&client_id=${process.env.VUE_APP_GITHUB_CLIENT_ID}`) authorize
 					v-card-actions
 
 </template>
