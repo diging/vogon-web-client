@@ -15,7 +15,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { TextResource } from '@/models';
+import { TextResource } from '@/interfaces/RepositoryTypes';
 
 @Component({
 	name: 'TextResources',

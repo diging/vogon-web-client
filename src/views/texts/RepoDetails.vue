@@ -26,7 +26,7 @@ import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
 import RepoCollections from '@/components/texts/RepoCollections.vue';
-import { Repository } from '@/models';
+import { Repository } from '@/interfaces/RepositoryTypes';
 
 @Component({
 	name: 'RepoDetails',
