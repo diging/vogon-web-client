@@ -15,7 +15,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { TextCollection } from '@/models';
+import { TextCollection } from '@/interfaces/RepositoryTypes';
 
 @Component({
 	name: 'RepoCollections',

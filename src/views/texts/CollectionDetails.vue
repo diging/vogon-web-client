@@ -23,7 +23,7 @@ import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
 import TextResources from '@/components/texts/TextResources.vue';
-import { TextCollection } from '@/models';
+import { TextCollection } from '@/interfaces/RepositoryTypes';
 
 @Component({
 	name: 'CollectionDetails',
