@@ -26,6 +26,7 @@ import { VForm } from '@/interfaces/GlobalTypes';
 import { Project } from '@/interfaces/ProjectTypes';
 import { AxiosResponse } from 'axios';
 import { Component, Prop, Vue } from 'vue-property-decorator';
+
 @Component({
 	name: 'CreateUpdateProject',
 })
