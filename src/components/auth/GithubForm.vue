@@ -29,7 +29,7 @@ export default class GithubForm extends Vue {
 	}
 
 	public getAccessToken() {
-		Vue.$axios.get('snippet/', {
+		Vue.$axios.get('github-token/', {
 			params: {
 				code: this.$route.query.code,
 			},

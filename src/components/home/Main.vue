@@ -63,7 +63,6 @@
 </template>
 
 <script lang="ts">
-import axios, { AxiosError, AxiosResponse } from 'axios';
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 
@@ -71,11 +70,6 @@ import { Component } from 'vue-property-decorator';
   name: 'Main',
 })
 export default class Main extends Vue {
-  private password: string = '';
-  private username: string = '';
-  private error: boolean = false;
-
-  private valid: boolean = false;
 }
 </script>
 
