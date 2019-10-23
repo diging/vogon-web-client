@@ -36,7 +36,7 @@ import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
 import TextAdditionalContent from '@/components/texts/TextAdditionalContent.vue';
 import TextSerialContent from '@/components/texts/TextSerialContent.vue';
-import { TextResource } from '@/models';
+import { TextResource } from '@/interfaces/RepositoryTypes';
 
 @Component({
 	name: 'TextDetails',

@@ -20,7 +20,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import EmptyView from '@/components/global/EmptyView.vue';
-import { TextAggregatedContent } from '@/models';
+import { TextAggregatedContent } from '@/interfaces/RepositoryTypes';
 
 @Component({
 	name: 'TextSerialContent',
