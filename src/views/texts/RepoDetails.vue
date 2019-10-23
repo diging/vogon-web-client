@@ -14,7 +14,7 @@
 					v-card-title Collections
 					template(v-if="!repo.collections.length")
 						EmptyView No collections found!
-					RepoCollections(v-else v-bind:collections="repo.collections" v-bind:repoId="$route.params.id")
+					RepoCollections(v-else v-bind:collections="repo.collections" v-bind:repoId="$route.params.id" v-bind:queryParam="queryParam")
 
 </template>
 
@@ -41,8 +41,14 @@ export default class RepoDetails extends Vue {
 	private repo: Repository = {id: 1, name: ''};
 	private loading: boolean = true;
 	private error: boolean = false;
+	private queryParam: string = '';
 
 	public async mounted(): Promise<void> {
+		const projectId = this.$route.query.project_id;
+		if (projectId) {
+			this.queryParam = `?project_id=${projectId}`;
+		}
+
 		Vue.$axios.get(`/repository/${this.$route.params.id}`)
 			.then((response: AxiosResponse) => {
 				this.repo = response.data as Repository;

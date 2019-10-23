@@ -12,7 +12,7 @@
 					v-card-title Text resources
 					template(v-if="!collection.resources.length")
 						EmptyView No text resources found!
-					TextResources(v-else v-bind:resources="collection.resources" v-bind:repoId="$route.params.repoId")
+					TextResources(v-else v-bind:resources="collection.resources" v-bind:repoId="$route.params.repoId" v-bind:queryParam="queryParam")
 </template>
 
 <script lang="ts">
@@ -38,8 +38,14 @@ export default class CollectionDetails extends Vue {
 	private loading: boolean = true;
 	private error: boolean = false;
 	private collection: TextCollection = {id: 1, name: ''};
+	private queryParam: string = '';
 
 	public async mounted(): Promise<void> {
+		const projectId = this.$route.query.project_id;
+		if (projectId) {
+			this.queryParam = `?project_id=${projectId}`;
+		}
+
 		Vue.$axios.get(`/repository/${this.$route.params.repoId}/collections/${this.$route.params.colId}`)
 			.then((response: AxiosResponse) => {
 				this.collection = response.data as TextCollection;

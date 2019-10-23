@@ -14,7 +14,7 @@
 					v-col(md="6")
 						div(class="float-right")
 							CreateUpdateProject(update :project="Object.assign({}, project)" v-bind:getProjectDetails="getProjectDetails")
-							v-btn(tile depressed color="teal" large class="ma-2" dark)
+							v-btn(tile depressed color="teal" large class="ma-2" dark v-bind:href="`/repository?project_id=${this.$route.params.id}`")
 								v-icon(left) mdi-plus
 								span Add text
 			br
