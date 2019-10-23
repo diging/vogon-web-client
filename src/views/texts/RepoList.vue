@@ -14,7 +14,7 @@
 						br
 						div No repositories found!
 				template(v-else)
-					v-list-item(v-for="repo in repos" :key="repo.id" class="repo-item" v-bind:href="`/repository/${repo.id}`")
+					v-list-item(v-for="repo in repos" :key="repo.id" class="repo-item" v-bind:href="`/repository/${repo.id}${queryParam}`")
 						v-card(width="100%" elevat)
 							v-card-title {{repo.name}}
 							v-card-text {{repo.description}}
@@ -40,8 +40,14 @@ export default class RepoList extends Vue {
 	private repos: Repository[] = [];
 	private loading: boolean = true;
 	private error: boolean = false;
+	private queryParam: string = '';
 
 	public mounted(): void {
+		const projectId = this.$route.query.project_id;
+		if (projectId) {
+			this.queryParam = `?project_id=${projectId}`;
+		}
+
 		Vue.$axios
 			.get('/repository')
 			.then((response: AxiosResponse) => {

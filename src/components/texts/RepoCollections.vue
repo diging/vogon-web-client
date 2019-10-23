@@ -1,7 +1,7 @@
 <template lang="pug">
 	v-list(two-line)
 		template(v-for="(collection, index) in collections")
-			v-list-item(:key="collection.id" v-bind:href="`/repository/${repoId}/collections/${collection.id}`")
+			v-list-item(:key="collection.id" v-bind:href="`/repository/${repoId}/collections/${collection.id}${queryParam}`")
 				v-list-item-content
 					v-list-item-title(v-text="collection.name")
 					v-list-item-subtitle(class="text--primary" v-text="collection.description")
@@ -23,5 +23,6 @@ import { TextCollection } from '@/models';
 export default class RepoCollections extends Vue {
 	@Prop() private readonly collections!: TextCollection[];
 	@Prop() private readonly repoId!: string;
+	@Prop() private readonly queryParam!: string;
 }
 </script>
