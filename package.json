@@ -9,7 +9,9 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@types/jwt-decode": "^2.2.1",
     "core-js": "^2.6.5",
+    "jwt-decode": "^2.2.0",
     "material-design-icons-iconfont": "^5.0.1",
     "moment": "^2.24.0",
     "vue": "^2.6.10",
