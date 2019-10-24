@@ -13,7 +13,8 @@
 </template>
 
 <script lang="ts">
-import { VForm } from '@/interfaces/GlobalTypes';
+import { TokenDto, VForm } from '@/interfaces/GlobalTypes';
+import JwtDecode from 'jwt-decode';
 import { Component, Vue } from 'vue-property-decorator';
 @Component({
   name: 'LoginForm',
@@ -36,8 +37,13 @@ export default class Login extends Vue {
 	.then((result) => {
 		this.$root.$data.loggedIn = true;
 		localStorage.setItem('token', result.data.access);
-		Vue.$axios.defaults.headers.common.Authorization = `Bearer ${result.data.token}`;
-		this.$router.push('home');
+		Vue.$axios.defaults.headers.common.Authorization = `Bearer ${result.data.access}`;
+		const decoded = JwtDecode<TokenDto>(result.data.access);
+		if (decoded.github_token) {
+			this.$router.push('home');
+		} else {
+			this.$router.push('github');
+		}
 	})
 	.catch((error) => {
 		// TODO: deal with errors
