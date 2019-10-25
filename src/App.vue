@@ -26,7 +26,9 @@ export default Vue.extend({
 	data: () => ({
 	}),
 	beforeCreate() {
-		// run verify on pages other than signup and home during app setup
+		/**
+		 * run verify on pages other than signup and home during app setup
+		 */
 		if (this.$route.path !== '/signup' && this.$route.path !== '/' && this.$route.path !== '/about') {
 			Vue.$verify(router, true);
 		} else {
@@ -34,7 +36,13 @@ export default Vue.extend({
 		}
 	},
 	created() {
-		// run verify on pages other than signup and home between page changes
+		/**
+		 * run verify on pages after load
+		 * @param {Route} to - route that page is directing to
+		 * @param {Route} from - route that page is directed from
+		 * @param {Function} next - move on to the next hook in the pipeline.
+		 * 		If no hooks are left, the navigation is confirmed.
+		 */
 		router.beforeEach((to, from, next) => {
 			if (to.path === '/signup' || to.path === '/' || to.path === '/about') {
 				Vue.$verify(router, false);

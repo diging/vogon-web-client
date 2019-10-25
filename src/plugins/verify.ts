@@ -2,7 +2,15 @@ import Vue, { PluginObject } from 'vue';
 import VueRouter from 'vue-router';
 import store from './../store';
 
-
+/**
+ * Check if a user has a valid token/is logged in. 
+ * 		We store the value in vuex to use elsewhere. 
+ * 		If the user is not logged in and the route is not 
+ * 		gaurded the user can still access the page 
+ * 		otherwise they are redirected to the login page. 
+ * @param {VueRouter} router - router instance
+ * @param {Boolean} gaurded - indicates whether the route is gaurded or not 
+ */ 
 const _verify = function(router: VueRouter, gaurded: boolean):void {
 	Vue.$axios
 		.post(
@@ -16,16 +24,13 @@ const _verify = function(router: VueRouter, gaurded: boolean):void {
 				},
 			},
 		)
-		.then((result) => {
+		.then(() => {
 			store.commit('loggedInMutation', true);
 		})
 		.catch(() => {
 			store.commit('loggedInMutation', false);
 			localStorage.removeItem('token');
-			
 			if(gaurded == true) {
-				console.log(gaurded);
-				console.log("hits");
 				router.push({ path: '/login' });
 			}
 		});
@@ -40,6 +45,7 @@ const Plugin: PluginObject<any> = {
 	  Vue.$verify = _verify;
 	},
   };
+
   Plugin.install = (Vue) => {
 	Vue.$verify = _verify;
 	window.verify = _verify;

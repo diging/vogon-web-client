@@ -24,14 +24,18 @@ export default class GithubForm extends Vue {
 
 	public mounted() {
 		if (this.$route.query.code) {
-			this.getAccessToken();
+			this.getAccessToken(this.$route.query.code);
 		}
 	}
 
-	public getAccessToken() {
+	/**
+	 * get access code from github after getting auth code from github
+	 * @param {String} code - Github authorization code from querystring.
+	 */
+	public getAccessToken(code: string | Array<string | null>) {
 		Vue.$axios.get('github-token/', {
 			params: {
-				code: this.$route.query.code,
+				code,
 			},
 		})
 		.then((result) => {
