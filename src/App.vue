@@ -27,17 +27,20 @@ export default Vue.extend({
 	}),
 	beforeCreate() {
 		// run verify on pages other than signup and home during app setup
-		if (this.$route.path !== '/signup' && this.$route.path !== '/') {
-			Vue.$verify(router);
+		if (this.$route.path !== '/signup' && this.$route.path !== '/' && this.$route.path !== '/about') {
+			Vue.$verify(router, true);
+		} else {
+			Vue.$verify(router, false);
 		}
 	},
 	created() {
 		// run verify on pages other than signup and home between page changes
 		router.beforeEach((to, from, next) => {
-			if (to.path === '/signup' || to.path === '/') {
+			if (to.path === '/signup' || to.path === '/' || to.path === '/about') {
+				Vue.$verify(router, false);
 				next();
 			} else {
-				Vue.$verify(router);
+				Vue.$verify(router, true);
 				next();
 			}
 		});

@@ -4,7 +4,10 @@ import VueRouter from 'vue-router';
 
 
 interface VerifyToken {
-	(router: VueRouter): void;
+  (
+    router: VueRouter,
+    gaurded: boolean
+  ): void;
 }
 
 declare global {

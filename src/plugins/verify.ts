@@ -3,7 +3,7 @@ import VueRouter from 'vue-router';
 import store from './../store';
 
 
-const _verify = function(router: VueRouter):void {
+const _verify = function(router: VueRouter, gaurded: boolean):void {
 	Vue.$axios
 		.post(
 			'token/verify/',
@@ -22,7 +22,12 @@ const _verify = function(router: VueRouter):void {
 		.catch(() => {
 			store.commit('loggedInMutation', false);
 			localStorage.removeItem('token');
-			router.push({ path: '/login' });
+			
+			if(gaurded == true) {
+				console.log(gaurded);
+				console.log("hits");
+				router.push({ path: '/login' });
+			}
 		});
 };
 
