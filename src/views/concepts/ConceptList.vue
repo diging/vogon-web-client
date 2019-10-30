@@ -12,13 +12,15 @@
 							h4(class="subtitle-1") Filters
 							v-row
 								v-col(md="6")
-									v-text-field(label="Authority" outlined dense)
+									v-text-field(v-model="filters.authority" label="Authority" outlined dense )
 								v-col(md="6")
-									v-text-field(label="Part of Speech (PoS)" outlined dense)
+									v-text-field(v-model="filters.pos" label="Part of Speech (PoS)" outlined dense)
 								v-col(md="6")
-									v-select(label="State" :items="states" outlined dense)
+									v-select(v-model="filters.concept_state" label="State" :items="states" outlined dense)
 								v-col(md="6")
-									v-select(label="Type" :items="types" outlined dense)
+									v-select(v-model="filters.typed" label="Type" :items="types" outlined dense)
+								v-col(md="6")
+									v-btn(depressed color="primary" @click="getConcepts") Apply
 
 					template(v-slot:item.concept_detail="{ item }")
 						div(class="concept-title-container")
@@ -57,6 +59,13 @@ import Loading from '@/components/global/Loading.vue';
 import { Concept } from '@/interfaces/ConceptTypes';
 import { getConceptStateTheme } from '@/utils';
 
+interface ConceptFilter {
+	authority?: string;
+	pos?: string;
+	concept_state?: string;
+	typed?: number;
+	strict?: boolean;
+}
 
 @Component({
 	name: 'ConceptList',
@@ -78,11 +87,39 @@ export default class ConceptList extends Vue {
 		{text: 'Actions', value: 'actions'},
 	];
 	private states = ['(Any)', 'Pending', 'Rejected', 'Approved', 'Resolved', 'Merged'];
-	private types = ['type 1', 'type 2'];
+	private types = [1, 2, 3]; // ToDo: Get types from backend
+	private filters: ConceptFilter = {
+		authority: '',
+		pos: '',
+		concept_state: '',
+		typed: 0,
+		strict: true,
+	};
 	private getConceptStateTheme = getConceptStateTheme;
 
 	public async mounted(): Promise<void> {
-		Vue.$axios.get(`/concept`)
+		this.getConcepts();
+	}
+
+	private getFilter(): ConceptFilter {
+		// Build filter parameters
+		const params: ConceptFilter = {};
+		params.authority = this.filters.authority;
+		params.pos = this.filters.pos;
+		if (this.filters.concept_state !== '(Any)' && this.filters.concept_state) {
+			params.concept_state = this.filters.concept_state;
+		}
+		if (this.filters.typed) {
+			params.typed = this.filters.typed;
+		}
+		params.strict = true;
+
+		return params;
+	}
+
+	private async getConcepts(): Promise<void> {
+		const params: ConceptFilter = this.getFilter();
+		Vue.$axios.get(`/concept`, { params })
 			.then((response: AxiosResponse) => {
 				this.concepts = response.data.results;
 			})
