@@ -2,39 +2,44 @@
 	div(class="main")
 		h2(class="display-1") Concepts
 		br
-		ErrorIndicator(v-if="error") Error while loading concepts!
-		div(v-else)
-			Loading(v-if="loading")
-			div(v-else)
-				v-data-table(:headers="conceptHeaders" :items="concepts" class="elevation-1")
-					template(v-slot:top)
-						ConceptFilter(:filter="filters" :onApply="getConcepts")
+		v-data-table(:headers="conceptHeaders" :items="concepts" :loading="loading" class="elevation-1")
+			template(v-slot:top)
+				ConceptFilter(:filter="filters" :onApply="getConcepts")
 
-					template(v-slot:item.concept_detail="{ item }")
-						div(class="concept-title-container")
-							a(v-bind:href="`/concept/${item.id}`" class="concept-link")
-								span(class="subtitle-1 font-weight-medium") {{ item.label }}
-							v-chip(color="blue-grey darken-1" dark small class="concept-appellation-count")
-								| 123
-						div(class="body-2") {{ item.description }}
-						br
+			template(v-slot:loading)
+				br
+				div Loading concepts ...
+				br
 
-					template(v-slot:item.uri="{ item }")
-						div
-							strong
-								span(class="lime--text text--darken-4") {{ item.authority }}: 
-							a(v-bind:href="item.uri" class=" concept-uri blue--text text--darken-1") {{ item.uri }}
+			template(v-slot:no-data)
+				ErrorIndicator(v-if="error") Error while loading concepts!
+				EmptyView(v-else) No concepts found!
 
-					template(v-slot:item.concept_state="{ item }")
-						v-chip(:color="getConceptStateTheme(item.concept_state).color" dark)
-							| {{ item.concept_state }}
-							v-icon(right color="white" small) {{getConceptStateTheme(item.concept_state).icon}}
+			template(v-slot:item.concept_detail="{ item }")
+				div(class="concept-title-container")
+					a(v-bind:href="`/concept/${item.id}`" class="concept-link")
+						span(class="subtitle-1 font-weight-medium") {{ item.label }}
+					v-chip(color="blue-grey darken-1" dark small class="concept-appellation-count")
+						| 123
+				div(class="body-2") {{ item.description }}
+				br
 
-					template(v-slot:item.actions="{ item }")
-						v-btn(v-if="item.concept_state === 'Pending'" depressed small color="success") Approve
-						template(v-else-if="item.concept_state === 'Approved'")
-							v-btn(v-if="item.typed" depressed small color="success") Add
-							v-btn(v-else depressed small color="primary") Set Type
+			template(v-slot:item.uri="{ item }")
+				div
+					strong
+						span(class="lime--text text--darken-4") {{ item.authority }}: 
+					a(v-bind:href="item.uri" class=" concept-uri blue--text text--darken-1") {{ item.uri }}
+
+			template(v-slot:item.concept_state="{ item }")
+				v-chip(:color="getConceptStateTheme(item.concept_state).color" dark)
+					| {{ item.concept_state }}
+					v-icon(right color="white" small) {{getConceptStateTheme(item.concept_state).icon}}
+
+			template(v-slot:item.actions="{ item }")
+				v-btn(v-if="item.concept_state === 'Pending'" depressed small color="success") Approve
+				template(v-else-if="item.concept_state === 'Approved'")
+					v-btn(v-if="item.typed" depressed small color="success") Add
+					v-btn(v-else depressed small color="primary") Set Type
 </template>
 
 <script lang="ts">
@@ -44,14 +49,12 @@ import { Component, Vue } from 'vue-property-decorator';
 import ConceptFilter from '@/components/concepts/ConceptFilter.vue';
 import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
-import Loading from '@/components/global/Loading.vue';
 import { Concept, ConceptFilterParams } from '@/interfaces/ConceptTypes';
 import { getConceptStateTheme } from '@/utils';
 
 @Component({
 	name: 'ConceptList',
 	components: {
-		Loading,
 		ErrorIndicator,
 		EmptyView,
 		ConceptFilter,
