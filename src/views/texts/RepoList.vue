@@ -8,11 +8,7 @@
 			Loading(v-if="loading")
 			v-list(v-else color="transparent")
 				template(v-if="!repos.length")
-					br
-					div(class="text-center")
-						v-icon(x-large) mdi-folder
-						br
-						div No repositories found!
+					EmptyView No repositories found!
 				template(v-else)
 					v-list-item(v-for="repo in repos" :key="repo.id" class="repo-item" v-bind:href="`/repository/${repo.id}${queryParam}`")
 						v-card(width="100%" elevat)
@@ -25,6 +21,7 @@
 import { AxiosResponse } from 'axios';
 import { Component, Vue } from 'vue-property-decorator';
 
+import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
 import { Repository } from '@/interfaces/RepositoryTypes';
@@ -34,6 +31,7 @@ import { Repository } from '@/interfaces/RepositoryTypes';
 	components: {
 		Loading,
 		ErrorIndicator,
+		EmptyView,
 	},
 })
 export default class RepoList extends Vue {

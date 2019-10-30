@@ -17,7 +17,7 @@
 				v-btn(text v-on="on") Data
 					v-icon mdi-menu-down
 			v-list
-				v-list-item(v-for="item in data_items" :key="item.title" @click="")
+				v-list-item(v-for="item in data_items" :key="item.title" v-bind:to="item.link")
 					v-list-item-title(v-text="item.title")
 		v-spacer
 		v-toolbar-items.hidden-sm-and-down
@@ -41,7 +41,7 @@ export default Vue.extend({
 		return {
 			activeIndex: '1',
 			annotate_items: [{ title: 'Text', link: '/repository' }, { title: 'Projects', link: '/project' }],
-			data_items: [{ title: 'Concepts' }, { title: 'Annotations' }],
+			data_items: [{ title: 'Concepts', link: '/concept' }, { title: 'Annotations', link: '/relations' }],
 			info_items: [
 				{ title: 'Overview' },
 				{ title: 'Use Cases' },
