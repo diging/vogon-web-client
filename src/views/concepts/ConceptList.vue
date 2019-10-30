@@ -8,19 +8,7 @@
 			div(v-else)
 				v-data-table(:headers="conceptHeaders" :items="concepts" class="elevation-1")
 					template(v-slot:top)
-						div(class="container")
-							h4(class="subtitle-1") Filters
-							v-row
-								v-col(md="6")
-									v-text-field(v-model="filters.authority" label="Authority" outlined dense )
-								v-col(md="6")
-									v-text-field(v-model="filters.pos" label="Part of Speech (PoS)" outlined dense)
-								v-col(md="6")
-									v-select(v-model="filters.concept_state" label="State" :items="states" outlined dense)
-								v-col(md="6")
-									v-select(v-model="filters.typed" label="Type" :items="types" outlined dense)
-								v-col(md="6")
-									v-btn(depressed color="primary" @click="getConcepts") Apply
+						ConceptFilter(:filter="filters" :onApply="getConcepts")
 
 					template(v-slot:item.concept_detail="{ item }")
 						div(class="concept-title-container")
@@ -53,19 +41,12 @@
 import { AxiosResponse } from 'axios';
 import { Component, Vue } from 'vue-property-decorator';
 
+import ConceptFilter from '@/components/concepts/ConceptFilter.vue';
 import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
-import { Concept } from '@/interfaces/ConceptTypes';
+import { Concept, ConceptFilterParams } from '@/interfaces/ConceptTypes';
 import { getConceptStateTheme } from '@/utils';
-
-interface ConceptFilter {
-	authority?: string;
-	pos?: string;
-	concept_state?: string;
-	typed?: number;
-	strict?: boolean;
-}
 
 @Component({
 	name: 'ConceptList',
@@ -73,6 +54,7 @@ interface ConceptFilter {
 		Loading,
 		ErrorIndicator,
 		EmptyView,
+		ConceptFilter,
 	},
 })
 export default class ConceptList extends Vue {
@@ -86,9 +68,7 @@ export default class ConceptList extends Vue {
 		{text: 'State', value: 'concept_state'},
 		{text: 'Actions', value: 'actions'},
 	];
-	private states = ['(Any)', 'Pending', 'Rejected', 'Approved', 'Resolved', 'Merged'];
-	private types = [1, 2, 3]; // ToDo: Get types from backend
-	private filters: ConceptFilter = {
+	private filters: ConceptFilterParams = {
 		authority: '',
 		pos: '',
 		concept_state: '',
@@ -101,9 +81,9 @@ export default class ConceptList extends Vue {
 		this.getConcepts();
 	}
 
-	private getFilter(): ConceptFilter {
+	private getFilter(): ConceptFilterParams {
 		// Build filter parameters
-		const params: ConceptFilter = {};
+		const params: ConceptFilterParams = {};
 		params.authority = this.filters.authority;
 		params.pos = this.filters.pos;
 		if (this.filters.concept_state !== '(Any)' && this.filters.concept_state) {
@@ -118,7 +98,7 @@ export default class ConceptList extends Vue {
 	}
 
 	private async getConcepts(): Promise<void> {
-		const params: ConceptFilter = this.getFilter();
+		const params: ConceptFilterParams = this.getFilter();
 		Vue.$axios.get(`/concept`, { params })
 			.then((response: AxiosResponse) => {
 				this.concepts = response.data.results;

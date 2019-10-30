@@ -11,3 +11,11 @@ export interface Concept {
 	typed_label?: string;
 	concept_state?: string;
 }
+
+export interface ConceptFilterParams {
+	authority?: string;
+	pos?: string;
+	concept_state?: string;
+	typed?: number;
+	strict?: boolean;
+}
