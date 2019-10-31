@@ -5,11 +5,21 @@ export interface Concept {
 	label?: string;
 	description?: string;
 	authority?: string;
-	typed?: number;
+	typed?: ConceptType;
 	pos?: string;
 	resolved?: boolean;
 	typed_label?: string;
 	concept_state?: string;
+	appellation_set?: [number];
+}
+
+export interface ConceptType {
+	id: number;
+	authority?: string;
+	description?: string;
+	label?: string;
+	uri?: string;
+	url?: string;
 }
 
 export interface ConceptFilterParams {

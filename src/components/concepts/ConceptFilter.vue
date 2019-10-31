@@ -9,22 +9,37 @@
 			v-col(md="6")
 				v-select(v-model="filter.concept_state" label="State" :items="states" outlined dense)
 			v-col(md="6")
-				v-select(v-model="filter.typed" label="Type" :items="types" outlined dense)
+				v-select(v-model="filter.typed" label="Type" :items="types" outlined dense item-text="label" item-value="id")
 			v-col(md="6")
 				v-btn(depressed color="primary" @click="onApply") Apply
 </template>
 
 <script lang="ts">
+import { AxiosResponse } from 'axios';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { ConceptFilterParams } from '@/interfaces/ConceptTypes';
+import { ConceptFilterParams, ConceptType } from '@/interfaces/ConceptTypes';
 
 @Component({ name: 'ConceptFilter' })
 export default class ConceptFilter extends Vue {
 	@Prop() private filter!: ConceptFilterParams;
 	@Prop() private onApply!: () => void;
 
+	private error: boolean = false;
+	private loading: boolean = true;
+
+	private types: ConceptType[] = [];
+
 	private states = ['(Any)', 'Pending', 'Rejected', 'Approved', 'Resolved', 'Merged'];
-	private types = [1, 2, 3]; // ToDo: Get types from backend
+
+	public async mounted(): Promise<void> {
+		Vue.$axios.get(`/type`)
+			.then((response: AxiosResponse) => {
+				const allType: ConceptType = { id: 0, label: '(Any)' };
+				this.types = [allType, ...response.data.results];
+			})
+			.catch(() => this.error = true)
+			.finally(() => this.loading = false);
+	}
 }
 </script>

@@ -20,7 +20,7 @@
 					a(v-bind:href="`/concept/${item.id}`" class="concept-link")
 						span(class="subtitle-1 font-weight-medium") {{ item.label }}
 					v-chip(color="blue-grey darken-1" dark small class="concept-appellation-count")
-						| 123
+						| {{ item.appellation_set.length }}
 				div(class="body-2") {{ item.description }}
 				br
 
@@ -75,7 +75,6 @@ export default class ConceptList extends Vue {
 		authority: '',
 		pos: '',
 		concept_state: '',
-		typed: 0,
 		strict: true,
 	};
 	private getConceptStateTheme = getConceptStateTheme;
