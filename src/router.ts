@@ -5,6 +5,7 @@ import GithubView from './views/auth/GithubView.vue';
 import LoginView from './views/auth/LoginView.vue';
 import SignUpView from './views/auth/SignUpView.vue';
 
+import ConceptDetails from './views/concepts/ConceptDetails.vue';
 import ConceptList from './views/concepts/ConceptList.vue';
 import Contributors from './views/Contributors.vue';
 import Home from './views/Home.vue';
@@ -61,6 +62,11 @@ export default new Router({
 			path: '/concept',
 			name: 'concept-list',
 			component: ConceptList,
+		},
+		{
+			path: '/concept/:id',
+			name: 'concept-details',
+			component: ConceptDetails,
 		},
 		{
 			path: '/contributors',

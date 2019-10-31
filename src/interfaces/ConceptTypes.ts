@@ -11,6 +11,7 @@ export interface Concept {
 	typed_label?: string;
 	concept_state?: string;
 	appellation_set?: [number];
+	relations?: [string]; // ToDo: Change to Relation type
 }
 
 export interface ConceptType {

@@ -28,7 +28,7 @@
 				div
 					strong
 						span(class="lime--text text--darken-4") {{ item.authority }}: 
-					a(v-bind:href="item.uri" class=" concept-uri blue--text text--darken-1") {{ item.uri }}
+					a(v-bind:href="item.uri" class="concept-uri blue--text text--darken-1") {{ item.uri }}
 
 			template(v-slot:item.concept_state="{ item }")
 				v-chip(:color="getConceptStateTheme(item.concept_state).color" dark)
