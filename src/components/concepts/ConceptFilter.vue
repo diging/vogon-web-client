@@ -9,7 +9,7 @@
 			v-col(md="6")
 				v-select(v-model="filter.concept_state" label="State" :items="states" outlined dense)
 			v-col(md="6")
-				v-select(v-model="filter.typed" label="Type" :items="types" outlined dense item-text="label" item-value="id")
+				v-select(v-model="filter.typed" label="Type" :items="types" outlined dense item-text="uri" item-value="id")
 			v-col(md="6")
 				v-btn(depressed color="primary" @click="onApply") Apply
 </template>
@@ -18,6 +18,7 @@
 import { AxiosResponse } from 'axios';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
+import { CONCEPT_STATES } from '@/constants';
 import { ConceptFilterParams, ConceptType } from '@/interfaces/ConceptTypes';
 
 @Component({ name: 'ConceptFilter' })
@@ -30,12 +31,12 @@ export default class ConceptFilter extends Vue {
 
 	private types: ConceptType[] = [];
 
-	private states = ['(Any)', 'Pending', 'Rejected', 'Approved', 'Resolved', 'Merged'];
+	private states = Object.values(CONCEPT_STATES);
 
 	public async mounted(): Promise<void> {
 		Vue.$axios.get(`/type`)
 			.then((response: AxiosResponse) => {
-				const allType: ConceptType = { id: 0, label: '(Any)' };
+				const allType: ConceptType = { id: 0, uri: '(Any)' };
 				this.types = [allType, ...response.data.results];
 			})
 			.catch(() => this.error = true)

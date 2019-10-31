@@ -36,8 +36,8 @@
 					v-icon(right color="white" small) {{getConceptStateTheme(item.concept_state).icon}}
 
 			template(v-slot:item.actions="{ item }")
-				v-btn(v-if="item.concept_state === 'Pending'" depressed small color="success") Approve
-				template(v-else-if="item.concept_state === 'Approved'")
+				v-btn(v-if="item.concept_state === CONCEPT_STATES.PENDING" depressed small color="success") Approve
+				template(v-else-if="item.concept_state === CONCEPT_STATES.APPROVED")
 					v-btn(v-if="item.typed" depressed small color="success") Add
 					v-btn(v-else depressed small color="primary") Set Type
 </template>
@@ -49,6 +49,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import ConceptFilter from '@/components/concepts/ConceptFilter.vue';
 import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
+import { CONCEPT_STATES } from '@/constants';
 import { Concept, ConceptFilterParams } from '@/interfaces/ConceptTypes';
 import { getConceptStateTheme } from '@/utils';
 
@@ -78,6 +79,7 @@ export default class ConceptList extends Vue {
 		strict: true,
 	};
 	private getConceptStateTheme = getConceptStateTheme;
+	private CONCEPT_STATES = CONCEPT_STATES;
 
 	public async mounted(): Promise<void> {
 		this.getConcepts();
@@ -88,7 +90,7 @@ export default class ConceptList extends Vue {
 		const params: ConceptFilterParams = {};
 		params.authority = this.filters.authority;
 		params.pos = this.filters.pos;
-		if (this.filters.concept_state !== '(Any)' && this.filters.concept_state) {
+		if (this.filters.concept_state !== CONCEPT_STATES.ANY && this.filters.concept_state) {
 			params.concept_state = this.filters.concept_state;
 		}
 		if (this.filters.typed) {
