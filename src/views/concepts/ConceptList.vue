@@ -2,7 +2,10 @@
 	div(class="main")
 		h2(class="display-1") Concepts
 		br
-		v-data-table(:headers="conceptHeaders" :items="concepts" :loading="loading" class="elevation-1")
+		v-data-table(
+			:headers="conceptHeaders" :items="concepts" :loading="loading" class="elevation-1"
+			:server-items-length="conceptsCount" hide-default-footer
+		)
 			template(v-slot:top)
 				ConceptFilter(:filter="filters" :onApply="getConcepts")
 
@@ -40,6 +43,11 @@
 				template(v-else-if="item.concept_state === CONCEPT_STATES.APPROVED")
 					v-btn(v-if="item.typed" depressed small color="success") Add
 					v-btn(v-else depressed small color="primary") Set Type
+
+			template(v-slot:footer)
+				hr
+				div(class="pagination-container")
+					v-pagination(v-model="page" :length="Math.floor(conceptsCount / PAGE_SIZE) + 1" :total-visible="7" v-on:input="getConcepts")
 </template>
 
 <script lang="ts">
@@ -49,7 +57,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import ConceptFilter from '@/components/concepts/ConceptFilter.vue';
 import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
-import { CONCEPT_STATES } from '@/constants';
+import { CONCEPT_STATES, PAGE_SIZE } from '@/constants';
 import { Concept, ConceptFilterParams } from '@/interfaces/ConceptTypes';
 import { getConceptStateTheme } from '@/utils';
 
@@ -65,6 +73,9 @@ export default class ConceptList extends Vue {
 	private loading: boolean = true;
 	private error: boolean = false;
 	private concepts: Concept[] = [];
+	private conceptsCount: number = 0;
+	private page: number = 1;
+	private PAGE_SIZE: number = PAGE_SIZE;
 
 	private conceptHeaders = [
 		{text: 'Concept', value: 'concept_detail', width: '50%'},
@@ -77,6 +88,8 @@ export default class ConceptList extends Vue {
 		pos: '',
 		concept_state: '',
 		strict: true,
+		limit: PAGE_SIZE,
+		offset: 0,
 	};
 	private getConceptStateTheme = getConceptStateTheme;
 	private CONCEPT_STATES = CONCEPT_STATES;
@@ -97,6 +110,7 @@ export default class ConceptList extends Vue {
 			params.typed = this.filters.typed;
 		}
 		params.strict = true;
+		params.offset = (this.page - 1) * PAGE_SIZE;
 
 		return params;
 	}
@@ -106,6 +120,7 @@ export default class ConceptList extends Vue {
 		Vue.$axios.get(`/concept`, { params })
 			.then((response: AxiosResponse) => {
 				this.concepts = response.data.results;
+				this.conceptsCount = response.data.count;
 			})
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
@@ -131,5 +146,9 @@ export default class ConceptList extends Vue {
 }
 .concept-uri:hover, .concept-uri:active {
 	color: #0D47A1 !important;
+}
+.pagination-container {
+	padding: 10px;
+	box-sizing: border-box;
 }
 </style>

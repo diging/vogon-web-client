@@ -8,3 +8,5 @@ export const CONCEPT_STATES = {
 	RESOLVED: 'Resolved',
 	MERGED: 'Merged',
 };
+
+export const PAGE_SIZE = 20;
