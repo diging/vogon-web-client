@@ -29,4 +29,6 @@ export interface ConceptFilterParams {
 	concept_state?: string;
 	typed?: number;
 	strict?: boolean;
+	offset?: number;
+	limit?: number;
 }

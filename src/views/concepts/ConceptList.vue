@@ -3,11 +3,12 @@
 		h2(class="display-1") Concepts
 		br
 		v-data-table(
-			:headers="conceptHeaders" :items="concepts" :loading="loading" class="elevation-1"
-			:server-items-length="conceptsCount" hide-default-footer
+			:headers="conceptHeaders" :items="concepts" :loading="loading" class="elevation-1" dense
+			:server-items-length="conceptsCount" v-on:pagination="(p) => getConcepts(p.page)" :page.sync="page" 
+			:items-per-page="PAGE_SIZE" :footer-props="{'items-per-page-options':['', PAGE_SIZE]}"
 		)
 			template(v-slot:top)
-				ConceptFilter(:filter="filters" :onApply="getConcepts")
+				ConceptFilter(:filter="filters" :onApply="() => { page = 1; getConcepts()}")
 
 			template(v-slot:loading)
 				br
@@ -43,11 +44,6 @@
 				template(v-else-if="item.concept_state === CONCEPT_STATES.APPROVED")
 					v-btn(v-if="item.typed" depressed small color="success") Add
 					v-btn(v-else depressed small color="primary") Set Type
-
-			template(v-slot:footer)
-				hr
-				div(class="pagination-container")
-					v-pagination(v-model="page" :length="Math.floor(conceptsCount / PAGE_SIZE) + 1" :total-visible="7" v-on:input="getConcepts")
 </template>
 
 <script lang="ts">
@@ -98,7 +94,7 @@ export default class ConceptList extends Vue {
 		this.getConcepts();
 	}
 
-	private getFilter(): ConceptFilterParams {
+	private getFilter(page: number): ConceptFilterParams {
 		// Build filter parameters
 		const params: ConceptFilterParams = {};
 		params.authority = this.filters.authority;
@@ -110,13 +106,14 @@ export default class ConceptList extends Vue {
 			params.typed = this.filters.typed;
 		}
 		params.strict = true;
-		params.offset = (this.page - 1) * PAGE_SIZE;
+		params.offset = (page - 1) * PAGE_SIZE;
 
 		return params;
 	}
 
-	private async getConcepts(): Promise<void> {
-		const params: ConceptFilterParams = this.getFilter();
+	private async getConcepts(page: number = 1): Promise<void> {
+		this.loading = true;
+		const params: ConceptFilterParams = this.getFilter(page);
 		Vue.$axios.get(`/concept`, { params })
 			.then((response: AxiosResponse) => {
 				this.concepts = response.data.results;
@@ -146,9 +143,5 @@ export default class ConceptList extends Vue {
 }
 .concept-uri:hover, .concept-uri:active {
 	color: #0D47A1 !important;
-}
-.pagination-container {
-	padding: 10px;
-	box-sizing: border-box;
 }
 </style>
