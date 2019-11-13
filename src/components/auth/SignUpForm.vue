@@ -33,9 +33,9 @@ export default class Login extends Vue {
 
   private valid: boolean = false;
 
-  public async login(): Promise<void> {
-	if ((this.$refs.loginForm as VForm).validate()) {
-	Vue.$axios.post('/token/',
+  public async signUp(): Promise<void> {
+	if ((this.$refs.signUpForm as VForm).validate()) {
+	Vue.$axios.post('/users',
 	{
 		username: this.username,
 		password: this.password,
