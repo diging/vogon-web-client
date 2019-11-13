@@ -10,6 +10,7 @@ import Home from './views/Home.vue';
 import About from './views/info/About.vue';
 import ProjectDetails from './views/project/ProjectDetails.vue';
 import ProjectList from './views/project/ProjectList.vue';
+import TextView from './views/TextView.vue';
 
 Vue.use(Router);
 
@@ -56,6 +57,11 @@ export default new Router({
 			path: '/github',
 			name: 'github',
 			component: GithubView,
+		},
+		{
+			path: '/text',
+			name: 'text',
+			component: TextView,
 		},
 	],
 });
