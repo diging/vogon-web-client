@@ -70,9 +70,9 @@ export default class AppellationDisplayItem extends Vue {
 				width: 0,
 				right: 0,
 				bottom: 0,
-			};,
+			}; ,
 	private line_height: int = 0;
-	private mid_lines: object[] = [];,
+	private mid_lines: object[] = []; ,
 	private end_position: object = {};
 
 	public mounted() {
