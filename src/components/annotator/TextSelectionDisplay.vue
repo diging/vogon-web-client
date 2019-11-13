@@ -30,11 +30,11 @@ export default class TextSelectionDisplay extends Vue {
 	public updatePosition() {
 		this.mid_lines = [];
 		this.position = getTextPosition(this.selected);
-		let endPoint = getPointPosition(this.selected.endOffset);
-		let lineHeight = parseInt(getStyle('text-content', 'line-height'));
+		const endPoint = getPointPosition(this.selected.endOffset);
+		const lineHeight = parseInt(getStyle('text-content', 'line-height'));
 
 		this.line_height = lineHeight - 1;  // So that they don't stack.
-		let nLines = 1 + (endPoint.bottom - this.position.bottom) / lineHeight;
+		const nLines = 1 + (endPoint.bottom - this.position.bottom) / lineHeight;
 
 		if (nLines > 1) {    // The selection may span several lines.
 			// clientLeft/clientWidth don't account for inner padding.
@@ -42,10 +42,10 @@ export default class TextSelectionDisplay extends Vue {
 			if (!_padding) {    // Firefox.
 				_padding = parseInt(getStyle('text-content', 'paddingLeft'));
 			}
-			let _left = parseInt(document.getElementById('text-content').clientLeft);
-			let _width = parseInt(document.getElementById('text-content').clientWidth);
-			let left = _left + _padding;
-			let width = _width - (2 * _padding);
+			const _left = parseInt(document.getElementById('text-content').clientLeft);
+			const _width = parseInt(document.getElementById('text-content').clientWidth);
+			const left = _left + _padding;
+			const width = _width - (2 * _padding);
 
 			this.end_position = {    // This is the last line, running from
 				top: endPoint.top,   //  far left to the end of the
