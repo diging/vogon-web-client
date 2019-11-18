@@ -31,7 +31,7 @@ export default Vue.extend({
 			project: null,
 			text: null,
 			loading: true,
-			appellations: null
+			appellations: null,
 		};
 	  },
 	  methods: {
@@ -40,7 +40,7 @@ export default Vue.extend({
 				this.content = result.data.content;
 				this.project = result.data.project;
 				this.text = result.data.text;
-				this.appellations = result.data.appellations
+				this.appellations = result.data.appellations;
 				this.loading = false;
 			})
 			.catch((error) => {

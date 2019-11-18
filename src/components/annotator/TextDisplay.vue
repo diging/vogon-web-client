@@ -13,14 +13,14 @@ import AppellationDisplay from './AppellationDisplay.vue';
 @Component({
   name: 'TextDisplay',
   components: {
-	  'appellation-display': AppellationDisplay
-  }
+	  'appellation-display': AppellationDisplay,
+  },
 })
 export default class TextDisplay extends Vue {
 	@Prop()
 	private content: string;
 	@Prop()
-	private appellations: Array
+	private appellations: any[];
 }
 </script>
 

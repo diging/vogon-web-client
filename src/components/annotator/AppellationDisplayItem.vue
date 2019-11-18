@@ -54,11 +54,17 @@
 
 <script lang="ts">
 import { VForm } from '@/interfaces/GlobalTypes';
-import { Component, Vue, Prop } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 @Component({
   name: 'AppellationDisplayItem',
 })
 export default class AppellationDisplayItem extends Vue {
+
+	get formattedDate() {
+		return new Date(this.text.added).toLocaleString();
+	}
+
+
 
 	@Prop()
 	private appellation: object;
@@ -69,7 +75,7 @@ export default class AppellationDisplayItem extends Vue {
 				width: 0,
 				right: 0,
 				bottom: 0,
-			}; 
+			};
 	private line_height: int = 0;
 	private mid_lines: object[] = [];
 	private end_position: object = {};
@@ -79,30 +85,7 @@ export default class AppellationDisplayItem extends Vue {
 		window.addEventListener('resize', this.updatePosition);
 	}
 
-	get formattedDate() {
-		return new Date(this.text.added).toLocaleString();
-	}
-
-	private getLabel() {
-		if (this.appellation.interpretation) {
-			return this.appellation.interpretation.label;
-		} else {
-			return this.appellation.dateRepresentation;
-		}
-	}
-
-	private multipleLinesAreSelected() {
-		return this.end_position.top !== undefined;
-	}
-	private manyLinesAreSelected() {
-		return this.mid_lines.length > 0;
-	}
-
-	private selectAppellation() {
-		this.$emit('selectappellation', this.appellation);
-	}
-
-	getTextPosition(textPosition, elementId: string = 'text-content') {
+	public getTextPosition(textPosition, elementId: string = 'text-content') {
 		const range: Range = document.createRange();
 		const textContainer: HTMLElement | null = document.getElementById(elementId);
 		if (textContainer == null) {
@@ -124,29 +107,8 @@ export default class AppellationDisplayItem extends Vue {
 			right: rects.right - containerRect.left,
 			width: rects.width,
 		};
-	};
-
-	//The version of this in utils/annotations.ts does not work and needs to be fixed.
-	//Have added it here for the time being
-	private getStyle(elementId, styleProp) {
-	const element: Element | null = document.getElementById(elementId) as Element;
-	if (window.getComputedStyle) {
-		const val = window.getComputedStyle(element).getPropertyValue(styleProp);
-		if (!val) {
-			if (document.defaultView) {
-				return document.defaultView.getComputedStyle(element as Element, null)
-					.getPropertyValue(styleProp);
-			}
-			return null;
-		}
-		return val;
-	} else if (element.currentStyle) {
-		return element.currentStyle[styleProp.encamel()];
 	}
-	return null;
-	};
-
-	export const getPointPosition = (offset, elementId = 'text-content') => {
+	public export const getPointPosition = (offset, elementId = 'text-content') => {
 	const range: Range = document.createRange();
 
 	const textContainer: HTMLElement | null = document.getElementById(elementId);
@@ -168,10 +130,48 @@ export default class AppellationDisplayItem extends Vue {
 		right: rects.right - containerRect.left,
 		width: rects.width,
 	};
-	};
+	}
 
+	private getLabel() {
+		if (this.appellation.interpretation) {
+			return this.appellation.interpretation.label;
+		} else {
+			return this.appellation.dateRepresentation;
+		}
+	}
+
+	private multipleLinesAreSelected() {
+		return this.end_position.top !== undefined;
+	}
+	private manyLinesAreSelected() {
+		return this.mid_lines.length > 0;
+	}
+
+	private selectAppellation() {
+		this.$emit('selectappellation', this.appellation);
+	}
+
+	// The version of this in utils/annotations.ts does not work and needs to be fixed.
+	// Have added it here for the time being
+	private getStyle(elementId, styleProp) {
+	const element: Element | null = document.getElementById(elementId) as Element;
+	if (window.getComputedStyle) {
+		const val = window.getComputedStyle(element).getPropertyValue(styleProp);
+		if (!val) {
+			if (document.defaultView) {
+				return document.defaultView.getComputedStyle(element as Element, null)
+					.getPropertyValue(styleProp);
+			}
+			return null;
+		}
+		return val;
+	} else if (element.currentStyle) {
+		return element.currentStyle[styleProp.encamel()];
+	}
+	return null;
+	}
 	private updatePosition() {
-		if(this.appellation.position != null){
+		if (this.appellation.position != null) {
 			this.mid_lines = [];
 			const lineHeight = parseInt(this.getStyle('text-content', 'line-height'));
 			this.position = this.getTextPosition(this.appellation.position);

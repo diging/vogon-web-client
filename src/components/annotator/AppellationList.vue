@@ -18,87 +18,87 @@
 
 <script lang="ts">
 import { VForm } from '@/interfaces/GlobalTypes';
-import { Component, Vue, Prop } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 @Component({
   name: 'AppellationList',
 })
 export default class AppellationList extends Vue {
 
 	@Prop()
-	private appellation:object;
+	private appellation: object;
 	@Prop()
 	private sidebar;
-	
-	private error_message: string = "";
-	private appellations_to_submit: Array<object> = [];
+
+	private error_message: string = '';
+	private appellations_to_submit: object[] = [];
 	private templates = null;
-	private selected_template: Array<objects> = [];
+	private selected_template: objects[] = [];
 	private current_appellations = this.appellations;
 
-	mounted() {
+	public mounted() {
 		this.watchUncheckStore();
-        this.watchCheckStore();
-        this.$root.$on('appellationClicked', data => {
-            if (data === this.appellation) {
-                this.checked = !this.checked;
-            }
-        });
+  this.watchCheckStore();
+  this.$root.$on('appellationClicked', (data) => {
+			if (data === this.appellation) {
+				this.checked = !this.checked;
+			}
+		});
 	}
 
 	@Watch('checked')
-	checkedChanged() {
+	public checkedChanged() {
 		if (this.checked == false) {
-                store.commit('removeAppellation', this.index);
-                store.commit('setSelectFalse')
-            } else {
-                if (store.getters.getValidator == 3) {
-                    store.commit('setValidator', 0);
-                }
-                store.commit('addAppellation', this.appellation)
-                store.commit('setDeselectFalse')
-            }
+				store.commit('removeAppellation', this.index);
+				store.commit('setSelectFalse');
+			} else {
+				if (store.getters.getValidator == 3) {
+					store.commit('setValidator', 0);
+				}
+				store.commit('addAppellation', this.appellation);
+				store.commit('setDeselectFalse');
+			}
 	}
 
 	private watchUncheckStore() {
 		store.watch(
 			(state) => {
-				return store.getters.getDeselect
+				return store.getters.getDeselect;
 			},
 			(val) => {
 				if (val) {
-					this.uncheckAll()
+					this.uncheckAll();
 					this.canCheckAll = true;
 				}
-			}
+			},
 		);
 	}
 	private watchCheckStore() {
 		store.watch(
 			(state) => {
-				return store.getters.getSelect
+				return store.getters.getSelect;
 			},
 			(val) => {
 				if (val) {
-					this.checkAll()
+					this.checkAll();
 				}
-			}
+			},
 		);
 	}
 
 	private uncheckAll() {
 		this.checked = false;
 	}
-	
+
 	private checkAll() {
 		this.checked = true;
 	}
 
 	private hide() {
-		this.$emit("hideappellation", this.appellation);
+		this.$emit('hideappellation', this.appellation);
 	}
 
 	private show() {
-		this.$emit("showappellation", this.appellation);
+		this.$emit('showappellation', this.appellation);
 	},
 	private toggle() {
 		if (this.appellation.visible) {

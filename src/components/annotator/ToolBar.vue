@@ -41,14 +41,14 @@ export default class ToolBar extends Vue {
 
 	private searchRelationTemplates() {
 		this.loading = true;
-		let all = true;
+		const all = true;
 		if (this.query != '') {
-			let all = false;
+			const all = false;
 		}
 		Vue.$axios.get('/relationtemplate/', {
 			params: {
 				format: 'json',
-				all: all,
+				all,
 				search: this.query,
 			},
 		}).then((result) => {
