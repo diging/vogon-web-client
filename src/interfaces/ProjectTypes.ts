@@ -6,6 +6,7 @@ export interface Text {
 	added: string;
 	repository_id: number;
 	repository_source_id: number;
+	uri?: string;
 }
 
 export interface Project {

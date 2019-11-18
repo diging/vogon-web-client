@@ -12,6 +12,7 @@ export interface PaginatedResult<T> {
 export interface User {
 	id: number;
 	username: string;
+	full_name?: string;
 }
 
 export interface TokenDto {
