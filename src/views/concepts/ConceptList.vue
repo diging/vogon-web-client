@@ -3,9 +3,16 @@
 		h2(class="display-1") Concepts
 		br
 		v-data-table(
-			:headers="conceptHeaders" :items="concepts" :loading="loading" class="elevation-1" dense
-			:server-items-length="conceptsCount" v-on:pagination="(p) => getConcepts(p.page)" :page.sync="page" 
-			:items-per-page="PAGE_SIZE" :footer-props="{'items-per-page-options':['', PAGE_SIZE]}"
+			class="elevation-1"
+			dense
+			v-on:pagination="(p) => getConcepts(p.page)"
+			:page.sync="page" 
+			:headers="conceptHeaders"
+			:items="concepts"
+			:loading="loading" 
+			:server-items-length="conceptsCount" 
+			:items-per-page="PAGE_SIZE"
+			:footer-props="{'items-per-page-options':['', PAGE_SIZE]}"
 		)
 			template(v-slot:top)
 				ConceptFilter(:filter="filters" :onApply="() => { page = 1; getConcepts()}")
