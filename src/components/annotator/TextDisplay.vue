@@ -2,18 +2,25 @@
 	v-row
 		v-col(cols="6"  id="test")
 			pre(id="text-content" class="text-left") {{ content }}
+			appellation-display(:appellations="appellations")
 
 </template>
 
 <script lang="ts">
 import { VForm } from '@/interfaces/GlobalTypes';
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import AppellationDisplay from './AppellationDisplay.vue';
 @Component({
   name: 'TextDisplay',
+  components: {
+	  'appellation-display': AppellationDisplay
+  }
 })
 export default class TextDisplay extends Vue {
 	@Prop()
 	private content: string;
+	@Prop()
+	private appellations: Array
 }
 </script>
 

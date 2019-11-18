@@ -6,7 +6,7 @@
 		v-spacer
 		v-menu(bottom left offset-y)
 			template(v-slot:activator="{ on }")
-				v-text-field(hide-details filled rounded single-line label="Search for Relation Templates" dense)
+				v-text-field(hide-details v-model="query" filled rounded single-line label="Search for Relation Templates" dense)
 					template(v-slot:append)
 						v-fade-transition(leave-absolute)
 							v-icon(v-on="on" @click="searchRelationTemplates()") search
@@ -33,7 +33,7 @@ export default class ToolBar extends Vue {
 	private showResults: boolean = false;
 	@Prop()
 	private text: object;
-	private searchResults: object[];
+	private searchResults: object[] = [];
 
 	private showSideBar() {
 		this.$store.commit('toggleSideBarMutation');
@@ -41,10 +41,14 @@ export default class ToolBar extends Vue {
 
 	private searchRelationTemplates() {
 		this.loading = true;
+		let all = true;
+		if (this.query != '') {
+			let all = false;
+		}
 		Vue.$axios.get('/relationtemplate/', {
 			params: {
 				format: 'json',
-				all: true,
+				all: all,
 				search: this.query,
 			},
 		}).then((result) => {

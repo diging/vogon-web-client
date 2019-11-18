@@ -68,6 +68,8 @@ export const getOffsetLeft = (element: HTMLElement): number => {
  * @param {Range} textPosition - Range selection element
  * @param {string} elementId - HTMLElement Id
  */
+
+ // FIXME: This does not work and needs to fixed.
 export const getTextPosition = (textPosition: Range, elementId: string = 'text-content'):
 	{ top: number, bottom: number, left: number, right: number, width: number } | null => {
 	const range: Range = document.createRange();
@@ -142,6 +144,7 @@ export const getPointPosition = (offset: number, elementId: string = 'text-conte
  * getStyle('myElement', 'width'); // "200px"
  *
  */
+// FIXME: This does not work and needs to fixed.
 export const getStyle = (elementId: string, styleProp: string): string | null => {
 	const element: Element | null = document.getElementById(elementId) as Element;
 	if (window.getComputedStyle) {

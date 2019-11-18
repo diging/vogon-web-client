@@ -2,49 +2,46 @@
 	ul
 		appellation-display-item(
 			v-on:selectappellation="selectAppellation"
-			v-bind:appellation=appellation
-			v-for="appellation in current_appellations")
+			:appellation="appellation"
+			v-for="appellation in appellations")
 
 </template>
 
 <script lang="ts">
 import { VForm } from '@/interfaces/GlobalTypes';
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
+import AppellationDisplayItem from './AppellationDisplayItem.vue';
 @Component({
   name: 'AppellationDisplay',
   components: {
-		'appellation-display-item': AppellationDisplayItem,
+		'appellation-display-item': AppellationDisplayItem
 	},
 })
 export default class AppellationDisplay extends Vue {
 
-	private content: string = '';
-	private project: object | null = null;
-	private text: object | null = null;
+	@Prop()
+	private appellations: Array;
 
-	public created() {
-		console.log('Runs');
-		this.getContent();
-
-	}
-
-	get formattedDate() {
-		return new Date(this.text.added).toLocaleString();
-	}
-
-	private getContent() {
-		Vue.$axios.get('/annotate/37/?project_id=1').then((result) => {
-
-			console.log(result.data.content);
-			this.content = result.data.content;
-			this.project = result.data.project;
-			this.text = result.data.text;
-
-		})
-		.catch((error) => {
-			// TODO: deal with errors
-			this.error = true;
+	@Watch('appellations')
+	appellationsChange(value) {
+		// Replace an array prop wholesale doesn't seem to trigger a
+		//  DOM update in the v-for binding, but a push() does; so we'll
+		//  just push the appellations that aren't already in the array.
+		var current_ids = this.current_appellations.map(function (elem) {
+			return elem.id;
 		});
+		var self = this;
+		this.appellations.forEach(function (elem) {
+			if (current_ids.indexOf(elem.id) < 0) {
+				self.current_appellations.push(elem);
+			}
+		});
+	}
+
+
+	private selectAppellation(appellation) {
+		this.$root.$emit('appellationClicked', appellation);
+		this.$emit('selectappellation', appellation);
 	}
 
 }

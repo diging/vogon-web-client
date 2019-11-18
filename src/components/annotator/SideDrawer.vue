@@ -35,9 +35,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
   name: 'SideDrawer',
 })
 export default class SideDrawer extends Vue {
-
-	@Prop()
-	private content: string = '';
+	
 	@Prop()
 	private project: object;
 	@Prop()

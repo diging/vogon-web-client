@@ -5,7 +5,7 @@
 			SideDrawer(:text="text" :project="project")
 			ToolBar(:text="text" )
 			v-row
-				TextDisplay(:content="content")
+				TextDisplay(:content="content" :appellations="appellations")
 		div(v-else)
 			v-progress-circular(:size="70" :width="7" color="purple" indeterminate)
 </template>
@@ -31,6 +31,7 @@ export default Vue.extend({
 			project: null,
 			text: null,
 			loading: true,
+			appellations: null
 		};
 	  },
 	  methods: {
@@ -39,6 +40,7 @@ export default Vue.extend({
 				this.content = result.data.content;
 				this.project = result.data.project;
 				this.text = result.data.text;
+				this.appellations = result.data.appellations
 				this.loading = false;
 			})
 			.catch((error) => {
