@@ -18,6 +18,7 @@ import CollectionDetails from './views/texts/CollectionDetails.vue';
 import RepoDetails from './views/texts/RepoDetails.vue';
 import RepoList from './views/texts/RepoList.vue';
 import TextDetails from './views/texts/TextDetails.vue';
+import UserList from './views/users/UserList.vue';
 
 Vue.use(Router);
 
@@ -79,6 +80,11 @@ export default new Router({
 			path: '/relations',
 			name: 'annotation-list',
 			component: Annotations,
+		},
+		{
+			path: '/users',
+			name: 'user-list',
+			component: UserList,
 		},
 		{
 			path: '/contributors',
