@@ -1,8 +1,8 @@
 <template lang="pug">
 	v-list
 		template(v-for="(annotation, index) in annotations")
-			AnnotationItem(:key="annotation.id" v-bind:annotation="annotation")
-			v-divider(v-if="index + 1 < annotations.length" :key="index")
+			AnnotationItem(:key="index" v-bind:annotation="annotation")
+			v-divider(v-if="index + 1 < annotations.length")
 </template>
 
 <script lang="ts">

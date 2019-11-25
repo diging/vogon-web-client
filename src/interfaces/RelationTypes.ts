@@ -37,3 +37,15 @@ export interface RelationSet {
 		appellation: DateAppellation;
 	};
 }
+
+export interface RelationFilterParams {
+	createdBy?: string;
+	occursIn?: string;
+	terminal_nodes?: string;
+	created_after?: string;
+	created_before?: string;
+	project?: number;
+	meta?: boolean;
+	offset?: number;
+	limit?: number;
+}
