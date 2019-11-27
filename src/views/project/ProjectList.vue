@@ -17,16 +17,11 @@
 						br
 						div No projects found!
 				template(v-else)
-					v-list-item(v-for="project in projects" :key="project.id" class="project-item" v-bind:href="`/project/${project.id}`")
-						v-card(width="100%" class="project-item-card" elevat)
-							v-card-title {{project.name}}
-							v-card-text
-								div(class="text--primary") {{project.description}}
-								| Created by 
-								strong "{{project.ownedBy.username}}"
-								| on {{moment(project.created).format('lll')}}
-								div(class="teal--text") 
-								strong {{project.num_texts}} texts, {{project.num_relations}} relations
+					v-card(tile outlined)
+						v-list(v-for="(project, index) in projects" :key="project.id" class="project-list")
+							ProjectItem(v-bind:project="project")
+							v-divider(v-if="index + 1 < projects.length")
+
 </template>
 
 <script lang="ts">
@@ -37,6 +32,7 @@ import { Location } from 'vue-router';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
 import CreateUpdateProject from '@/components/project/CreateUpdateProject.vue';
+import ProjectItem from '@/components/project/ProjectItem.vue';
 import { VForm } from '@/interfaces/GlobalTypes';
 import { Project } from '@/interfaces/ProjectTypes';
 
@@ -47,6 +43,7 @@ import { Project } from '@/interfaces/ProjectTypes';
 		Loading,
 		ErrorIndicator,
 		CreateUpdateProject,
+		ProjectItem,
 	},
 })
 export default class ProjectList extends Vue {
@@ -80,8 +77,8 @@ export default class ProjectList extends Vue {
 </script>
 
 <style scoped>
-.project-item {
+.project-list {
 	padding: 0;
-	margin: 10px 0;
+	font-size: .875rem;
 }
 </style>

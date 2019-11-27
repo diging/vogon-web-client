@@ -9,10 +9,11 @@
 		)
 			template(v-slot:top)
 				div(class="user_header")
-					v-row
-						v-col(md="6")
-							v-text-field(v-model="search" label="Type username or full name..." outlined dense clearable)
-					v-btn(depressed color="primary" @click="() => { page = 1; getUsers() }") Search
+					v-form(ref="searchForm")
+						v-row
+							v-col(md="6")
+								v-text-field(v-model="search" label="Type username or full name..." outlined dense clearable  v-on:keydown.enter.prevent="() => { page = 1; getUsers() }")
+						v-btn(depressed color="primary" @click="() => { page = 1; getUsers() }") Search
 
 			template(v-slot:loading)
 				br
