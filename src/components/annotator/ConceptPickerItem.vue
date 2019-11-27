@@ -1,18 +1,19 @@
 <template lang="pug">
-	div(class="list-group-item concept-item clearfix" id="concept-{{ concept.uri }}")
+	div(class="list-group-item concept-item clearfix" :id="'concept-' + concept.interpretation.uri")
 		div
-			a(v-on:click="select" style="cursor: pointer;"){{ concept.label }} ({{ concept.authority.name }})
-		div(class="text text-muted") 
-			{{ concept.description }}
+			a(v-on:click="select" style="cursor: pointer;")
+				{{ concept.interpretation_label }} ({{ concept.interpretation.authority }})
+		div.text.text-muted
+			{{ concept.interpretation.description }}
 </template>
 
 <script lang="ts">
 import { VForm } from '@/interfaces/GlobalTypes';
 import { Component, Vue, Prop } from 'vue-property-decorator';
 @Component({
-  name: 'ConceptListItem',
+  name: 'ConceptPickerItem',
 })
-export default class ConceptListItem extends Vue {
+export default class ConceptPickerItem extends Vue {
 
 	//TODO: Interface for concept
 	@Prop()

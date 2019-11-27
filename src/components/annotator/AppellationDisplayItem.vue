@@ -60,14 +60,8 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 })
 export default class AppellationDisplayItem extends Vue {
 
-	get formattedDate() {
-		return new Date(this.text.added).toLocaleString();
-	}
-
-
-
 	@Prop()
-	private appellation: object;
+	private appellatio!: object;
 
 	private position: object = {
 				top: 0,
@@ -85,6 +79,9 @@ export default class AppellationDisplayItem extends Vue {
 		window.addEventListener('resize', this.updatePosition);
 	}
 
+	get formattedDate() {
+		return new Date(this.text.added).toLocaleString();
+	}
 	public getTextPosition(textPosition, elementId: string = 'text-content') {
 		const range: Range = document.createRange();
 		const textContainer: HTMLElement | null = document.getElementById(elementId);
@@ -148,6 +145,7 @@ export default class AppellationDisplayItem extends Vue {
 	}
 
 	private selectAppellation() {
+		//TODO: Get rid of emit
 		this.$emit('selectappellation', this.appellation);
 	}
 

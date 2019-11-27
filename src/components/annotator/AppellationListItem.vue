@@ -25,11 +25,12 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 export default class AppellationListItem extends Vue {
 
 	@Prop()
-	private appellation: object;
+	private appellation!: object;
+	//FIXME: find and assign types for both of these
 	@Prop()
-	private sidebar;
+	private sidebar!;
 	@Prop()
-	private index;
+	private index!;
 
 	private checked: boolean = true;
 	private canUncheckAll: boolean = false;
@@ -37,28 +38,26 @@ export default class AppellationListItem extends Vue {
 
 	public mounted() {
 		this.watchUncheckStore();
-  this.watchCheckStore();
-  this.$root.$on('appellationClicked', (data) => {
+		this.watchCheckStore();
+		this.$root.$on('appellationClicked', (data) => {
 			if (data === this.appellation) {
 				this.checked = !this.checked;
 			}
 		});
 	}
-
 	@Watch('checked')
 	public checkedChanged() {
 		if (this.checked == false) {
 				store.commit('removeAppellation', this.index);
 				store.commit('setSelectFalse');
-			} else {
-				if (store.getters.getValidator == 3) {
-					store.commit('setValidator', 0);
-				}
-				store.commit('addAppellation', this.appellation);
-				store.commit('setDeselectFalse');
+		} else {
+			if (store.getters.getValidator == 3) {
+				store.commit('setValidator', 0);
 			}
+			store.commit('addAppellation', this.appellation);
+			store.commit('setDeselectFalse');
+		}
 	}
-
 	private watchUncheckStore() {
 		store.watch(
 			(state) => {
@@ -94,10 +93,12 @@ export default class AppellationListItem extends Vue {
 	}
 
 	private hide() {
+		//TODO: Get rid of emit
 		this.$emit('hideappellation', this.appellation);
 	}
 
 	private show() {
+		//TODO: Get rid of emit
 		this.$emit('showappellation', this.appellation);
 	},
 	private toggle() {
@@ -113,6 +114,7 @@ export default class AppellationListItem extends Vue {
 	}
 
 	private select() {
+		//TODO: Get rid of emit
 		this.$emit('selectappellation', this.appellation);
 	}
 

@@ -20,7 +20,7 @@ import AppellationDisplayItem from './AppellationDisplayItem.vue';
 export default class AppellationDisplay extends Vue {
 
 	@Prop()
-	private appellations: any[];
+	private appellations!: any[];
 
 	@Watch('appellations')
 	public appellationsChange(value) {
@@ -30,16 +30,16 @@ export default class AppellationDisplay extends Vue {
 		let current_ids = this.current_appellations.map(function(elem) {
 			return elem.id;
 		});
-		let self = this;
-		this.appellations.forEach(function(elem) {
+		this.appellations.forEach((elem) => {
 			if (current_ids.indexOf(elem.id) < 0) {
-				self.current_appellations.push(elem);
+				this.current_appellations.push(elem);
 			}
 		});
 	}
 
 
 	private selectAppellation(appellation) {
+		//TODO: Get rid of emit
 		this.$root.$emit('appellationClicked', appellation);
 		this.$emit('selectappellation', appellation);
 	}

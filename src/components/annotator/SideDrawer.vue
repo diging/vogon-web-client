@@ -52,13 +52,11 @@ export default class SideDrawer extends Vue {
 		return new Date(this.text.added).toLocaleString();
 	}
 	public watchStore() {
-		console.log('Runs');
 		this.$store.watch(
 			(state) => {
 				return this.$store.getters.getShowSideBar;
 			},
 			(newValue, oldValue) => {
-				console.log(newValue);
 				// something changed do something
 				this.show = newValue;
 			},

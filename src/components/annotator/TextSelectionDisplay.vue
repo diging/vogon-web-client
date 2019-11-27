@@ -7,19 +7,19 @@
 
 <script lang="ts">
 import { VForm } from '@/interfaces/GlobalTypes';
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 @Component({
   name: 'TextSelectionDisplay',
 })
 export default class TextSelectionDisplay extends Vue {
 	@Prop()
-	private selected: object;
+	private selected!: object;
 	@Prop()
-	private content: string;
+	private content!: string;
 	private position: object = {};
 	private mid_lines: any[];
 	private end_position: object = {};
-	private line_height: int = 0;
+	private line_height: number = 0;
 
 	@Watch('selected')
 	public selected() { this.updatePosition(); }
@@ -55,7 +55,7 @@ export default class TextSelectionDisplay extends Vue {
 
 			// If the selection spans more than two lines, we need to
 			//  highlight the intermediate lines at full width.
-			for (i = 0; i < Math.max(0, nLines - 2); i++) {
+			for (let i = 0; i < Math.max(0, nLines - 2); i++) {
 				this.mid_lines.push({
 					top: this.position.top + (i + 1) * lineHeight,
 					left,

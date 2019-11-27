@@ -32,7 +32,7 @@ export default class ToolBar extends Vue {
 	private loading: boolean = false;
 	private showResults: boolean = false;
 	@Prop()
-	private text: object;
+	private text!: object;
 	private searchResults: object[] = [];
 
 	private showSideBar() {
@@ -59,7 +59,6 @@ export default class ToolBar extends Vue {
 		})
 		.catch((error) => {
 			// TODO: deal with errors
-			this.error = true;
 		});
 	}
 

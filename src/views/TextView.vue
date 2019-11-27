@@ -45,13 +45,7 @@ export default Vue.extend({
 			})
 			.catch((error) => {
 				// TODO: deal with errors
-				this.error = true;
 			});
-		},
-
-		onUpdate() {
-			console.log('runs');
-
 		},
 	  },
 });
