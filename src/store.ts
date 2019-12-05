@@ -8,14 +8,15 @@ export default new Vuex.Store({
 		loggedIn: false,
 		showSideBar: false,
 		show_concepts: false,
-		concept_label: "",
+		concept_label: '',
 		template: null,
 		appellations_to_submit: [],
 		text_appellation: [],
 		deselect_all: false,
 		select_all: false,
 		assignment_failed: false,
-		validator: 0
+		validator: 0,
+		text_content_styles: {},
 	},
 	mutations: {
 		loggedInMutation(state, loggedIn) {
@@ -26,11 +27,11 @@ export default new Vuex.Store({
 		},
 		triggerConcepts(state, payload) {
 			/*
-			* Needed if in order for cancel button to work when 
+			* Needed if in order for cancel button to work when
 			* conecpt picker is triggered by highlighting a word
 			*/
-			if (payload == false) {
-				state.show_concepts = payload
+			if (payload === false) {
+				state.show_concepts = payload;
 			} else {
 				state.show_concepts = !state.show_concepts;
 			}
@@ -45,10 +46,10 @@ export default new Vuex.Store({
 		setTemplate(state, payload) {
 			state.template = payload;
 		},
-		removeAppellation: function (state, index) {
+		removeAppellation(state, index) {
 			state.appellations_to_submit.splice(index, 1);
 		},
-		addAppellation: function (state, appellation: object) {
+		addAppellation(state, appellation: any) {
 			state.appellations_to_submit.push(appellation);
 		},
 		setAppellations(state, payload) {
@@ -79,20 +80,24 @@ export default new Vuex.Store({
 		},
 		setValidator(state, validator) {
 			state.validator = validator;
-		}
+		},
+		setTextContentStyle(state, style) {
+			state.text_content_styles = style;
+		},
   	},
 	getters: {
 		loggedIn: (state) => state.loggedIn,
 		getShowSideBar: (state) => state.showSideBar,
-		showConcepts: state => state.show_concepts,
-        conceptLabel: state => state.concept_label,
-        getTemplate: state => state.template,
-        getAppellationsToSubmit: state => state.appellations_to_submit,
-        getTextAppellation: state => state.text_appellation,
-        getDeselect: state => state.deselect_all,
-        getSelect: state => state.select_all,
-        getAssignmentFailed: state => state.assignment_failed,
-        getValidator: state => state.validator
+		showConcepts: (state) => state.show_concepts,
+		conceptLabel: (state) => state.concept_label,
+		getTemplate: (state) => state.template,
+		getAppellationsToSubmit: (state) => state.appellations_to_submit,
+		getTextAppellation: (state) => state.text_appellation,
+		getDeselect: (state) => state.deselect_all,
+		getSelect: (state) => state.select_all,
+		getAssignmentFailed: (state) => state.assignment_failed,
+		getValidator: (state) => state.validator,
+		getTextContentStyle: (state) => state.text_content_styles,
 	},
   actions: {
 

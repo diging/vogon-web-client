@@ -10,7 +10,7 @@
 <script lang="ts">
 import { VForm } from '@/interfaces/GlobalTypes';
 import { Component, Vue, Prop } from 'vue-property-decorator';
-import ConceptPickerItem from '@/components/annotator/ConceptPickerItem'
+import ConceptPickerItem from '@/components/annotator/ConceptPickerItem.vue'
 
 @Component({
   name: 'ConceptPicker',
