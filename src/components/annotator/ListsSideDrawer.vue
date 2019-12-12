@@ -11,27 +11,27 @@
 </template>
 
 <script lang="ts">
+import AppellationList from '@/components/annotator/AppellationList.vue';
 import { VForm } from '@/interfaces/GlobalTypes';
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import AppellationList from '@/components/annotator/AppellationList.vue';
 @Component({
   name: 'ListsSideDrawer',
   components: {
-	  'AppellationList': AppellationList
-  }
+	  AppellationList: AppellationList,
+  },
 })
 export default class ListsSideDrawer extends Vue {
 
 	@Prop()
-	private relations!: Array<object>;
+	private relations!: object[];
 	@Prop()
-	private appellations!: Array<object>;
-	
+	private appellations!: object[];
+
 	private show: Boolean = false;
-	private listToggle: string = ''
+	private listToggle: string = '';
 
 
-	created() {
+	public created() {
 		this.watchStore();
 	}
 

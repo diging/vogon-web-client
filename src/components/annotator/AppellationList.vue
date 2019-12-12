@@ -19,8 +19,8 @@ import moment from 'moment';
 @Component({
   name: 'AppellationList',
   components: {
-	  'AppellationListItem': AppellationListItem,
-  }
+	  AppellationListItem: AppellationListItem,
+  },
 })
 export default class AppellationList extends Vue {
 
@@ -36,10 +36,10 @@ export default class AppellationList extends Vue {
 	private current_appellations = this.appellations;
 
 	// created() {
-    //     //this.getTemplates();
-    //     this.$store.commit('setAppellations', this.appellations);
-    //     this.watchStoreForValidator();
-    // }
+	//     //this.getTemplates();
+	//     this.$store.commit('setAppellations', this.appellations);
+	//     this.watchStoreForValidator();
+	// }
 
 	// @Watch('appellations')
 	// watchAppellations() {
@@ -77,15 +77,15 @@ export default class AppellationList extends Vue {
 	}
 
 	get conceptLabel() {
-		return this.$store.getters.conceptLabel
+		return this.$store.getters.conceptLabel;
 	}
 
 	get calcSizeOfPage() {
-		let width = $(document).width();
+		const width = $(document).width();
 		if (width >= 2000) {
-			return true
+			return true;
 		} else {
-			return false
+			return false;
 		}
 	}
 
@@ -93,9 +93,9 @@ export default class AppellationList extends Vue {
 	 * Start Methods to create relationships to text *
 	 *************************************************/
 	private selectConcept() {
-		this.$store.commit('triggerConcepts')
+		this.$store.commit('triggerConcepts');
 	}
-	
+
 	// FIXME: This end point does not exsist in the backend
 	// private getTemplates() {
 	// 	Vue.$axios.get('/rest/templates/get_single_relation', {
@@ -120,28 +120,28 @@ export default class AppellationList extends Vue {
 	// 		console.log('Failed to get relationtemplates', error);
 	// 	});
 	// }
-	//TODO: Change vue resource to Axios
+	// TODO: Change vue resource to Axios
 	private getTemplateFields() {
 		RelationTemplateResource.query({
 			search: this.selected_template,
-			format: "json",
-			all: false
-		}).then(function (response) {
-			this.$store.commit("setTemplate", response.body.templates[0]);
-		}).catch(function (error) {
+			format: 'json',
+			all: false,
+		}).then(function(response) {
+			this.$store.commit('setTemplate', response.body.templates[0]);
+		}).catch(function(error) {
 			console.log('Failed to get relationtemplates', error);
 			self.searching = false;
 		});
 	}
-	
+
 	private deselectAllTemplatesRef() {
 		this.$store.commit('deselect');
 	}
-	
+
 	private checkAll() {
 		this.$store.commit('selectAll');
 	}
-	
+
 	private watchStoreForValidator() {
 		this.$store.watch(
 			(state) => {
@@ -150,16 +150,16 @@ export default class AppellationList extends Vue {
 			(val) => {
 				switch (val) {
 					case 0:
-						this.error_message = "";
+						this.error_message = '';
 						break;
 					case 1:
-						this.error_message = "Please Select A Template";
+						this.error_message = 'Please Select A Template';
 						break;
 					case 2:
-						this.error_message = "Please Select A Concept";
+						this.error_message = 'Please Select A Concept';
 						break;
 					case 3:
-						this.error_message = "Please Select At Least One Appellation";
+						this.error_message = 'Please Select At Least One Appellation';
 						break;
 				}
 			},
@@ -169,29 +169,29 @@ export default class AppellationList extends Vue {
 	 * End Methods to create relationships to text *
 	 ***********************************************/
 	private allHidden() {
-		var all_hidden = true;
-		this.appellations.forEach(function (appellation) {
-			if (appellation.visible) all_hidden = false;
+		let all_hidden = true;
+		this.appellations.forEach(function(appellation) {
+			if (appellation.visible) { all_hidden = false; }
 		});
 		return all_hidden;
 	}
-	//FIXME: Change all the following emits to use the store instead
+	// FIXME: Change all the following emits to use the store instead
 	private hideAll() {
-		this.$emit("hideallappellations");
+		this.$emit('hideallappellations');
 	}
-	
+
 	private showAll() {
-		this.$emit("showallappellations");
+		this.$emit('showallappellations');
 	}
-	
+
 	private hideAppellation(appellation) {
-		this.$emit("hideappellation", appellation);
+		this.$emit('hideappellation', appellation);
 	}
-	
+
 	private showAppellation(appellation) {
-		this.$emit("showappellation", appellation);
+		this.$emit('showappellation', appellation);
 	}
-	
+
 	private selectAppellation(appellation) {
 		this.$emit('selectappellation', appellation);
 	}

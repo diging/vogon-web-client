@@ -149,135 +149,135 @@
 
 <script lang="ts">
 import { VForm } from '@/interfaces/GlobalTypes';
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 @Component({
   name: 'Appellator',
   components: {
-        'appellation-list': AppellationList,
-        'relation-list': RelationList,
-        'text-display': TextDisplay,
-        'appellation-creator': AppellationCreator,
-        'relation-creator': RelationCreator,
-        'relation-template-selector': RelationTemplateSelector,
-        'date-appellation-creator': DateAppellationCreator
-    }
+		'appellation-list': AppellationList,
+		'relation-list': RelationList,
+		'text-display': TextDisplay,
+		'appellation-creator': AppellationCreator,
+		'relation-creator': RelationCreator,
+		'relation-template-selector': RelationTemplateSelector,
+		'date-appellation-creator': DateAppellationCreator,
+	},
 })
 export default class Appellator extends Vue {
 
-	private appellations: Array<object> = []
-	private dateappellations: Array<object> = []
-	private relations: Array<object> = []
-	private selected: object | null = null
-	private selected_text: object | null = null
+	private appellations: object[] = [];
+	private dateappellations: object[] = [];
+	private relations: object[] = [];
+	private selected: object | null = null;
+	private selected_text: object | null = null;
 	private user: object = {
 		id: USER_ID,
-		username: USER_NAME
-	}
+		username: USER_NAME,
+	};
 	private text: object = {
 		id: TEXT_ID,
-		title: TEXT_TITLE
-	}
+		title: TEXT_TITLE,
+	};
 	private project: object = {
 		id: PROJECT_ID,
-		name: PROJECT_NAME
-	}
-	private sidebarShown: boolean = false
-	private template: object | null = null
-	private creating_relation: boolean = true
-	private text_listener: object | null = null
-	private sidebar: string = 'relations'
-	private create_date_appellation: boolean = false
-	private swimmerPosition: string = 'static'
-	private swimmerTop: number = 0
-	private swimmerRef: number = 0
-	private swimmerLeft: number = -2
-	private swimmerWidth: number = 0
-	private submitAppellationClicked: boolean = false
-	private massAssignmentFailed: boolean = false
+		name: PROJECT_NAME,
+	};
+	private sidebarShown: boolean = false;
+	private template: object | null = null;
+	private creating_relation: boolean = true;
+	private text_listener: object | null = null;
+	private sidebar: string = 'relations';
+	private create_date_appellation: boolean = false;
+	private swimmerPosition: string = 'static';
+	private swimmerTop: number = 0;
+	private swimmerRef: number = 0;
+	private swimmerLeft: number = -2;
+	private swimmerWidth: number = 0;
+	private submitAppellationClicked: boolean = false;
+	private massAssignmentFailed: boolean = false;
 
-	mounted() {
-        this.updateAppellations();
-        this.updateRelations();
-        this.$store.commit('setAppellations', this.appellations);
-        this.updateDateAppellations();
-        this.updateSwimRef();
-        this.handleScroll();
-        //needs to be called in mounted.
-        this.watchStoreForConcepts();
-        this.watchStoreForAssignmentFailed();
+	public mounted() {
+		this.updateAppellations();
+		this.updateRelations();
+		this.$store.commit('setAppellations', this.appellations);
+		this.updateDateAppellations();
+		this.updateSwimRef();
+		this.handleScroll();
+		// needs to be called in mounted.
+		this.watchStoreForConcepts();
+		this.watchStoreForAssignmentFailed();
 	}
-	
-	created() {
-        window.addEventListener('scroll', this.handleScroll);
-        window.addEventListener('resize', this.handleScroll);
-        document.getElementById('graphContainer').onmouseup = function () {
-            this.updateSwimRef();
-            this.handleScroll();
-        }
+
+	public created() {
+		window.addEventListener('scroll', this.handleScroll);
+		window.addEventListener('resize', this.handleScroll);
+		document.getElementById('graphContainer').onmouseup = function() {
+			this.updateSwimRef();
+			this.handleScroll();
+		};
 	}
-	
-	destroyed() {
-        window.removeEventListener('scroll', this.handleScroll);
-        window.removeEventListener('resize', this.handleScroll);
+
+	public destroyed() {
+		window.removeEventListener('scroll', this.handleScroll);
+		window.removeEventListener('resize', this.handleScroll);
 	}
-	
+
 	get fields() {
 		return this.template.fields;
 	}
 
 	@Watch('sidebar')
-	watchSidebar() {
-		// remove submit button if sidebar is not showing submitAllAppellations 
+	public watchSidebar() {
+		// remove submit button if sidebar is not showing submitAllAppellations
 		if (!(this.sidebar == 'submitAllAppellations')) {
 			this.submitAppellationClicked = false;
 		}
 	}
 
 	@Watch('appellations')
-	watchAppellations() {
+	public watchAppellations() {
 		this.filterTextAppellationFromAppellationList();
 	}
 
 	 /*************************************************
 	 * Start Methods to create relationships to text *
 	 *************************************************/
-	watchStoreForConcepts() {
+	public watchStoreForConcepts() {
 		this.$store.watch(
 			(state) => {
 				return this.$store.getters.showConcepts;
 			},
 			(val) => {
 				if (val) {
-					//FIXME: This should set selected text to the actual text id
+					// FIXME: This should set selected text to the actual text id
 					this.selected_text = this.text.title;
 					this.text_listener == null;
 				} else {
 					this.unselectText();
 				}
 			}, {
-				deep: true
-			}
+				deep: true,
+			},
 		);
 	}
-	watchStoreForAssignmentFailed() {
+	public watchStoreForAssignmentFailed() {
 		this.$store.watch(
 			(state) => {
 				return this.$store.getters.getAssignmentFailed;
 			},
 			(val) => {
 				if (val == true) {
-					this.massAssignmentFailed = true
+					this.massAssignmentFailed = true;
 				}
 			},
 		);
 	}
-	registerData(field, data) {
+	public registerData(field, data) {
 		this.field_data[this.fieldHash(field)] = data;
 		this.ready = this.readyToCreate();
 	}
-	filterTextAppellationFromAppellationList() {
+	public filterTextAppellationFromAppellationList() {
 		let i = this.appellations.length - 1;
-		/* 
+		/*
 		* Remove appellations that have the string represenation that matches the text title
 		* this assumes the appellation is that of the text and we remove it as to not make a
 		* relation to itself. You must iterate backwards when removing items from an array to
@@ -286,9 +286,9 @@ export default class Appellator extends Vue {
 		while (i >= 0) {
 			try {
 				if (this.appellations[i].stringRep == this.text.title) {
-					this.$store.commit('setTextAppellation', this.appellations[i])
-					this.$store.commit("conceptLabel", this.appellations[i].interpretation_label);
-					this.appellations.splice(i, 1)
+					this.$store.commit('setTextAppellation', this.appellations[i]);
+					this.$store.commit('conceptLabel', this.appellations[i].interpretation_label);
+					this.appellations.splice(i, 1);
 					this.$store.commit('removeAppellation', i);
 				}
 			} catch (error) {
@@ -297,7 +297,7 @@ export default class Appellator extends Vue {
 			i--;
 		}
 	}
-	validateCreateRelationsToTextData() {
+	public validateCreateRelationsToTextData() {
 		if (this.$store.getters.getTemplate == null) {
 			return 1;
 		} else if (this.$store.getters.getTextAppellation.length == 0) {
@@ -305,18 +305,18 @@ export default class Appellator extends Vue {
 		} else if (this.$store.getters.getAppellationsToSubmit.length == 0) {
 			return 3;
 		} else {
-			return 0
+			return 0;
 		}
 	}
-	createRelationsFromText() {
-		let validator = this.validateCreateRelationsToTextData();
+	public createRelationsFromText() {
+		const validator = this.validateCreateRelationsToTextData();
 		if (validator > 0) {
-			this.$store.commit('setValidator', validator)
-			return
+			this.$store.commit('setValidator', validator);
+			return;
 		}
 		this.filterTextAppellationFromAppellationList();
 		RelationTemplateResource.text({
-			id: this.$store.getters.getTemplate.id
+			id: this.$store.getters.getTemplate.id,
 		}, {
 			appellations: this.$store.getters.getAppellationsToSubmit,
 			textAppellation: this.$store.getters.getTextAppellation,
@@ -326,39 +326,39 @@ export default class Appellator extends Vue {
 			part_id: this.$store.getters.getTemplate.template_parts[0].id,
 			occursIn: this.text.id,
 			createdBy: this.user.id,
-			project: this.project.id
-		}).then(function (response) {
+			project: this.project.id,
+		}).then(function(response) {
 			this.ready = false;
 			this.sidebarShown = false;
 			this.sidebar = 'relations';
 			this.$store.commit('resetCreateAppelltionsToText');
-		}).catch(function (error) {
+		}).catch(function(error) {
 			console.log('RelationTemplateResource:: failed miserably', error);
 			this.error = true;
 			this.ready = false;
 			this.$store.commit('massAppellationAssignmentFailed');
 		}); // TODO: implement callback and exception handling!!
 	}
-	//TODO: Change function to SubmitAllAppellations
-	showSubmitAllAppellationsSidebar() {
+	// TODO: Change function to SubmitAllAppellations
+	public showSubmitAllAppellationsSidebar() {
 		this.sidebar = 'submitAllAppellations';
 		this.submitAppellationClicked = true;
 	}
 	/***********************************************
 	* End Methods to create relationships to text *
 	***********************************************/
-	getSwimmerWidth() {
-		var shadow_elem = document.getElementById('shadow-swimlane');
+	public getSwimmerWidth() {
+		const shadow_elem = document.getElementById('shadow-swimlane');
 		if (shadow_elem == null) {
 			return 0;
 		} else {
 			return shadow_elem.clientWidth + 2;
 		}
 	}
-	handleScroll() {
-		var shadow_elem = document.getElementById('shadow-swimlane');
-		var swimmer = document.getElementById('sticky-swimlane');
-		var scrolled = this.swimmerRef - window.scrollY;
+	public handleScroll() {
+		const shadow_elem = document.getElementById('shadow-swimlane');
+		const swimmer = document.getElementById('sticky-swimlane');
+		const scrolled = this.swimmerRef - window.scrollY;
 		this.swimmerWidth = shadow_elem.clientWidth + 2;
 		if (scrolled < 0) {
 			this.swimmerTop = 0;
@@ -366,141 +366,141 @@ export default class Appellator extends Vue {
 			this.swimmerTop = this.swimmerRef - window.scrollY;
 		}
 	}
-	updateSwimRef() {
-		var shadow_elem = document.getElementById('shadow-swimlane');
+	public updateSwimRef() {
+		const shadow_elem = document.getElementById('shadow-swimlane');
 		this.swimmerRef = getOffsetTop(shadow_elem);
 	}
-	toggleDateAppellation() {
+	public toggleDateAppellation() {
 		this.create_date_appellation = !this.create_date_appellation;
 	}
-	fieldIsListeningForText() {
+	public fieldIsListeningForText() {
 		this.text_listener = true;
 	}
-	fieldIsDoneListeningForText() {
+	public fieldIsDoneListeningForText() {
 		this.text_listener = null;
 	}
-	selectedTemplate(template) {
+	public selectedTemplate(template) {
 		this.template = template;
 	}
-	createdRelation(relation) {
+	public createdRelation(relation) {
 		this.template = null;
 		this.updateRelations();
 		this.updateAppellations();
 	}
-	cancelRelation() {
+	public cancelRelation() {
 		this.template = null;
 	}
-	sidebarIsShown() {
+	public sidebarIsShown() {
 		return this.sidebarShown;
 	}
-	showSidebar() {
+	public showSidebar() {
 		this.sidebarShown = true;
 	}
-	hideSidebar() {
+	public hideSidebar() {
 		this.sidebarShown = false;
 	}
-	selectConcept(concept) {
+	public selectConcept(concept) {
 		this.selected_concept = concept;
 	}
-	hideAllAppellations() {
-		this.appellations.forEach(function (a) {
+	public hideAllAppellations() {
+		this.appellations.forEach(function(a) {
 			a.visible = false;
 		});
 	}
-	showAllAppellations() {
-		this.appellations.forEach(function (a) {
+	public showAllAppellations() {
+		this.appellations.forEach(function(a) {
 			a.visible = true;
 		});
 	}
-	showAppellation(appellation) {
-		this.appellations.forEach(function (a) {
-			if (a.id == appellation.id) a.visible = true;
+	public showAppellation(appellation) {
+		this.appellations.forEach(function(a) {
+			if (a.id == appellation.id) { a.visible = true; }
 		});
 	}
-	hideAppellation(appellation) {
-		this.appellations.forEach(function (a) {
-			if (a.id == appellation.id) a.visible = false;
+	public hideAppellation(appellation) {
+		this.appellations.forEach(function(a) {
+			if (a.id == appellation.id) { a.visible = false; }
 		});
 	}
-	hideAllDateAppellations() {
-		this.dateappellations.forEach(function (a) {
+	public hideAllDateAppellations() {
+		this.dateappellations.forEach(function(a) {
 			a.visible = false;
 		});
 	}
-	showAllDateAppellations() {
-		this.dateappellations.forEach(function (a) {
+	public showAllDateAppellations() {
+		this.dateappellations.forEach(function(a) {
 			a.visible = true;
 		});
 	}
-	showDateAppellation(appellation) {
-		this.dateappellations.forEach(function (a) {
-			if (a.id == appellation.id) a.visible = true;
+	public showDateAppellation(appellation) {
+		this.dateappellations.forEach(function(a) {
+			if (a.id == appellation.id) { a.visible = true; }
 		});
 	}
-	hideDateAppellation(appellation) {
-		this.dateappellations.forEach(function (a) {
-			if (a.id == appellation.id) a.visible = false;
+	public hideDateAppellation(appellation) {
+		this.dateappellations.forEach(function(a) {
+			if (a.id == appellation.id) { a.visible = false; }
 		});
 	}
-	scrollToAppellation(appellation) {
+	public scrollToAppellation(appellation) {
 		window.scrollTo(0, getTextPosition(appellation.position).top);
 	}
-	selectAppellation(appellation) {
-		this.appellations.forEach(function (a) {
+	public selectAppellation(appellation) {
+		this.appellations.forEach(function(a) {
 			a.selected = (a.id == appellation.id);
 		});
-		//TODO: Remove both emit and bus
+		// TODO: Remove both emit and bus
 		AppellationBus.$emit('selectedappellation', appellation);
 		EventBus.$emit('cleartextselection');
 		this.unselectText();
 		this.unselectDateAppellation();
 		this.scrollToAppellation(appellation);
 	}
-	selectDateAppellation(appellation) {
-		this.dateappellations.forEach(function (a) {
+	public selectDateAppellation(appellation) {
+		this.dateappellations.forEach(function(a) {
 			a.selected = (a.id == appellation.id);
 		});
-		//TODO: Remove emits
+		// TODO: Remove emits
 		AppellationBus.$emit('selecteddateappellation', appellation);
 		EventBus.$emit('cleartextselection');
 		this.unselectText();
 		this.unselectAppellation();
 		this.scrollToAppellation(appellation);
 	}
-	selectAppellationsById(appellation_ids) {
-		this.appellations.forEach(function (appellation) {
+	public selectAppellationsById(appellation_ids) {
+		this.appellations.forEach(function(appellation) {
 			appellation.selected = (appellation_ids.indexOf(appellation.id) > -1);
 		});
 	}
-	unselectAppellation() {
-		this.appellations.forEach(function (a) {
+	public unselectAppellation() {
+		this.appellations.forEach(function(a) {
 			a.selected = false;
 		});
 	}
-	unselectDateAppellation() {
-		this.dateappellations.forEach(function (a) {
+	public unselectDateAppellation() {
+		this.dateappellations.forEach(function(a) {
 			a.selected = false;
 		});
 	}
-	selectText(position) {
+	public selectText(position) {
 		this.unselectAppellation();
 		if (!this.text_listener) {
 			this.selected_text = position;
 		}
-		//TODO:Remove emit
+		// TODO:Remove emit
 		TextBus.$emit('selectedtext', position);
 	}
-	unselectText() {
+	public unselectText() {
 		this.selected_text = null;
 	}
-	textIsSelected () {
+	public textIsSelected() {
 		return this.selected_text != null && this.text_listener == null;
 	}
-	cancelAppellation() {
+	public cancelAppellation() {
 		this.selected_text = null;
 	}
-	createdAppellation(appellation) {
-		var offsets = appellation.position.position_value.split(',');
+	public createdAppellation(appellation) {
+		const offsets = appellation.position.position_value.split(',');
 		appellation.position.startOffset = offsets[0];
 		appellation.position.endOffset = offsets[1];
 		appellation.visible = true;
@@ -510,8 +510,8 @@ export default class Appellator extends Vue {
 		this.selected_text = null;
 		this.updateAppellations(); // call update appellations when a new appelation is created to update list
 	}
-	createdDateAppellation(appellation) {
-		var offsets = appellation.position.position_value.split(',');
+	public createdDateAppellation(appellation) {
+		const offsets = appellation.position.position_value.split(',');
 		appellation.position.startOffset = offsets[0];
 		appellation.position.endOffset = offsets[1];
 		appellation.visible = true;
@@ -520,21 +520,21 @@ export default class Appellator extends Vue {
 		this.selectDateAppellation(appellation);
 		this.selected_text = null;
 	}
-	updateAppellations(callback) {
+	public updateAppellations(callback) {
 		// "CO" is the "character offset" DocumentPosition type. For image
 		//  annotation this should be changed to "BB".
 		Appellation.query({
-			position_type: "CO",
+			position_type: 'CO',
 			text: this.text.id,
 			limit: 500,
-			project: this.project.id
-		}).then(function (response => {
+			project: this.project.id,
+		}).then(function(response => {
 			// DocumentPosition.position_value is represented with a
 			//  TextField, so serialized as a string. Start and end offsets
 			//  should be comma-delimited.
 
-			this.appellations = response.body.results.map(function (appellation) {
-				var offsets = appellation.position.position_value.split(',');
+			this.appellations = response.body.results.map(function(appellation) {
+				const offsets = appellation.position.position_value.split(',');
 				appellation.position.startOffset = offsets[0];
 				appellation.position.endOffset = offsets[1];
 				appellation.visible = true;
@@ -542,75 +542,75 @@ export default class Appellator extends Vue {
 				return appellation;
 
 			});
-			if (callback) callback(response);
-		)});
+		if (callback) { callback(response); }
+		)})
 	}
-	updateDateAppellations(callback) {
+updateDateAppellations(callback); {
 		// "CO" is the "character offset" DocumentPosition type. For image
 		//  annotation this should be changed to "BB".
 		DateAppellation.query({
-			position_type: "CO",
+			position_type: 'CO',
 			text: this.text.id,
 			limit: 500,
-			project: this.project.id
-		}).then(function (response => {
+			project: this.project.id,
+		}).then(function(response => {
 			// DocumentPosition.position_value is represented with a
 			//  TextField, so serialized as a string. Start and end offsets
 			//  should be comma-delimited.
-			this.dateappellations = response.body.results.map(function (appellation) {
-				var offsets = appellation.position.position_value.split(',');
+			this.dateappellations = response.body.results.map(function(appellation) {
+				const offsets = appellation.position.position_value.split(',');
 				appellation.position.startOffset = offsets[0];
 				appellation.position.endOffset = offsets[1];
 				appellation.visible = true;
 				appellation.selected = false;
 				return appellation;
 			});
-			if (callback) callback(response);
-		)});
+		if (callback) { callback(response); }
+		)})
 	}
-	selectRelation(relation) {
+selectRelation(relation); {
 		this.selected_relation = relation;
 		this.selected = null;
-		this.relations.forEach(function (r) {
+		this.relations.forEach(function(r) {
 			r.selected = (r.id == relation.id);
 		});
-		var appellation_ids = relation.appellations.map(function (appellation) {
+		const appellation_ids = relation.appellations.map(function(appellation) {
 			return appellation.id;
 		});
-		this.appellations.forEach(function (appellation) {
+		this.appellations.forEach(function(appellation) {
 			appellation.selected = (appellation_ids.indexOf(appellation.id) > -1);
 		});
-		var dateappellation_ids = relation.date_appellations.map(function (appellation) {
+		const dateappellation_ids = relation.date_appellations.map(function(appellation) {
 			return appellation.id;
 		});
-		this.dateappellations.forEach(function (appellation) {
+		this.dateappellations.forEach(function(appellation) {
 			appellation.selected = (dateappellation_ids.indexOf(appellation.id) > -1);
 		});
 	},
-	updateRelations(callback) {
+updateRelations(callback); {
 		Relation.query({
 			text: this.text.id,
 			limit: 500,
-			project: this.project.id
-		}).then((response =>{
+			project: this.project.id,
+		}).then(((response) => {
 			this.relations = response.body.results;
 			if (callback) {
 				callback(response);
 			}
-		)}).catch(function (error) {
+		); }). catch (function(error) {
 			console.log('failed to get relations', error);
-		});
-		if (reloadGraph) {
+		})
+if (reloadGraph) {
 			reloadGraph();
 		}
 	}
-	showRelationsSidebar() {
+showRelationsSidebar(); {
 		this.sidebar = 'relations';
 	},
-	showAppellationsSidebar() {
+showAppellationsSidebar(); {
 		this.sidebar = 'appellations';
 	},
-	showDateAppellationsSidebar() {
+showDateAppellationsSidebar(); {
 		this.sidebar = 'dateappellations';
 	}
 

@@ -13,12 +13,12 @@
 </template>
 
 <script lang="ts">
+import AppellationList from '@/components/annotator/AppellationList.vue';
+import ListsSideDrawer from '@/components/annotator/ListsSideDrawer.vue';
+import RelationList from '@/components/annotator/RelationList.vue';
 import SideDrawer from '@/components/annotator/SideDrawer.vue';
 import TextDisplay from '@/components/annotator/TextDisplay.vue';
 import ToolBar from '@/components/annotator/ToolBar.vue';
-import AppellationList from '@/components/annotator/AppellationList.vue';
-import RelationList from '@/components/annotator/RelationList.vue';
-import ListsSideDrawer from '@/components/annotator/ListsSideDrawer.vue';
 import { Component, Vue } from 'vue-property-decorator';
 export default Vue.extend({
 	name: 'TextView',
@@ -28,7 +28,7 @@ export default Vue.extend({
 		SideDrawer,
 		RelationList,
 		AppellationList,
-		ListsSideDrawer
+		ListsSideDrawer,
 	},
 	created() {
 		this.getContent();
@@ -41,7 +41,7 @@ export default Vue.extend({
 			loading: true,
 			appellations: null,
 			sidebar: '',
-			relations: null
+			relations: null,
 		};
 	  },
 	  methods: {
@@ -52,7 +52,7 @@ export default Vue.extend({
 				this.text = result.data.text;
 				this.appellations = result.data.appellations;
 				this.loading = false;
-				this.relations = result.data.relations
+				this.relations = result.data.relations;
 			})
 			.catch((error) => {
 				// TODO: deal with errors

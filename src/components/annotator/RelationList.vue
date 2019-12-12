@@ -6,21 +6,21 @@
 </template>
 
 <script lang="ts">
+import RelationListItem from '@/components/annotator/RelationListItem.vue';
 import { VForm } from '@/interfaces/GlobalTypes';
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import RelationListItem from '@/components/annotator/RelationListItem.vue';
 @Component({
   name: 'RelationList',
   components: {
-	  'relation-list-item': RelationListItem
-  }
+	  'relation-list-item': RelationListItem,
+  },
 })
 export default class RelationList extends Vue {
 
 	@Prop()
-	private relations: Array<object>;
+	private relations: object[];
 
-	//FIXME: Change this emit to use the store
+	// FIXME: Change this emit to use the store
 	private selectRelation(relation) {
 		this.$emit('selectrelation', relation);
 	}

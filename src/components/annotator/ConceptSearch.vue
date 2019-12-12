@@ -28,19 +28,19 @@
 </template>
 
 <script lang="ts">
-//TODO: Convert file to typescript where possible
+// TODO: Convert file to typescript where possible
 import { VForm } from '@/interfaces/GlobalTypes';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 @Component({
   name: 'ConceptSearch',
   components: {
-        'concept-list-item': ConceptListItem
-    }
+		'concept-list-item': ConceptListItem,
+	},
 })
 export default class ConceptSearch extends Vue {
 
 	private query: string = '';
-	private concepts: Array<object> = [];
+	private concepts: object[] = [];
 	private searching: boolean = false;
 	private error: boolean = false;
 	private pos: string = '';
@@ -51,7 +51,7 @@ export default class ConceptSearch extends Vue {
 		this.concepts = [];
 		this.$emit('selectconcept', concept);
 	}
-	private ready() { 
+	private ready() {
 		// TODO: should be able to recover from errors.
 		return !(this.searching || this.error);
 	}
@@ -62,21 +62,21 @@ export default class ConceptSearch extends Vue {
 		this.$emit('search', this.searching); // emit search to remove concept picker
 
 		// Asynchronous quries are beautiful.
-		var self = this; // Need a closure since Concept is global.
-		var payload = {
-			search: this.query
+		let self = this; // Need a closure since Concept is global.
+		let payload = {
+			search: this.query,
 		};
-		if (this.pos != "") {
-			payload['pos'] = this.pos;
+		if (this.pos != '') {
+			payload.pos = this.pos;
 		}
 		if (this.force) {
-			payload['force'] = 'force';
+			payload.force = 'force';
 		}
-		Concept.search(payload).then(function (response) {
+		Concept.search(payload).then(function(response) {
 			self.concepts = response.body.results;
 			self.searching = false;
-		}).catch(function (error) {
-			console.log("ConceptSearch:: search failed with", error);
+		}).catch(function(error) {
+			console.log('ConceptSearch:: search failed with', error);
 			self.error = true;
 			self.searching = false;
 		});

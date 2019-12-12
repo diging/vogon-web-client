@@ -15,37 +15,37 @@
 import { VForm } from '@/interfaces/GlobalTypes';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 @Component({
-  name: 'RelationListItem'
+  name: 'RelationListItem',
 })
 export default class RelationListItem extends Vue {
 
 	@Prop()
 	private relation!: object;
 
-	select() {
-		//TODO: Remove this
+	public select() {
+		// TODO: Remove this
 		this.$emit('selectrelation', this.relation);
 	}
-	isSelected() {
+	public isSelected() {
 		return this.relation.selected;
 	}
-	getRepresentation(relation) {
+	public getRepresentation(relation) {
 		if (relation.representation) {
 			return relation.representation;
 		} else {
-			return relation.appellations.map(function (appellation) {
+			return relation.appellations.map(function(appellation) {
 				return appellation.interpretation.label;
 			}).join('; ');
 		}
 	}
-	getCreatorName(creator) {
+	public getCreatorName(creator) {
 		if (creator.id == USER_ID) {
 			return 'you';
 		} else {
 			return creator.username;
 		}
 	}
-	getFormattedDate(isodate) {
+	public getFormattedDate(isodate) {
 		return moment(isodate).format('dddd LL [at] LT');
 	}
 }

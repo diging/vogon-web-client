@@ -19,9 +19,9 @@
 
 <script lang="ts">
 import { VForm } from '@/interfaces/GlobalTypes';
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import JwtDecode from 'jwt-decode';
 import moment from 'moment';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 @Component({
   name: 'AppellationListItem',
 })
@@ -29,7 +29,7 @@ export default class AppellationListItem extends Vue {
 
 	@Prop()
 	private appellation!: object;
-	//FIXME: find and assign types for both of these
+	// FIXME: find and assign types for both of these
 	@Prop()
 	private sidebar!;
 	@Prop()
@@ -96,12 +96,12 @@ export default class AppellationListItem extends Vue {
 	}
 
 	private hide() {
-		//TODO: Get rid of emit
+		// TODO: Get rid of emit
 		this.$emit('hideappellation', this.appellation);
 	}
 
 	private show() {
-		//TODO: Get rid of emit
+		// TODO: Get rid of emit
 		this.$emit('showappellation', this.appellation);
 	}
 	private toggle() {
@@ -117,7 +117,7 @@ export default class AppellationListItem extends Vue {
 	}
 
 	private select() {
-		//TODO: Get rid of emit
+		// TODO: Get rid of emit
 		this.$emit('selectappellation', this.appellation);
 	}
 

@@ -145,7 +145,7 @@ export default class AppellationDisplayItem extends Vue {
 	}
 
 	private selectAppellation() {
-		//TODO: Get rid of emit
+		// TODO: Get rid of emit
 		this.$emit('selectappellation', this.appellation);
 	}
 

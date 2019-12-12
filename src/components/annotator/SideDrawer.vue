@@ -44,7 +44,7 @@ export default class SideDrawer extends Vue {
 	private loading: boolean = true;
 
 	private show: Boolean = false;
-	
+
 	public created() {
 		this.watchStore();
 	}

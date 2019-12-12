@@ -27,7 +27,7 @@
 
 <script lang="ts">
 import { VForm } from '@/interfaces/GlobalTypes';
-import { Component, Vue, Prop } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 @Component({
   name: 'RelationField',
 })
@@ -42,7 +42,7 @@ export default class RelationField extends Vue {
 	private value_label!: any = null;
 	private listening: boolean = false;
 
-	inputPlaceholder() {
+	public inputPlaceholder() {
 		if (this.selection == null && this.listening) {
 			if (this.field.type == 'TP') {
 				return 'Select text or existing appellation. Press ESC to cancel.';
@@ -54,10 +54,10 @@ export default class RelationField extends Vue {
 		}
 	}
 
-	listen() {
+	public listen() {
 		if (!this.listening && !this.isBlocked()) { // Don't bind more than one listener.
 			this.listening = true;
-			//TODO: Change emit to use store
+			// TODO: Change emit to use store
 			this.$emit('listening', this.field);
 			if (this.field.type == 'TP') {
 				AppellationBus.$on('selectedappellation', this.handleSelection);
@@ -69,7 +69,7 @@ export default class RelationField extends Vue {
 		}
 	}
 
-	handleSelection(selection) {
+	public handleSelection(selection) {
 		this.stopListening();
 		this.selection = selection;
 		if (this.field.type == 'TP') { // Assume this is an appellation.
@@ -79,12 +79,12 @@ export default class RelationField extends Vue {
 		} else if (this.field.type == 'DT') {
 			this.value_label = selection.dateRepresentation;
 		}
-		//TODO: Change emit to use store
+		// TODO: Change emit to use store
 		this.$emit('registerdata', this.field, this.selection);
 	},
-	stopListening() {
+	public stopListening() {
 		if (this.field.type == 'TP') {
-			//TODO: Change buses to use store
+			// TODO: Change buses to use store
 			AppellationBus.$off('selectedappellation', this.handleSelection);
 		} else if (this.field.type == 'CO') {
 			TextBus.$off('selectedtext', this.handleSelection);
@@ -92,18 +92,18 @@ export default class RelationField extends Vue {
 			AppellationBus.$off('selecteddateappellation', this.handleSelection);
 		}
 		this.listening = false;
-		//TODO: Change emit to use store
+		// TODO: Change emit to use store
 		this.$emit('donelistening', this.field);
 	}
-	clear() {
+	public clear() {
 		this.selection = null;
 		this.value_label = null;
-		//TODO: Change emit to use store
+		// TODO: Change emit to use store
 		this.$emit('unregisterdata', this.field);
 	}
 	// We don't want to interfere with other fields, so we respect the
 	//  priority of the current listener, if there is one.
-	isBlocked() {
+	public isBlocked() {
 		return (this.listener !== undefined && this.listener != null && this.listener != this.field);
 	}
 }
