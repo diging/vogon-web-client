@@ -1,14 +1,14 @@
 <template lang="pug">
-	ul.list-group.relation-list
-		relation-list-item(
-			v-on:selectrelation="selectRelation"
-			v-bind:relation=relation
-			v-for="relation in relations")
+	v-list(three-line)
+		template(v-for="(relation, index) in relations")
+			v-list-item(:key="relation.id")
+				v-list-item-content
 </template>
 
 <script lang="ts">
 import { VForm } from '@/interfaces/GlobalTypes';
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import RelationListItem from '@/components/annotator/RelationListItem.vue';
 @Component({
   name: 'RelationList',
   components: {

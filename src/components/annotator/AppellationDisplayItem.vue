@@ -61,7 +61,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 export default class AppellationDisplayItem extends Vue {
 
 	@Prop()
-	private appellatio!: object;
+	private appellation!: object;
 
 	private position: object = {
 				top: 0,

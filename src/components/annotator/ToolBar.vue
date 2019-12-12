@@ -17,7 +17,7 @@
 							v-list-item-title(v-html="result.name")
 							v-list-item-subtitle(v-html="result.description")
 					v-divider(v-if="i + 1 < searchResults.length" )
-		
+		v-app-bar-nav-icon(@click="showLists")
 </template>
 
 <script lang="ts">
@@ -37,6 +37,9 @@ export default class ToolBar extends Vue {
 
 	private showSideBar() {
 		this.$store.commit('toggleSideBarMutation');
+	}
+	private showLists() {
+		this.$store.commit('toggleLists');
 	}
 
 	private searchRelationTemplates() {

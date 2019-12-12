@@ -7,6 +7,7 @@ export default new Vuex.Store({
 	state: {
 		loggedIn: false,
 		showSideBar: false,
+		showLists: false,
 		show_concepts: false,
 		concept_label: "",
 		template: null,
@@ -23,6 +24,9 @@ export default new Vuex.Store({
 		},
 		toggleSideBarMutation(state) {
 			state.showSideBar = !state.showSideBar;
+		},
+		toggleLists(state) {
+			state.showLists = !state.showLists;
 		},
 		triggerConcepts(state, payload) {
 			/*
@@ -84,6 +88,7 @@ export default new Vuex.Store({
 	getters: {
 		loggedIn: (state) => state.loggedIn,
 		getShowSideBar: (state) => state.showSideBar,
+		getShowLists: (state) => state.showLists,
 		showConcepts: state => state.show_concepts,
         conceptLabel: state => state.concept_label,
         getTemplate: state => state.template,

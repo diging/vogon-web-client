@@ -5,20 +5,23 @@
 				'appellation-selected': isSelected()
 			}`)
 		span.pull-right.text-muted.btn-group
-			a.btn btn-xs(v-on:click="select")
+			a.btn.btn-xs(v-on:click="select")
 				span.glyphicon.glyphicon-hand-down
 			a.btn.btn-xs(v-on:click="toggle")
 				span(v-if="appellation.visible" class="glyphicon glyphicon glyphicon-eye-open")
 				span(v-else class="glyphicon glyphicon glyphicon-eye-close")
-			{{ label() }}
+		p {{ label() }}
 		div.text-warning
 			input(v-if="sidebar == 'submitAllAppellations'" type="checkbox" v-model="checked" aria-label="...")
-			Created by <strong>{{ getCreatorName(appellation.createdBy) }}</strong> on {{ getFormattedDate(appellation.created) }}
+			p 
+				| Created by <strong>{{ getCreatorName(appellation.createdBy) }}</strong> on {{ getFormattedDate(appellation.created) }}
 </template>
 
 <script lang="ts">
 import { VForm } from '@/interfaces/GlobalTypes';
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import JwtDecode from 'jwt-decode';
+import moment from 'moment';
 @Component({
   name: 'AppellationListItem',
 })
@@ -48,20 +51,20 @@ export default class AppellationListItem extends Vue {
 	@Watch('checked')
 	public checkedChanged() {
 		if (this.checked == false) {
-				store.commit('removeAppellation', this.index);
-				store.commit('setSelectFalse');
+				this.$store.commit('removeAppellation', this.index);
+				this.$store.commit('setSelectFalse');
 		} else {
-			if (store.getters.getValidator == 3) {
-				store.commit('setValidator', 0);
+			if (this.$store.getters.getValidator == 3) {
+				this.$store.commit('setValidator', 0);
 			}
-			store.commit('addAppellation', this.appellation);
-			store.commit('setDeselectFalse');
+			this.$store.commit('addAppellation', this.appellation);
+			this.$store.commit('setDeselectFalse');
 		}
 	}
 	private watchUncheckStore() {
-		store.watch(
+		this.$store.watch(
 			(state) => {
-				return store.getters.getDeselect;
+				return this.$store.getters.getDeselect;
 			},
 			(val) => {
 				if (val) {
@@ -72,9 +75,9 @@ export default class AppellationListItem extends Vue {
 		);
 	}
 	private watchCheckStore() {
-		store.watch(
+		this.$store.watch(
 			(state) => {
-				return store.getters.getSelect;
+				return this.$store.getters.getSelect;
 			},
 			(val) => {
 				if (val) {
@@ -100,7 +103,7 @@ export default class AppellationListItem extends Vue {
 	private show() {
 		//TODO: Get rid of emit
 		this.$emit('showappellation', this.appellation);
-	},
+	}
 	private toggle() {
 		if (this.appellation.visible) {
 			this.hide();
@@ -126,7 +129,8 @@ export default class AppellationListItem extends Vue {
 		}
 	}
 	private getCreatorName(creator) {
-		if (creator.id == USER_ID) {
+		const decoded = JwtDecode<TokenDto>(localStorage.getItem('token'));
+		if (creator.id == decoded.user_id) {
 			return 'you';
 		} else {
 			return creator.username;
