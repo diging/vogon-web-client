@@ -1,45 +1,46 @@
 <template lang="pug">
-	ul
+	ul(v-if="appellations.length")
 		appellation-display-item(
-			v-on:selectappellation="selectAppellation"
+			v-for="(appellation, i) in appellations"
 			:appellation="appellation"
-			v-for="appellation in appellations")
-
+			:pos="i"
+		)
 </template>
 
 <script lang="ts">
-import { VForm } from '@/interfaces/GlobalTypes';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+
+import { VForm } from '@/interfaces/GlobalTypes';
 import AppellationDisplayItem from './AppellationDisplayItem.vue';
+
 @Component({
-  name: 'AppellationDisplay',
-  components: {
+	name: 'AppellationDisplay',
+	components: {
 		'appellation-display-item': AppellationDisplayItem,
 	},
 })
 export default class AppellationDisplay extends Vue {
+	@Prop() private appellations!: any[];
 
-	@Prop()
-	private appellations!: any[];
+	private currentAppellations: any[] = [];
 
 	@Watch('appellations')
-	public appellationsChange(value) {
+	public appellationsChange(value: any) {
 		// Replace an array prop wholesale doesn't seem to trigger a
 		//  DOM update in the v-for binding, but a push() does; so we'll
 		//  just push the appellations that aren't already in the array.
-		let current_ids = this.current_appellations.map(function(elem) {
-			return elem.id;
-		});
+		const currentIds = this.currentAppellations.map((elem: any) => elem.id);
+
 		this.appellations.forEach((elem) => {
-			if (current_ids.indexOf(elem.id) < 0) {
-				this.current_appellations.push(elem);
+			if (currentIds.indexOf(elem.id) < 0) {
+				this.currentAppellations.push(elem);
 			}
 		});
 	}
 
 
-	private selectAppellation(appellation) {
-		//TODO: Get rid of emit
+	private selectAppellation(appellation: any) {
+		// TODO: Get rid of emit
 		this.$root.$emit('appellationClicked', appellation);
 		this.$emit('selectappellation', appellation);
 	}

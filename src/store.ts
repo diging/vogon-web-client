@@ -17,6 +17,10 @@ export default new Vuex.Store({
 		select_all: false,
 		assignment_failed: false,
 		validator: 0,
+<<<<<<< HEAD
+=======
+		text_content_styles: {},
+>>>>>>> acdf325919b96e027ecd9b84b9af4c8c58e03b0e
 	},
 	mutations: {
 		loggedInMutation(state, loggedIn) {
@@ -33,7 +37,11 @@ export default new Vuex.Store({
 			* Needed if in order for cancel button to work when
 			* conecpt picker is triggered by highlighting a word
 			*/
+<<<<<<< HEAD
 			if (payload == false) {
+=======
+			if (payload === false) {
+>>>>>>> acdf325919b96e027ecd9b84b9af4c8c58e03b0e
 				state.show_concepts = payload;
 			} else {
 				state.show_concepts = !state.show_concepts;
@@ -52,7 +60,11 @@ export default new Vuex.Store({
 		removeAppellation(state, index) {
 			state.appellations_to_submit.splice(index, 1);
 		},
+<<<<<<< HEAD
 		addAppellation(state, appellation: object) {
+=======
+		addAppellation(state, appellation: any) {
+>>>>>>> acdf325919b96e027ecd9b84b9af4c8c58e03b0e
 			state.appellations_to_submit.push(appellation);
 		},
 		setAppellations(state, payload) {
@@ -84,11 +96,20 @@ export default new Vuex.Store({
 		setValidator(state, validator) {
 			state.validator = validator;
 		},
+<<<<<<< HEAD
+=======
+		setTextContentStyle(state, style) {
+			state.text_content_styles = style;
+		},
+>>>>>>> acdf325919b96e027ecd9b84b9af4c8c58e03b0e
   	},
 	getters: {
 		loggedIn: (state) => state.loggedIn,
 		getShowSideBar: (state) => state.showSideBar,
+<<<<<<< HEAD
 		getShowLists: (state) => state.showLists,
+=======
+>>>>>>> acdf325919b96e027ecd9b84b9af4c8c58e03b0e
 		showConcepts: (state) => state.show_concepts,
 		conceptLabel: (state) => state.concept_label,
 		getTemplate: (state) => state.template,
@@ -98,6 +119,10 @@ export default new Vuex.Store({
 		getSelect: (state) => state.select_all,
 		getAssignmentFailed: (state) => state.assignment_failed,
 		getValidator: (state) => state.validator,
+<<<<<<< HEAD
+=======
+		getTextContentStyle: (state) => state.text_content_styles,
+>>>>>>> acdf325919b96e027ecd9b84b9af4c8c58e03b0e
 	},
   actions: {
 

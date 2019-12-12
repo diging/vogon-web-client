@@ -17,7 +17,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 @Component({
   name: 'ListsSideDrawer',
   components: {
-	  AppellationList: AppellationList,
+	  AppellationList,
   },
 })
 export default class ListsSideDrawer extends Vue {

@@ -19,7 +19,7 @@ import moment from 'moment';
 @Component({
   name: 'AppellationList',
   components: {
-	  AppellationListItem: AppellationListItem,
+	  AppellationListItem,
   },
 })
 export default class AppellationList extends Vue {

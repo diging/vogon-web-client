@@ -62,8 +62,8 @@ export default class ConceptSearch extends Vue {
 		this.$emit('search', this.searching); // emit search to remove concept picker
 
 		// Asynchronous quries are beautiful.
-		let self = this; // Need a closure since Concept is global.
-		let payload = {
+		const self = this; // Need a closure since Concept is global.
+		const payload = {
 			search: this.query,
 		};
 		if (this.pos != '') {
