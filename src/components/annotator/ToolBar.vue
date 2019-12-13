@@ -27,68 +27,66 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
   name: 'ToolBar',
 })
 export default class ToolBar extends Vue {
+  private query: string = '';
+  private loading: boolean = false;
+  private showResults: boolean = false;
+  @Prop()
+  private text!: object;
+  private searchResults: object[] = [];
 
-	private query: string = '';
-	private loading: boolean = false;
-	private showResults: boolean = false;
-	@Prop()
-	private text!: object;
-	private searchResults: object[] = [];
+  private showSideBar() {
+	this.$store.commit('toggleSideBarMutation');
+  }
+  private showLists() {
+	this.$store.commit('toggleLists');
+  }
 
-	private showSideBar() {
-		this.$store.commit('toggleSideBarMutation');
+  private searchRelationTemplates() {
+	this.loading = true;
+	let all = true;
+	if (this.query !== '') {
+		all = false;
 	}
-	private showLists() {
-		this.$store.commit('toggleLists');
-	}
-
-	private searchRelationTemplates() {
-		this.loading = true;
-		const all = true;
-		if (this.query != '') {
-			const all = false;
-		}
-		Vue.$axios.get('/relationtemplate/', {
-			params: {
-				format: 'json',
-				all,
-				search: this.query,
-			},
-		}).then((result) => {
-			this.loading = false;
-			this.showResults = true;
-			console.log(result.data);
-			this.searchResults = result.data.templates;
+	Vue.$axios
+		.get('/relationtemplate/', {
+		params: {
+			format: 'json',
+			all,
+			search: this.query,
+		},
+		})
+		.then((result) => {
+		this.loading = false;
+		this.showResults = true;
+		this.searchResults = result.data.templates;
 		})
 		.catch((error) => {
-			// TODO: deal with errors
+		// TODO: deal with errors
 		});
-	}
-
+  }
 }
 </script>
 
 <style scoped>
 .project-item {
-	padding: 0;
-	margin: 10px 0;
+  padding: 0;
+  margin: 10px 0;
 }
 #title {
-	background: grey;
+  background: grey;
 }
 pre {
-	white-space: pre-wrap;
-	word-wrap: break-word;
-	background-color:#f5f5f5;
-	border: 1px solid#ccc;
-	border-radius: 4px;
-	display: block;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  background-color: #f5f5f5;
+  border: 1px solid#ccc;
+  border-radius: 4px;
+  display: block;
 }
 #test {
-	float: left;
+  float: left;
 }
 #text-content {
-	padding: 3%;
+  padding: 3%;
 }
-
 </style>

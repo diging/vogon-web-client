@@ -26,9 +26,9 @@
 								'col-xs-7': sidebarIsShown(),
 							}`
 							style="padding-right: 5px;")
-						relation-template-selector(v-if="template == null && creating_relation"v-on:selectedtemplate="selectedTemplate")
+						relation-template-selector(v-if="template == null && creatingRelation"v-on:selectedtemplate="selectedTemplate")
 						relation-creator(
-							v-if="template != null && creating_relation"
+							v-if="template != null && creatingRelation"
 							v-on:fieldislisteningfortext="fieldIsListeningForText"
 							v-on:fieldisdonelisteningfortext="fieldIsDoneListeningForText"
 							v-on:createdrelation="createdRelation"
@@ -41,8 +41,8 @@
 							a(v-bind:class=`{
 									btn: true,
 									'btn-sm': true,
-									'btn-success': !create_date_appellation,
-									'btn-default': create_date_appellation
+									'btn-success': !createDateAppellation,
+									'btn-default': createDateAppellation
 								}`
 								v-tooltip="'Concept'"
 								v-on:click="toggleDateAppellation")
@@ -50,27 +50,27 @@
 							a(v-bind:class=`{
 									btn: true,
 									'btn-sm': true,
-									'btn-success': create_date_appellation,
-									'btn-default': !create_date_appellation
+									'btn-success': createDateAppellation,
+									'btn-default': !createDateAppellation
 								}`
 								v-tooltip="'Date'"
 								v-on:click="toggleDateAppellation")
 								span(class="glyphicon glyphicon-calendar")
 						date-appellation-creator(
-							v-if="textIsSelected() && create_date_appellation"
+							v-if="textIsSelected() && createDateAppellation"
 							v-bind:user=user
 							v-bind:text=text
 							v-bind:project=project
-							v-bind:position=selected_text
+							v-bind:position="selectedText"
 							v-on:createddateappellation="createdDateAppellation"
 							v-on:cancelappellation="cancelAppellation"
 							v-on:createdappellation="createdAppellation")
 						appellation-creator(
-							v-if="textIsSelected() && !create_date_appellation"
+							v-if="textIsSelected() && !createDateAppellation"
 							v-bind:user="user"
 							v-bind:text="text"
 							v-bind:project="project"
-							v-bind:position="selected_text"
+							v-bind:position="selectedText"
 							v-on:cancelappellation="cancelAppellation"
 							v-on:createdappellation="createdAppellation"
 							v-bind:appellations="appellations")
@@ -168,7 +168,7 @@ export default class Appellator extends Vue {
 	private dateappellations: object[] = [];
 	private relations: object[] = [];
 	private selected: object | null = null;
-	private selected_text: object | null = null;
+	private selectedText: object | null = null;
 	private user: object = {
 		id: USER_ID,
 		username: USER_NAME,
@@ -183,10 +183,10 @@ export default class Appellator extends Vue {
 	};
 	private sidebarShown: boolean = false;
 	private template: object | null = null;
-	private creating_relation: boolean = true;
-	private text_listener: object | null = null;
+	private creatingRelation: boolean = true;
+	private textListener: object | null = null;
 	private sidebar: string = 'relations';
-	private create_date_appellation: boolean = false;
+	private createDateAppellation: boolean = false;
 	private swimmerPosition: string = 'static';
 	private swimmerTop: number = 0;
 	private swimmerRef: number = 0;
@@ -228,7 +228,7 @@ export default class Appellator extends Vue {
 	@Watch('sidebar')
 	public watchSidebar() {
 		// remove submit button if sidebar is not showing submitAllAppellations
-		if (!(this.sidebar == 'submitAllAppellations')) {
+		if (!(this.sidebar === 'submitAllAppellations')) {
 			this.submitAppellationClicked = false;
 		}
 	}
@@ -249,8 +249,8 @@ export default class Appellator extends Vue {
 			(val) => {
 				if (val) {
 					// FIXME: This should set selected text to the actual text id
-					this.selected_text = this.text.title;
-					this.text_listener == null;
+					this.selectedText = this.text.title;
+					this.textListener === null;
 				} else {
 					this.unselectText();
 				}
@@ -265,7 +265,7 @@ export default class Appellator extends Vue {
 				return this.$store.getters.getAssignmentFailed;
 			},
 			(val) => {
-				if (val == true) {
+				if (val === true) {
 					this.massAssignmentFailed = true;
 				}
 			},
@@ -285,7 +285,7 @@ export default class Appellator extends Vue {
 		*/
 		while (i >= 0) {
 			try {
-				if (this.appellations[i].stringRep == this.text.title) {
+				if (this.appellations[i].stringRep === this.text.title) {
 					this.$store.commit('setTextAppellation', this.appellations[i]);
 					this.$store.commit('conceptLabel', this.appellations[i].interpretation_label);
 					this.appellations.splice(i, 1);
@@ -298,11 +298,11 @@ export default class Appellator extends Vue {
 		}
 	}
 	public validateCreateRelationsToTextData() {
-		if (this.$store.getters.getTemplate == null) {
+		if (this.$store.getters.getTemplate === null) {
 			return 1;
-		} else if (this.$store.getters.getTextAppellation.length == 0) {
+		} else if (this.$store.getters.getTextAppellation.length === 0) {
 			return 2;
-		} else if (this.$store.getters.getAppellationsToSubmit.length == 0) {
+		} else if (this.$store.getters.getAppellationsToSubmit.length === 0) {
 			return 3;
 		} else {
 			return 0;
@@ -349,7 +349,7 @@ export default class Appellator extends Vue {
 	***********************************************/
 	public getSwimmerWidth() {
 		const shadow_elem = document.getElementById('shadow-swimlane');
-		if (shadow_elem == null) {
+		if (shadow_elem === null) {
 			return 0;
 		} else {
 			return shadow_elem.clientWidth + 2;
@@ -371,13 +371,13 @@ export default class Appellator extends Vue {
 		this.swimmerRef = getOffsetTop(shadow_elem);
 	}
 	public toggleDateAppellation() {
-		this.create_date_appellation = !this.create_date_appellation;
+		this.createDateAppellation = !this.createDateAppellation;
 	}
 	public fieldIsListeningForText() {
-		this.text_listener = true;
+		this.textListener = true;
 	}
 	public fieldIsDoneListeningForText() {
-		this.text_listener = null;
+		this.textListener = null;
 	}
 	public selectedTemplate(template) {
 		this.template = template;
@@ -414,12 +414,12 @@ export default class Appellator extends Vue {
 	}
 	public showAppellation(appellation) {
 		this.appellations.forEach(function(a) {
-			if (a.id == appellation.id) { a.visible = true; }
+			if (a.id === appellation.id) { a.visible = true; }
 		});
 	}
 	public hideAppellation(appellation) {
 		this.appellations.forEach(function(a) {
-			if (a.id == appellation.id) { a.visible = false; }
+			if (a.id === appellation.id) { a.visible = false; }
 		});
 	}
 	public hideAllDateAppellations() {
@@ -434,12 +434,12 @@ export default class Appellator extends Vue {
 	}
 	public showDateAppellation(appellation) {
 		this.dateappellations.forEach(function(a) {
-			if (a.id == appellation.id) { a.visible = true; }
+			if (a.id === appellation.id) { a.visible = true; }
 		});
 	}
 	public hideDateAppellation(appellation) {
 		this.dateappellations.forEach(function(a) {
-			if (a.id == appellation.id) { a.visible = false; }
+			if (a.id === appellation.id) { a.visible = false; }
 		});
 	}
 	public scrollToAppellation(appellation) {
@@ -447,7 +447,7 @@ export default class Appellator extends Vue {
 	}
 	public selectAppellation(appellation) {
 		this.appellations.forEach(function(a) {
-			a.selected = (a.id == appellation.id);
+			a.selected = (a.id === appellation.id);
 		});
 		// TODO: Remove both emit and bus
 		AppellationBus.$emit('selectedappellation', appellation);
@@ -458,7 +458,7 @@ export default class Appellator extends Vue {
 	}
 	public selectDateAppellation(appellation) {
 		this.dateappellations.forEach(function(a) {
-			a.selected = (a.id == appellation.id);
+			a.selected = (a.id === appellation.id);
 		});
 		// TODO: Remove emits
 		AppellationBus.$emit('selecteddateappellation', appellation);
@@ -484,20 +484,20 @@ export default class Appellator extends Vue {
 	}
 	public selectText(position) {
 		this.unselectAppellation();
-		if (!this.text_listener) {
-			this.selected_text = position;
+		if (!this.textListener) {
+			this.selectedText = position;
 		}
 		// TODO:Remove emit
 		TextBus.$emit('selectedtext', position);
 	}
 	public unselectText() {
-		this.selected_text = null;
+		this.selectedText = null;
 	}
 	public textIsSelected() {
-		return this.selected_text != null && this.text_listener == null;
+		return this.selectedText != null && this.textListener === null;
 	}
 	public cancelAppellation() {
-		this.selected_text = null;
+		this.selectedText = null;
 	}
 	public createdAppellation(appellation) {
 		const offsets = appellation.position.position_value.split(',');
@@ -507,7 +507,7 @@ export default class Appellator extends Vue {
 		appellation.selected = false;
 		this.appellations.push(appellation);
 		this.selectAppellation(appellation);
-		this.selected_text = null;
+		this.selectedText = null;
 		this.updateAppellations(); // call update appellations when a new appelation is created to update list
 	}
 	public createdDateAppellation(appellation) {
@@ -518,7 +518,7 @@ export default class Appellator extends Vue {
 		appellation.selected = false;
 		this.dateappellations.push(appellation);
 		this.selectDateAppellation(appellation);
-		this.selected_text = null;
+		this.selectedText = null;
 	}
 	public updateAppellations(callback) {
 		// "CO" is the "character offset" DocumentPosition type. For image
@@ -572,7 +572,7 @@ selectRelation(relation); {
 		this.selected_relation = relation;
 		this.selected = null;
 		this.relations.forEach(function(r) {
-			r.selected = (r.id == relation.id);
+			r.selected = (r.id === relation.id);
 		});
 		const appellation_ids = relation.appellations.map(function(appellation) {
 			return appellation.id;
