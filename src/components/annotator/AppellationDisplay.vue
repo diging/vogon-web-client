@@ -1,9 +1,8 @@
 <template lang="pug">
 	ul(v-if="appellations.length")
 		appellation-display-item(
-			v-for="(appellation, i) in appellations"
+			v-for="appellation in currentAppellations"
 			:appellation="appellation"
-			:pos="i"
 		)
 </template>
 
@@ -11,6 +10,7 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import { VForm } from '@/interfaces/GlobalTypes';
+import store from '@/store';
 import AppellationDisplayItem from './AppellationDisplayItem.vue';
 
 @Component({
@@ -23,6 +23,37 @@ export default class AppellationDisplay extends Vue {
 	@Prop() private appellations!: any[];
 
 	private currentAppellations: any[] = [];
+
+	public async created() {
+		store.subscribe((mutation: any, state: any) => {
+			if (mutation.type === 'setTextContentStyle' && state.text_content_styles.positions) {
+				this.currentAppellations = state.text_content_styles.positions.map((position: any, i: number) => {
+					const appellation = this.appellations[i];
+					console.log(appellation);
+					const positionStyle = {
+						top: `${position.top}px`,
+						left: `${position.left}px`,
+						width: `${position.width}px`,
+						height: `${position.lineHeight}px`,
+						position: 'absolute',
+						zIndex: 2,
+					};
+					const midLines = position.midLines;
+					const endPosition = position.endPosition;
+
+					return {
+						...appellation,
+						positionStyle,
+						midLines,
+						endPosition,
+						visible: true,
+					};
+				})
+
+				this.$forceUpdate();
+			}
+		});
+	}
 
 	@Watch('appellations')
 	public appellationsChange(value: any) {
@@ -37,14 +68,6 @@ export default class AppellationDisplay extends Vue {
 			}
 		});
 	}
-
-
-	private selectAppellation(appellation: any) {
-		// TODO: Get rid of emit
-		this.$root.$emit('appellationClicked', appellation);
-		this.$emit('selectappellation', appellation);
-	}
-
 }
 </script>
 
