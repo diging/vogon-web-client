@@ -3,7 +3,7 @@
 		v-row
 			v-col(cols="6")
 				div(class="text-container")
-					pre(id="text-content" ref="textContent") {{ this.content }}
+					pre(id="text-content" ref="textContent" v-on:mouseup="handleMouseUp") {{ this.content }}
 					appellation-display(:appellations="appellations")
 
 </template>
@@ -49,6 +49,8 @@ During the 1930s, Bohr helped refugees from Nazism. After Denmark was occupied b
 			},
 		},
 	];
+	private selectedPosition: any = null;
+	private selected: boolean = false;
 
 	public async mounted() {
 		this.calculatePositions();
@@ -58,8 +60,56 @@ During the 1930s, Bohr helped refugees from Nazism. After Denmark was occupied b
 	private calculatePositions() {
 		const container = this.$refs.textContent as Element;
 		const positions = this.appellations.map((appellation, i) => getAnnotationRectPositions(appellation, container));
-
+		console.log(positions);
 		store.commit('setTextContentStyle', { positions } );
+	}
+
+	private handleMouseUp(event: Event) {
+		const textContent = this.$refs.textContent as HTMLElement;
+		if (event.target !== null) {
+			const target = event.target as HTMLElement;
+			if (target.id !== textContent.id) {
+				return;
+			}
+
+			if (this.selected) {
+				this.appellations = this.appellations.slice(0, this.appellations.length - 1);
+			}
+
+			event.stopPropagation();
+
+			// Get the start and end position of the selection. The selection
+			// may have been left-to-right or right-to-left.
+			const selection = window.getSelection();
+			if (selection !== null) {
+				const startOffset = Math.min(selection.anchorOffset, selection.focusOffset);
+				const endOffset = Math.max(selection.anchorOffset, selection.focusOffset);
+
+				// If the user double-clicks (e.g. to select a whole word), the
+				// first mouse-up will get as far as here, even though no text has
+				// actually been selected.
+				if (endOffset === startOffset) {
+					return;
+				};
+
+				const raw = selection.toString();
+				const selectedText = {
+					position: {
+						startOffset: startOffset,
+						endOffset: endOffset,
+					},
+					visible: true,
+					interpretation: { label: '' },
+					representation: raw,
+				};
+				this.selected = true;
+				this.appellations = [
+					...this.appellations,
+					selectedText,
+				];
+				this.calculatePositions();
+			}
+		}
 	}
 }
 </script>
