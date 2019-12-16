@@ -292,7 +292,7 @@ export default class Appellator extends Vue {
 					this.$store.commit('removeAppellation', i);
 				}
 			} catch (error) {
-				console.log(error);
+				// TODO: Handle error
 			}
 			i--;
 		}
@@ -333,7 +333,6 @@ export default class Appellator extends Vue {
 			this.sidebar = 'relations';
 			this.$store.commit('resetCreateAppelltionsToText');
 		}).catch(function(error) {
-			console.log('RelationTemplateResource:: failed miserably', error);
 			this.error = true;
 			this.ready = false;
 			this.$store.commit('massAppellationAssignmentFailed');
@@ -348,18 +347,18 @@ export default class Appellator extends Vue {
 	* End Methods to create relationships to text *
 	***********************************************/
 	public getSwimmerWidth() {
-		const shadow_elem = document.getElementById('shadow-swimlane');
-		if (shadow_elem === null) {
+		const shadowElem = document.getElementById('shadow-swimlane');
+		if (shadowElem === null) {
 			return 0;
 		} else {
-			return shadow_elem.clientWidth + 2;
+			return shadowElem.clientWidth + 2;
 		}
 	}
 	public handleScroll() {
-		const shadow_elem = document.getElementById('shadow-swimlane');
+		const shadowElem = document.getElementById('shadow-swimlane');
 		const swimmer = document.getElementById('sticky-swimlane');
 		const scrolled = this.swimmerRef - window.scrollY;
-		this.swimmerWidth = shadow_elem.clientWidth + 2;
+		this.swimmerWidth = shadowElem.clientWidth + 2;
 		if (scrolled < 0) {
 			this.swimmerTop = 0;
 		} else {
@@ -367,8 +366,8 @@ export default class Appellator extends Vue {
 		}
 	}
 	public updateSwimRef() {
-		const shadow_elem = document.getElementById('shadow-swimlane');
-		this.swimmerRef = getOffsetTop(shadow_elem);
+		const shadowElem = document.getElementById('shadow-swimlane');
+		this.swimmerRef = getOffsetTop(shadowElem);
 	}
 	public toggleDateAppellation() {
 		this.createDateAppellation = !this.createDateAppellation;
@@ -403,42 +402,42 @@ export default class Appellator extends Vue {
 		this.selected_concept = concept;
 	}
 	public hideAllAppellations() {
-		this.appellations.forEach(function(a) {
+		this.appellations.forEach((a) => {
 			a.visible = false;
 		});
 	}
 	public showAllAppellations() {
-		this.appellations.forEach(function(a) {
+		this.appellations.forEach((a) => {
 			a.visible = true;
 		});
 	}
 	public showAppellation(appellation) {
-		this.appellations.forEach(function(a) {
+		this.appellations.forEach((a) => {
 			if (a.id === appellation.id) { a.visible = true; }
 		});
 	}
 	public hideAppellation(appellation) {
-		this.appellations.forEach(function(a) {
+		this.appellations.forEach((a) => {
 			if (a.id === appellation.id) { a.visible = false; }
 		});
 	}
 	public hideAllDateAppellations() {
-		this.dateappellations.forEach(function(a) {
+		this.dateappellations.forEach((a) => {
 			a.visible = false;
 		});
 	}
 	public showAllDateAppellations() {
-		this.dateappellations.forEach(function(a) {
+		this.dateappellations.forEach((a) => {
 			a.visible = true;
 		});
 	}
 	public showDateAppellation(appellation) {
-		this.dateappellations.forEach(function(a) {
+		this.dateappellations.forEach((a) => {
 			if (a.id === appellation.id) { a.visible = true; }
 		});
 	}
 	public hideDateAppellation(appellation) {
-		this.dateappellations.forEach(function(a) {
+		this.dateappellations.forEach((a) => {
 			if (a.id === appellation.id) { a.visible = false; }
 		});
 	}
@@ -446,7 +445,7 @@ export default class Appellator extends Vue {
 		window.scrollTo(0, getTextPosition(appellation.position).top);
 	}
 	public selectAppellation(appellation) {
-		this.appellations.forEach(function(a) {
+		this.appellations.forEach((a) => {
 			a.selected = (a.id === appellation.id);
 		});
 		// TODO: Remove both emit and bus
@@ -457,7 +456,7 @@ export default class Appellator extends Vue {
 		this.scrollToAppellation(appellation);
 	}
 	public selectDateAppellation(appellation) {
-		this.dateappellations.forEach(function(a) {
+		this.dateappellations.forEach((a) => {
 			a.selected = (a.id === appellation.id);
 		});
 		// TODO: Remove emits
@@ -467,18 +466,18 @@ export default class Appellator extends Vue {
 		this.unselectAppellation();
 		this.scrollToAppellation(appellation);
 	}
-	public selectAppellationsById(appellation_ids) {
-		this.appellations.forEach(function(appellation) {
-			appellation.selected = (appellation_ids.indexOf(appellation.id) > -1);
+	public selectAppellationsById(appellationIds) {
+		this.appellations.forEach((appellation) => {
+			appellation.selected = (appellationIds.indexOf(appellation.id) > -1);
 		});
 	}
 	public unselectAppellation() {
-		this.appellations.forEach(function(a) {
+		this.appellations.forEach((a) => {
 			a.selected = false;
 		});
 	}
 	public unselectDateAppellation() {
-		this.dateappellations.forEach(function(a) {
+		this.dateappellations.forEach((a) => {
 			a.selected = false;
 		});
 	}
@@ -528,12 +527,12 @@ export default class Appellator extends Vue {
 			text: this.text.id,
 			limit: 500,
 			project: this.project.id,
-		}).then(function(response => {
+		}).then((response) => {
 			// DocumentPosition.position_value is represented with a
 			//  TextField, so serialized as a string. Start and end offsets
 			//  should be comma-delimited.
 
-			this.appellations = response.body.results.map(function(appellation) {
+			this.appellations = response.body.results.map((appellation) => {
 				const offsets = appellation.position.position_value.split(',');
 				appellation.position.startOffset = offsets[0];
 				appellation.position.endOffset = offsets[1];
@@ -542,10 +541,12 @@ export default class Appellator extends Vue {
 				return appellation;
 
 			});
-		if (callback) { callback(response); }
-		)})
+		 if (callback) {
+			callback(response);
+			}
+		});
 	}
-updateDateAppellations(callback); {
+public updateDateAppellations(callback) {
 		// "CO" is the "character offset" DocumentPosition type. For image
 		//  annotation this should be changed to "BB".
 		DateAppellation.query({
@@ -553,11 +554,11 @@ updateDateAppellations(callback); {
 			text: this.text.id,
 			limit: 500,
 			project: this.project.id,
-		}).then(function(response => {
+		}).then((response) => {
 			// DocumentPosition.position_value is represented with a
 			//  TextField, so serialized as a string. Start and end offsets
 			//  should be comma-delimited.
-			this.dateappellations = response.body.results.map(function(appellation) {
+			this.dateappellations = response.body.results.map((appellation) => {
 				const offsets = appellation.position.position_value.split(',');
 				appellation.position.startOffset = offsets[0];
 				appellation.position.endOffset = offsets[1];
@@ -565,26 +566,26 @@ updateDateAppellations(callback); {
 				appellation.selected = false;
 				return appellation;
 			});
-		if (callback) { callback(response); }
-		)})
+		 if (callback) { callback(response); }
+		});
 	}
-selectRelation(relation); {
+public selectRelation(relation); {
 		this.selected_relation = relation;
 		this.selected = null;
-		this.relations.forEach(function(r) {
+		this.relations.forEach((r) => {
 			r.selected = (r.id === relation.id);
 		});
-		const appellation_ids = relation.appellations.map(function(appellation) {
+		const appellationIds = relation.appellations.map((appellation) => {
 			return appellation.id;
 		});
-		this.appellations.forEach(function(appellation) {
-			appellation.selected = (appellation_ids.indexOf(appellation.id) > -1);
+		this.appellations.forEach((appellation) => {
+			appellation.selected = (appellationIds.indexOf(appellation.id) > -1);
 		});
-		const dateappellation_ids = relation.date_appellations.map(function(appellation) {
+		const dateAppellationIds = relation.date_appellations.map((appellation) => {
 			return appellation.id;
 		});
-		this.dateappellations.forEach(function(appellation) {
-			appellation.selected = (dateappellation_ids.indexOf(appellation.id) > -1);
+		this.dateappellations.forEach((appellation) => {
+			appellation.selected = (dateAppellationIds.indexOf(appellation.id) > -1);
 		});
 	},
 updateRelations(callback); {
@@ -592,15 +593,15 @@ updateRelations(callback); {
 			text: this.text.id,
 			limit: 500,
 			project: this.project.id,
-		}).then(((response) => {
+		}).then((response) => {
 			this.relations = response.body.results;
 			if (callback) {
 				callback(response);
 			}
-		); }). catch (function(error) {
-			console.log('failed to get relations', error);
-		})
-if (reloadGraph) {
+		}). catch (function(error) {
+			// TODO: handle errors
+		});
+  if (reloadGraph) {
 			reloadGraph();
 		}
 	}
@@ -621,10 +622,10 @@ showDateAppellationsSidebar(); {
 
 <style scoped>
 .project-item {
-	padding: 0;
-	margin: 10px 0;
+  padding: 0;
+  margin: 10px 0;
 }
 #title {
-	background: grey;
+  background: grey;
 }
 </style>

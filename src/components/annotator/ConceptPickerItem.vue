@@ -9,17 +9,17 @@
 
 <script lang="ts">
 import { VForm } from '@/interfaces/GlobalTypes';
-import { Component, Vue, Prop } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 @Component({
   name: 'ConceptPickerItem',
 })
 export default class ConceptPickerItem extends Vue {
 
-	//TODO: Interface for concept
+	// TODO: Interface for concept
 	@Prop()
 	private concept!: object;
 
-	//FIXME: Get rid of this emit
+	// FIXME: Get rid of this emit
 	private select() {
 		this.$emit('selectconcept', this.concept);
 	}

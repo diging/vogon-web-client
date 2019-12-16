@@ -28,10 +28,10 @@ div.form
 			Type
 		select.form-control.input-sm(
 			id="concept-creator-type"
-			v-model="concept_type")
+			v-model="conceptType")
 			option 
 				---
-			option(v-for="ctype in concept_types" v-bind:value="ctype.uri")
+			option(v-for="ctype in conceptTypes" v-bind:value="ctype.uri")
 				{{ labelType(ctype) }}
 	div.form-group
 		label.control-label
@@ -53,106 +53,113 @@ div.form
 
 <script lang="ts">
 import { VForm } from '@/interfaces/GlobalTypes';
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 @Component({
   name: 'ConceptCreator',
 })
 export default class ConceptCreator extends Vue {
-	private oath: boolean = false;
-	private name: string = '';
-	private description: string = '';
-	private concept_types: Array = [];
-	private pos: string = '';
-	private concept_type: string = '';
-	private error: boolean = false;
-	private submitted: boolean = false;
+  private oath: boolean = false;
+  private name: string = '';
+  private description: string = '';
+  private conceptTypes: any[] = [];
+  private pos: string = '';
+  private conceptType: string = '';
+  private error: boolean = false;
+  private submitted: boolean = false;
 
-	mounted () {
-		this.UpdateTypes()
-	}
+  public mounted() {
+	this.UpdateTypes();
+  }
 
-	@Watch('name')
-	watchName() {
-		this.tryAgain();
-	}
+  @Watch('name')
+  public watchName() {
+	this.tryAgain();
+  }
 
-	@Watch('description')
-	watchDescription() {
-		this.tryAgain();
-	}
+  @Watch('description')
+  public watchDescription() {
+	this.tryAgain();
+  }
 
-	@Watch('pos')
-	watchPos() {
-		this.tryAgain();
-	}
+  @Watch('pos')
+  public watchPos() {
+	this.tryAgain();
+  }
 
-	@Watch('concept_type')
-	watchConceptType() {
-		this.tryAgain();
-	}
+  @Watch('conceptType')
+  public watchConceptType() {
+	this.tryAgain();
+  }
 
-	private ready() {
-		return (this.oath && this.name.length > 1 && this.description.length > 10 && this.concept_type != "" && !this.submitted);
-	}
-	private tryAgain() {
-		this.submitted = false;
-		this.error = false;
-	}
-	private clear() {
-		this.oath = false;
-		this.name = "";
-		this.description = "";
-		this.concept_type = "";
-		this.pos = "noun";
-		this.error = false;
-		this.submitted = false;
-	}
-	private createConcept() {
-		if (this.ready) {
-			this.submitted = true; // Immediately prevent further submissions.
-			//TODO: Change to axios
-			Concept.save({
-				uri: 'generate',
-				label: this.name,
-				description: this.description,
-				pos: this.pos,
-				typed: this.concept_type
-			}).then(function (response) {
-				this.clear();
-				//TODO: Get ride of emit 
-				this.$emit("createdconcept", response.body);
-			}).catch(function (error) {
-				console.log('ConceptCreator:: failed to create concept', error);
-				this.error = true;
-			});
-		}
-	}
-	private updateTypes() {
-		//TODO: change to axios
-		ConceptType.query().then(function (response) {
-			this.concept_types = response.body.results;
+  private ready() {
+	return (
+		this.oath &&
+		this.name.length > 1 &&
+		this.description.length > 10 &&
+		this.conceptType !== '' &&
+		!this.submitted
+	);
+  }
+  private tryAgain() {
+	this.submitted = false;
+	this.error = false;
+  }
+  private clear() {
+	this.oath = false;
+	this.name = '';
+	this.description = '';
+	this.conceptType = '';
+	this.pos = 'noun';
+	this.error = false;
+	this.submitted = false;
+  }
+  private createConcept() {
+	if (this.ready) {
+		this.submitted = true; // Immediately prevent further submissions.
+		// TODO: Change to axios
+		Concept.save({
+		uri: 'generate',
+		label: this.name,
+		description: this.description,
+		pos: this.pos,
+		typed: this.conceptType,
+		})
+		.then(function(response) {
+			this.clear();
+			// TODO: Get ride of emit
+			this.$emit('createdconcept', response.body);
+		})
+		.catch(function(error) {
+			this.error = true;
 		});
 	}
-	private labelType(ctype) {
-		if (ctype.label) {
-			return ctype.label;
+  }
+  private updateTypes() {
+	// TODO: change to axios
+	ConceptType.query().then(function(response) {
+		this.conceptTypes = response.body.results;
+	});
+  }
+  private labelType(ctype) {
+	if (ctype.label) {
+		return ctype.label;
+	} else {
+		if (ctype.authority) {
+		return ctype.authority.name + ': ' + truncateURI(ctype.uri);
 		} else {
-			if (ctype.authority) {
-				return ctype.authority.name + ': ' + truncateURI(ctype.uri);
-			} else {
-				return truncateURI(ctype.uri);
-			}
+		return truncateURI(ctype.uri);
 		}
 	}
+  }
 }
 </script>
 
 <style scoped>
 .project-item {
-	padding: 0;
-	margin: 10px 0;
+  padding: 0;
+  margin: 10px 0;
 }
 #title {
-	background: grey;
+  background: grey;
 }
 </style>

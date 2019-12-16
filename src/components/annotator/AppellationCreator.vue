@@ -44,15 +44,15 @@
 </template>
 
 <script lang="ts">
-import { VForm } from "@/interfaces/GlobalTypes";
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
+import { VForm } from '@/interfaces/GlobalTypes';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 @Component({
-  name: "AppellationCreator",
+  name: 'AppellationCreator',
   components: {
-    "concept-search": ConceptSearch,
-    "concept-creator": ConceptCreator,
-    "concept-picker": ConceptPicker
-  }
+	'concept-search': ConceptSearch,
+	'concept-creator': ConceptCreator,
+	'concept-picker': ConceptPicker,
+  },
 })
 export default class AppellationCreator extends Vue {
   @Prop()
@@ -73,119 +73,119 @@ export default class AppellationCreator extends Vue {
   private search: boolean = false;
   private display: boolean = true;
 
-  @Watch("search")
+  @Watch('search')
   public watchSearch() {
-    if (this.search === true) {
-      this.display = false;
-    }
+	if (this.search === true) {
+		this.display = false;
+	}
   }
 
   get triggered() {
-    return this.$store.getters.showConcepts;
+	return this.$store.getters.showConcepts;
   }
 
   private reset() {
-    this.concept = null;
-    this.create = false;
-    this.submitted = false;
-    this.saving = false;
+	this.concept = null;
+	this.create = false;
+	this.submitted = false;
+	this.saving = false;
   }
 
   private setSearch(search) {
-    // removes concept picker if searching concept to keep it from looking messy
-    this.search = search;
+	// removes concept picker if searching concept to keep it from looking messy
+	this.search = search;
   }
 
   private cancel() {
-    this.reset();
-    // TODO: Change emit to use store
-    this.$emit("cancelappellation");
-    this.$store.commit("triggerConcepts", false);
+	this.reset();
+	// TODO: Change emit to use store
+	this.$emit('cancelappellation');
+	this.$store.commit('triggerConcepts', false);
   }
 
   private isSaving() {
-    return this.saving;
+	return this.saving;
   }
 
   private awaitingConcept() {
-    return this.concept == null;
+	return this.concept == null;
   }
 
   private selectConcept(concept) {
-    this.concept = concept;
+	this.concept = concept;
   }
 
   private createdConcept(concept) {
-    this.concept = concept;
-    this.create = false;
+	this.concept = concept;
+	this.create = false;
   }
 
   private createAppellation() {
-    let stringRep;
-    /*
+	let stringRep;
+	/*
      * may want to change this at somepoint. If this is a concept for a text we set the position values to null
      */
-    if (store.getters.showConcepts) {
-      this.position.startOffset = null;
-      this.position.endOffset = null;
-      stringRep = this.text.title;
-    } else {
-      stringRep = this.position.representation;
-    }
-    if (!(this.submitted || this.saving)) {
-      this.submitted = true; // Prevent multiple submissions.
-      this.saving = true;
-      Appellation.save({
-        position: {
-          occursIn: this.text.id,
-          position_type: "CO",
-          position_value: [
-            this.position.startOffset,
-            this.position.endOffset
-          ].join(",")
-        },
-        stringRep,
-        startPos: this.position.startOffset,
-        endPos: this.position.endOffset,
-        occursIn: this.text.id,
-        createdBy: this.user.id,
-        project: this.project.id,
-        interpretation: this.concept.uri || this.concept.interpretation.uri
-      })
-        .then(response => {
-          this.reset();
-          if (this.$store.getters.showConcepts) {
-            this.$store.commit("setTextAppellation", response.body);
-            if (this.$store.getters.getValidator === 2) {
-              this.$store.commit("setValidator", 0);
-            }
-          }
-          this.$store.commit("triggerConcepts");
-          this.$store.commit(
-            "conceptLabel",
-            response.body.interpretation_label
-          );
-          // TODO: Change emit for store
-          self.$emit("createdappellation", response.body);
-        })
-        .catch(function(error) {
-          this.saving = false;
-        });
-    }
+	if (store.getters.showConcepts) {
+		this.position.startOffset = null;
+		this.position.endOffset = null;
+		stringRep = this.text.title;
+	} else {
+		stringRep = this.position.representation;
+	}
+	if (!(this.submitted || this.saving)) {
+		this.submitted = true; // Prevent multiple submissions.
+		this.saving = true;
+		Appellation.save({
+		position: {
+			occursIn: this.text.id,
+			position_type: 'CO',
+			position_value: [
+			this.position.startOffset,
+			this.position.endOffset,
+			].join(','),
+		},
+		stringRep,
+		startPos: this.position.startOffset,
+		endPos: this.position.endOffset,
+		occursIn: this.text.id,
+		createdBy: this.user.id,
+		project: this.project.id,
+		interpretation: this.concept.uri || this.concept.interpretation.uri,
+		})
+		.then((response) => {
+			this.reset();
+			if (this.$store.getters.showConcepts) {
+			this.$store.commit('setTextAppellation', response.body);
+			if (this.$store.getters.getValidator === 2) {
+				this.$store.commit('setValidator', 0);
+			}
+			}
+			this.$store.commit('triggerConcepts');
+			this.$store.commit(
+			'conceptLabel',
+			response.body.interpretation_label,
+			);
+			// TODO: Change emit for store
+			self.$emit('createdappellation', response.body);
+		})
+		.catch(function(error) {
+			this.saving = false;
+		});
+	}
   }
   private ready() {
-    if (this.triggered && this.concept) {
-      return true;
-    } else {
-      return (
-        this.position.startOffset >= 0 &&
-        this.position.endOffset &&
-        this.position.representation.trim().length > 0 &&
-        this.text.id &&
-        this.user.id &&
-        this.concept
-      );
-    }
+	if (this.triggered && this.concept) {
+		return true;
+	} else {
+		return (
+		this.position.startOffset >= 0 &&
+		this.position.endOffset &&
+		this.position.representation.trim().length > 0 &&
+		this.text.id &&
+		this.user.id &&
+		this.concept
+		);
+	}
   }
 }
 </script>

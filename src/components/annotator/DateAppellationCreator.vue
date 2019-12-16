@@ -26,82 +26,84 @@
 
 <script lang="ts">
 import { VForm } from '@/interfaces/GlobalTypes';
-import { Component, Vue, Prop } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 @Component({
   name: 'DateAppellationCreator',
 })
 export default class DateAppellationCreator extends Vue {
+  // TODO: Interface for concept
+  @Prop()
+  private position!: object;
+  @Prop()
+  private user!: object;
+  @Prop()
+  private text!: object;
+  @Prop()
+  private project!: object;
 
-	//TODO: Interface for concept
-	@Prop()
-	private position!: object;
-	@Prop()
-	private user!: object;
-	@Prop()
-	private text!: object;
-	@Prop()
-	private project!: object;
+  private year: object = {};
+  private month: object = {};
+  private day: object = {};
+  private submitted: boolean = false;
+  private saving: boolean = false;
+  private create: boolean = false;
+  private concept: object | null = null;
 
-	private year: object: {};
-	private month: object: {};
-	private day: object: {};
-	private submitted: object: {};
-	private saving: object: {};
-
-	private ready() {
-		return (this.year && !(this.day && !this.month));
+  private ready() {
+	return this.year && !(this.day && !this.month);
+  }
+  private reset() {
+	this.concept = null;
+	this.create = false;
+	this.submitted = false;
+	this.saving = false;
+  }
+  private cancel() {
+	this.reset();
+	// TODO: Get rid of this emit
+	this.$emit('cancelappellation');
+  }
+  private createAppellation() {
+	if (!(this.submitted || this.saving)) {
+		// this.submitted = true;      // Prevent multiple submissions.
+		// this.saving = true;
+		// TODO: switch to axios
+		DateAppellation.save({
+		position: {
+			occursIn: this.text.id,
+			position_type: 'CO',
+			position_value: [
+			this.position.startOffset,
+			this.position.endOffset,
+			].join(','),
+		},
+		stringRep: this.position.representation,
+		occursIn: this.text.id,
+		createdBy: this.user.id,
+		project: this.project.id,
+		year: this.year,
+		month: this.month,
+		day: this.day,
+		})
+		.then((response) => {
+			this.reset();
+			// TODO: Get rid of emit
+			this.$emit('createddateappellation', response.body);
+		})
+		.catch((error) => {
+			this.saving = false;
+		});
 	}
-	private reset() {
-		this.concept = null;
-		this.create = false;
-		this.submitted = false;
-		this.saving = false;
-	}
-	private cancel() {
-		this.reset();
-		//TODO: Get rid of this emit
-		this.$emit('cancelappellation');
-	}
-	private createAppellation() {
-		if (!(this.submitted || this.saving)) {
-			// this.submitted = true;      // Prevent multiple submissions.
-			// this.saving = true;
-			//TODO: switch to axios
-			DateAppellation.save({
-				position: {
-					occursIn: this.text.id,
-					position_type: "CO",
-					position_value: [this.position.startOffset,
-						this.position.endOffset
-					].join(",")
-				},
-				stringRep: this.position.representation,
-				occursIn: this.text.id,
-				createdBy: this.user.id,
-				project: this.project.id,
-				year: this.year,
-				month: this.month,
-				day: this.day
-			}).then((response) => {
-				this.reset();
-				//TODO: Get rid of emit
-				this.$emit('createddateappellation', response.body);
-			}).catch(function (error) {
-				this.saving = false;
-				console.log('DateAppellationCreator:: failed to create appellation', error);
-			});
-		}
-	}
-
+  }
 }
 </script>
 
 <style scoped>
 .project-item {
-	padding: 0;
-	margin: 10px 0;
+  padding: 0;
+  margin: 10px 0;
 }
 #title {
-	background: grey;
+  background: grey;
 }
 </style>

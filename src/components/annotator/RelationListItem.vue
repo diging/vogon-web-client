@@ -13,45 +13,46 @@
 
 <script lang="ts">
 import { VForm } from '@/interfaces/GlobalTypes';
+import moment from 'moment';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 @Component({
   name: 'RelationListItem',
 })
 export default class RelationListItem extends Vue {
+  @Prop()
+  private relation!: object;
 
-	@Prop()
-	private relation!: object;
-
-	public select() {
-		// TODO: Remove this
-		this.$emit('selectrelation', this.relation);
+  public select() {
+	// TODO: Remove this
+	this.$emit('selectrelation', this.relation);
+  }
+  public isSelected() {
+	return this.relation.selected;
+  }
+  public getRepresentation(relation) {
+	if (relation.representation) {
+		return relation.representation;
+	} else {
+		return relation.appellations
+		.map((appellation) => {
+			return appellation.interpretation.label;
+		})
+		.join('; ');
 	}
-	public isSelected() {
-		return this.relation.selected;
+  }
+  public getCreatorName(creator) {
+	  // TODO: This needs to be change to user id
+	if (creator.id === USER_ID) {
+		return 'you';
+	} else {
+		return creator.username;
 	}
-	public getRepresentation(relation) {
-		if (relation.representation) {
-			return relation.representation;
-		} else {
-			return relation.appellations.map(function(appellation) {
-				return appellation.interpretation.label;
-			}).join('; ');
-		}
-	}
-	public getCreatorName(creator) {
-		if (creator.id == USER_ID) {
-			return 'you';
-		} else {
-			return creator.username;
-		}
-	}
-	public getFormattedDate(isodate) {
-		return moment(isodate).format('dddd LL [at] LT');
-	}
+  }
+  public getFormattedDate(isodate) {
+	return moment(isodate).format('dddd LL [at] LT');
+  }
 }
 </script>
 
 <style scoped>
-
-
 </style>

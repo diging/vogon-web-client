@@ -4,7 +4,7 @@
 			{{ field.label }} #[span.text-muted {{ field.description }}]
 		div.input-group
 			input.text(
-				v-model="value_label"
+				v-model="valueLabel"
 				class="form-control input-sm"
 				:id="'relation-part-' + field.part_id"
 				v-bind:placeholder="inputPlaceholder()")
@@ -39,16 +39,16 @@ export default class RelationField extends Vue {
 	private listner!: object;
 
 	private selecton!: any = null;
-	private value_label!: any = null;
+	private valueLabel!: any = null;
 	private listening: boolean = false;
 
 	public inputPlaceholder() {
 		if (this.selection == null && this.listening) {
-			if (this.field.type == 'TP') {
+			if (this.field.type === 'TP') {
 				return 'Select text or existing appellation. Press ESC to cancel.';
-			} else if (this.field.type == 'DT') {
+			} else if (this.field.type === 'DT') {
 				return 'Select text or existing date appellation. Press ESC to cancel.';
-			} else if (this.field.type == 'CO') {
+			} else if (this.field.type === 'CO') {
 				return 'Select text. Press ESC to cancel.';
 			}
 		}
@@ -59,11 +59,11 @@ export default class RelationField extends Vue {
 			this.listening = true;
 			// TODO: Change emit to use store
 			this.$emit('listening', this.field);
-			if (this.field.type == 'TP') {
+			if (this.field.type === 'TP') {
 				AppellationBus.$on('selectedappellation', this.handleSelection);
-			} else if (this.field.type == 'CO') {
+			} else if (this.field.type === 'CO') {
 				TextBus.$on('selectedtext', this.handleSelection);
-			} else if (this.field.type == 'DT') {
+			} else if (this.field.type === 'DT') {
 				AppellationBus.$on('selecteddateappellation', this.handleSelection);
 			}
 		}
@@ -72,23 +72,23 @@ export default class RelationField extends Vue {
 	public handleSelection(selection) {
 		this.stopListening();
 		this.selection = selection;
-		if (this.field.type == 'TP') { // Assume this is an appellation.
-			this.value_label = selection.interpretation.label;
-		} else if (this.field.type == 'CO') { // Assume it's a position.
-			this.value_label = selection.representation;
-		} else if (this.field.type == 'DT') {
-			this.value_label = selection.dateRepresentation;
+		if (this.field.type === 'TP') { // Assume this is an appellation.
+			this.valueLabel = selection.interpretation.label;
+		} else if (this.field.type === 'CO') { // Assume it's a position.
+			this.valueLabel = selection.representation;
+		} else if (this.field.type === 'DT') {
+			this.valueLabel = selection.dateRepresentation;
 		}
 		// TODO: Change emit to use store
 		this.$emit('registerdata', this.field, this.selection);
 	},
 	public stopListening() {
-		if (this.field.type == 'TP') {
+		if (this.field.type === 'TP') {
 			// TODO: Change buses to use store
 			AppellationBus.$off('selectedappellation', this.handleSelection);
-		} else if (this.field.type == 'CO') {
+		} else if (this.field.type === 'CO') {
 			TextBus.$off('selectedtext', this.handleSelection);
-		} else if (this.field.type == 'DT') {
+		} else if (this.field.type === 'DT') {
 			AppellationBus.$off('selecteddateappellation', this.handleSelection);
 		}
 		this.listening = false;
@@ -97,24 +97,24 @@ export default class RelationField extends Vue {
 	}
 	public clear() {
 		this.selection = null;
-		this.value_label = null;
+		this.valueLabel = null;
 		// TODO: Change emit to use store
 		this.$emit('unregisterdata', this.field);
 	}
 	// We don't want to interfere with other fields, so we respect the
 	//  priority of the current listener, if there is one.
 	public isBlocked() {
-		return (this.listener !== undefined && this.listener != null && this.listener != this.field);
+		return (this.listener !== undefined && this.listener != null && this.listener !== this.field);
 	}
 }
 </script>
 
 <style scoped>
 .project-item {
-	padding: 0;
-	margin: 10px 0;
+  padding: 0;
+  margin: 10px 0;
 }
 #title {
-	background: grey;
+  background: grey;
 }
 </style>

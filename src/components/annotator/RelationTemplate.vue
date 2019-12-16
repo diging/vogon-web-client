@@ -14,57 +14,59 @@
 
 <script lang="ts">
 import { VForm } from '@/interfaces/GlobalTypes';
-import { Component, Vue, Prop } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 @Component({
   name: 'RelationTemplate',
   components: {
-        'relation-field': RelationField
-    }
+	'relation-field': RelationField,
+  },
 })
 export default class RelationTemplate extends Vue {
+  @Prop()
+  private fields!: object;
+  @Prop()
+  private name!: string;
+  @Prop()
+  private description!: string;
 
-	@Prop()
-	private fields!: object;
-	@Prop()
-	private name!: string;
-	@Prop()
-	private description!: string;
+  private listner: any = null;
 
-	private listner: any = null;
-
-	// Since we only want one field to listen for an appellation at a time,
-	//  we keep track of the first field to announce that they are
-	//  listening. All other RelationField instances are expected to respect
-	//  that listener, and not start listening until the current field is
-	//  done.
-	fieldIsListening(listeningField) {
-		this.listener = listeningField;
-		//TODO: Change emit to store
-		if (listeningField.type == 'CO') this.$emit('fieldislisteningfortext');
+  // Since we only want one field to listen for an appellation at a time,
+  //  we keep track of the first field to announce that they are
+  //  listening. All other RelationField instances are expected to respect
+  //  that listener, and not start listening until the current field is
+  //  done.
+  public fieldIsListening(listeningField) {
+	this.listener = listeningField;
+	// TODO: Change emit to store
+	if (listeningField.type === 'CO') {
+		this.$emit('fieldislisteningfortext');
 	}
+  }
 
-	fieldIsDoneListening(listeningField) {
-		this.listener = null;
-		//TODO: Change emit to store
-		if (listeningField.type == 'CO') this.$emit('fieldisdonelisteningfortext');
+  public fieldIsDoneListening(listeningField) {
+	this.listener = null;
+	// TODO: Change emit to store
+	if (listeningField.type === 'CO') {
+		this.$emit('fieldisdonelisteningfortext');
 	}
-	registerData(field, data) {
-		//TODO: Change emit to store
-		this.$emit('registerdata', field, data);
-	}
-	unregisterData(field) {
-		this.$emit('unregisterdata', field);
-	}
-
+  }
+  public registerData(field, data) {
+	// TODO: Change emit to store
+	this.$emit('registerdata', field, data);
+  }
+  public unregisterData(field) {
+	this.$emit('unregisterdata', field);
+  }
 }
 </script>
 
 <style scoped>
 .project-item {
-	padding: 0;
-	margin: 10px 0;
+  padding: 0;
+  margin: 10px 0;
 }
 #title {
-	background: grey;
+  background: grey;
 }
 </style>

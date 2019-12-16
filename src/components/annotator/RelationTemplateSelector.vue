@@ -26,52 +26,50 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 @Component({
   name: 'RelationTemplateSelector',
 })
 export default class RelationTemplateSelector extends Vue {
+  private template: object[] = [];
+  private query: string = '';
+  private searching: boolean = false;
 
-	private template: Array<object> = [];
-	private query: string = '';
-	private searching: boolean = false;
-
-	search() {
-		this.searching = true;
-		//TODO: Change to axios
-		RelationTemplateResource.query({
-			search: this.query,
-			format: "json",
-			all: true
-		}).then(function (response) {
-			this.templates = response.body.templates;
-			this.searching = false;
-		}).catch(function (error) {
-			console.log('Failed to get relationtemplates', error);
-			this.searching = false;
+  public search() {
+	this.searching = true;
+	// TODO: Change to axios
+	RelationTemplateResource.query({
+		search: this.query,
+		format: 'json',
+		all: true,
+	})
+		.then((response) => {
+		this.templates = response.body.templates;
+		this.searching = false;
+		})
+		.catch((error) => {
+		this.searching = false;
 		});
-	}
-	selectTemplate(template) {
-		//TODO: Change emit to store
-		this.$emit('selectedtemplate', template);
-	}
-	clear() {
-		this.templates = [];
-	}
-	showingTemplates() {
-		return this.templates.length > 0;
-	}
-
-
+  }
+  public selectTemplate(template) {
+	// TODO: Change emit to store
+	this.$emit('selectedtemplate', template);
+  }
+  public clear() {
+	this.templates = [];
+  }
+  public showingTemplates() {
+	return this.templates.length > 0;
+  }
 }
 </script>
 
 <style scoped>
 .project-item {
-	padding: 0;
-	margin: 10px 0;
+  padding: 0;
+  margin: 10px 0;
 }
 #title {
-	background: grey;
+  background: grey;
 }
 </style>
