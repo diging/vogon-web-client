@@ -1,7 +1,7 @@
 <template lang="pug">
 	ul(v-if="appellations.length")
 		appellation-display-item(
-			v-for="appellation in currentAppellations"
+			v-for="appellation in appellations"
 			:appellation="appellation"
 		)
 </template>
@@ -20,16 +20,12 @@ import AppellationDisplayItem from './AppellationDisplayItem.vue';
 	},
 })
 export default class AppellationDisplay extends Vue {
-	@Prop() private appellations!: any[];
-
-	private currentAppellations: any[] = [];
+	private appellations: any[] = [];
 
 	public async created() {
 		store.subscribe((mutation: any, state: any) => {
 			if (mutation.type === 'setTextContentStyle' && state.text_content_styles.positions) {
-				this.currentAppellations = state.text_content_styles.positions.map((position: any, i: number) => {
-					const appellation = this.appellations[i];
-					console.log(appellation);
+				this.appellations = state.text_content_styles.positions.map((position: any, i: number) => {
 					const positionStyle = {
 						top: `${position.top}px`,
 						left: `${position.left}px`,
@@ -42,29 +38,15 @@ export default class AppellationDisplay extends Vue {
 					const endPosition = position.endPosition;
 
 					return {
-						...appellation,
+						...position,
 						positionStyle,
 						midLines,
 						endPosition,
 						visible: true,
 					};
-				})
+				});
 
 				this.$forceUpdate();
-			}
-		});
-	}
-
-	@Watch('appellations')
-	public appellationsChange(value: any) {
-		// Replace an array prop wholesale doesn't seem to trigger a
-		//  DOM update in the v-for binding, but a push() does; so we'll
-		//  just push the appellations that aren't already in the array.
-		const currentIds = this.currentAppellations.map((elem: any) => elem.id);
-
-		this.appellations.forEach((elem) => {
-			if (currentIds.indexOf(elem.id) < 0) {
-				this.currentAppellations.push(elem);
 			}
 		});
 	}
