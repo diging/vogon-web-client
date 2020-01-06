@@ -1,11 +1,5 @@
 <template lang="pug">
-	v-navigation-drawer(v-model="show" absolute right width="12%")
-		template(v-slot:prepend)
-					v-btn-toggle(v-model="listToggle" outlined)
-						v-btn(x-small) Relations
-						v-btn(x-small) Date
-						v-btn(x-small) Appellations
-		AppellationList(:appellations="appellations" v-if="listToggle == 2")
+	v-card()
 		
 
 </template>
