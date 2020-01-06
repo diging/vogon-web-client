@@ -24,6 +24,8 @@
 					EmptyView No texts found! Perhaps, add one?
 				template(v-else)
 					v-data-table(:headers="textHeaders" :items="project.texts")
+						template(v-slot:item.title="{ item }")
+							a(v-bind:href="`/repository/${item.repository_id}/text/${item.repository_source_id}?project_id=${project.id}`") {{ item.title }}
 </template>
 
 <script lang="ts">
