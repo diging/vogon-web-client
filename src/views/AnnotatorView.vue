@@ -4,7 +4,7 @@
 			v-col(cols="6")
 				div(class="text-container")
 					pre(id="text-content" ref="textContent" v-on:mouseup="handleMouseUp") {{ this.content }}
-					appellation-display(:appellations="appellations")
+					appellation-display
 
 </template>
 
@@ -13,7 +13,10 @@ import { Component, Vue } from 'vue-property-decorator';
 
 import AppellationDisplay from '@/components/annotator/AppellationDisplay.vue';
 import store from '@/store';
-import { getAnnotationRectPositions, getPointPosition, getStyle, getTextPosition } from '@/utils/annotations';
+import {
+	clearMouseTextSelection, getAnnotationRectPositions, getPointPosition, getStyle,
+	getTextPosition,
+} from '@/utils/annotations';
 
 @Component({
 	name: 'Test',
@@ -23,7 +26,6 @@ import { getAnnotationRectPositions, getPointPosition, getStyle, getTextPosition
 })
 export default class Test extends Vue {
 	// ToDo: replace `content` and `appellations` by REST calls
-	private editor: object|null|any = null;
 	private content: string = `7 October 1885 – 18 November 1962) was a Danish physicist who made foundational contributions to understanding atomic structure and quantum theory, for which he received the Nobel Prize in Physics in 1922. Bohr was also a philosopher and a promoter of scientific research.
 
 Bohr developed the Bohr model of the atom, in which he proposed that energy levels of electrons are discrete and that the electrons revolve in stable orbits around the atomic nucleus but can jump from one energy level (or orbit) to another. Although the Bohr model has been supplanted by other models, its underlying principles remain valid. He conceived the principle of complementarity: that items could be separately analysed in terms of contradictory properties, like behaving as a wave or a stream of particles. The notion of complementarity dominated Bohr's thinking in both science and philosophy.
@@ -59,8 +61,12 @@ During the 1930s, Bohr helped refugees from Nazism. After Denmark was occupied b
 
 	private calculatePositions() {
 		const container = this.$refs.textContent as Element;
-		const positions = this.appellations.map((appellation, i) => getAnnotationRectPositions(appellation, container));
-		console.log(positions);
+		const positions = this.appellations.map(
+			(appellation, i) => ({
+				...getAnnotationRectPositions(appellation, container),
+				...appellation,
+			}),
+		);
 		store.commit('setTextContentStyle', { positions } );
 	}
 
@@ -70,10 +76,6 @@ During the 1930s, Bohr helped refugees from Nazism. After Denmark was occupied b
 			const target = event.target as HTMLElement;
 			if (target.id !== textContent.id) {
 				return;
-			}
-
-			if (this.selected) {
-				this.appellations = this.appellations.slice(0, this.appellations.length - 1);
 			}
 
 			event.stopPropagation();
@@ -90,24 +92,36 @@ During the 1930s, Bohr helped refugees from Nazism. After Denmark was occupied b
 				// actually been selected.
 				if (endOffset === startOffset) {
 					return;
-				};
+				}
+
+				// If there was a selection already, replace the existing selection
+				// with current selection
+				if (this.selected) {
+					this.appellations = this.appellations.slice(0, this.appellations.length - 1);
+				}
 
 				const raw = selection.toString();
 				const selectedText = {
 					position: {
-						startOffset: startOffset,
-						endOffset: endOffset,
+						startOffset,
+						endOffset,
 					},
 					visible: true,
-					interpretation: { label: '' },
+					interpretation: { label: raw },
 					representation: raw,
+					selected: true,
 				};
 				this.selected = true;
+
+				// append the selected text to original list
 				this.appellations = [
 					...this.appellations,
 					selectedText,
 				];
+
+				// Recalculate the highlight-box positions with new list
 				this.calculatePositions();
+				clearMouseTextSelection();
 			}
 		}
 	}

@@ -98,9 +98,9 @@ pre {
 }
 
 .appellation.appellation-selected {
-    border: 2px solid orange;
-    background-color: orange;
-    opacity: 0.6;
+    border: 2px solid blue;
+    background-color: blue;
+    opacity: 0.3;
 }
 .appellation {
     border: 0.5px solid orange;

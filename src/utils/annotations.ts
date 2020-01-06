@@ -201,17 +201,21 @@ export const getAnnotationRectPositions = (appellation: any, container: Element)
 	};
 };
 
-// export const clearMouseTextSelection = (): void => {
-// 	if (window.getSelection && window.getSelection() !== null) {
-// 		if (window.getSelection.empty) { // Chrome
-// 			window.getSelection.empty();
-// 		} else if (window.getSelection().removeAllRanges) { // Firefox
-// 			 window.getSelection().removeAllRanges();
-// 		}
-// 	} else if (document.selection) { // IE?
-// 		document.selection.empty();
-// 	}
-// };
+/**
+ * Clear selected text on the window, if any
+ * Ref: https://stackoverflow.com/a/3169849
+ */
+export const clearMouseTextSelection = (): void => {
+	if (window.getSelection !== null) {
+		if (window.getSelection().empty) {  // Chrome
+			window.getSelection().empty();
+		} else if (window.getSelection().removeAllRanges) {  // Firefox
+			window.getSelection().removeAllRanges();
+		}
+	  } else if (document.selection) {  // IE?
+		document.selection.empty();
+	}
+};
 
 // /**
 //  * Get Top position of DOM element
