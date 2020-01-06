@@ -13,7 +13,10 @@ import { Component, Vue } from 'vue-property-decorator';
 
 import AppellationDisplay from '@/components/annotator/AppellationDisplay.vue';
 import store from '@/store';
-import { getAnnotationRectPositions, getPointPosition, getStyle, getTextPosition } from '@/utils/annotations';
+import {
+	clearMouseTextSelection, getAnnotationRectPositions, getPointPosition, getStyle,
+	getTextPosition,
+} from '@/utils/annotations';
 
 @Component({
 	name: 'Test',
@@ -106,6 +109,7 @@ During the 1930s, Bohr helped refugees from Nazism. After Denmark was occupied b
 					visible: true,
 					interpretation: { label: raw },
 					representation: raw,
+					selected: true,
 				};
 				this.selected = true;
 
@@ -117,6 +121,7 @@ During the 1930s, Bohr helped refugees from Nazism. After Denmark was occupied b
 
 				// Recalculate the highlight-box positions with new list
 				this.calculatePositions();
+				clearMouseTextSelection();
 			}
 		}
 	}
