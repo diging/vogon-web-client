@@ -63,6 +63,9 @@
 <script lang="ts">
 import { VForm } from '@/interfaces/GlobalTypes';
 import { Component, Prop, Vue } from 'vue-property-decorator';
+
+import RelationField from './RelationField.vue';
+
 @Component({
   name: 'RelationDateAssignment',
   components: {
@@ -71,7 +74,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 })
 export default class RelationDateAssignment extends Vue {
   @Prop()
-  private listner!: object;
+  private listner!: any;
 
   private startTemplate: object = {
 	part_field: 'start',
@@ -120,28 +123,28 @@ export default class RelationDateAssignment extends Vue {
 	this.collectEnded = !this.collectEnded;
   }
 
-  public fieldIsListening(listeningField) {
-	this.listener = listeningField;
+  public fieldIsListening(listeningField: any) {
+	this.listner = listeningField;
 	// TODO: Change emit to store
 	if (listeningField.type === 'CO') {
 		this.$emit('fieldislisteningfortext');
 	}
   }
 
-  public fieldIsDoneListening(listeningField) {
-	this.listener = null;
+  public fieldIsDoneListening(listeningField: any) {
+	this.listner = null;
 	// TODO: Change emit to store
 	if (listeningField.type === 'CO') {
 		this.$emit('fieldisdonelisteningfortext');
 	}
   }
 
-  public registerData(field, data) {
+  public registerData(field: any, data: any) {
 	// TODO: Change emit to store
 	this.$emit('registerdata', field, data);
   }
 
-  public unregisterData(field) {
+  public unregisterData(field: any) {
 	// TODO: Change emit to store
 	this.$emit('unregisterdata', field);
   }

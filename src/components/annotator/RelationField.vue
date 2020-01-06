@@ -34,11 +34,11 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 export default class RelationField extends Vue {
 
 	@Prop()
-	private field!: object;
+	private field!: any;
 	@Prop()
-	private listner!: object;
+	private listener!: object;
 
-	private selecton!: any = null;
+	private selection!: any = null;
 	private valueLabel!: any = null;
 	private listening: boolean = false;
 
@@ -69,7 +69,7 @@ export default class RelationField extends Vue {
 		}
 	}
 
-	public handleSelection(selection) {
+	public handleSelection(selection: any) {
 		this.stopListening();
 		this.selection = selection;
 		if (this.field.type === 'TP') { // Assume this is an appellation.

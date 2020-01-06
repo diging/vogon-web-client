@@ -164,27 +164,27 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 })
 export default class Appellator extends Vue {
 
-	private appellations: object[] = [];
-	private dateappellations: object[] = [];
-	private relations: object[] = [];
-	private selected: object | null = null;
-	private selectedText: object | null = null;
-	private user: object = {
+	private appellations: any[] = [];
+	private dateappellations: any[] = [];
+	private relations: any[] = [];
+	private selected: any | null = null;
+	private selectedText: any | null = null;
+	private user: any = {
 		id: USER_ID,
 		username: USER_NAME,
 	};
-	private text: object = {
+	private text: any = {
 		id: TEXT_ID,
 		title: TEXT_TITLE,
 	};
-	private project: object = {
+	private project: any = {
 		id: PROJECT_ID,
 		name: PROJECT_NAME,
 	};
 	private sidebarShown: boolean = false;
-	private template: object | null = null;
+	private template: AsyncGeneratorFunctionConstructor | null = null;
 	private creatingRelation: boolean = true;
-	private textListener: object | null = null;
+	private textListener: AsyncGeneratorFunctionConstructor | null = null;
 	private sidebar: string = 'relations';
 	private createDateAppellation: boolean = false;
 	private swimmerPosition: string = 'static';
@@ -327,12 +327,12 @@ export default class Appellator extends Vue {
 			occursIn: this.text.id,
 			createdBy: this.user.id,
 			project: this.project.id,
-		}).then(function(response) {
+		}).then((response: any) => {
 			this.ready = false;
 			this.sidebarShown = false;
 			this.sidebar = 'relations';
 			this.$store.commit('resetCreateAppelltionsToText');
-		}).catch(function(error) {
+		}).catch((error: any) => {
 			this.error = true;
 			this.ready = false;
 			this.$store.commit('massAppellationAssignmentFailed');
@@ -378,10 +378,10 @@ export default class Appellator extends Vue {
 	public fieldIsDoneListeningForText() {
 		this.textListener = null;
 	}
-	public selectedTemplate(template) {
+	public selectedTemplate(template: any) {
 		this.template = template;
 	}
-	public createdRelation(relation) {
+	public createdRelation(relation: any) {
 		this.template = null;
 		this.updateRelations();
 		this.updateAppellations();
@@ -398,7 +398,7 @@ export default class Appellator extends Vue {
 	public hideSidebar() {
 		this.sidebarShown = false;
 	}
-	public selectConcept(concept) {
+	public selectConcept(concept: any) {
 		this.selected_concept = concept;
 	}
 	public hideAllAppellations() {
@@ -431,20 +431,20 @@ export default class Appellator extends Vue {
 			a.visible = true;
 		});
 	}
-	public showDateAppellation(appellation) {
+	public showDateAppellation(appellation: any) {
 		this.dateappellations.forEach((a) => {
 			if (a.id === appellation.id) { a.visible = true; }
 		});
 	}
-	public hideDateAppellation(appellation) {
+	public hideDateAppellation(appellation: any) {
 		this.dateappellations.forEach((a) => {
 			if (a.id === appellation.id) { a.visible = false; }
 		});
 	}
-	public scrollToAppellation(appellation) {
+	public scrollToAppellation(appellation: any) {
 		window.scrollTo(0, getTextPosition(appellation.position).top);
 	}
-	public selectAppellation(appellation) {
+	public selectAppellation(appellation: any) {
 		this.appellations.forEach((a) => {
 			a.selected = (a.id === appellation.id);
 		});
@@ -455,7 +455,7 @@ export default class Appellator extends Vue {
 		this.unselectDateAppellation();
 		this.scrollToAppellation(appellation);
 	}
-	public selectDateAppellation(appellation) {
+	public selectDateAppellation(appellation: any) {
 		this.dateappellations.forEach((a) => {
 			a.selected = (a.id === appellation.id);
 		});
@@ -466,7 +466,7 @@ export default class Appellator extends Vue {
 		this.unselectAppellation();
 		this.scrollToAppellation(appellation);
 	}
-	public selectAppellationsById(appellationIds) {
+	public selectAppellationsById(appellationIds: any) {
 		this.appellations.forEach((appellation) => {
 			appellation.selected = (appellationIds.indexOf(appellation.id) > -1);
 		});
@@ -481,7 +481,7 @@ export default class Appellator extends Vue {
 			a.selected = false;
 		});
 	}
-	public selectText(position) {
+	public selectText(position: any) {
 		this.unselectAppellation();
 		if (!this.textListener) {
 			this.selectedText = position;
@@ -498,7 +498,7 @@ export default class Appellator extends Vue {
 	public cancelAppellation() {
 		this.selectedText = null;
 	}
-	public createdAppellation(appellation) {
+	public createdAppellation(appellation: any) {
 		const offsets = appellation.position.position_value.split(',');
 		appellation.position.startOffset = offsets[0];
 		appellation.position.endOffset = offsets[1];
@@ -509,7 +509,7 @@ export default class Appellator extends Vue {
 		this.selectedText = null;
 		this.updateAppellations(); // call update appellations when a new appelation is created to update list
 	}
-	public createdDateAppellation(appellation) {
+	public createdDateAppellation(appellation: any) {
 		const offsets = appellation.position.position_value.split(',');
 		appellation.position.startOffset = offsets[0];
 		appellation.position.endOffset = offsets[1];
@@ -519,7 +519,7 @@ export default class Appellator extends Vue {
 		this.selectDateAppellation(appellation);
 		this.selectedText = null;
 	}
-	public updateAppellations(callback) {
+	public updateAppellations(callback: any) {
 		// "CO" is the "character offset" DocumentPosition type. For image
 		//  annotation this should be changed to "BB".
 		Appellation.query({
@@ -527,12 +527,12 @@ export default class Appellator extends Vue {
 			text: this.text.id,
 			limit: 500,
 			project: this.project.id,
-		}).then((response) => {
+		}).then((response: any) => {
 			// DocumentPosition.position_value is represented with a
 			//  TextField, so serialized as a string. Start and end offsets
 			//  should be comma-delimited.
 
-			this.appellations = response.body.results.map((appellation) => {
+			this.appellations = response.body.results.map((appellation: any) => {
 				const offsets = appellation.position.position_value.split(',');
 				appellation.position.startOffset = offsets[0];
 				appellation.position.endOffset = offsets[1];
@@ -546,7 +546,7 @@ export default class Appellator extends Vue {
 			}
 		});
 	}
-public updateDateAppellations(callback) {
+public updateDateAppellations(callback: any) {
 		// "CO" is the "character offset" DocumentPosition type. For image
 		//  annotation this should be changed to "BB".
 		DateAppellation.query({
@@ -554,11 +554,11 @@ public updateDateAppellations(callback) {
 			text: this.text.id,
 			limit: 500,
 			project: this.project.id,
-		}).then((response) => {
+		}).then((response: any) => {
 			// DocumentPosition.position_value is represented with a
 			//  TextField, so serialized as a string. Start and end offsets
 			//  should be comma-delimited.
-			this.dateappellations = response.body.results.map((appellation) => {
+			this.dateappellations = response.body.results.map((appellation: any) => {
 				const offsets = appellation.position.position_value.split(',');
 				appellation.position.startOffset = offsets[0];
 				appellation.position.endOffset = offsets[1];
@@ -569,36 +569,36 @@ public updateDateAppellations(callback) {
 		 if (callback) { callback(response); }
 		});
 	}
-public selectRelation(relation); {
+public selectRelation(relation: any); {
 		this.selected_relation = relation;
 		this.selected = null;
-		this.relations.forEach((r) => {
+		this.relations.forEach((r: any) => {
 			r.selected = (r.id === relation.id);
 		});
-		const appellationIds = relation.appellations.map((appellation) => {
+		const appellationIds = relation.appellations.map((appellation: any) => {
 			return appellation.id;
 		});
-		this.appellations.forEach((appellation) => {
+		this.appellations.forEach((appellation: any) => {
 			appellation.selected = (appellationIds.indexOf(appellation.id) > -1);
 		});
-		const dateAppellationIds = relation.date_appellations.map((appellation) => {
+		const dateAppellationIds = relation.date_appellations.map((appellation: any) => {
 			return appellation.id;
 		});
-		this.dateappellations.forEach((appellation) => {
+		this.dateappellations.forEach((appellation: any) => {
 			appellation.selected = (dateAppellationIds.indexOf(appellation.id) > -1);
 		});
 	},
-updateRelations(callback); {
+updateRelations(callback: any); {
 		Relation.query({
 			text: this.text.id,
 			limit: 500,
 			project: this.project.id,
-		}).then((response) => {
+		}).then((response: any) => {
 			this.relations = response.body.results;
 			if (callback) {
 				callback(response);
 			}
-		}). catch (function(error) {
+		}). catch (function(error: any) {
 			// TODO: handle errors
 		});
   if (reloadGraph) {

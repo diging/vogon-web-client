@@ -15,6 +15,9 @@
 <script lang="ts">
 import { VForm } from '@/interfaces/GlobalTypes';
 import { Component, Prop, Vue } from 'vue-property-decorator';
+
+import RelationField from './RelationField.vue';
+
 @Component({
   name: 'RelationTemplate',
   components: {
@@ -29,14 +32,14 @@ export default class RelationTemplate extends Vue {
   @Prop()
   private description!: string;
 
-  private listner: any = null;
+  private listener: any = null;
 
   // Since we only want one field to listen for an appellation at a time,
   //  we keep track of the first field to announce that they are
   //  listening. All other RelationField instances are expected to respect
   //  that listener, and not start listening until the current field is
   //  done.
-  public fieldIsListening(listeningField) {
+  public fieldIsListening(listeningField: any) {
 	this.listener = listeningField;
 	// TODO: Change emit to store
 	if (listeningField.type === 'CO') {
@@ -44,18 +47,18 @@ export default class RelationTemplate extends Vue {
 	}
   }
 
-  public fieldIsDoneListening(listeningField) {
+  public fieldIsDoneListening(listeningField: any) {
 	this.listener = null;
 	// TODO: Change emit to store
 	if (listeningField.type === 'CO') {
 		this.$emit('fieldisdonelisteningfortext');
 	}
   }
-  public registerData(field, data) {
+  public registerData(field: any, data: any) {
 	// TODO: Change emit to store
 	this.$emit('registerdata', field, data);
   }
-  public unregisterData(field) {
+  public unregisterData(field: any) {
 	this.$emit('unregisterdata', field);
   }
 }

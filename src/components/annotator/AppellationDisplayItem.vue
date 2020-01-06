@@ -60,10 +60,6 @@ export default class AppellationDisplayItem extends Vue {
 
 	private tooltip: boolean = false;
 
-	get formattedDate() {
-		return new Date(this.text.added).toLocaleString();
-	}
-
 	private getLabel() {
 		if (this.appellation.interpretation) {
 			return this.appellation.interpretation.label;

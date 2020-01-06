@@ -24,6 +24,10 @@
 <script lang="ts">
 import { VForm } from '@/interfaces/GlobalTypes';
 import { Component, Prop, Vue } from 'vue-property-decorator';
+
+import RelationDateAssignment from './RelationDateAssignment.vue';
+import RelationTemplate from './RelationTemplate.vue';
+
 @Component({
   name: 'RelationCreator',
   components: {
@@ -33,15 +37,15 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 })
 export default class RelationCreator extends Vue {
   @Prop()
-  private text!: object;
+  private text!: any;
   @Prop()
-  private project!: object;
+  private project!: any;
   @Prop()
-  private user!: object;
+  private user!: any;
   @Prop()
-  private template!: object;
+  private template!: any;
   // TODO: possible create interface for this
-  private fieldData: object = {};
+  private fieldData: any = {};
   private ready: boolean = false;
   private error: boolean = false;
   private start: object | null = null;
@@ -69,17 +73,17 @@ export default class RelationCreator extends Vue {
 	// TODO: Change emit to store
 	this.$emit('fieldisdonelisteningfortext');
   }
-  public registerData(field, data) {
+  public registerData(field: any, data: any) {
 	this.fieldData[this.fieldHash(field)] = data;
 	this.ready = this.readyToCreate();
   }
-  public unregisterData(field, data) {
+  public unregisterData(field: any, data: any) {
 	delete this.fieldData[this.fieldHash(field)];
 	this.ready = this.readyToCreate();
   }
   public readyToCreate() {
 	let ready = true;
-	this.fields.forEach((field) => {
+	this.fields.forEach((field: any) => {
 		if (self.fieldData[self.fieldHash(field)] === undefined) {
 		ready = false;
 		}
@@ -87,11 +91,12 @@ export default class RelationCreator extends Vue {
 	return ready;
   }
   // Relation fields don't have unique identifiers, so we create them.
-  public fieldHash(field) {
+  public fieldHash(field: any) {
 	return [field.part_id, field.part_field].join('.');
   }
   public prepareSubmission() {
-	this.fields.forEach((field) => {
+	  const self = this;
+	  this.fields.forEach((field: any) => {
 		if (field.type === 'TP' || field.type === 'DT') {
 		// Open concept; expects appellation.
 		field.appellation = self.fieldData[self.fieldHash(field)];
@@ -109,7 +114,7 @@ export default class RelationCreator extends Vue {
 		};
 		}
 	});
-	['start', 'end', 'occur'].forEach((temporalPart) => {
+	  ['start', 'end', 'occur'].forEach((temporalPart) => {
 		const key = '-1.' + temporalPart;
 		if (key in self.fieldData) {
 		self[temporalPart] = self.fieldData[key];
@@ -121,9 +126,10 @@ export default class RelationCreator extends Vue {
 	this.$emit('cancelrelation');
   }
   public create() {
-	this.prepareSubmission();
+	  const self = this;
+	  this.prepareSubmission();
 	// TODO: change to axios
-	RelationTemplateResource.create(
+	  RelationTemplateResource.create(
 		{
 		id: this.id,
 		},
@@ -134,12 +140,12 @@ export default class RelationCreator extends Vue {
 		project: this.project.id,
 		},
 	)
-		.then((response) => {
+		.then((response: any) => {
 		this.ready = false;
 		// TODO: Change emit to store
 		self.$emit('createdrelation', response.body);
 		})
-		.catch((error) => {
+		.catch((error: any) => {
 		self.error = true;
 		self.ready = false;
 		}); // TODO: implement callback and exception handling!!

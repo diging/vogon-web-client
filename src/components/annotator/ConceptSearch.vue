@@ -31,6 +31,9 @@
 // TODO: Convert file to typescript where possible
 import { VForm } from '@/interfaces/GlobalTypes';
 import { Component, Prop, Vue } from 'vue-property-decorator';
+
+import ConceptListItem from './ConceptListItem.vue';
+
 @Component({
   name: 'ConceptSearch',
   components: {
@@ -45,7 +48,7 @@ export default class ConceptSearch extends Vue {
   private pos: string = '';
   private force: boolean = false;
 
-  private selectConcept(concept) {
+  private selectConcept(concept: any) {
 	// Clear the concept search results.
 	this.concepts = [];
 	this.$emit('selectconcept', concept);
@@ -62,7 +65,7 @@ export default class ConceptSearch extends Vue {
 
 	// Asynchronous quries are beautiful.
 	const self = this; // Need a closure since Concept is global.
-	const payload = {
+	const payload: any = {
 		search: this.query,
 	};
 	if (this.pos !== '') {
@@ -72,11 +75,11 @@ export default class ConceptSearch extends Vue {
 		payload.force = 'force';
 	}
 	Concept.search(payload)
-		.then((response) => {
+		.then((response: any) => {
 		self.concepts = response.body.results;
 		self.searching = false;
 		})
-		.catch((error) => {
+		.catch((error: any) => {
 		self.error = true;
 		self.searching = false;
 		});

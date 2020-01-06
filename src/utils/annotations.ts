@@ -207,13 +207,12 @@ export const getAnnotationRectPositions = (appellation: any, container: Element)
  */
 export const clearMouseTextSelection = (): void => {
 	if (window.getSelection !== null) {
-		if (window.getSelection().empty) {  // Chrome
-			window.getSelection().empty();
-		} else if (window.getSelection().removeAllRanges) {  // Firefox
-			window.getSelection().removeAllRanges();
+		const sel = window.getSelection();
+		if (sel !== null) {  // Chrome
+			sel.empty();
+		} else if (window.getSelection()!.removeAllRanges) {  // Firefox
+			window.getSelection()!.removeAllRanges();
 		}
-	  } else if (document.selection) {  // IE?
-		document.selection.empty();
 	}
 };
 

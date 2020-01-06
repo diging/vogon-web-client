@@ -20,7 +20,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 })
 export default class RelationListItem extends Vue {
   @Prop()
-  private relation!: object;
+  private relation!: any;
 
   public select() {
 	// TODO: Remove this
@@ -29,18 +29,18 @@ export default class RelationListItem extends Vue {
   public isSelected() {
 	return this.relation.selected;
   }
-  public getRepresentation(relation) {
+  public getRepresentation(relation: any) {
 	if (relation.representation) {
 		return relation.representation;
 	} else {
 		return relation.appellations
-		.map((appellation) => {
+		.map((appellation: any) => {
 			return appellation.interpretation.label;
 		})
 		.join('; ');
 	}
   }
-  public getCreatorName(creator) {
+  public getCreatorName(creator: any) {
 	  // TODO: This needs to be change to user id
 	if (creator.id === USER_ID) {
 		return 'you';
@@ -48,7 +48,7 @@ export default class RelationListItem extends Vue {
 		return creator.username;
 	}
   }
-  public getFormattedDate(isodate) {
+  public getFormattedDate(isodate: string) {
 	return moment(isodate).format('dddd LL [at] LT');
   }
 }

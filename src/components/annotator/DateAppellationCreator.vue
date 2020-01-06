@@ -33,13 +33,13 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 export default class DateAppellationCreator extends Vue {
   // TODO: Interface for concept
   @Prop()
-  private position!: object;
+  private position!: any;
   @Prop()
-  private user!: object;
+  private user!: any;
   @Prop()
-  private text!: object;
+  private text!: any;
   @Prop()
-  private project!: object;
+  private project!: any;
 
   private year: object = {};
   private month: object = {};
@@ -85,12 +85,12 @@ export default class DateAppellationCreator extends Vue {
 		month: this.month,
 		day: this.day,
 		})
-		.then((response) => {
+		.then((response: any) => {
 			this.reset();
 			// TODO: Get rid of emit
 			this.$emit('createddateappellation', response.body);
 		})
-		.catch((error) => {
+		.catch((error: any) => {
 			this.saving = false;
 		});
 	}

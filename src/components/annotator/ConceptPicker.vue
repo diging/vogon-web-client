@@ -28,20 +28,21 @@ export default class ConceptPicker extends Vue {
 	//TODO:figure out what type appell is
 	private appell: Array<any> = [];
 	//TODO:figure out what type appell is
-	private appellationCount: Array<any> = []
+	private appellationCount: Array<any> = [];
+	private concepts: Array<any> = [];
 
 	created() {
 		this.merge(this.appellations);
 
 	}
 
-	private selectConcept(concept) {
+	private selectConcept(concept: any) {
 		// Clear the concept search results.
 		this.concepts = [];
 		//TODO: Change emit to use store
 		this.$emit('selectconcept', concept);
 	}
-	private addConcepts(appellationMapEntires) {
+	private addConcepts(appellationMapEntires: any) {
 		var count = 0
 		while (count <= 3) {
 			var appellation = appellationMapEntires.next().value;
@@ -54,11 +55,11 @@ export default class ConceptPicker extends Vue {
 			}
 		}
 	}
-	private merge(appellations) {
+	private merge(appellations: any) {
 		this.conceptsFinal = [];
 		this.appell = appellations;
 		// Sort by date
-		function compare(a, b) {
+		function compare(a: any, b: any) {
 			if (Date.parse(a.created) > Date.parse(b.created))
 				return -1;
 			if (Date.parse(a.created) < Date.parse(b.created))

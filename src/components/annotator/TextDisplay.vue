@@ -18,9 +18,9 @@ import AppellationDisplay from './AppellationDisplay.vue';
 })
 export default class TextDisplay extends Vue {
 	@Prop()
-	private content: string;
+	private content: string = '';
 	@Prop()
-	private appellations: any[];
+	private appellations: any[] = [];
 }
 </script>
 
