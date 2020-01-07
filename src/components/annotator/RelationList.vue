@@ -18,10 +18,10 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 export default class RelationList extends Vue {
 
 	@Prop()
-	private relations: object[];
+	private relations: any[] = [];
 
 	// FIXME: Change this emit to use the store
-	private selectRelation(relation) {
+	private selectRelation(relation: any) {
 		this.$emit('selectrelation', relation);
 	}
 }

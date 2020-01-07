@@ -36,9 +36,9 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 })
 export default class SideDrawer extends Vue {
   @Prop()
-  private project: object;
+  private project: any = [];
   @Prop()
-  private text: object;
+  private text: any = [];
   @Prop()
   private loading: boolean = true;
 

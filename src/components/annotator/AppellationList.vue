@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { VForm } from '@/interfaces/GlobalTypes';
+import { TokenDto, VForm } from '@/interfaces/GlobalTypes';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import AppellationListItem from './AppellationListItem.vue';
 
@@ -24,14 +24,14 @@ import moment from 'moment';
 })
 export default class AppellationList extends Vue {
   @Prop()
-  private appellations!: object;
+  private appellations!: any;
   @Prop()
-  private sidebar;
+  private sidebar!: any;
 
   private errorMessage: string = '';
   private appellationsToSubmit: object[] = [];
   private templates = null;
-  private selectedTemplate: objects[] = [];
+  private selectedTemplate: any[] = [];
   private currentAppellations = this.appellations;
 
   // created() {
@@ -63,16 +63,16 @@ export default class AppellationList extends Vue {
   // 		}
   // }
 
-  private getCreatorName(creator) {
-	const decoded = JwtDecode<TokenDto>(localStorage.getItem('token'));
+  private getCreatorName(creator: any) {
+	const decoded = JwtDecode<TokenDto>(localStorage.getItem('token') || '');
 	if (creator.id === decoded.user_id) {
 		return 'you';
 	} else {
 		return creator.username;
 	}
   }
-  private getFormattedDate(isodate) {
-	return moment(isodate).format('dddd LL [at] LT');
+  private getFormattedDate(isodate: string) {
+	  return moment(isodate).format('dddd LL [at] LT');
   }
 
   get conceptLabel() {
@@ -126,11 +126,11 @@ export default class AppellationList extends Vue {
 		format: 'json',
 		all: false,
 	})
-		.then((response) => {
+		.then((response: any) => {
 		this.$store.commit('setTemplate', response.body.templates[0]);
 		})
-		.catch((error) => {
-		self.searching = false;
+		.catch((error: any) => {
+		this.searching = false;
 		});
   }
 
@@ -170,7 +170,7 @@ export default class AppellationList extends Vue {
    ***********************************************/
   private allHidden() {
 	let allHidden = true;
-	this.appellations.forEach((appellation) => {
+	this.appellations.forEach((appellation: any) => {
 		if (appellation.visible) {
 		allHidden = false;
 		}
@@ -186,15 +186,15 @@ export default class AppellationList extends Vue {
 	this.$emit('showallappellations');
   }
 
-  private hideAppellation(appellation) {
+  private hideAppellation(appellation: any) {
 	this.$emit('hideappellation', appellation);
   }
 
-  private showAppellation(appellation) {
+  private showAppellation(appellation: any) {
 	this.$emit('showappellation', appellation);
   }
 
-  private selectAppellation(appellation) {
+  private selectAppellation(appellation: any) {
 	this.$emit('selectappellation', appellation);
   }
 }

@@ -44,8 +44,13 @@
 </template>
 
 <script lang="ts">
-import { VForm } from '@/interfaces/GlobalTypes';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+
+import { VForm } from '@/interfaces/GlobalTypes';
+import ConceptCreator from './ConceptCreator.vue';
+import ConceptPicker from './ConceptPicker.vue';
+import ConceptSearch from './ConceptSearch.vue';
+
 @Component({
   name: 'AppellationCreator',
   components: {
@@ -56,17 +61,17 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 })
 export default class AppellationCreator extends Vue {
   @Prop()
-  private position!: object;
+  private position!: any;
   @Prop()
-  private user!: object;
+  private user!: any;
   @Prop()
-  private text!: object;
+  private text!: any;
   @Prop()
-  private project!: object;
+  private project!: any;
   @Prop()
-  private appellations!: object;
+  private appellations!: any;
 
-  private concept: object = {};
+  private concept: any = {};
   private create: boolean = false;
   private submitted: boolean = false;
   private saving: boolean = false;
@@ -91,7 +96,7 @@ export default class AppellationCreator extends Vue {
 	this.saving = false;
   }
 
-  private setSearch(search) {
+  private setSearch(search: any) {
 	// removes concept picker if searching concept to keep it from looking messy
 	this.search = search;
   }
@@ -111,11 +116,11 @@ export default class AppellationCreator extends Vue {
 	return this.concept == null;
   }
 
-  private selectConcept(concept) {
+  private selectConcept(concept: any) {
 	this.concept = concept;
   }
 
-  private createdConcept(concept) {
+  private createdConcept(concept: any) {
 	this.concept = concept;
 	this.create = false;
   }
@@ -125,7 +130,7 @@ export default class AppellationCreator extends Vue {
 	/*
      * may want to change this at somepoint. If this is a concept for a text we set the position values to null
      */
-	if (store.getters.showConcepts) {
+	if (this.$store.getters.showConcepts) {
 		this.position.startOffset = null;
 		this.position.endOffset = null;
 		stringRep = this.text.title;
@@ -152,7 +157,7 @@ export default class AppellationCreator extends Vue {
 		project: this.project.id,
 		interpretation: this.concept.uri || this.concept.interpretation.uri,
 		})
-		.then((response) => {
+		.then((response: any) => {
 			this.reset();
 			if (this.$store.getters.showConcepts) {
 			this.$store.commit('setTextAppellation', response.body);
@@ -166,9 +171,9 @@ export default class AppellationCreator extends Vue {
 			response.body.interpretation_label,
 			);
 			// TODO: Change emit for store
-			self.$emit('createdappellation', response.body);
+			this.$emit('createdappellation', response.body);
 		})
-		.catch(function(error) {
+		.catch((error: any): void => {
 			this.saving = false;
 		});
 	}

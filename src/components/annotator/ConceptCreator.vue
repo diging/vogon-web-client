@@ -68,7 +68,7 @@ export default class ConceptCreator extends Vue {
   private submitted: boolean = false;
 
   public mounted() {
-	this.UpdateTypes();
+	this.updateTypes();
   }
 
   @Watch('name')
@@ -124,23 +124,23 @@ export default class ConceptCreator extends Vue {
 		pos: this.pos,
 		typed: this.conceptType,
 		})
-		.then(function(response) {
+		.then((response: any) => {
 			this.clear();
 			// TODO: Get ride of emit
 			this.$emit('createdconcept', response.body);
 		})
-		.catch(function(error) {
+		.catch((error: any) => {
 			this.error = true;
 		});
 	}
   }
   private updateTypes() {
 	// TODO: change to axios
-	ConceptType.query().then(function(response) {
+	ConceptType.query().then((response: any) => {
 		this.conceptTypes = response.body.results;
 	});
   }
-  private labelType(ctype) {
+  private labelType(ctype: any) {
 	if (ctype.label) {
 		return ctype.label;
 	} else {

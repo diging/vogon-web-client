@@ -31,7 +31,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
   name: 'RelationTemplateSelector',
 })
 export default class RelationTemplateSelector extends Vue {
-  private template: object[] = [];
+  private templates: any[] = [];
   private query: string = '';
   private searching: boolean = false;
 
@@ -43,15 +43,15 @@ export default class RelationTemplateSelector extends Vue {
 		format: 'json',
 		all: true,
 	})
-		.then((response) => {
+		.then((response: any) => {
 		this.templates = response.body.templates;
 		this.searching = false;
 		})
-		.catch((error) => {
+		.catch((error: any) => {
 		this.searching = false;
 		});
   }
-  public selectTemplate(template) {
+  public selectTemplate(template: any) {
 	// TODO: Change emit to store
 	this.$emit('selectedtemplate', template);
   }

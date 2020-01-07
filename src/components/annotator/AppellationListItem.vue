@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { VForm } from '@/interfaces/GlobalTypes';
+import { TokenDto, VForm } from '@/interfaces/GlobalTypes';
 import JwtDecode from 'jwt-decode';
 import moment from 'moment';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
@@ -27,12 +27,12 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 })
 export default class AppellationListItem extends Vue {
   @Prop()
-  private appellation!: object;
+  private appellation!: any;
   // FIXME: find and assign types for both of these
   @Prop()
-  private sidebar;
+  private sidebar!: any;
   @Prop()
-  private index;
+  private index!: any;
 
   private checked: boolean = true;
   private canUncheckAll: boolean = false;
@@ -41,7 +41,7 @@ export default class AppellationListItem extends Vue {
   public mounted() {
 	this.watchUncheckStore();
 	this.watchCheckStore();
-	this.$root.$on('appellationClicked', (data) => {
+	this.$root.$on('appellationClicked', (data: any) => {
 		if (data === this.appellation) {
 		this.checked = !this.checked;
 		}
@@ -127,8 +127,8 @@ export default class AppellationListItem extends Vue {
 		return this.appellation.dateRepresentation;
 	}
   }
-  private getCreatorName(creator) {
-	const decoded = JwtDecode<TokenDto>(localStorage.getItem('token'));
+  private getCreatorName(creator: any) {
+	const decoded = JwtDecode<TokenDto>(localStorage.getItem('token') || '');
 	if (creator.id === decoded.user_id) {
 		return 'you';
 	} else {
@@ -136,7 +136,7 @@ export default class AppellationListItem extends Vue {
 	}
   }
 
-  private getFormattedDate(isodate) {
+  private getFormattedDate(isodate: string) {
 	return moment(isodate).format('dddd LL [at] LT');
   }
 }
