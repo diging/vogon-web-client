@@ -1,6 +1,21 @@
 <template lang="pug">
 	v-card()
-		
+		v-tabs(v-model="tab" )
+			v-tab(href="#tab-1") Annotations
+			v-tab(href="#tab-2") Date Annotations
+			v-tab(href="#tab-3") Relations
+			v-tab(href="#tab-4") Search
+		v-tabs-items(v-model="tab")
+			v-tab-item(value="tab-1")
+				AppellationList(:appellations="appellations")
+			v-tab-item(value="tab-2")
+				h1 Tab 2
+			v-tab-item(value="tab-3")
+				h1 Tab 3
+			v-tab-item(value="tab-4")
+				h1 Tab 4
+
+
 
 </template>
 
@@ -20,6 +35,7 @@ export default class ListsSideDrawer extends Vue {
   @Prop()
   private appellations!: object[];
 
+  private tab: string = 'tab-4';
   private show: boolean = false;
   private listToggle: string = '';
 

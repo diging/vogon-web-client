@@ -1,5 +1,5 @@
 <template lang="pug">
-	v-row
+	div
 		pre(id="text-content" class="text-left") {{ content }}
 		appellation-display(:appellations="appellations")
 </template>
