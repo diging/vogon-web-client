@@ -20,4 +20,4 @@ export interface TokenDto {
 	jti: string;
 	user_id: number;
 	github_token: boolean;
-  }
+}

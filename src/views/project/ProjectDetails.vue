@@ -14,26 +14,25 @@
 					v-col(md="6")
 						div(class="float-right")
 							CreateUpdateProject(update :project="Object.assign({}, project)" v-bind:getProjectDetails="getProjectDetails")
-							v-btn(tile depressed color="teal" large class="ma-2" dark)
+							v-btn(tile depressed color="teal" large class="ma-2" dark v-bind:href="`/repository?project_id=${this.$route.params.id}`")
 								v-icon(left) mdi-plus
 								span Add text
 			br
 			v-card(class="card-project-text")
 				v-card-title Texts
 				template(v-if="!project.texts.length")
-					br
-					div(class="text-center")
-						v-icon(x-large) mdi-file-document-outline
-						br
-						div No texts found! Perhaps, add one?
+					EmptyView No texts found! Perhaps, add one?
 				template(v-else)
 					v-data-table(:headers="textHeaders" :items="project.texts")
+						template(v-slot:item.title="{ item }")
+							a(v-bind:href="`/repository/${item.repository_id}/text/${item.repository_source_id}?project_id=${project.id}`") {{ item.title }}
 </template>
 
 <script lang="ts">
 import { AxiosResponse } from 'axios';
 import { Component, Vue } from 'vue-property-decorator';
 
+import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
 import CreateUpdateProject from '@/components/project/CreateUpdateProject.vue';
@@ -43,6 +42,7 @@ import { Project } from '@/interfaces/ProjectTypes';
 	name: 'ProjectDetails',
 	components: {
 		CreateUpdateProject,
+		EmptyView,
 		ErrorIndicator,
 		Loading,
 	},
@@ -69,9 +69,6 @@ export default class ProjectDetails extends Vue {
 </script>
 
 <style scoped>
-.main {
-	text-align: left;
-}
 .project-details {
 	padding: 20px;
 }

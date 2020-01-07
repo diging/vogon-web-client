@@ -12,7 +12,7 @@
 						span(class="headline") {{settings.action}} project
 					v-card-text
 						v-text-field(label="Name*" required v-model="currentProject.name" :rules="projectNameRules")
-						v-textarea(label="Description" auto-grow v-model="currentProject.description")
+						v-textarea(label="Description*" auto-grow v-model="currentProject.description")
 						v-text-field(label="Quadriga Id" v-model="currentProject.quadriga_id")
 						v-alert(v-if="failed" dense type="error") Error while {{settings.continuousVerb}} project!
 					v-card-actions
@@ -26,6 +26,7 @@ import { VForm } from '@/interfaces/GlobalTypes';
 import { Project } from '@/interfaces/ProjectTypes';
 import { AxiosResponse } from 'axios';
 import { Component, Prop, Vue } from 'vue-property-decorator';
+
 @Component({
 	name: 'CreateUpdateProject',
 })
@@ -87,11 +88,10 @@ export default class CreateUpdateProject extends Vue {
 	}
 
 	private updateProject(): Promise<AxiosResponse> {
-		return Vue.$axios.put(`/project/${this.currentProject.id}`, {
+		return Vue.$axios.patch(`/project/${this.currentProject.id}`, {
 			name: this.currentProject.name,
 			description: this.currentProject.description,
 			quadriga_id: this.currentProject.quadriga_id,
-			ownedBy: this.currentProject.ownedBy,
 		});
 	}
 
