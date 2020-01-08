@@ -10,7 +10,8 @@
             dense
             outlined
             filled
-            :items="annotations"
+            :items="appellations"
+            item-text="interpretation.label"
         )
             template(v-slot:append-outer)
                 v-icon mdi-eyedropper-variant
@@ -28,7 +29,8 @@ export default class RelationFieldItem extends Vue {
 	@Prop()
 	private field!: RelationTemplateField;
 
-	private annotations = ['Annotation 1', 'Annotation 2'];
+	@Prop()
+	private appellations!: any;
 }
 </script>
 

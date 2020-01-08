@@ -12,7 +12,7 @@
 				h1 Tab 2
 			v-tab-item(value="tab-3")
 				template(v-if="template")
-					RelationTemplateRender(v-bind:template="template")
+					RelationTemplateRender(v-bind:template="template" v-bind:appellations="appellations")
 				template(v-else)
 					h5(class="caption text-center py-5") Template currently not selected!
 			v-tab-item(value="tab-4")

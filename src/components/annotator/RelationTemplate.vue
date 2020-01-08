@@ -5,7 +5,27 @@
 		RelationFieldItem(
 			v-for="field in template.fields"
 			v-bind:field="field"
+			v-bind:appellations="appellations"
 		)
+
+		v-row
+			v-col(:cols="6")
+				v-btn(
+					outlined
+					dense
+					@click="$store.commit('setAnnotatorTemplate', null);"
+				)
+					v-icon(left) mdi-close
+					| Cancel
+			v-col(:cols="6")
+				v-btn(
+					dense
+					:disabled="disabled"
+					color="success"
+					class="float-right"
+				)
+					v-icon(left) mdi-link-plus
+					| Create relation
 </template>
 
 <script lang="ts">
@@ -25,6 +45,11 @@ export default class RelationTemplateRender extends Vue {
 
 	@Prop()
 	private template!: RelationTemplate;
+
+	@Prop()
+	private appellations!: any;
+
+	private disabled: boolean = true;
 
   // Since we only want one field to listen for an appellation at a time,
   //  we keep track of the first field to announce that they are

@@ -78,21 +78,6 @@ export default class AppellationDisplayItem extends Vue {
 </script>
 
 <style scoped>
-#title {
-	background: grey;
-}
-pre {
-	white-space: pre-wrap;
-	word-wrap: break-word;
-	background-color:#f5f5f5;
-	border: 1px solid#ccc;
-	border-radius: 4px;
-	display: block;
-}
-#text-content {
-	padding: 3%;
-}
-
 .appellation.appellation-selected {
     border: 2px solid blue;
     background-color: blue;
@@ -100,8 +85,8 @@ pre {
 }
 .appellation {
     border: 0.5px solid orange;
-    background-color: yellow;
-    opacity: 0.2;
+    background-color: #FBC02D;
+    opacity: 0.4;
     list-style-type: none;
     margin: 0;
     padding: 0;
