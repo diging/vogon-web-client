@@ -19,6 +19,10 @@ const initialState: RootState = {
 	assignment_failed: false,
 	validator: 0,
 	text_content_styles: {},
+	annotator: {
+		currentTab: 'tab-1',
+		template: null,
+	},
 };
 
 const mutations: MutationTree<RootState> = {
@@ -90,6 +94,12 @@ const mutations: MutationTree<RootState> = {
 	setTextContentStyle(state, style) {
 		state.text_content_styles = style;
 	},
+	setAnnotatorCurrentTab(state, tab) {
+		state.annotator.currentTab = tab;
+	},
+	setAnnotatorTemplate(state, template) {
+		state.annotator.template = template;
+	},
 };
 
 export default new Vuex.Store({
@@ -109,6 +119,8 @@ export default new Vuex.Store({
 		getAssignmentFailed: (state) => state.assignment_failed,
 		getValidator: (state) => state.validator,
 		getTextContentStyle: (state) => state.text_content_styles,
+		getAnnotatorCurrentTab: (state) => state.annotator.currentTab,
+		getAnnotatorTemplate: (state) => state.annotator.template,
 	},
   actions: {
 

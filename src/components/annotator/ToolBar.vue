@@ -12,7 +12,7 @@
 							v-icon(v-on="on" @click="searchRelationTemplates()") search
 			v-list(two-line)
 				template(v-for="(template, i) in templates" )
-					v-list-item(:key="i" @click="")
+					v-list-item(:key="i" @click="showTemplate(template)")
 						v-list-item-content(class="template-list")
 							v-list-item-title(v-html="template.name")
 							v-list-item-subtitle(v-html="template.description")
@@ -45,7 +45,7 @@ export default class ToolBar extends Vue {
 		this.$store.commit('toggleLists');
 	}
 
-	private searchRelationTemplates() {
+	private searchRelationTemplates(): void {
 		this.loading = true;
 		let all = true;
 		if (this.query !== '') {
@@ -67,6 +67,11 @@ export default class ToolBar extends Vue {
 			.catch((error) => {
 				// TODO: deal with errors
 			});
+	}
+
+	private showTemplate(template: RelationTemplate): void {
+		this.$store.commit('setAnnotatorCurrentTab', 'tab-3');
+		this.$store.commit('setAnnotatorTemplate', template);
 	}
 }
 </script>

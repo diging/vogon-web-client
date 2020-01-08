@@ -1,38 +1,30 @@
 <template lang="pug">
-	div.form.relation-form
-		h5 {{ name }}
-		p.text-warning {{ description }}
-		relation-field(
-			v-on:listening="fieldIsListening"
-			v-on:donelistening="fieldIsDoneListening"
-			v-on:registerdata="registerData"
-			v-on:unregisterdata="unregisterData"
-			v-for="field in fields"
+	div(class="template-container")
+		h3 {{ template.name }}
+		p(class="grey--text text--darken-2") {{ template.description }}
+		RelationFieldItem(
+			v-for="field in template.fields"
 			v-bind:field="field"
-			v-bind:listener="listener")
+		)
 </template>
 
 <script lang="ts">
-import { VForm } from '@/interfaces/GlobalTypes';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import RelationField from './RelationField.vue';
+import { RelationTemplate } from '@/interfaces/RelationTypes';
+import RelationFieldItem from './RelationField.vue';
 
 @Component({
-  name: 'RelationTemplate',
-  components: {
-	'relation-field': RelationField,
-  },
+	name: 'RelationTemplateRender',
+	components: {
+		RelationFieldItem,
+	},
 })
-export default class RelationTemplate extends Vue {
-  @Prop()
-  private fields!: object;
-  @Prop()
-  private name!: string;
-  @Prop()
-  private description!: string;
+export default class RelationTemplateRender extends Vue {
+	private listener: any = null;
 
-  private listener: any = null;
+	@Prop()
+	private template!: RelationTemplate;
 
   // Since we only want one field to listen for an appellation at a time,
   //  we keep track of the first field to announce that they are
@@ -65,11 +57,8 @@ export default class RelationTemplate extends Vue {
 </script>
 
 <style scoped>
-.project-item {
-  padding: 0;
-  margin: 10px 0;
-}
-#title {
-  background: grey;
+.template-container {
+	text-align: left;
+	padding: 20px;
 }
 </style>

@@ -1,3 +1,5 @@
+import { RelationTemplate } from '@/interfaces/RelationTypes';
+
 export interface RootState {
 	loggedIn: boolean;
 	showSideBar: boolean;
@@ -12,4 +14,8 @@ export interface RootState {
 	assignment_failed: boolean;
 	validator: number;
 	text_content_styles: any;
+	annotator: {
+		currentTab: string;
+		template: RelationTemplate | null;
+	};
 }

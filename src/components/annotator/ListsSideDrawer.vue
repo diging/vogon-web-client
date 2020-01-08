@@ -11,7 +11,10 @@
 			v-tab-item(value="tab-2")
 				h1 Tab 2
 			v-tab-item(value="tab-3")
-				h1 Tab 3
+				template(v-if="template")
+					RelationTemplateRender(v-bind:template="template")
+				template(v-else)
+					h5(class="caption text-center py-5") Template currently not selected!
 			v-tab-item(value="tab-4")
 				h1 Tab 4
 
@@ -20,40 +23,56 @@
 </template>
 
 <script lang="ts">
-import AppellationList from '@/components/annotator/AppellationList.vue';
-import { VForm } from '@/interfaces/GlobalTypes';
 import { Component, Prop, Vue } from 'vue-property-decorator';
+
+import AppellationList from '@/components/annotator/AppellationList.vue';
+import RelationTemplateRender from '@/components/annotator/RelationTemplate.vue';
+import { VForm } from '@/interfaces/GlobalTypes';
+import { RelationTemplate } from '@/interfaces/RelationTypes';
+
 @Component({
-  name: 'ListsSideDrawer',
-  components: {
-	AppellationList,
-  },
+	name: 'ListsSideDrawer',
+	components: {
+		AppellationList,
+		RelationTemplateRender,
+	},
 })
 export default class ListsSideDrawer extends Vue {
-  @Prop()
-  private relations!: object[];
-  @Prop()
-  private appellations!: object[];
+	@Prop()
+	private relations!: object[];
+	@Prop()
+	private appellations!: object[];
 
-  private tab: string = 'tab-4';
-  private show: boolean = false;
-  private listToggle: string = '';
+	private tab: string = 'tab-4';
+	private show: boolean = false;
+	private listToggle: string = '';
 
-  public created() {
-	this.watchStore();
-  }
+	private template: RelationTemplate | null = null;
 
-  public watchStore() {
-	this.$store.watch(
-		(state) => {
-		return this.$store.getters.getShowLists;
-		},
-		(newValue, oldValue) => {
-		// something changed do something
-		this.show = newValue;
-		},
-	);
-  }
+	public created() {
+		this.watchStore();
+	}
+
+	public watchStore() {
+		this.$store.watch(
+			(state, getters) => getters.getShowLists,
+			(newValue, oldValue) => {
+				this.show = newValue;
+			},
+		);
+		this.$store.watch(
+			(state, getters) => getters.getAnnotatorCurrentTab,
+			(newValue, oldValue) => {
+				this.tab = newValue;
+			},
+		);
+		this.$store.watch(
+			(state, getters) => getters.getAnnotatorTemplate,
+			(newValue, oldValue) => {
+				this.template = newValue;
+			},
+		);
+	}
 }
 </script>
 
