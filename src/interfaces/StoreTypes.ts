@@ -17,5 +17,6 @@ export interface RootState {
 	annotator: {
 		currentTab: string;
 		template: RelationTemplate | null;
+		selectedFieldAnnotations: any[]; // ToDo: Define type
 	};
 }

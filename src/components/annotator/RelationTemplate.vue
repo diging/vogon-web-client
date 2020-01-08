@@ -3,8 +3,9 @@
 		h3 {{ template.name }}
 		p(class="grey--text text--darken-2") {{ template.description }}
 		RelationFieldItem(
-			v-for="field in template.fields"
+			v-for="(field, i) in template.fields"
 			v-bind:field="field"
+			v-bind:pos="i"
 			v-bind:appellations="appellations"
 		)
 
@@ -50,6 +51,19 @@ export default class RelationTemplateRender extends Vue {
 	private appellations!: any;
 
 	private disabled: boolean = true;
+
+	public created() {
+		this.$store.subscribe((mutation: any, state: any) => {
+			if (mutation.type === 'setSelectedFieldAnnotationsAt' && state.annotator.selectedFieldAnnotations) {
+				const value = state.annotator.selectedFieldAnnotations;
+				if (value && value.length > 0 && value.every((x: any) => x !== null)) {
+					this.disabled = false;
+				} else {
+					this.disabled = true;
+				}
+			}
+		});
+	}
 
   // Since we only want one field to listen for an appellation at a time,
   //  we keep track of the first field to announce that they are

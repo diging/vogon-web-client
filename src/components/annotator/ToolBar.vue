@@ -72,6 +72,12 @@ export default class ToolBar extends Vue {
 	private showTemplate(template: RelationTemplate): void {
 		this.$store.commit('setAnnotatorCurrentTab', 'tab-3');
 		this.$store.commit('setAnnotatorTemplate', template);
+
+		let fieldAnnotations: any[] = [];
+		if (template.fields) {
+			fieldAnnotations = template.fields.map((i) => null);
+		}
+		this.$store.commit('setSelectedFieldAnnotations', fieldAnnotations);
 	}
 }
 </script>
