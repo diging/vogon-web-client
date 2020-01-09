@@ -62,6 +62,7 @@ export default Vue.extend({
 					endOffset: parseInt(item.position.position_value.split(',')[1], 10),
 				},
 			}));
+			this.$store.commit('setAnnotatorAppellations', this.appellations);
 			this.loading = false;
 			this.relations = result.data.relations;
 		})

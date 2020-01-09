@@ -18,5 +18,8 @@ export interface RootState {
 		currentTab: string;
 		template: RelationTemplate | null;
 		selectedFieldAnnotations: any[]; // ToDo: Define type
+		currentFieldIndex: number;
+		currentFieldType: string | null;
+		appellations: any[]; // ToDo: Define type
 	};
 }

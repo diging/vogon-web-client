@@ -14,7 +14,7 @@
 				v-btn(
 					outlined
 					dense
-					@click="$store.commit('setAnnotatorTemplate', null);"
+					@click="$store.commit('setAnnotatorTemplate', null);$store.commit('setCurrentFieldIndex', -1);"
 				)
 					v-icon(left) mdi-close
 					| Cancel

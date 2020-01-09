@@ -23,6 +23,9 @@ const initialState: RootState = {
 		currentTab: 'tab-1',
 		template: null,
 		selectedFieldAnnotations: [],
+		currentFieldIndex: -1,
+		currentFieldType: null,
+		appellations: [],
 	},
 };
 
@@ -107,6 +110,15 @@ const mutations: MutationTree<RootState> = {
 	setSelectedFieldAnnotationsAt(state, value) {
 		state.annotator.selectedFieldAnnotations[value.pos] = value.annotation;
 	},
+	setCurrentFieldIndex(state, index) {
+		state.annotator.currentFieldIndex = index;
+	},
+	setCurrentFieldType(state, type) {
+		state.annotator.currentFieldType = type;
+	},
+	setAnnotatorAppellations(state, appellations) {
+		state.annotator.appellations = appellations;
+	},
 };
 
 export default new Vuex.Store({
@@ -129,6 +141,9 @@ export default new Vuex.Store({
 		getAnnotatorCurrentTab: (state) => state.annotator.currentTab,
 		getAnnotatorTemplate: (state) => state.annotator.template,
 		getSelectedFieldAnnotations: (state) => state.annotator.selectedFieldAnnotations,
+		getCurrentFieldIndex: (state) => state.annotator.currentFieldIndex,
+		getCurrentFieldType: (state) => state.annotator.currentFieldType,
+		getAnnotatorAppellations: (state) => state.annotator.appellations,
 	},
   actions: {
 

@@ -9,6 +9,7 @@
 				'date-appellation': appellation.dateRepresentation != null,
 				'appellation-selected': appellation.selected
 			}`
+			@click="onApellationClick()"
 		)
 
 		li(v-if="manyLinesAreSelected()"
@@ -58,6 +59,9 @@ export default class AppellationDisplayItem extends Vue {
 	@Prop()
 	private appellation!: any;
 
+	@Prop()
+	private index!: number;
+
 	private tooltip: boolean = false;
 
 	private getLabel() {
@@ -73,6 +77,25 @@ export default class AppellationDisplayItem extends Vue {
 	}
 	private manyLinesAreSelected() {
 		return this.appellation.midLines.length > 0;
+	}
+
+	private onApellationClick() {
+		// Check if this is a currently highlighted text
+		if (this.appellation.selected) {
+			return;
+		}
+
+		const currentFieldIndex = this.$store.getters.getCurrentFieldIndex;
+		if (currentFieldIndex >= 0) {
+			this.$store.commit('setSelectedFieldAnnotationsAt', {
+				pos: currentFieldIndex,
+				annotation: this.$store.getters.getAnnotatorAppellations[this.index],
+			});
+
+			// Reset
+			this.$store.commit('setCurrentFieldIndex', -1);
+			this.$store.commit('setCurrentFieldType', null);
+		}
 	}
 }
 </script>

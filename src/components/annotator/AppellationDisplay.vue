@@ -1,8 +1,9 @@
 <template lang="pug">
 	ul(v-if="appellations.length")
 		appellation-display-item(
-			v-for="appellation in appellations"
+			v-for="(appellation, i) in appellations"
 			:appellation="appellation"
+			:index="i"
 		)
 </template>
 

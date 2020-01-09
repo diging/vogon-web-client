@@ -102,6 +102,26 @@ export default class TextDisplay extends Vue {
 				// Recalculate the highlight-box positions with new list
 				this.calculatePositions();
 				clearMouseTextSelection();
+
+				// If in select mode, fill it in the template part field
+				if (
+					this.$store.getters.getCurrentFieldIndex >= 0 &&
+					this.$store.getters.getCurrentFieldType === 'CO'
+				) {
+					this.$store.commit('setSelectedFieldAnnotationsAt', {
+						pos: this.$store.getters.getCurrentFieldIndex,
+						annotation: {
+							data: { tokenIds: null, stringRep: raw },
+							position: {
+								occursIn_id: '13', // ToDo: Replace with Text ID
+								position_type: 'CO',
+								position_value: `${startOffset},${endOffset}`,
+							},
+						},
+					});
+					this.$store.commit('setCurrentFieldIndex', -1);
+					this.$store.commit('setCurrentFieldType', null);
+				}
 			}
 		}
 	}
