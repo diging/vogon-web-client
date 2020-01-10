@@ -1,6 +1,17 @@
 import { Concept } from './ConceptTypes';
 import { Text } from './ProjectTypes';
 
+export interface RelationTemplateField {
+	part_field?: string;
+	concept_label?: string;
+	part_id: number;
+	evidence_required?: boolean;
+	description?: string;
+	type?: string;
+	concept_id?: number;
+	label?: string;
+}
+
 export interface RelationTemplate {
 	id: number;
 	created: string;
@@ -48,4 +59,5 @@ export interface RelationFilterParams {
 	meta?: boolean;
 	offset?: number;
 	limit?: number;
+	fields: [RelationTemplateField];
 }

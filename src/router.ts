@@ -14,6 +14,7 @@ import Home from './views/Home.vue';
 import About from './views/info/About.vue';
 import ProjectDetails from './views/project/ProjectDetails.vue';
 import ProjectList from './views/project/ProjectList.vue';
+import TemplateList from './views/templates/TemplateList.vue';
 import CollectionDetails from './views/texts/CollectionDetails.vue';
 import RepoDetails from './views/texts/RepoDetails.vue';
 import RepoList from './views/texts/RepoList.vue';
@@ -91,6 +92,11 @@ export default new Router({
 			path: '/users/:id',
 			name: 'user-detail',
 			component: UserDetail,
+		},
+		{
+			path: '/relationtemplate',
+			name: 'template-list',
+			component: TemplateList,
 		},
 		{
 			path: '/contributors',
