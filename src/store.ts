@@ -26,6 +26,11 @@ const initialState: RootState = {
 		currentFieldIndex: -1,
 		currentFieldType: null,
 		appellations: [],
+		meta: {
+			project: -1,
+			occursIn: -1,
+		},
+		relationCreated: false,
 	},
 };
 
@@ -119,6 +124,12 @@ const mutations: MutationTree<RootState> = {
 	setAnnotatorAppellations(state, appellations) {
 		state.annotator.appellations = appellations;
 	},
+	setAnnotatorMeta(state, meta) {
+		state.annotator.meta = meta;
+	},
+	setRelationCreated(state, value) {
+		state.annotator.relationCreated = value;
+	},
 };
 
 export default new Vuex.Store({
@@ -144,6 +155,8 @@ export default new Vuex.Store({
 		getCurrentFieldIndex: (state) => state.annotator.currentFieldIndex,
 		getCurrentFieldType: (state) => state.annotator.currentFieldType,
 		getAnnotatorAppellations: (state) => state.annotator.appellations,
+		getAnnotatorMeta: (state) => state.annotator.meta,
+		getRelationCreated: (state) => state.annotator.relationCreated,
 	},
   actions: {
 

@@ -113,7 +113,7 @@ export default class TextDisplay extends Vue {
 						annotation: {
 							data: { tokenIds: null, stringRep: raw },
 							position: {
-								occursIn_id: '13', // ToDo: Replace with Text ID
+								occursIn_id: this.$store.getters.getAnnotatorMeta.occursIn,
 								position_type: 'CO',
 								position_value: `${startOffset},${endOffset}`,
 							},

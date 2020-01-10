@@ -1,5 +1,5 @@
 <template lang="pug">
-	v-card()
+	v-card
 		v-tabs(v-model="tab" )
 			v-tab(href="#tab-1") Annotations
 			v-tab(href="#tab-2") Date Annotations
@@ -17,13 +17,17 @@
 					h5(class="caption text-center py-5") Template currently not selected!
 			v-tab-item(value="tab-4")
 				h1 Tab 4
-
-
+	
+		v-snackbar(
+			v-model="relationCreated"
+			top
+			:timeout="timeout"
+		) Successfully created relation!
 
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import AppellationList from '@/components/annotator/AppellationList.vue';
 import RelationTemplateRender from '@/components/annotator/RelationTemplate.vue';
@@ -46,6 +50,9 @@ export default class ListsSideDrawer extends Vue {
 	private tab: string = 'tab-4';
 	private show: boolean = false;
 	private listToggle: string = '';
+
+	private relationCreated: boolean = false;
+	private timeout: number = 2000;
 
 	private template: RelationTemplate | null = null;
 
@@ -72,6 +79,19 @@ export default class ListsSideDrawer extends Vue {
 				this.template = newValue;
 			},
 		);
+		this.$store.watch(
+			(state, getters) => getters.getRelationCreated,
+			(newValue, oldValue) => {
+				this.relationCreated = newValue;
+			},
+		);
+	}
+
+	@Watch('relationCreated')
+	public onRelationCreated(val: boolean, oldVal: boolean) {
+		if (val !== oldVal) {
+			this.$store.commit('setRelationCreated', val);
+		}
 	}
 }
 </script>

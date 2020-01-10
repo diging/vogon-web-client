@@ -14,7 +14,7 @@
 				v-btn(
 					outlined
 					dense
-					@click="$store.commit('setAnnotatorTemplate', null);$store.commit('setCurrentFieldIndex', -1);"
+					@click="reset()"
 				)
 					v-icon(left) mdi-close
 					| Cancel
@@ -22,17 +22,28 @@
 				v-btn(
 					dense
 					:disabled="disabled"
+					:loading="creatingRelation"
+					@click="createRelation()"
 					color="success"
 					class="float-right"
 				)
 					v-icon(left) mdi-link-plus
 					| Create relation
+		
+		v-alert(
+			type="error" 
+			dense 
+			v-if="error"
+			dismissible
+		) Error while creating relation!
+
 </template>
 
 <script lang="ts">
+import { AxiosResponse } from 'axios';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { RelationTemplate } from '@/interfaces/RelationTypes';
+import { RelationTemplate, RelationTemplateField } from '@/interfaces/RelationTypes';
 import RelationFieldItem from './RelationField.vue';
 
 @Component({
@@ -51,6 +62,8 @@ export default class RelationTemplateRender extends Vue {
 	private appellations!: any;
 
 	private disabled: boolean = true;
+	private error: boolean = false;
+	private creatingRelation: boolean = false;
 
 	public created() {
 		this.$store.subscribe((mutation: any, state: any) => {
@@ -92,6 +105,56 @@ export default class RelationTemplateRender extends Vue {
   public unregisterData(field: any) {
 	this.$emit('unregisterdata', field);
   }
+
+	private reset(): void {
+		this.$store.commit('setAnnotatorTemplate', null);
+		this.$store.commit('setCurrentFieldIndex', -1);
+	}
+
+	private createRelation(): void {
+		this.creatingRelation = true;
+		this.disabled = true;
+		const annotations = this.$store.getters.getSelectedFieldAnnotations;
+
+		const fields = this.template.fields.map((field: RelationTemplateField, i: number) => {
+			const fieldAnnotation: any = {};
+			if (field.type === 'TP') {
+				fieldAnnotation.appellation = {
+					...annotations[i],
+					startPos: annotations[i].position.startOffset,
+					endPos: annotations[i].position.endOffset,
+				};
+			} else if (field.type === 'CO') {
+				fieldAnnotation.position = annotations[i].position;
+				fieldAnnotation.data = annotations[i].data;
+			}
+
+			return {
+				...field,
+				...fieldAnnotation,
+			};
+		});
+		const payload = {
+			...this.$store.getters.getAnnotatorMeta,
+			fields,
+		};
+
+		Vue.$axios.post(
+			`/relationtemplate/${this.template.id}/create_relation`,
+			payload,
+		).then((response: AxiosResponse) => {
+			this.$store.commit('setRelationCreated', true);
+			this.reset();
+		})
+		.catch(() => {
+			this.creatingRelation = false;
+			this.error = true;
+		})
+		.finally(() => {
+			this.creatingRelation = false;
+			this.disabled = false;
+		});
+	}
 }
 </script>
 

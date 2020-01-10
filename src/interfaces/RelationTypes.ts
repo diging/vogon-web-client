@@ -15,5 +15,5 @@ export interface RelationTemplate {
 	name?: string;
 	description?: string;
 	expression?: string;
-	fields?: [RelationTemplateField];
+	fields: [RelationTemplateField];
 }

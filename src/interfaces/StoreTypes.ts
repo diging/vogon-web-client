@@ -21,5 +21,10 @@ export interface RootState {
 		currentFieldIndex: number;
 		currentFieldType: string | null;
 		appellations: any[]; // ToDo: Define type
+		meta: {
+			project: number,
+			occursIn: number,
+		};
+		relationCreated: boolean,
 	};
 }
