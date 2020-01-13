@@ -1,21 +1,34 @@
 import Vue from 'vue';
-import Vuex from 'vuex';
+import Vuex, { MutationTree } from 'vuex';
+
+import { RootState } from '@/interfaces/StoreTypes';
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
-  state: {
+const initialState: RootState = {
 	loggedIn: false,
-  },
-  mutations: {
-	loggedInMutation(state, loggedIn) {
+	templateCreator: {
+		open_concepts: [],
+	},
+};
+
+const mutations: MutationTree<RootState> = {
+	loggedInMutation(state: RootState, loggedIn) {
 		state.loggedIn = loggedIn;
 	},
-  },
-  getters: {
-	loggedIn: (state) => state.loggedIn,
-  },
-  actions: {
+	setTemplateOpenConcepts(state, value) {
+		state.templateCreator.open_concepts = value;
+	},
+};
 
-  },
+export default new Vuex.Store({
+	state: initialState,
+	mutations,
+	getters: {
+		loggedIn: (state) => state.loggedIn,
+		templateOpenConcepts: (state) => state.templateCreator.open_concepts,
+	},
+	actions: {
+
+	},
 });
