@@ -18,6 +18,46 @@
 			Loading(v-if="loading")
 			TemplateCreateForm(v-else class="mt-4 pa-4")
 
+		v-sheet(class="mt-5 pa-4" elevation="2")
+			h3(class="mb-3") Node types
+			v-list-item
+				v-list-item-icon
+					v-chip 1
+				v-list-item-content
+					v-list-item-title(class="mb-2")
+						h4 Open Concept
+					p
+						| Not the floor plan. This is the most common node type for appellations. The 
+						| user can select an appellation with any interpretation (concept). You can optionally 
+						| select a specific concept type; use this as a suggestion for the user as to the kind of 
+						| concepts that should be used in that part of the relation.
+
+			v-list-item
+				v-list-item-icon
+					v-chip 2
+				v-list-item-content
+					v-list-item-title(class="mb-2")
+						h4 Specific concept
+					p
+						| In many nested relations it is desireable to specify ahead of time what the a node's 
+						| interpretation should be. For example, if I am creating a template for a relation that
+						|  expresses the idea of employment, I might include a node that is explicitly linked to 
+						| the concept of "employee".
+						br
+						br
+						| When you select this option, start typing in the empty input
+						|  that appears; this will trigger a concept search, and options should be displayed within a few moments.
+
+			v-list-item
+				v-list-item-icon
+					v-chip 3
+				v-list-item-content
+					v-list-item-title(class="mb-2")
+						h4 Relation
+					p
+						| Use this node type to indicate that the node in this relation part should be another
+						| relation. Enter the relation ID of the target relation.
+
 </template>
 
 <script lang="ts">
