@@ -1,3 +1,5 @@
+import { RelationTemplate } from '@/interfaces/RelationTypes';
+
 export interface RootState {
 	loggedIn: boolean;
 	showSideBar: boolean;
@@ -12,4 +14,17 @@ export interface RootState {
 	assignment_failed: boolean;
 	validator: number;
 	text_content_styles: any;
+	annotator: {
+		currentTab: string;
+		template: RelationTemplate | null;
+		selectedFieldAnnotations: any[]; // ToDo: Define type
+		currentFieldIndex: number;
+		currentFieldType: string | null;
+		appellations: any[]; // ToDo: Define type
+		meta: {
+			project: number,
+			occursIn: number,
+		};
+		relationCreated: boolean,
+	};
 }

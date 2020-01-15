@@ -9,6 +9,7 @@
 				'date-appellation': appellation.dateRepresentation != null,
 				'appellation-selected': appellation.selected
 			}`
+			@click="onApellationClick()"
 		)
 
 		li(v-if="manyLinesAreSelected()"
@@ -58,6 +59,9 @@ export default class AppellationDisplayItem extends Vue {
 	@Prop()
 	private appellation!: any;
 
+	@Prop()
+	private index!: number;
+
 	private tooltip: boolean = false;
 
 	private getLabel() {
@@ -74,25 +78,29 @@ export default class AppellationDisplayItem extends Vue {
 	private manyLinesAreSelected() {
 		return this.appellation.midLines.length > 0;
 	}
+
+	private onApellationClick() {
+		// Check if this is a currently highlighted text
+		if (this.appellation.selected) {
+			return;
+		}
+
+		const currentFieldIndex = this.$store.getters.getCurrentFieldIndex;
+		if (currentFieldIndex >= 0) {
+			this.$store.commit('setSelectedFieldAnnotationsAt', {
+				pos: currentFieldIndex,
+				annotation: this.$store.getters.getAnnotatorAppellations[this.index],
+			});
+
+			// Reset
+			this.$store.commit('setCurrentFieldIndex', -1);
+			this.$store.commit('setCurrentFieldType', null);
+		}
+	}
 }
 </script>
 
 <style scoped>
-#title {
-	background: grey;
-}
-pre {
-	white-space: pre-wrap;
-	word-wrap: break-word;
-	background-color:#f5f5f5;
-	border: 1px solid#ccc;
-	border-radius: 4px;
-	display: block;
-}
-#text-content {
-	padding: 3%;
-}
-
 .appellation.appellation-selected {
     border: 2px solid blue;
     background-color: blue;
@@ -100,8 +108,8 @@ pre {
 }
 .appellation {
     border: 0.5px solid orange;
-    background-color: yellow;
-    opacity: 0.2;
+    background-color: #FBC02D;
+    opacity: 0.4;
     list-style-type: none;
     margin: 0;
     padding: 0;

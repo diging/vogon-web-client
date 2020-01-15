@@ -48,12 +48,28 @@ export default Vue.extend({
   methods: {
 	getContent() {
 		Vue.$axios
-		.get('/annotate/37/?project_id=1')
+		.get('/annotate/13/?project_id=1') // ToDo: Get rid of hard-coded IDs
 		.then((result) => {
 			this.content = result.data.content;
 			this.project = result.data.project;
 			this.text = result.data.text;
-			this.appellations = result.data.appellations;
+			this.appellations = result.data.appellations
+				.filter((item: any) => item.position)
+				.map((item: any) => ({
+					...item,
+					visible: true,
+					position: {
+						...item.position,
+						startOffset: parseInt(item.position.position_value.split(',')[0], 10),
+						endOffset: parseInt(item.position.position_value.split(',')[1], 10),
+					},
+				}));
+			this.$store.commit('setAnnotatorAppellations', this.appellations);
+			this.$store.commit('setAnnotatorMeta', {
+				project: '1',
+				occursIn: '13',
+			});
+
 			this.loading = false;
 			this.relations = result.data.relations;
 		})

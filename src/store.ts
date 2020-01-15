@@ -19,6 +19,19 @@ const initialState: RootState = {
 	assignment_failed: false,
 	validator: 0,
 	text_content_styles: {},
+	annotator: {
+		currentTab: 'tab-1',
+		template: null,
+		selectedFieldAnnotations: [],
+		currentFieldIndex: -1,
+		currentFieldType: null,
+		appellations: [],
+		meta: {
+			project: -1,
+			occursIn: -1,
+		},
+		relationCreated: false,
+	},
 };
 
 const mutations: MutationTree<RootState> = {
@@ -90,6 +103,33 @@ const mutations: MutationTree<RootState> = {
 	setTextContentStyle(state, style) {
 		state.text_content_styles = style;
 	},
+	setAnnotatorCurrentTab(state, tab) {
+		state.annotator.currentTab = tab;
+	},
+	setAnnotatorTemplate(state, template) {
+		state.annotator.template = template;
+	},
+	setSelectedFieldAnnotations(state, annotations) {
+		state.annotator.selectedFieldAnnotations = annotations;
+	},
+	setSelectedFieldAnnotationsAt(state, value) {
+		state.annotator.selectedFieldAnnotations[value.pos] = value.annotation;
+	},
+	setCurrentFieldIndex(state, index) {
+		state.annotator.currentFieldIndex = index;
+	},
+	setCurrentFieldType(state, type) {
+		state.annotator.currentFieldType = type;
+	},
+	setAnnotatorAppellations(state, appellations) {
+		state.annotator.appellations = appellations;
+	},
+	setAnnotatorMeta(state, meta) {
+		state.annotator.meta = meta;
+	},
+	setRelationCreated(state, value) {
+		state.annotator.relationCreated = value;
+	},
 };
 
 export default new Vuex.Store({
@@ -109,6 +149,14 @@ export default new Vuex.Store({
 		getAssignmentFailed: (state) => state.assignment_failed,
 		getValidator: (state) => state.validator,
 		getTextContentStyle: (state) => state.text_content_styles,
+		getAnnotatorCurrentTab: (state) => state.annotator.currentTab,
+		getAnnotatorTemplate: (state) => state.annotator.template,
+		getSelectedFieldAnnotations: (state) => state.annotator.selectedFieldAnnotations,
+		getCurrentFieldIndex: (state) => state.annotator.currentFieldIndex,
+		getCurrentFieldType: (state) => state.annotator.currentFieldType,
+		getAnnotatorAppellations: (state) => state.annotator.appellations,
+		getAnnotatorMeta: (state) => state.annotator.meta,
+		getRelationCreated: (state) => state.annotator.relationCreated,
 	},
   actions: {
 

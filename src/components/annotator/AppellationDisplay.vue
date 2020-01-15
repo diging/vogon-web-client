@@ -1,8 +1,9 @@
 <template lang="pug">
 	ul(v-if="appellations.length")
 		appellation-display-item(
-			v-for="appellation in appellations"
+			v-for="(appellation, i) in appellations"
 			:appellation="appellation"
+			:index="i"
 		)
 </template>
 
@@ -54,26 +55,4 @@ export default class AppellationDisplay extends Vue {
 </script>
 
 <style scoped>
-.project-item {
-	padding: 0;
-	margin: 10px 0;
-}
-#title {
-	background: grey;
-}
-pre {
-	white-space: pre-wrap;
-	word-wrap: break-word;
-	background-color:#f5f5f5;
-	border: 1px solid#ccc;
-	border-radius: 4px;
-	display: block;
-}
-#test {
-	float: left;
-}
-#text-content {
-	padding: 3%;
-}
-
 </style>

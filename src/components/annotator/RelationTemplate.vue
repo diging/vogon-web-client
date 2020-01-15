@@ -1,38 +1,82 @@
 <template lang="pug">
-	div.form.relation-form
-		h5 {{ name }}
-		p.text-warning {{ description }}
-		relation-field(
-			v-on:listening="fieldIsListening"
-			v-on:donelistening="fieldIsDoneListening"
-			v-on:registerdata="registerData"
-			v-on:unregisterdata="unregisterData"
-			v-for="field in fields"
+	div(class="template-container")
+		h3 {{ template.name }}
+		p(class="grey--text text--darken-2") {{ template.description }}
+		RelationFieldItem(
+			v-for="(field, i) in template.fields"
 			v-bind:field="field"
-			v-bind:listener="listener")
+			v-bind:pos="i"
+			v-bind:appellations="appellations"
+		)
+
+		v-row
+			v-col(:cols="6")
+				v-btn(
+					outlined
+					dense
+					@click="reset()"
+				)
+					v-icon(left) mdi-close
+					| Cancel
+			v-col(:cols="6")
+				v-btn(
+					dense
+					:disabled="disabled"
+					:loading="creatingRelation"
+					@click="createRelation()"
+					color="success"
+					class="float-right"
+				)
+					v-icon(left) mdi-link-plus
+					| Create relation
+		
+		v-alert(
+			type="error" 
+			dense 
+			v-if="error"
+			dismissible
+		) Error while creating relation!
+
 </template>
 
 <script lang="ts">
-import { VForm } from '@/interfaces/GlobalTypes';
+import { AxiosResponse } from 'axios';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import RelationField from './RelationField.vue';
+import { RelationTemplate, RelationTemplateField } from '@/interfaces/RelationTypes';
+import RelationFieldItem from './RelationField.vue';
 
 @Component({
-  name: 'RelationTemplate',
-  components: {
-	'relation-field': RelationField,
-  },
+	name: 'RelationTemplateRender',
+	components: {
+		RelationFieldItem,
+	},
 })
-export default class RelationTemplate extends Vue {
-  @Prop()
-  private fields!: object;
-  @Prop()
-  private name!: string;
-  @Prop()
-  private description!: string;
+export default class RelationTemplateRender extends Vue {
+	private listener: any = null;
 
-  private listener: any = null;
+	@Prop()
+	private template!: RelationTemplate;
+
+	@Prop()
+	private appellations!: any;
+
+	private disabled: boolean = true;
+	private error: boolean = false;
+	private creatingRelation: boolean = false;
+
+	public created() {
+		this.$store.subscribe((mutation: any, state: any) => {
+			if (mutation.type === 'setSelectedFieldAnnotationsAt' && state.annotator.selectedFieldAnnotations) {
+				const value = state.annotator.selectedFieldAnnotations;
+				if (value && value.length > 0 && value.every((x: any) => x !== null)) {
+					this.disabled = false;
+				} else {
+					this.disabled = true;
+				}
+			}
+		});
+	}
 
   // Since we only want one field to listen for an appellation at a time,
   //  we keep track of the first field to announce that they are
@@ -61,15 +105,62 @@ export default class RelationTemplate extends Vue {
   public unregisterData(field: any) {
 	this.$emit('unregisterdata', field);
   }
+
+	private reset(): void {
+		this.$store.commit('setAnnotatorTemplate', null);
+		this.$store.commit('setCurrentFieldIndex', -1);
+	}
+
+	private createRelation(): void {
+		this.creatingRelation = true;
+		this.disabled = true;
+		const annotations = this.$store.getters.getSelectedFieldAnnotations;
+
+		const fields = this.template.fields.map((field: RelationTemplateField, i: number) => {
+			const fieldAnnotation: any = {};
+			if (field.type === 'TP') {
+				fieldAnnotation.appellation = {
+					...annotations[i],
+					startPos: annotations[i].position.startOffset,
+					endPos: annotations[i].position.endOffset,
+				};
+			} else if (field.type === 'CO') {
+				fieldAnnotation.position = annotations[i].position;
+				fieldAnnotation.data = annotations[i].data;
+			}
+
+			return {
+				...field,
+				...fieldAnnotation,
+			};
+		});
+		const payload = {
+			...this.$store.getters.getAnnotatorMeta,
+			fields,
+		};
+
+		Vue.$axios.post(
+			`/relationtemplate/${this.template.id}/create_relation`,
+			payload,
+		).then((response: AxiosResponse) => {
+			this.$store.commit('setRelationCreated', true);
+			this.reset();
+		})
+		.catch(() => {
+			this.creatingRelation = false;
+			this.error = true;
+		})
+		.finally(() => {
+			this.creatingRelation = false;
+			this.disabled = false;
+		});
+	}
 }
 </script>
 
 <style scoped>
-.project-item {
-  padding: 0;
-  margin: 10px 0;
-}
-#title {
-  background: grey;
+.template-container {
+	text-align: left;
+	padding: 20px;
 }
 </style>

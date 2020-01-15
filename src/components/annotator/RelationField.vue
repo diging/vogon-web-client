@@ -1,120 +1,123 @@
 <template lang="pug">
-	div(class="form-group relation-field" v-on:keyup.esc="stopListening()")
-		label(class="control-label")
-			{{ field.label }} #[span.text-muted {{ field.description }}]
-		div.input-group
-			input.text(
-				v-model="valueLabel"
-				class="form-control input-sm"
-				:id="'relation-part-' + field.part_id"
-				v-bind:placeholder="inputPlaceholder()")
-			span.input-group-btn
-				button(`v-if="selection == null"
-					v-on:click="listen"
-					v-bind:class="{
-							btn: true,
-							'btn-sm': true,
-							'btn-primary': !listening,
-							'btn-warning': listening,
-							'btn-default': isBlocked
-						}"`)
-					&nbsp;#[span v-if="field.type == 'TP'" class=" glyphicon glyphicon-edit"]
-					#[i v-if="field.type == 'CO'" class="fa fa-i-cursor" aria-hidden="true"]
-					#[span v-if="field.type == 'DT'" class=" glyphicon glyphicon-calendar"]
-				button(v-else v-on:click="clear" class="btn btn-sm btn-success")
-					&nbsp;#[span class="glyphicon glyphicon-ok"]
+    div
+        p(class="body-2 font-weight-medium mb-0") {{ field.label }}
+            span(
+                v-if="field.description"
+                class="caption font-weight-regular grey--text text--darken-2"
+            ) &nbsp; - {{ field.description }}
+        v-autocomplete(
+            v-if="field.type === 'TP'"
+            v-model="value"
+            placeholder="Select field..."
+            dense
+            outlined
+            filled
+            clearable
+            :items="appellations"
+            item-text="interpretation.label"
+            return-object
+        )
+            template(v-slot:append-outer)
+                v-btn(v-if="value" icon)
+                    v-icon(color="success") mdi-check
+                v-tooltip(v-else bottom)
+                    template(v-slot:activator="{ on }")
+                        v-btn(icon v-on="on" :color="active ? `success` : `grey`" @click="toggleActive()")
+                            v-icon mdi-eyedropper-variant
+                    span Pick annotations from the text
+        
+        v-text-field(
+            v-else-if="field.type === 'CO'"
+            v-model="rawText"
+            placeholder="Select from text..."
+            dense
+            outlined
+            filled
+            clearable
+            class="field-text"
+        )
+            template(v-slot:append-outer)
+                v-btn(v-if="value" icon)
+                    v-icon(color="success") mdi-check
+                v-tooltip(v-else bottom)
+                    template(v-slot:activator="{ on }")
+                        v-btn(icon v-on="on" :color="active ? `success` : `grey`" @click="toggleActive()")
+                            v-icon mdi-cursor-text
+                    span Select from text
 </template>
 
 <script lang="ts">
-import { VForm } from '@/interfaces/GlobalTypes';
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+
+import { RelationTemplateField } from '@/interfaces/RelationTypes';
+
 @Component({
-  name: 'RelationField',
+	name: 'RelationFieldItem',
 })
-export default class RelationField extends Vue {
-
+export default class RelationFieldItem extends Vue {
 	@Prop()
-	private field!: any;
+	private field!: RelationTemplateField;
 	@Prop()
-	private listener!: object;
+	private appellations!: any;
+	@Prop()
+	private pos!: number;
 
-	private selection!: any = null;
-	private valueLabel!: any = null;
-	private listening: boolean = false;
+	private value: any = null;
+	private active: boolean = false;
+	private rawText: any = null;
 
-	public inputPlaceholder() {
-		if (this.selection == null && this.listening) {
-			if (this.field.type === 'TP') {
-				return 'Select text or existing appellation. Press ESC to cancel.';
-			} else if (this.field.type === 'DT') {
-				return 'Select text or existing date appellation. Press ESC to cancel.';
-			} else if (this.field.type === 'CO') {
-				return 'Select text. Press ESC to cancel.';
+	public created() {
+		this.$store.watch(
+			(state, getters) => getters.getCurrentFieldIndex,
+			(newValue, oldValue) => {
+				this.active = newValue === this.pos;
+			},
+		);
+		this.$store.subscribe((mutation: any, state: any) => {
+			if (mutation.type === 'setSelectedFieldAnnotationsAt') {
+				const value = state.annotator.selectedFieldAnnotations;
+				if (mutation.payload.pos === this.pos) {
+					this.value = mutation.payload.annotation;
+					if (this.field.type === 'CO' && mutation.payload.annotation) {
+						this.rawText = mutation.payload.annotation.data.stringRep;
+					}
+				}
 			}
+		});
+	}
+
+	@Watch('value')
+	public onValueSelect(val: any, oldVal: any) {
+		this.$store.commit('setSelectedFieldAnnotationsAt', {
+			pos: this.pos,
+			annotation: val || null,
+		});
+	}
+
+	@Watch('rawText')
+	public onRawTextChange(val: any, oldVal: any) {
+		const annotation = this.$store.getters.getSelectedFieldAnnotations[this.pos];
+		if (annotation && !val) {
+			this.$store.commit('setSelectedFieldAnnotationsAt', {
+				pos: this.pos,
+				annotation: null,
+			});
 		}
 	}
 
-	public listen() {
-		if (!this.listening && !this.isBlocked()) { // Don't bind more than one listener.
-			this.listening = true;
-			// TODO: Change emit to use store
-			this.$emit('listening', this.field);
-			if (this.field.type === 'TP') {
-				AppellationBus.$on('selectedappellation', this.handleSelection);
-			} else if (this.field.type === 'CO') {
-				TextBus.$on('selectedtext', this.handleSelection);
-			} else if (this.field.type === 'DT') {
-				AppellationBus.$on('selecteddateappellation', this.handleSelection);
-			}
+	private toggleActive(): void {
+		let activeIndex = -1;
+		if (!this.active) {
+			activeIndex = this.pos;
 		}
-	}
-
-	public handleSelection(selection: any) {
-		this.stopListening();
-		this.selection = selection;
-		if (this.field.type === 'TP') { // Assume this is an appellation.
-			this.valueLabel = selection.interpretation.label;
-		} else if (this.field.type === 'CO') { // Assume it's a position.
-			this.valueLabel = selection.representation;
-		} else if (this.field.type === 'DT') {
-			this.valueLabel = selection.dateRepresentation;
-		}
-		// TODO: Change emit to use store
-		this.$emit('registerdata', this.field, this.selection);
-	},
-	public stopListening() {
-		if (this.field.type === 'TP') {
-			// TODO: Change buses to use store
-			AppellationBus.$off('selectedappellation', this.handleSelection);
-		} else if (this.field.type === 'CO') {
-			TextBus.$off('selectedtext', this.handleSelection);
-		} else if (this.field.type === 'DT') {
-			AppellationBus.$off('selecteddateappellation', this.handleSelection);
-		}
-		this.listening = false;
-		// TODO: Change emit to use store
-		this.$emit('donelistening', this.field);
-	}
-	public clear() {
-		this.selection = null;
-		this.valueLabel = null;
-		// TODO: Change emit to use store
-		this.$emit('unregisterdata', this.field);
-	}
-	// We don't want to interfere with other fields, so we respect the
-	//  priority of the current listener, if there is one.
-	public isBlocked() {
-		return (this.listener !== undefined && this.listener != null && this.listener !== this.field);
+		this.$store.commit('setCurrentFieldIndex', activeIndex);
+		this.$store.commit('setCurrentFieldType', this.field.type);
 	}
 }
 </script>
 
-<style scoped>
-.project-item {
-  padding: 0;
-  margin: 10px 0;
-}
-#title {
-  background: grey;
+<style>
+.field-text.v-input--dense input, .field-text.v-input--dense input {
+    margin-top: 0 !important;
 }
 </style>
