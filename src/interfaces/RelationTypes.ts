@@ -1,4 +1,4 @@
-import { Concept } from './ConceptTypes';
+import { Concept, ConceptType } from './ConceptTypes';
 import { Text } from './ProjectTypes';
 
 export interface RelationTemplateField {
@@ -59,5 +59,25 @@ export interface RelationFilterParams {
 	meta?: boolean;
 	offset?: number;
 	limit?: number;
-	fields: [RelationTemplateField];
+	fields?: [RelationTemplateField];
+}
+
+export interface RelationTemplateFormNodeType {
+	type: {
+		key: string;
+		label: string;
+	};
+	concept: ConceptType | null;
+	label: string;
+	description?: string;
+	prompt: boolean;
+	relation_id: number;
+	specific_concept: Concept | null;
+}
+
+export interface RelationTemplateFormType {
+	internal_id?: number;
+	source: RelationTemplateFormNodeType;
+	predicate: RelationTemplateFormNodeType;
+	object: RelationTemplateFormNodeType;
 }
