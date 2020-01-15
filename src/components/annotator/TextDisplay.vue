@@ -5,14 +5,14 @@
 </template>
 
 <script lang="ts">
-import { VForm } from "@/interfaces/GlobalTypes";
-import { Component, Prop, Vue } from "vue-property-decorator";
-import AppellationDisplay from "./AppellationDisplay.vue";
+import { VForm } from '@/interfaces/GlobalTypes';
+import { Component, Prop, Vue } from 'vue-property-decorator';
+import AppellationDisplay from './AppellationDisplay.vue';
 @Component({
-  name: "TextDisplay",
+  name: 'TextDisplay',
   components: {
-    "appellation-display": AppellationDisplay
-  }
+	'appellation-display': AppellationDisplay,
+  },
 })
 export default class TextDisplay extends Vue {
   @Prop()
