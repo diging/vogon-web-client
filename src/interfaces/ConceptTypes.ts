@@ -1,3 +1,5 @@
+import { RelationSet } from './RelationTypes';
+
 export interface Concept {
 	id: number;
 	url: string;
@@ -11,7 +13,7 @@ export interface Concept {
 	typed_label?: string;
 	concept_state?: string;
 	appellation_set?: [number];
-	relations?: [string]; // ToDo: Change to Relation type
+	relations?: [RelationSet];
 }
 
 export interface ConceptType {

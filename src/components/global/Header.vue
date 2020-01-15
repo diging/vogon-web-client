@@ -10,7 +10,7 @@
 			v-list
 				v-list-item(v-for="item in annotate_items" :key="item.title" v-bind:to="item.link")
 					v-list-item-title(v-text="item.title")
-		v-btn(text large to="/contributors" class="subheading font-weight-medium") Contributors
+		v-btn(text large to="/users" class="subheading font-weight-medium") Contributors
 		v-btn(text large to="/about" class="subheading font-weight-medium") About
 		v-menu(offset-y open-on-hover)
 			template(v-slot:activator="{ on }")
@@ -24,8 +24,7 @@
 			v-btn(text v-if="!this.$store.getters.loggedIn" @click="login") Login
 			v-btn(text v-if="!this.$store.getters.loggedIn" @click="signup") Sign Up
 			v-btn(text v-if="this.$store.getters.loggedIn" @click="logout") Log Out
-			v-btn(text) Link Two
-			v-btn(text) Link 3
+			v-btn(text v-if="this.$store.getters.loggedIn" href="/dashboard") Dashboard
 			
 </template>
 

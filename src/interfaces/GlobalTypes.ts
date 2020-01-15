@@ -12,6 +12,16 @@ export interface PaginatedResult<T> {
 export interface User {
 	id: number;
 	username: string;
+	full_name?: string;
+	email?: string;
+	affiliation?: string;
+	location?: string;
+	link?: string;
+	is_admin?: boolean;
+	imagefile?: string;
+	annotation_count?: number;
+	relation_count?: number;
+	text_count?: number;
 }
 
 export interface TokenDto {

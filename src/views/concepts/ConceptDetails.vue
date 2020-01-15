@@ -20,7 +20,7 @@
 				template(v-if="!concept.relations.length")
 					EmptyView No annotations found!
 				template(v-else)
-					div Recent annotations go here ...
+					AnnotationList(v-bind:annotations="concept.relations")
 
 </template>
 
@@ -31,11 +31,13 @@ import { Component, Vue } from 'vue-property-decorator';
 import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
+import AnnotationList from '@/components/relations/AnnotationList.vue';
 import { Concept } from '@/interfaces/ConceptTypes';
 
 @Component({
 	name: 'ConceptDetails',
 	components: {
+		AnnotationList,
 		ErrorIndicator,
 		EmptyView,
 		Loading,
