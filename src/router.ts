@@ -14,7 +14,7 @@ import Home from './views/Home.vue';
 import About from './views/info/About.vue';
 import ProjectDetails from './views/project/ProjectDetails.vue';
 import ProjectList from './views/project/ProjectList.vue';
-import TemplateCreate from './views/templates/TemplateCreate.vue';
+import TemplateCreateOrUpdate from './views/templates/TemplateCreateOrUpdate.vue';
 import TemplateList from './views/templates/TemplateList.vue';
 import CollectionDetails from './views/texts/CollectionDetails.vue';
 import RepoDetails from './views/texts/RepoDetails.vue';
@@ -102,7 +102,12 @@ export default new Router({
 		{
 			path: '/relationtemplate/add',
 			name: 'template-create',
-			component: TemplateCreate,
+			component: TemplateCreateOrUpdate,
+		},
+		{
+			path: '/relationtemplate/:id/edit',
+			name: 'template-update',
+			component: TemplateCreateOrUpdate,
 		},
 		{
 			path: '/contributors',

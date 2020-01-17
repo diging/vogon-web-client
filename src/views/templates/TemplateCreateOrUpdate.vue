@@ -1,6 +1,7 @@
 <template lang="pug">
 	div(class="main")
-		h2(class="display-1") Create new relation template
+		h2(class="display-1" v-if="$route.params.id") Edit relation template
+		h2(class="display-1" v-else) Create new relation template
 		v-banner(class="mt-2" two-line)
 			v-avatar(slot="icon" size="40" color="blue lighten-1")
 				v-icon(icon="mdi-information" color="white") mdi-information-outline
@@ -16,7 +17,7 @@
 		ErrorIndicator(v-if="error") Error while loading data!
 		template(v-else)
 			Loading(v-if="loading")
-			TemplateCreateForm(v-else class="mt-4 pa-4")
+			TemplateCreateForm(v-else class="mt-4 pa-4" :template="template")
 
 		v-sheet(class="mt-5 pa-4" elevation="2")
 			h3(class="mb-3") Node types
@@ -68,20 +69,29 @@ import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
 import TemplateCreateForm from '@/components/templates/TemplateCreateForm.vue';
 import { ConceptType } from '@/interfaces/ConceptTypes';
+import { RelationTemplate } from '@/interfaces/RelationTypes';
 
 @Component({
-	name: 'TemplateCreate',
+	name: 'TemplateCreateOrUpdate',
 	components: {
 		ErrorIndicator,
 		Loading,
 		TemplateCreateForm,
 	},
 })
-export default class TemplateCreate extends Vue {
+export default class TemplateCreateOrUpdate extends Vue {
 	private loading: boolean = true;
 	private error: boolean = false;
+	private template: RelationTemplate | null = null;
 
 	public created() {
+		if (this.$route.params.id) {
+			Vue.$axios.get(`/relationtemplate/${this.$route.params.id}`)
+				.then((response: AxiosResponse) => {
+					this.template = response.data;
+				})
+				.catch(() => this.error = true);
+		}
 		Vue.$axios.get('/relationtemplate/create_form')
 			.then((response: AxiosResponse) => {
 				const types: ConceptType[] = response.data.open_concepts;

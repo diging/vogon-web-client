@@ -31,18 +31,30 @@
 				EmptyView(v-else) No templates found!
 
 			template(v-slot:item.name="{ item }")
-				a(v-bind:href="`/relationtemplate/${item.id}`" class="template-link")
+				a(v-bind:href="`/relationtemplate/${item.id}/edit`" class="template-link")
 					span(class="subtitle-1 font-weight-medium") {{ item.name }}
 
 			template(v-slot:item.actions="{ item }")
-				v-btn(small color="error")
+				v-btn(small color="error" @click.stop="deleteDialog = true; templateToDelete=item;")
 					v-icon(left small) mdi-delete
 					|  Delete
+					
+
+		v-dialog(v-model="deleteDialog" max-width="500")
+			v-card
+				v-card-title(class="headline") Delete template?
+				v-card-text Are you sure you want to delete the template? Click "Delete" if so.
+				v-card-actions
+					v-spacer
+					v-btn(text color="green darken-1" @click="deleteDialog = false") Cancel
+					v-btn(text color="red darken-1" @click="deleteTemplate();") Delete
+
+		v-snackbar(v-model="snackbar" top :color="color" :timeout="3000") {{ msg }}
 
 </template>
 
 <script lang="ts">
-import { AxiosResponse } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 import { Component, Vue, Watch } from 'vue-property-decorator';
 
 import EmptyView from '@/components/global/EmptyView.vue';
@@ -60,7 +72,13 @@ export default class TemplateList extends Vue {
 	private loading: boolean = true;
 	private error: boolean = false;
 	private all: boolean = false;
+	private deleteDialog: boolean = false;
+	private snackbar: boolean = false;
+	private msg: string = '';
+	private color: string = '';
+
 	private templates: RelationTemplate[] = [];
+	private templateToDelete?: RelationTemplate;
 
 	private headers = [
 		{ text: 'Name', value: 'name' },
@@ -89,6 +107,28 @@ export default class TemplateList extends Vue {
 			})
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
+	}
+
+	private deleteTemplate() {
+		if (this.templateToDelete) {
+			Vue.$axios.delete(`/relationtemplate/${this.templateToDelete.id}`)
+				.then((response: AxiosResponse) => {
+					this.snackbar = true;
+					this.color = 'success';
+					this.msg = 'Successfully deleted template!';
+					this.getTemplates();
+				})
+				.catch((error: AxiosError) => {
+					if (error.response && error.response.data && error.response.data.error) {
+						this.msg = error.response.data.error;
+					} else {
+						this.msg = `Error while deleting template: ${error.message}`;
+					}
+					this.snackbar = true;
+					this.color = 'error';
+				})
+				.finally(() => this.deleteDialog = false);
+		}
 	}
 }
 </script>

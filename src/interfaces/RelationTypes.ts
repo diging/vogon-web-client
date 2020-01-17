@@ -2,6 +2,7 @@ import { Concept, ConceptType } from './ConceptTypes';
 import { Text } from './ProjectTypes';
 
 export interface RelationTemplateField {
+	id?: number;
 	part_field?: string;
 	concept_label?: string;
 	part_id: number;
@@ -12,12 +13,39 @@ export interface RelationTemplateField {
 	label?: string;
 }
 
+export interface RelationTemplateFieldRaw {
+	id: number;
+	internal_id: number;
+	source_node_type: string;
+	source_label: string;
+	source_relationtemplate_internal_id: number;
+	source_prompt_text: boolean;
+	source_description: string;
+	source_type: ConceptType | null;
+	source_concept: Concept | null;
+	predicate_node_type: string;
+	predicate_label: string;
+	predicate_prompt_text: boolean;
+	predicate_description: string;
+	predicate_type: ConceptType | null;
+	predicate_concept: Concept | null;
+	object_node_type: string;
+	object_label: string;
+	object_relationtemplate_internal_id: number;
+	object_prompt_text: boolean;
+	object_description: string;
+	object_type: ConceptType | null;
+	object_concept: Concept | null;
+}
+
 export interface RelationTemplate {
 	id: number;
 	created: string;
 	name?: string;
 	description?: string;
 	expression?: string;
+	terminal_nodes?: string;
+	template_parts?: RelationTemplateFieldRaw[];
 }
 
 export interface DateAppellation {
@@ -71,11 +99,12 @@ export interface RelationTemplateFormNodeType {
 	label: string;
 	description?: string;
 	prompt: boolean;
-	relation_id: number;
+	relation_id?: number;
 	specific_concept: Concept | null;
 }
 
 export interface RelationTemplateFormType {
+	id?: number;
 	internal_id?: number;
 	source: RelationTemplateFormNodeType;
 	predicate: RelationTemplateFormNodeType;

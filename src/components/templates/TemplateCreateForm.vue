@@ -82,10 +82,21 @@
 						| Add relation
 
 		v-btn(
+			v-if="edit"
 			color="primary"
 			large
 			class="mt-4"
-			@click="create()" 
+			@click="save()" 
+			:disabled="!name || creating"
+			:loading="creating"
+		) Update
+		
+		v-btn(
+			v-else
+			color="primary"
+			large
+			class="mt-4"
+			@click="save()" 
 			:disabled="!name || creating"
 			:loading="creating"
 		) Create
@@ -98,12 +109,12 @@
 <script lang="ts">
 import { AxiosError, AxiosResponse } from 'axios';
 import cloneDeep from 'clone-deep';
-import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import TemplateNodePicker from '@/components/templates/TemplateNodePicker.vue';
-import { TEMPLATE_RELATION_TYPES } from '@/constants';
+import { TEMPLATE_RELATION_TYPES, TEMPLATE_RELATION_TYPES_KEYS } from '@/constants';
 import { Concept } from '@/interfaces/ConceptTypes';
-import { RelationTemplateFormType } from '@/interfaces/RelationTypes';
+import { RelationTemplate, RelationTemplateFieldRaw, RelationTemplateFormType } from '@/interfaces/RelationTypes';
 
 @Component({
 	name: 'TemplateCreateForm',
@@ -112,14 +123,19 @@ import { RelationTemplateFormType } from '@/interfaces/RelationTypes';
 	},
 })
 export default class TemplateCreateForm extends Vue {
+	@Prop({ default: null }) private template: RelationTemplate | null = null;
+
+	private edit: boolean = false; // Edit mode
 	private valid: boolean = false;
 	private errorMsg: string = '';
 	private error: boolean = false;
 	private creating: boolean = false;
-	private name: string = '';
-	private description: string = '';
-	private expression: string = '';
-	private terminalNodes: string = '';
+
+	private id?: number;
+	private name?: string = '';
+	private description?: string = '';
+	private expression?: string = '';
+	private terminalNodes?: string = '';
 	private defaultValues: RelationTemplateFormType = {
 		source: {
 			type: { key: '', label: '' }, concept: null, label: '', description: '',
@@ -153,15 +169,52 @@ export default class TemplateCreateForm extends Vue {
 		TEMPLATE_RELATION_TYPES.HAS,
 	];
 
-	private clearRow(pos: number): void {
-		if (pos === 0) {
-			this.templateParts = [{
-				internal_id: 0,
-				...cloneDeep(this.defaultValues),
-			}];
-		} else {
-			this.templateParts.splice(pos, 1);
+	@Watch('template')
+	private onTemplateChange(val: RelationTemplate | null) {
+		if (val !== null && val) {
+			this.edit = true;
+			this.name = val.name;
+			this.description = val.description;
+			this.expression = val.expression;
+			this.terminalNodes = val.terminal_nodes;
+			this.id = val.id;
+			if (val.template_parts) {
+				this.templateParts = val.template_parts.map((part: RelationTemplateFieldRaw) => ({
+					id: part.id,
+					internal_id: part.internal_id,
+					source: {
+						type: TEMPLATE_RELATION_TYPES_KEYS[part.source_node_type],
+						concept: part.source_type,
+						label: part.source_label,
+						description: part.source_description,
+						prompt: part.source_prompt_text,
+						relation_id: part.source_relationtemplate_internal_id,
+						specific_concept: part.source_concept,
+					},
+					predicate: {
+						type: TEMPLATE_RELATION_TYPES_KEYS[part.predicate_node_type],
+						concept: part.predicate_type,
+						label: part.predicate_label,
+						description: part.predicate_description,
+						prompt: part.predicate_prompt_text,
+						specific_concept: part.predicate_concept,
+					},
+					object: {
+						type: TEMPLATE_RELATION_TYPES_KEYS[part.object_node_type],
+						concept: part.object_type,
+						label: part.object_label,
+						description: part.object_description,
+						prompt: part.object_prompt_text,
+						relation_id: part.object_relationtemplate_internal_id,
+						specific_concept: part.object_concept,
+					},
+				}));
+			}
 		}
+	}
+
+	private clearRow(pos: number): void {
+		this.templateParts.splice(pos, 1);
 	}
 
 	private addRow(): void {
@@ -171,8 +224,9 @@ export default class TemplateCreateForm extends Vue {
 		});
 	}
 
-	private create(): void {
+	private save(): void {
 		const parts = this.templateParts.map((part: RelationTemplateFormType) => ({
+			id: part.id,
 			internal_id: part.internal_id,
 			source_node_type: part.source.type.key,
 			source_label: part.source.label,
@@ -195,18 +249,33 @@ export default class TemplateCreateForm extends Vue {
 			object_concept: part.object.specific_concept,
 			object_relationtemplate_internal_id: part.object.relation_id,
 		}));
-		const payload = {
+		const payload: any = {
 			name: this.name,
 			description: this.description,
 			expression: this.expression,
 			terminal_nodes: this.terminalNodes,
 			parts,
 		};
+		if (this.id) {
+			payload.id = this.id;
+		}
 		this.creating = true;
-		Vue.$axios.post('/relationtemplate', payload)
+		let request: Promise<AxiosResponse>;
+
+		if (this.edit && this.id) {
+			request = Vue.$axios.put(`/relationtemplate/${this.id}`, payload);
+		} else {
+			request = Vue.$axios.post('/relationtemplate', payload);
+		}
+
+		request
 			.then((response: AxiosResponse) => {
 				if (response.data.success) {
-					this.$router.push(`/relationtemplate/${response.data.template_id}`);
+					if (this.edit) {
+						location.reload();
+					} else {
+						this.$router.push(`/relationtemplate/${response.data.template_id}/edit`);
+					}
 				}
 			})
 			.catch((error: AxiosError) => {
