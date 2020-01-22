@@ -109,4 +109,5 @@ export interface RelationTemplateFormType {
 	source: RelationTemplateFormNodeType;
 	predicate: RelationTemplateFormNodeType;
 	object: RelationTemplateFormNodeType;
+	fields: [RelationTemplateField];
 }

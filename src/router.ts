@@ -6,6 +6,7 @@ import LoginView from './views/auth/LoginView.vue';
 import SignUpView from './views/auth/SignUpView.vue';
 
 import Annotations from './views/annotations/Annotations.vue';
+import AnnotatorView from './views/AnnotatorView.vue';
 import ConceptDetails from './views/concepts/ConceptDetails.vue';
 import ConceptList from './views/concepts/ConceptList.vue';
 import Contributors from './views/Contributors.vue';
@@ -20,6 +21,7 @@ import CollectionDetails from './views/texts/CollectionDetails.vue';
 import RepoDetails from './views/texts/RepoDetails.vue';
 import RepoList from './views/texts/RepoList.vue';
 import TextDetails from './views/texts/TextDetails.vue';
+import TextView from './views/TextView.vue';
 import UserDetail from './views/users/UserDetail.vue';
 import UserList from './views/users/UserList.vue';
 
@@ -133,6 +135,16 @@ export default new Router({
 			path: '/github',
 			name: 'github',
 			component: GithubView,
+		},
+		{
+			path: '/text',
+			name: 'text',
+			component: TextView,
+		},
+		{
+			path: '/annotate/:id',
+			name: 'annotate-text',
+			component: AnnotatorView,
 		},
 	],
 });

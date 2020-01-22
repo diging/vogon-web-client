@@ -1,66 +1,68 @@
-import moment from 'moment';
+// Commented out due to most of the functions not currently working.
 
-if (typeof(String.prototype.trim) === 'undefined') {
-	String.prototype.trim = function() {
-		return String(this).replace(/^\s+|\s+$/g, '');
-	};
-}
+// import moment from 'moment';
 
-/**
- * Sleep Promise after `time` milliseconds
- *
- * @param {number} time - Time to sleep
- *
- * @example
- *      sleep(5000, console.log("Hello after 5 seconds"));
- */
-export const sleep = (time: number): Promise<() => number> => {
-	return new Promise((resolve) => setTimeout(resolve, time));
-};
+// if (typeof(String.prototype.trim) === 'undefined') {
+// 	String.prototype.trim = function() {
+// 		return String(this).replace(/^\s+|\s+$/g, '');
+// 	};
+// }
 
-/**
- * Truncate the last part of URL
- *
- * @param {string} url - URL string
- *
- * @example
- *      truncateURI("http://example.com/my/uri"); // "uri"
- */
-export const truncateURI = (url: string): string | undefined => {
-	return url.split('/').pop();
-};
+// /**
+//  * Sleep Promise after `time` milliseconds
+//  *
+//  * @param {number} time - Time to sleep
+//  *
+//  * @example
+//  *      sleep(5000, console.log("Hello after 5 seconds"));
+//  */
+// export const sleep = (time: number): Promise<() => number> => {
+// 	return new Promise((resolve) => setTimeout(resolve, time));
+// };
 
-/**
- * Top offset of an element
- *
- * @param {HTMLElement} element - HTML element object
- */
-export const getOffsetTop = (element: HTMLElement): number => {
-	let offsetTop: number = 0;
-	do {
-		if (!isNaN(element.offsetTop)) {
-			offsetTop += element.offsetTop;
-		}
-	} while (element === element.offsetParent);
+// /**
+//  * Truncate the last part of URL
+//  *
+//  * @param {string} url - URL string
+//  *
+//  * @example
+//  *      truncateURI("http://example.com/my/uri"); // "uri"
+//  */
+// export const truncateURI = (url: string): string | undefined => {
+// 	return url.split('/').pop();
+// };
 
-	return offsetTop;
-};
+// /**
+//  * Top offset of an element
+//  *
+//  * @param {HTMLElement} element - HTML element object
+//  */
+// export const getOffsetTop = (element: HTMLElement): number => {
+// 	let offsetTop: number = 0;
+// 	do {
+// 		if (!isNaN(element.offsetTop)) {
+// 			offsetTop += element.offsetTop;
+// 		}
+// 	} while (element === element.offsetParent);
 
-/**
- * Left offset of an element
- *
- * @param {HTMLElement} element - HTML element object
- */
-export const getOffsetLeft = (element: HTMLElement): number => {
-	let offsetLeft: number = 0;
-	do {
-		if (!isNaN(element.offsetLeft)) {
-			offsetLeft += element.offsetLeft;
-		}
-	} while (element === element.offsetParent);
+// 	return offsetTop;
+// };
 
-	return offsetLeft;
-};
+// /**
+//  * Left offset of an element
+//  *
+//  * @param {HTMLElement} element - HTML element object
+//  */
+// export const getOffsetLeft = (element: HTMLElement): number => {
+// 	let offsetLeft: number = 0;
+// 	do {
+// 		if (!isNaN(element.offsetLeft)) {
+// 			offsetLeft += element.offsetLeft;
+// 		}
+// 	} while (element === element.offsetParent);
+
+// 	return offsetLeft;
+// };
 
 /**
  * Get a bounding box for a text selection in an element.
@@ -68,13 +70,9 @@ export const getOffsetLeft = (element: HTMLElement): number => {
  * @param {Range} textPosition - Range selection element
  * @param {string} elementId - HTMLElement Id
  */
-export const getTextPosition = (textPosition: Range, elementId: string = 'text-content'):
-	{ top: number, bottom: number, left: number, right: number, width: number } | null => {
+export const getTextPosition = (textPosition: any, textContainer: HTMLElement):
+	{ top: number, bottom: number, left: number, right: number, width: number } => {
 	const range: Range = document.createRange();
-	const textContainer: HTMLElement | null = document.getElementById(elementId);
-	if (textContainer == null) {
-		return null;
-	}
 	const textContent: ChildNode = textContainer.childNodes.item(0);
 	const containerRect: DOMRect | ClientRect = textContainer.getBoundingClientRect();
 
@@ -99,14 +97,9 @@ export const getTextPosition = (textPosition: Range, elementId: string = 'text-c
  * @param {number} offset - Offset
  * @param {number} elementId - HTMLElement Id
  */
-export const getPointPosition = (offset: number, elementId: string = 'text-content'):
-	{ top: number, bottom: number, left: number, right: number, width: number } | null => {
+export const getPointPosition = (offset: number, textContainer: HTMLElement):
+	{ top: number, bottom: number, left: number, right: number, width: number }  => {
 	const range: Range = document.createRange();
-
-	const textContainer: HTMLElement | null = document.getElementById(elementId);
-	if (textContainer == null) {
-		return null;
-	}
 	const textContent: ChildNode = textContainer.childNodes.item(0);
 	const containerRect: DOMRect | ClientRect = textContainer.getBoundingClientRect();
 	range.setStart(textContent, offset);
@@ -128,9 +121,9 @@ export const getPointPosition = (offset: number, elementId: string = 'text-conte
 /**
  * Get the computed value of a style property for an element.
  *
- * @param {string} elementId - ID of HTMLElement
+ * @param {Element} element - HTMLElement
  * @param {string} styleProp - CSS style property of HTMLElement required
- * @returns {string} - CSS style property value
+ * @returns {string} - CSS style property computed value
  *
  * @example
  * ```css
@@ -139,11 +132,12 @@ export const getPointPosition = (offset: number, elementId: string = 'text-conte
  *      height: 100px;
  * }
  * ```
- * getStyle('myElement', 'width'); // "200px"
+ * getStyle(document.getElementById('myElement'), 'width'); // "200px"
  *
  */
-export const getStyle = (elementId: string, styleProp: string): string | null => {
-	const element: Element | null = document.getElementById(elementId) as Element;
+export const getStyle = (element: Element, property: string): string => {
+	// ToDo: Handle cross-browser cases if needed
+	/*
 	if (window.getComputedStyle) {
 		const val = window.getComputedStyle(element).getPropertyValue(styleProp);
 		if (!val) {
@@ -156,49 +150,99 @@ export const getStyle = (elementId: string, styleProp: string): string | null =>
 		return val;
 	} else if (element.currentStyle) {
 		return element.currentStyle[styleProp.encamel()];
-	}
-	return null;
+	} */
+	return window.getComputedStyle(element).getPropertyValue(property);
 };
 
-export const clearMouseTextSelection = (): void => {
-	if (window.getSelection && window.getSelection() !== null) {
-		if (window.getSelection.empty) { // Chrome
-			window.getSelection.empty();
-		} else if (window.getSelection().removeAllRanges) { // Firefox
-			 window.getSelection().removeAllRanges();
+/**
+ * ToDo: Add JSDoc and types
+ */
+export const getAnnotationRectPositions = (appellation: any, container: Element): any => {
+	const lineHeight = parseInt(getStyle(container, 'line-height'), 10);
+	const position = getTextPosition(appellation.position, container as HTMLElement);
+	const endPoint = getPointPosition(appellation.position.endOffset, container as HTMLElement);
+
+	let endPosition = {};
+	const midLines = [];
+
+	const nLines = 1 + (endPoint.bottom - position.bottom) / lineHeight;
+
+	if (nLines > 1) { // The selection may span several lines.
+		// clientLeft/clientWidth don't account for inner padding.
+		let padding = parseInt(getStyle(container, 'padding'), 10);
+		if (!padding) { // Firefox.
+			padding = parseInt(getStyle(container, 'paddingLeft'), 10);
 		}
-	} else if (document.selection) { // IE?
-		document.selection.empty();
+
+		const left = container.clientLeft + padding;
+		const width = container.clientWidth - (2 * padding);
+
+		endPosition = { // This is the last line, running from
+			top: endPoint.top, //  far left to the end of the
+			left, //   selection.
+			width: endPoint.right - left,
+		};
+
+		for (let k = 0; k < Math.max(0, nLines - 2); k++) {
+			midLines.push({
+				top: position.top + (k + 1) * lineHeight,
+				left,
+				width,
+				height: lineHeight - 1,
+			});
+		}
 	}
+
+	return {
+		...position,
+		lineHeight,
+		midLines,
+		endPosition,
+	};
 };
 
 /**
- * Get Top position of DOM element
- *
- * @param elementId - ID of the DOM element
+ * Clear selected text on the window, if any
+ * Ref: https://stackoverflow.com/a/3169849
  */
-export const getAbsoluteTop = (elementId: string): number | null => {
-	const element: HTMLElement | null = document.getElementById(elementId);
-	if (element === null || element.getClientRects().length === 0) {
-		return null;
-	}
-	return element.getClientRects()[0].top + window.scrollY;
-};
-
-export const getCreatorName = (
-	creator: { id: number, username: string },
-	userId: number,
-): string => {
-	if (creator.id === userId) {
-		return 'you';
-	} else {
-		return creator.username;
+export const clearMouseTextSelection = (): void => {
+	if (window.getSelection !== null) {
+		const sel = window.getSelection();
+		if (sel !== null) {  // Chrome
+			sel.empty();
+		} else if (window.getSelection()!.removeAllRanges) {  // Firefox
+			window.getSelection()!.removeAllRanges();
+		}
 	}
 };
 
-/**
- * Formats ISODate string to eg: `4 November, 2019 at 15:03`
- */
-export const getFormattedDate = (isodate: string): string => {
-	return moment(isodate).format('D MMMM, YYYY \\at HH:mm');
-};
+// /**
+//  * Get Top position of DOM element
+//  *
+//  * @param elementId - ID of the DOM element
+//  */
+// export const getAbsoluteTop = (elementId: string): number | null => {
+// 	const element: HTMLElement | null = document.getElementById(elementId);
+// 	if (element === null || element.getClientRects().length === 0) {
+// 		return null;
+// 	}
+// 	return element.getClientRects()[0].top + window.scrollY;
+// };
+
+// export const getCreatorName = (
+// 	creator: { id: number, username: string },
+// 	userId: number,
+// ): string => {
+// 	if (creator.id === userId) {
+// 		return 'you';
+// 	} else {
+// 		return creator.username;
+// 	}
+// };
+
+// /**
+//  * Formats ISODate string to eg: `4 November, 2019 at 15:03`
+//  */
+// export const getFormattedDate = (isodate: string): string => {
+// 	return moment(isodate).format('D MMMM, YYYY \\at HH:mm');
+// };
