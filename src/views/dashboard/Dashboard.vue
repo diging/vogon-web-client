@@ -4,13 +4,16 @@
 		template(v-else)
 			Loading(v-if="loading")
 			template(v-else)
-				h2(class="display-1") Welcome back, {{ data.user.full_name }}
+				h2(class="display-1") Welcome back, {{ data.user.full_name || data.user.username }}
 				br
 				v-row
 					v-col(cols=4)
 						v-card(outlined class="user-dashboard")
 							h3 Recently Annotated
-							v-list
+							EmptyView(
+								v-if="(data.recent_texts && data.recent_texts.length === 0) || !data.recent_texts"
+							) No items found!
+							v-list(v-else)
 								template(v-for="(text, index) in data.recent_texts")
 									v-list-item(
 										:key="text.id"
@@ -21,8 +24,11 @@
 									v-divider(v-if="index + 1 < data.recent_texts.length" :key="index")
 					v-col(cols=4)
 						v-card(outlined class="user-dashboard")
-							h3 Recent Added
-							v-list
+							h3 Recently Added
+							EmptyView(
+								v-if="(data.added_texts && data.added_texts.length === 0) || !data.added_texts"
+							) No items found!
+							v-list(v-else)
 								template(v-for="(text, index) in data.added_texts")
 									v-list-item(
 										:key="text.id"
@@ -34,21 +40,28 @@
 					v-col(cols=4)
 						v-card(outlined class="user-dashboard")
 							h3 My Projects
-							v-list
-								template(v-for="(project, index) in data.projects")
-									v-list-item(:key="project.id" v-bind:href="`/project/${project.id}`")
-										v-list-item-content
-											v-list-item-title(v-text="project.name")
-											v-list-item-subtitle(v-text="project.description")
-									v-divider(v-if="index + 1 < data.projects.length" :key="index")
-							v-card-actions
-								v-spacer
-								v-btn(text href="/project") View all
+							EmptyView(
+								v-if="(data.projects && data.projects.length === 0) || !data.projects"
+							) No items found!
+							template(v-else)
+								v-list
+									template(v-for="(project, index) in data.projects")
+										v-list-item(:key="project.id" v-bind:href="`/project/${project.id}`")
+											v-list-item-content
+												v-list-item-title(v-text="project.name")
+												v-list-item-subtitle(v-text="project.description")
+										v-divider(v-if="index + 1 < data.projects.length" :key="index")
+								v-card-actions
+									v-spacer
+									v-btn(text href="/project") View all
 				br
 				h2 My recent Annotations
 				br
 				v-card(outlined class="user-dashboard")
-					v-list
+					EmptyView(
+						v-if="(data.relations && data.relations.length === 0) || !data.relations"
+					) No items found!
+					v-list(v-else)
 						template(v-for="(relation, index) in data.relations")
 							AnnotationItem(:key="relation.id" v-bind:annotation="relation")
 							v-divider(v-if="index + 1 < data.relations.length" :key="index")
