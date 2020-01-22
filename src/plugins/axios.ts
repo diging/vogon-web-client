@@ -6,6 +6,15 @@ import axios from 'axios';
 // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
+const authHeader: any = {};
+if (localStorage.getItem('token')) {
+  authHeader.Authorization = {
+    toString() {
+      return `Bearer ${localStorage.getItem('token')}`;
+    },
+  };
+}
+
 const config = {
   // baseURL: process.env.baseURL || process.env.apiUrl || ""
   // timeout: 60 * 1000, // Timeout
@@ -13,11 +22,7 @@ const config = {
   baseURL: 'http://localhost:8000/api/v2',
   headers: {
     'Content-Type': 'application/json',
-    'Authorization': {
-      toString() {
-        return `Bearer ${localStorage.getItem('token')}`;
-      },
-    },
+    ...authHeader,
   },
   xsrfCookieName: 'csrftoken',
   xsrfHeaderName: 'X-CSRFToken',
