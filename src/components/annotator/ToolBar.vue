@@ -23,62 +23,62 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { VForm } from '@/interfaces/GlobalTypes';
-import { RelationTemplate } from '@/interfaces/RelationTypes';
+import { VForm } from '../../interfaces/GlobalTypes';
+import { RelationTemplate } from '../../interfaces/RelationTypes';
 
 @Component({
-	name: 'ToolBar',
+  name: 'ToolBar',
 })
 export default class ToolBar extends Vue {
-	private query: string = '';
-	private loading: boolean = false;
-	private showResults: boolean = false;
-	@Prop()
-	private text!: object;
-	private templates: RelationTemplate[] = [];
+  private query: string = '';
+  private loading: boolean = false;
+  private showResults: boolean = false;
+  @Prop()
+  private text!: object;
+  private templates: RelationTemplate[] = [];
 
-	private showSideBar() {
-		this.$store.commit('toggleSideBarMutation');
+  private showSideBar() {
+	this.$store.commit('toggleSideBarMutation');
+  }
+
+  private showLists() {
+	this.$store.commit('toggleLists');
+  }
+
+  private searchRelationTemplates(): void {
+	this.loading = true;
+	let all = true;
+	if (this.query !== '') {
+		all = false;
 	}
+	Vue.$axios
+		.get('/relationtemplate/', {
+		params: {
+			format: 'json',
+			all,
+			search: this.query,
+		},
+		})
+		.then((result) => {
+		this.loading = false;
+		this.showResults = true;
+		this.templates = result.data.templates;
+		})
+		.catch((error) => {
+		// TODO: deal with errors
+		});
+  }
 
-	private showLists() {
-		this.$store.commit('toggleLists');
+  private showTemplate(template: RelationTemplate): void {
+	this.$store.commit('setAnnotatorCurrentTab', 'tab-3');
+	this.$store.commit('setAnnotatorTemplate', template);
+
+	let fieldAnnotations: any[] = [];
+	if (template.fields) {
+		fieldAnnotations = template.fields.map((i) => null);
 	}
-
-	private searchRelationTemplates(): void {
-		this.loading = true;
-		let all = true;
-		if (this.query !== '') {
-			all = false;
-		}
-		Vue.$axios
-			.get('/relationtemplate/', {
-				params: {
-					format: 'json',
-					all,
-					search: this.query,
-				},
-			})
-			.then((result) => {
-				this.loading = false;
-				this.showResults = true;
-				this.templates = result.data.templates;
-			})
-			.catch((error) => {
-				// TODO: deal with errors
-			});
-	}
-
-	private showTemplate(template: RelationTemplate): void {
-		this.$store.commit('setAnnotatorCurrentTab', 'tab-3');
-		this.$store.commit('setAnnotatorTemplate', template);
-
-		let fieldAnnotations: any[] = [];
-		if (template.fields) {
-			fieldAnnotations = template.fields.map((i) => null);
-		}
-		this.$store.commit('setSelectedFieldAnnotations', fieldAnnotations);
-	}
+	this.$store.commit('setSelectedFieldAnnotations', fieldAnnotations);
+  }
 }
 </script>
 
@@ -105,6 +105,6 @@ pre {
   padding: 3%;
 }
 .template-list {
-	text-align: left;
+  text-align: left;
 }
 </style>
