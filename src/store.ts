@@ -162,5 +162,6 @@ export default new Vuex.Store({
 		getAnnotatorMeta: (state) => state.annotator.meta,
 		getRelationCreated: (state) => state.annotator.relationCreated,
 	},
-	actions: {;
+	actions: {},
+});
 
