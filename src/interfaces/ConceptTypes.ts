@@ -2,6 +2,7 @@ import { RelationSet } from './RelationTypes';
 
 export interface Concept {
 	id: number;
+	alt_id?: number;
 	url: string;
 	uri: string;
 	label?: string;
