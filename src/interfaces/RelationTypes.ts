@@ -46,6 +46,7 @@ export interface RelationTemplate {
 	expression?: string;
 	terminal_nodes?: string;
 	template_parts?: RelationTemplateFieldRaw[];
+	fields?: [RelationTemplateField];
 }
 
 export interface DateAppellation {
@@ -109,5 +110,5 @@ export interface RelationTemplateFormType {
 	source: RelationTemplateFormNodeType;
 	predicate: RelationTemplateFormNodeType;
 	object: RelationTemplateFormNodeType;
-	fields: [RelationTemplateField];
+	fields?: [RelationTemplateField];
 }

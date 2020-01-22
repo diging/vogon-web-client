@@ -115,25 +115,27 @@ export default class RelationTemplateRender extends Vue {
 		this.creatingRelation = true;
 		this.disabled = true;
 		const annotations = this.$store.getters.getSelectedFieldAnnotations;
+		let fields = [];
+		if (this.template.fields) {
+			fields = this.template.fields.map((field: RelationTemplateField, i: number) => {
+				const fieldAnnotation: any = {};
+				if (field.type === 'TP') {
+					fieldAnnotation.appellation = {
+						...annotations[i],
+						startPos: annotations[i].position.startOffset,
+						endPos: annotations[i].position.endOffset,
+					};
+				} else if (field.type === 'CO') {
+					fieldAnnotation.position = annotations[i].position;
+					fieldAnnotation.data = annotations[i].data;
+				}
 
-		const fields = this.template.fields.map((field: RelationTemplateField, i: number) => {
-			const fieldAnnotation: any = {};
-			if (field.type === 'TP') {
-				fieldAnnotation.appellation = {
-					...annotations[i],
-					startPos: annotations[i].position.startOffset,
-					endPos: annotations[i].position.endOffset,
+				return {
+					...field,
+					...fieldAnnotation,
 				};
-			} else if (field.type === 'CO') {
-				fieldAnnotation.position = annotations[i].position;
-				fieldAnnotation.data = annotations[i].data;
-			}
-
-			return {
-				...field,
-				...fieldAnnotation,
-			};
-		});
+			});
+		}
 		const payload = {
 			...this.$store.getters.getAnnotatorMeta,
 			fields,
