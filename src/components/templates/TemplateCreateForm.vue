@@ -108,7 +108,7 @@
 
 <script lang="ts">
 import { AxiosError, AxiosResponse } from 'axios';
-import cloneDeep from 'clone-deep';
+import _ from 'lodash';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import TemplateNodePicker from '@/components/templates/TemplateNodePicker.vue';
@@ -153,7 +153,7 @@ export default class TemplateCreateForm extends Vue {
 	private templateParts: RelationTemplateFormType[] = [
 		{
 			internal_id: 0,
-			...cloneDeep(this.defaultValues),
+			..._.cloneDeep(this.defaultValues),
 		},
 	];
 	private nodeChoices =  [
@@ -220,7 +220,7 @@ export default class TemplateCreateForm extends Vue {
 	private addRow(): void {
 		this.templateParts.push({
 			internal_id: this.templateParts.length,
-			...cloneDeep(this.defaultValues),
+			..._.cloneDeep(this.defaultValues),
 		});
 	}
 
