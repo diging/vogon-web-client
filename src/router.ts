@@ -20,6 +20,7 @@ import TemplateList from './views/templates/TemplateList.vue';
 import CollectionDetails from './views/texts/CollectionDetails.vue';
 import RepoDetails from './views/texts/RepoDetails.vue';
 import RepoList from './views/texts/RepoList.vue';
+import TextContent from './views/texts/TextContent.vue';
 import TextDetails from './views/texts/TextDetails.vue';
 import TextView from './views/TextView.vue';
 import UserDetail from './views/users/UserDetail.vue';
@@ -70,6 +71,11 @@ export default new Router({
 			path: '/repository/:repoId/text/:textId',
 			name: 'text-details',
 			component: TextDetails,
+		},
+		{
+			path: '/repository/:repoId/text/:textId/content/:contentId',
+			name: 'text-content',
+			component: TextContent,
 		},
 		{
 			path: '/concept',
@@ -137,14 +143,9 @@ export default new Router({
 			component: GithubView,
 		},
 		{
-			path: '/text',
-			name: 'text',
-			component: TextView,
-		},
-		{
 			path: '/annotate/:id',
 			name: 'annotate-text',
-			component: AnnotatorView,
+			component: TextView,
 		},
 	],
 });

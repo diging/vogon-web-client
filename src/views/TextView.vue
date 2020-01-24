@@ -1,84 +1,97 @@
 
 <template lang="pug">
 	v-container
-		div(v-if="!loading")
-			SideDrawer(:text="text" :project="project")
-			ToolBar(:text="text" )
-			v-row
-				v-col(cols="6")
-					TextDisplay(:content="content" :appellations="appellations")
-				v-col(cols="6")
-					ListsSideDrawer(:relations='relations' :appellations="appellations")
-		div(v-else)
-			v-progress-circular(:size="70" :width="7" color="purple" indeterminate)
+		ErrorIndicator(v-if="error") Error while loading text details!
+		template(v-else)
+			Loading(v-if="loading")
+			div(v-else)
+				SideDrawer(:text="text" :project="project")
+				ToolBar(:text="text")
+				v-row
+					v-col(cols="6")
+						TextDisplay(:content="content" :appellations="appellations")
+					v-col(cols="6")
+						ListsSideDrawer(:relations='relations' :appellations="appellations")
 </template>
 
 <script lang="ts">
+import { AxiosResponse } from 'axios';
+import { Component, Vue } from 'vue-property-decorator';
+
 import AppellationList from '@/components/annotator/AppellationList.vue';
 import ListsSideDrawer from '@/components/annotator/ListsSideDrawer.vue';
 import RelationList from '@/components/annotator/RelationList.vue';
 import SideDrawer from '@/components/annotator/SideDrawer.vue';
 import TextDisplay from '@/components/annotator/TextDisplay.vue';
 import ToolBar from '@/components/annotator/ToolBar.vue';
-import { Component, Vue } from 'vue-property-decorator';
-export default Vue.extend({
-  name: 'TextView',
-  components: {
-	TextDisplay,
-	ToolBar,
-	SideDrawer,
-	RelationList,
-	AppellationList,
-	ListsSideDrawer,
-  },
-  created() {
-	this.getContent();
-  },
-  data() {
-	return {
-		content: null,
-		project: null,
-		text: null,
-		loading: true,
-		appellations: null,
-		sidebar: '',
-		relations: null,
-	};
-  },
-  methods: {
-	getContent() {
-		Vue.$axios
-		.get('/annotate/13/?project_id=1') // ToDo: Get rid of hard-coded IDs
-		.then((result) => {
-			this.content = result.data.content;
-			this.project = result.data.project;
-			this.text = result.data.text;
-			this.appellations = result.data.appellations
-				.filter((item: any) => item.position)
-				.map((item: any) => ({
-					...item,
-					visible: true,
-					position: {
-						...item.position,
-						startOffset: parseInt(item.position.position_value.split(',')[0], 10),
-						endOffset: parseInt(item.position.position_value.split(',')[1], 10),
-					},
-				}));
-			this.$store.commit('setAnnotatorAppellations', this.appellations);
-			this.$store.commit('setAnnotatorMeta', {
-				project: '1',
-				occursIn: '13',
-			});
+import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
+import Loading from '@/components/global/Loading.vue';
+import { Project } from '@/interfaces/ProjectTypes';
+import { Appellation, Relation } from '@/interfaces/RelationTypes';
+import { TextDocument } from '@/interfaces/RepositoryTypes';
 
-			this.loading = false;
-			this.relations = result.data.relations;
-		})
-		.catch((error) => {
-			// TODO: deal with errors
-		});
+@Component({
+	name: 'TextView',
+	components: {
+		TextDisplay,
+		ToolBar,
+		SideDrawer,
+		RelationList,
+		AppellationList,
+		ListsSideDrawer,
+		ErrorIndicator,
+		Loading,
 	},
-  },
-});
+})
+export default class TextView extends Vue {
+	private content: string = '';
+	private project: Project = { name: '' };
+	private text?: TextDocument;
+	private appellations: Appellation[] = [];
+	private relations: Relation[] = [];
+
+	private loading: boolean = true;
+	private error: boolean = false;
+	private queryParam: string = '';
+
+	public created() {
+		this.getContent();
+	}
+
+	private getContent() {
+		const projectId = this.$route.query.project_id;
+		if (projectId) {
+			this.queryParam = `?project_id=${projectId}`;
+		}
+
+		Vue.$axios.get(`/annotate/${this.$route.params.id}/${this.queryParam}`)
+			.then((response: AxiosResponse) => {
+				this.content = response.data.content;
+				this.project = response.data.project;
+				this.text = response.data.text;
+				this.appellations = response.data.appellations
+					.filter((item: any) => item.position)
+					.map((item: any) => ({
+						...item,
+						visible: true,
+						position: {
+							...item.position,
+							startOffset: parseInt(item.position.position_value.split(',')[0], 10),
+							endOffset: parseInt(item.position.position_value.split(',')[1], 10),
+						},
+					}));
+				this.$store.commit('setAnnotatorAppellations', this.appellations);
+				this.$store.commit('setAnnotatorMeta', {
+					project: response.data.project.id,
+					occursIn: response.data.textid,
+				});
+
+				this.relations = response.data.relations;
+			})
+			.catch(() => this.error = true)
+			.finally(() => this.loading = false);
+	}
+}
 </script>
 
 <style scoped lang="scss">

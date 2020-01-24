@@ -1,5 +1,7 @@
 import { Concept, ConceptType } from './ConceptTypes';
+import { User } from './GlobalTypes';
 import { Text } from './ProjectTypes';
+import { TextDocument } from './RepositoryTypes';
 
 export interface RelationTemplateField {
 	id?: number;
@@ -59,6 +61,16 @@ export interface DateAppellation {
 	dateRepresentation?: string;
 }
 
+export interface Relation {
+	id: number;
+	created: string;
+	submitted: boolean;
+	submittedOn: string | null;
+	source_object_id: number | null;
+	object_object_id: number | null;
+	occursIn: number;
+}
+
 export interface RelationSet {
 	id: number;
 	created: string;
@@ -111,4 +123,19 @@ export interface RelationTemplateFormType {
 	predicate: RelationTemplateFormNodeType;
 	object: RelationTemplateFormNodeType;
 	fields?: [RelationTemplateField];
+}
+
+export interface Appellation {
+	id: number;
+	position: {
+		id: number;
+		position_type: string;
+		position_value: string;
+		occursIn: number;
+	};
+	tokenIds?: string;
+	stringRep?: string;
+	occursIn: TextDocument;
+	interpretation?: Concept;
+	createdBy: User;
 }
