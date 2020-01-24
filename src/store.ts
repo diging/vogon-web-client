@@ -161,6 +161,7 @@ export default new Vuex.Store({
 		getAnnotatorAppellations: (state) => state.annotator.appellations,
 		getAnnotatorMeta: (state) => state.annotator.meta,
 		getRelationCreated: (state) => state.annotator.relationCreated,
+		templateOpenConcepts: (state) => state.templateCreator.open_concepts,
 	},
 	actions: {},
 });
