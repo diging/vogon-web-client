@@ -7,7 +7,9 @@ import SignUpView from './views/auth/SignUpView.vue';
 
 import Annotations from './views/annotations/Annotations.vue';
 import AnnotatorView from './views/AnnotatorView.vue';
+import ConceptAction from './views/concepts/ConceptAction.vue';
 import ConceptDetails from './views/concepts/ConceptDetails.vue';
+import ConceptEdit from './views/concepts/ConceptEdit.vue';
 import ConceptList from './views/concepts/ConceptList.vue';
 import Contributors from './views/Contributors.vue';
 import Dashboard from './views/dashboard/Dashboard.vue';
@@ -86,6 +88,15 @@ export default new Router({
 			path: '/concept/:id',
 			name: 'concept-details',
 			component: ConceptDetails,
+		},
+		{
+			path: '/concept/:id/edit',
+			name: 'concept-edit',
+			component: ConceptEdit,
+		},
+		{
+			path: '/concept/:id/:action',
+			component: ConceptAction,
 		},
 		{
 			path: '/relations',

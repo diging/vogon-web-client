@@ -13,8 +13,9 @@ export interface Concept {
 	resolved?: boolean;
 	typed_label?: string;
 	concept_state?: string;
-	appellation_set?: [number];
-	relations?: [RelationSet];
+	appellation_set?: number[];
+	relations?: RelationSet[];
+	conceptpower_namespaced: boolean;
 }
 
 export interface ConceptType {
@@ -34,4 +35,11 @@ export interface ConceptFilterParams {
 	strict?: boolean;
 	offset?: number;
 	limit?: number;
+}
+
+export interface ConceptMatch {
+	label: string;
+	description: string;
+	typed: string | null;
+	uri: string;
 }
