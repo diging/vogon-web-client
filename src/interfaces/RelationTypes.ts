@@ -1,5 +1,5 @@
 import { Concept, ConceptType } from './ConceptTypes';
-import { User } from './GlobalTypes';
+import { PaginatedFilter, User } from './GlobalTypes';
 import { Text } from './ProjectTypes';
 import { TextDocument } from './RepositoryTypes';
 
@@ -90,7 +90,7 @@ export interface RelationSet {
 	};
 }
 
-export interface RelationFilterParams {
+export interface RelationFilterParams extends PaginatedFilter {
 	createdBy?: string;
 	occursIn?: string;
 	terminal_nodes?: string;
@@ -98,8 +98,6 @@ export interface RelationFilterParams {
 	created_before?: string;
 	project?: number;
 	meta?: boolean;
-	offset?: number;
-	limit?: number;
 	fields?: [RelationTemplateField];
 }
 

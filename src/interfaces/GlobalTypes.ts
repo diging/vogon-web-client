@@ -31,3 +31,8 @@ export interface TokenDto {
 	user_id: number;
 	github_token: boolean;
 }
+
+export interface PaginatedFilter {
+	offset?: number;
+	limit?: number;
+}

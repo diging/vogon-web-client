@@ -1,7 +1,7 @@
 <template lang="pug">
 	v-dialog(v-model="show" persistent max-width="600px")
 		template(v-slot:activator="{ on }")
-			v-btn(tile color="teal" large dark v-on="on" v-bind:outlined="settings.outlined")
+			v-btn(tile color="teal" dark v-on="on" v-bind:outlined="settings.outlined")
 				v-icon(left) {{settings.icon}}
 				span {{settings.action}} project
 	

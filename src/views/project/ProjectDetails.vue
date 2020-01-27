@@ -10,11 +10,14 @@
 					v-col(md="6")
 						h3(class="headline") {{ project.name }}
 						h4(class="subtitle-1") {{ project.description }}
-						span(class="overline") Created by "user" on {{moment(project.created).format('lll')}}
+						span(class="body-2 blue-grey--text text--darken-1") Created by 
+							strong "{{ project.ownedBy.username }}" 
+							| &nbsp;on {{moment(project.created).format('lll')}}
+						div(class="body-2 mt-2") {{ project.num_texts }} text(s), {{ project.num_relations }} relation(s)
 					v-col(md="6")
 						div(class="float-right")
 							CreateUpdateProject(update :project="Object.assign({}, project)" v-bind:getProjectDetails="getProjectDetails")
-							v-btn(tile depressed color="teal" large class="ma-2" dark v-bind:href="`/repository?project_id=${this.$route.params.id}`")
+							v-btn(tile depressed color="teal" class="ma-2" dark v-bind:href="`/repository?project_id=${this.$route.params.id}`")
 								v-icon(left) mdi-plus
 								span Add text
 			br

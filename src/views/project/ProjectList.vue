@@ -6,21 +6,29 @@
 			v-col(md="6")
 				div(class="float-right")
 					CreateUpdateProject(v-bind:getProjectDetails="getProjectDetails")
-		ErrorIndicator(v-if="error") Error while loading projects!
-		div(v-else)
-			Loading(v-if="loading")
-			v-list(v-else color="transparent")
-				template(v-if="!projects.length")
-					br
-					div(class="text-center")
-						v-icon(x-large) mdi-folder
-						br
-						div No projects found!
+
+		v-card(class="card-projects")
+			ProjectFilter(
+				:filters="filters"
+				:onApply="() => { page = 1; getProjectList()}"
+				class="mb-6"
+			)
+			ErrorIndicator(v-if="error") Error while loading projects!
+			div(v-else)
+				Loading(v-if="loading")
 				template(v-else)
-					v-card(tile outlined)
+					template(v-if="!projects.length")
+						EmptyView No projects found!
+					template(v-else)
 						v-list(v-for="(project, index) in projects" :key="project.id" class="project-list")
 							ProjectItem(v-bind:project="project")
 							v-divider(v-if="index + 1 < projects.length")
+
+						v-pagination(
+							v-model="page"
+							:length="Math.ceil(projectsCount / PAGE_SIZE)"
+							v-on:input="getProjectList"
+						)
 
 </template>
 
@@ -29,12 +37,15 @@ import { AxiosResponse } from 'axios';
 import { Component, Vue } from 'vue-property-decorator';
 import { Location } from 'vue-router';
 
+import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
 import CreateUpdateProject from '@/components/project/CreateUpdateProject.vue';
+import ProjectFilter from '@/components/project/ProjectFilter.vue';
 import ProjectItem from '@/components/project/ProjectItem.vue';
+import { PAGE_SIZE } from '@/constants';
 import { VForm } from '@/interfaces/GlobalTypes';
-import { Project } from '@/interfaces/ProjectTypes';
+import { Project, ProjectFilterParams } from '@/interfaces/ProjectTypes';
 
 
 @Component({
@@ -42,24 +53,50 @@ import { Project } from '@/interfaces/ProjectTypes';
 	components: {
 		Loading,
 		ErrorIndicator,
+		EmptyView,
 		CreateUpdateProject,
 		ProjectItem,
+		ProjectFilter,
 	},
 })
 export default class ProjectList extends Vue {
 	private projects: Project[] = [];
 	private loading: boolean = true;
 	private error: boolean = false;
+	private filters: ProjectFilterParams = {
+		ownedBy__username: '',
+		limit: PAGE_SIZE,
+		offset: 0,
+	};
+	private projectsCount: number = 0;
+
+	private page: number = 1;
+	private PAGE_SIZE: number = PAGE_SIZE;
 
 	public mounted(): void {
 		this.getProjectList();
 	}
 
-	private getProjectList() {
+	private getFilter(page: number): ProjectFilterParams {
+		const params: ProjectFilterParams = {};
+		const ownedBy = this.$route.query.ownedBy || this.filters.ownedBy__username;
+		if (ownedBy) {
+			params.ownedBy__username = ownedBy.toString();
+		}
+		params.limit = this.filters.limit;
+		params.offset = (page - 1) * PAGE_SIZE;
+
+		return params;
+	}
+
+	private getProjectList(page: number = 1) {
+		const params: ProjectFilterParams = this.getFilter(page);
+
 		Vue.$axios
-			.get('/project')
+			.get('/project', { params })
 			.then((response: AxiosResponse) => {
 				this.projects = response.data.results;
+				this.projectsCount = response.data.count;
 			})
 			.catch(() => (this.error = true))
 			.finally(() => (this.loading = false));
@@ -80,5 +117,8 @@ export default class ProjectList extends Vue {
 .project-list {
 	padding: 0;
 	font-size: .875rem;
+}
+.card-projects {
+	padding: 20px 0;
 }
 </style>

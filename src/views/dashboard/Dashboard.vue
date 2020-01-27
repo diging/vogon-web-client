@@ -36,7 +36,7 @@
 									)
 										v-list-item-content
 											v-list-item-title(v-text="text.title")
-									v-divider(v-if="index + 1 < data.added_texts.length" :key="index")
+									v-divider(v-if="index + 1 < data.added_texts.length")
 					v-col(cols=4)
 						v-card(outlined class="user-dashboard")
 							h3 My Projects
@@ -50,12 +50,16 @@
 											v-list-item-content
 												v-list-item-title(v-text="project.name")
 												v-list-item-subtitle(v-text="project.description")
-										v-divider(v-if="index + 1 < data.projects.length" :key="index")
+										v-divider(v-if="index + 1 < data.projects.length")
 								v-card-actions
 									v-spacer
-									v-btn(text href="/project") View all
+									v-btn(text :href="`/project?ownedBy=${data.user.username}`") View all
 				br
-				h2 My recent Annotations
+				v-row
+					v-col(:cols="6")
+						h2 My recent Annotations
+					v-col(:cols="6")
+						v-btn(class="float-right" dense outlined :href="`/relations?createdBy=${data.user.username}`") See all
 				br
 				v-card(outlined class="user-dashboard")
 					EmptyView(
@@ -64,7 +68,7 @@
 					v-list(v-else)
 						template(v-for="(relation, index) in data.relations")
 							AnnotationItem(:key="relation.id" v-bind:annotation="relation")
-							v-divider(v-if="index + 1 < data.relations.length" :key="index")
+							v-divider(v-if="index + 1 < data.relations.length")
 							
 
 </template>

@@ -1,13 +1,13 @@
 <template lang="pug">
 	v-list-item(v-bind:href="`/project/${project.id}`" class="project-card")
 		v-list-item-content
-			div(class="headline") {{project.name}}
+			div(class="title font-weight-regular") {{project.name}}
 			
 			div(class="text--primary") {{project.description}}
 			span
 				| Created by 
 				strong "{{project.ownedBy.username}}"
-				| on {{moment(project.created).format('lll')}}
+				| &nbsp;on {{moment(project.created).format('lll')}}
 			div(class="teal--text") 
 				strong {{project.num_texts}} texts, {{project.num_relations}} relations
 </template>
