@@ -11,6 +11,8 @@ import ConceptAction from './views/concepts/ConceptAction.vue';
 import ConceptDetails from './views/concepts/ConceptDetails.vue';
 import ConceptEdit from './views/concepts/ConceptEdit.vue';
 import ConceptList from './views/concepts/ConceptList.vue';
+import ConceptTypeDetails from './views/concepts/ConceptTypeDetails.vue';
+import ConceptTypes from './views/concepts/ConceptTypes.vue';
 import Contributors from './views/Contributors.vue';
 import Dashboard from './views/dashboard/Dashboard.vue';
 import Home from './views/Home.vue';
@@ -83,6 +85,14 @@ export default new Router({
 			path: '/concept',
 			name: 'concept-list',
 			component: ConceptList,
+		},
+		{
+			path: '/types',
+			component: ConceptTypes,
+		},
+		{
+			path: '/types/:id',
+			component: ConceptTypeDetails,
 		},
 		{
 			path: '/concept/:id',
