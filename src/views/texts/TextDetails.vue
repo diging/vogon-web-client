@@ -22,6 +22,22 @@
 					| Select a content object to begin annotating that object in VogonWeb. 
 				TextSerialContent(v-bind:contents="text.aggregate_content")
 				TextAdditionalContent(v-bind:contents="text.content")
+				v-card(class="card-annotations mt-4")
+					v-row(class="annotation-title")
+						v-col(md="6")
+							v-card-title Recent Annotations
+						v-col(md="6")
+							div(class="float-right")
+								v-btn(
+									class="view-annotations" 
+									v-bind:href="`/relations?occursIn=${text.uri}`" 
+									dense outlined
+								) View all
+					v-card-text
+						template(v-if="!relations.length")
+							EmptyView No annotations found!
+						template(v-else)
+							AnnotationList(v-bind:annotations="relations")
 
 		v-snackbar(v-model="snackbar" top)
 			| {{ snackbarText }}
@@ -34,8 +50,10 @@ import { Component, Vue } from 'vue-property-decorator';
 
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
+import AnnotationList from '@/components/relations/AnnotationList.vue';
 import TextAdditionalContent from '@/components/texts/TextAdditionalContent.vue';
 import TextSerialContent from '@/components/texts/TextSerialContent.vue';
+import { RelationSet } from '@/interfaces/RelationTypes';
 import { TextResource } from '@/interfaces/RepositoryTypes';
 
 @Component({
@@ -45,6 +63,7 @@ import { TextResource } from '@/interfaces/RepositoryTypes';
 		ErrorIndicator,
 		TextSerialContent,
 		TextAdditionalContent,
+		AnnotationList,
 	},
 })
 export default class TextDetails extends Vue {
@@ -52,6 +71,7 @@ export default class TextDetails extends Vue {
 	private error: boolean = false;
 	private project: string = '';
 	private text: TextResource = {id: 1, title: ''};
+	private relations: RelationSet[] = [];
 
 	private snackbarText: string = '';
 	private snackbar: boolean = false;
@@ -71,6 +91,7 @@ export default class TextDetails extends Vue {
 			.then((response: AxiosResponse) => {
 				this.text = response.data.result as TextResource;
 				this.project = response.data.part_of_project && response.data.part_of_project.name;
+				this.relations = response.data.relations;
 			})
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
@@ -95,5 +116,12 @@ export default class TextDetails extends Vue {
 .text-details {
 	padding: 20px;
 	margin-bottom: 20px;
+}
+.card-annotations {
+	padding: 20px 0;
+	text-align: left;
+}
+.annotation-title {
+	padding: 0 16px 8px;
 }
 </style>

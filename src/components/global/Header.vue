@@ -42,6 +42,7 @@ export default Vue.extend({
 			annotate_items: [{ title: 'Text', link: '/repository' }, { title: 'Projects', link: '/project' }],
 			data_items: [
 				{ title: 'Concepts', link: '/concept' },
+				{ title: 'Concept Types', link: '/types' },
 				{ title: 'Annotations', link: '/relations' },
 				{ title: 'Templates', link: '/relationtemplate' },
 			],

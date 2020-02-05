@@ -7,8 +7,12 @@ import SignUpView from './views/auth/SignUpView.vue';
 
 import Annotations from './views/annotations/Annotations.vue';
 import AnnotatorView from './views/AnnotatorView.vue';
+import ConceptAction from './views/concepts/ConceptAction.vue';
 import ConceptDetails from './views/concepts/ConceptDetails.vue';
+import ConceptEdit from './views/concepts/ConceptEdit.vue';
 import ConceptList from './views/concepts/ConceptList.vue';
+import ConceptTypeDetails from './views/concepts/ConceptTypeDetails.vue';
+import ConceptTypes from './views/concepts/ConceptTypes.vue';
 import Contributors from './views/Contributors.vue';
 import Dashboard from './views/dashboard/Dashboard.vue';
 import Home from './views/Home.vue';
@@ -20,6 +24,7 @@ import TemplateList from './views/templates/TemplateList.vue';
 import CollectionDetails from './views/texts/CollectionDetails.vue';
 import RepoDetails from './views/texts/RepoDetails.vue';
 import RepoList from './views/texts/RepoList.vue';
+import TextContent from './views/texts/TextContent.vue';
 import TextDetails from './views/texts/TextDetails.vue';
 import TextView from './views/TextView.vue';
 import UserDetail from './views/users/UserDetail.vue';
@@ -72,14 +77,36 @@ export default new Router({
 			component: TextDetails,
 		},
 		{
+			path: '/repository/:repoId/text/:textId/content/:contentId',
+			name: 'text-content',
+			component: TextContent,
+		},
+		{
 			path: '/concept',
 			name: 'concept-list',
 			component: ConceptList,
 		},
 		{
+			path: '/types',
+			component: ConceptTypes,
+		},
+		{
+			path: '/types/:id',
+			component: ConceptTypeDetails,
+		},
+		{
 			path: '/concept/:id',
 			name: 'concept-details',
 			component: ConceptDetails,
+		},
+		{
+			path: '/concept/:id/edit',
+			name: 'concept-edit',
+			component: ConceptEdit,
+		},
+		{
+			path: '/concept/:id/:action',
+			component: ConceptAction,
 		},
 		{
 			path: '/relations',
@@ -137,14 +164,9 @@ export default new Router({
 			component: GithubView,
 		},
 		{
-			path: '/text',
-			name: 'text',
-			component: TextView,
-		},
-		{
 			path: '/annotate/:id',
 			name: 'annotate-text',
-			component: AnnotatorView,
+			component: TextView,
 		},
 	],
 });

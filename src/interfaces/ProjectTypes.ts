@@ -1,4 +1,4 @@
-import { User } from '@/interfaces/GlobalTypes';
+import { PaginatedFilter, User } from '@/interfaces/GlobalTypes';
 
 export interface Text {
 	id: number;
@@ -19,4 +19,8 @@ export interface Project {
 	texts?: Text[] | number[];
 	num_texts?: number;
 	num_relations?: number;
+}
+
+export interface ProjectFilterParams extends PaginatedFilter {
+	ownedBy__username?: string;
 }

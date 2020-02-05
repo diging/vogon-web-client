@@ -47,10 +47,14 @@
 					v-icon(right color="white" small) {{getConceptStateTheme(item.concept_state).icon}}
 
 			template(v-slot:item.actions="{ item }")
-				v-btn(v-if="item.concept_state === CONCEPT_STATES.PENDING" depressed small color="success") Approve
+				v-btn(
+					v-if="item.concept_state === CONCEPT_STATES.PENDING && !item.conceptpower_namespaced"
+					depressed small color="success"
+					:href="`/concept/${item.id}/approve`"
+				) Approve
 				template(v-else-if="item.concept_state === CONCEPT_STATES.APPROVED")
-					v-btn(v-if="item.typed" depressed small color="success") Add
-					v-btn(v-else depressed small color="primary") Set Type
+					v-btn(v-if="item.typed" depressed small color="success" :href="`/concept/${item.id}/add`") Add
+					v-btn(v-else depressed small color="primary" :href="`/concept/${item.id}/edit`") Set Type
 </template>
 
 <script lang="ts">

@@ -67,6 +67,18 @@ export default class Annotations extends Vue {
 	private users: User[] = [];
 
 	public async mounted(): Promise<void> {
+		const createdBy = this.$route.query.createdBy;
+		const occursIn = this.$route.query.occursIn;
+		const terminalNodes = this.$route.query.terminal_nodes;
+		if (createdBy) {
+			this.filters.createdBy = createdBy.toString();
+		}
+		if (occursIn) {
+			this.filters.occursIn = occursIn.toString();
+		}
+		if (terminalNodes) {
+			this.filters.terminal_nodes = terminalNodes.toString();
+		}
 		this.getAnnotations();
 	}
 
@@ -91,6 +103,7 @@ export default class Annotations extends Vue {
 		}
 		params.terminal_nodes = this.filters.terminal_nodes;
 		params.project = this.filters.project;
+		params.occursIn = this.filters.occursIn;
 
 		return params;
 	}
