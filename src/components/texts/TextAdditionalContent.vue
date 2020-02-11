@@ -15,7 +15,7 @@
 						v-list-item-title(class="font-weight-medium" v-text="content.name")
 						v-list-item-subtitle(v-text="content.content_type")
 					v-list-item-action
-						v-btn(depressed color="primary" small)
+						v-btn(depressed color="primary" small v-bind:href="`/text/${text_id}/${project_id}`")
 							v-icon(left small) mdi-tag 
 							| Annotate
 				v-divider(v-if="index + 1 < contents.length" :key="index")
@@ -34,6 +34,8 @@ import { TextContentResource } from '@/interfaces/RepositoryTypes';
 })
 export default class TextAdditionalContent extends Vue {
 	@Prop() private readonly contents!: TextContentResource[];
+	@Prop() private readonly project_id!: number;
+	@Prop() private readonly text_id!: number;
 }
 </script>
 

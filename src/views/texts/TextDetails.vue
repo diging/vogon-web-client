@@ -21,7 +21,7 @@
 					| The following content objects are associated with this resource. 
 					| Select a content object to begin annotating that object in VogonWeb. 
 				TextSerialContent(v-bind:contents="text.aggregate_content")
-				TextAdditionalContent(v-bind:contents="text.content")
+				TextAdditionalContent(v-bind:contents="text.content" v-bind:project_id="project_id" v-bind:text_id="text_id")
 
 		v-snackbar(v-model="snackbar" top)
 			| {{ snackbarText }}
@@ -51,6 +51,8 @@ export default class TextDetails extends Vue {
 	private loading: boolean = true;
 	private error: boolean = false;
 	private project: string = '';
+	private project_id: number = 0;
+	private text_id: number = 0;
 	private text: TextResource = {id: 1, title: ''};
 
 	private snackbarText: string = '';
@@ -70,7 +72,11 @@ export default class TextDetails extends Vue {
 		Vue.$axios.get(`/repository/${this.$route.params.repoId}/texts/${this.$route.params.textId}${queryParam}`)
 			.then((response: AxiosResponse) => {
 				this.text = response.data.result as TextResource;
+				console.log(response.data);
 				this.project = response.data.part_of_project && response.data.part_of_project.name;
+				this.project_id = response.data.part_of_project && response.data.part_of_project.id;
+				this.text_id = response.data.master_text.id;
+				console.log(this.project_id);
 			})
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);

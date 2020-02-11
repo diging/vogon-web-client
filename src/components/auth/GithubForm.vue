@@ -23,6 +23,7 @@ export default class GithubForm extends Vue {
   private valid: boolean = false;
 
 	public mounted() {
+		console.log(process.env.VUE_APP_GITHUB_CLIENT_ID)
 		if (this.$route.query.code) {
 			this.getAccessToken(this.$route.query.code);
 		}

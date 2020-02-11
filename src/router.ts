@@ -137,7 +137,7 @@ export default new Router({
 			component: GithubView,
 		},
 		{
-			path: '/text',
+			path: '/text/:textId/:projectId',
 			name: 'text',
 			component: TextView,
 		},

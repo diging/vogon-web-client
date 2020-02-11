@@ -48,7 +48,7 @@ export default Vue.extend({
   methods: {
 	getContent() {
 		Vue.$axios
-		.get('/annotate/13/?project_id=1') // ToDo: Get rid of hard-coded IDs
+		.get('/annotate/' + ids['text'] + '/?project_id=' + ids['project']) // ToDo: Get rid of hard-coded IDs (TextID/?ProjectID)
 		.then((result) => {
 			this.content = result.data.content;
 			this.project = result.data.project;
@@ -79,6 +79,18 @@ export default Vue.extend({
 	},
   },
 });
+
+function getIds() {
+	var url = document.URL;
+	var ids = {};
+	ids.text = url.match(/(?<=text\/)[\d]+/);
+	ids.project = url.match(/(?<=text\/[\d]+\/)[\d]+/);
+	console.log("Text id is " + ids['text'] + " and proj. id is " + ids['project']);
+	return ids;
+}
+var ids = getIds();
+
+
 </script>
 
 <style scoped lang="scss">
