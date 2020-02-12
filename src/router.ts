@@ -6,7 +6,6 @@ import LoginView from './views/auth/LoginView.vue';
 import SignUpView from './views/auth/SignUpView.vue';
 
 import Annotations from './views/annotations/Annotations.vue';
-import AnnotatorView from './views/AnnotatorView.vue';
 import ConceptAction from './views/concepts/ConceptAction.vue';
 import ConceptDetails from './views/concepts/ConceptDetails.vue';
 import ConceptEdit from './views/concepts/ConceptEdit.vue';

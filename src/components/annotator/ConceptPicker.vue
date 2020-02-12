@@ -8,18 +8,17 @@
 </template>
 
 <script lang="ts">
-import { VForm } from '@/interfaces/GlobalTypes';
 import { Component, Vue, Prop } from 'vue-property-decorator';
+
 import ConceptPickerItem from '@/components/annotator/ConceptPickerItem.vue'
 
 @Component({
-  name: 'ConceptPicker',
-  components: {
+	name: 'ConceptPicker',
+	components: {
 		'concept-picker-item': ConceptPickerItem
 	}
 })
 export default class ConceptPicker extends Vue {
-
 	//TODO: Interface for concept
 	@Prop()
 	private appellations!: Array<object>;
@@ -33,15 +32,15 @@ export default class ConceptPicker extends Vue {
 
 	created() {
 		this.merge(this.appellations);
-
 	}
 
 	private selectConcept(concept: any) {
 		// Clear the concept search results.
 		this.concepts = [];
 		//TODO: Change emit to use store
-		this.$emit('selectconcept', concept);
+		this.$store.commit('selectconcept', concept);
 	}
+
 	private addConcepts(appellationMapEntires: any) {
 		var count = 0
 		while (count <= 3) {
@@ -55,6 +54,7 @@ export default class ConceptPicker extends Vue {
 			}
 		}
 	}
+
 	private merge(appellations: any) {
 		this.conceptsFinal = [];
 		this.appell = appellations;
@@ -67,7 +67,7 @@ export default class ConceptPicker extends Vue {
 			return 0;
 		}
 		this.appell.sort(compare);
-		var appellationMap = new Map();
+		const appellationMap = new Map();
 		// set map items from appell array
 		this.appell.forEach(function (item) {
 			if (appellationMap.has(item.interpretation.uri)) {
@@ -76,27 +76,17 @@ export default class ConceptPicker extends Vue {
 				appellationMap.set(item.interpretation.uri, [item]);
 			}
 		});
-		var appellationMapEntires = appellationMap.entries();
+		const appellationMapEntires = appellationMap.entries();
 		// add non-duplicate objects to conceptsFinal sorted by most recent
 		this.addConcepts(appellationMapEntires);
 		// sort appellationMap by length
-		var sortedMap = new Map([...appellationMap.entries()].sort(function (a, b) {
+		const sortedMap = new Map([...appellationMap.entries()].sort(function (a, b) {
 			return b[1].length - a[1].length
 		}));
-		var sortedMapItems = sortedMap.entries();
+		const sortedMapItems = sortedMap.entries();
 		// add non-duplicate objects to conceptsFinal sorted by most occuring
 		this.addConcepts(sortedMapItems);
 		return this.conceptsFinal;
 	}
 }
 </script>
-
-<style scoped>
-.project-item {
-	padding: 0;
-	margin: 10px 0;
-}
-#title {
-	background: grey;
-}
-</style>

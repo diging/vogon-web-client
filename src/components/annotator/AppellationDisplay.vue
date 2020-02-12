@@ -10,7 +10,6 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
-import { VForm } from '@/interfaces/GlobalTypes';
 import store from '@/store';
 import AppellationDisplayItem from './AppellationDisplayItem.vue';
 

@@ -31,7 +31,6 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import AppellationList from '@/components/annotator/AppellationList.vue';
 import RelationTemplateRender from '@/components/annotator/RelationTemplate.vue';
-import { VForm } from '@/interfaces/GlobalTypes';
 import { RelationTemplate } from '@/interfaces/RelationTypes';
 
 @Component({

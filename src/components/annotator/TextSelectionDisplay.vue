@@ -52,15 +52,13 @@ export default class TextSelectionDisplay extends Vue {
 		if (nLines > 1) {
 			// The selection may span several lines.
 			// clientLeft/clientWidth don't account for inner padding.
-			let _padding = parseInt(getStyle(element, 'padding'), 10);
-			if (!_padding) {
+			let padding = parseInt(getStyle(element, 'padding'), 10);
+			if (!padding) {
 				// Firefox.
-				_padding = parseInt(getStyle(element, 'paddingLeft'), 10);
+				padding = parseInt(getStyle(element, 'paddingLeft'), 10);
 			}
-			const _left = element.clientLeft;
-			const _width = element.clientWidth;
-			const left = _left + _padding;
-			const width = _width - 2 * _padding;
+			const left = element.clientLeft + padding;
+			const width = element.clientWidth - 2 * padding;
 
 			this.endPosition = {
 				// This is the last line, running from

@@ -8,13 +8,12 @@
 </template>
 
 <script lang="ts">
-import { VForm } from '@/interfaces/GlobalTypes';
 import { Component, Prop, Vue } from 'vue-property-decorator';
+
 @Component({
-  name: 'ConceptPickerItem',
+	name: 'ConceptPickerItem',
 })
 export default class ConceptPickerItem extends Vue {
-
 	// TODO: Interface for concept
 	@Prop()
 	private concept!: object;
@@ -23,16 +22,5 @@ export default class ConceptPickerItem extends Vue {
 	private select() {
 		this.$emit('selectconcept', this.concept);
 	}
-
 }
 </script>
-
-<style scoped>
-.project-item {
-	padding: 0;
-	margin: 10px 0;
-}
-#title {
-	background: grey;
-}
-</style>

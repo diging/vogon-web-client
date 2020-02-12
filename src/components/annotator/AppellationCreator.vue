@@ -46,161 +46,144 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
-import { VForm } from '@/interfaces/GlobalTypes';
 import ConceptCreator from './ConceptCreator.vue';
 import ConceptPicker from './ConceptPicker.vue';
 import ConceptSearch from './ConceptSearch.vue';
 
 @Component({
-  name: 'AppellationCreator',
-  components: {
-	'concept-search': ConceptSearch,
-	'concept-creator': ConceptCreator,
-	'concept-picker': ConceptPicker,
-  },
+	name: 'AppellationCreator',
+	components: {
+		'concept-search': ConceptSearch,
+		'concept-creator': ConceptCreator,
+		'concept-picker': ConceptPicker,
+	},
 })
 export default class AppellationCreator extends Vue {
-  @Prop()
-  private position!: any;
-  @Prop()
-  private user!: any;
-  @Prop()
-  private text!: any;
-  @Prop()
-  private project!: any;
-  @Prop()
-  private appellations!: any;
+	@Prop() private position!: any;
+	@Prop() private user!: any;
+	@Prop() private text!: any;
+	@Prop() private project!: any;
+	@Prop() private appellations!: any;
 
-  private concept: any = {};
-  private create: boolean = false;
-  private submitted: boolean = false;
-  private saving: boolean = false;
-  private search: boolean = false;
-  private display: boolean = true;
+	private concept: any = {};
+	private create: boolean = false;
+	private submitted: boolean = false;
+	private saving: boolean = false;
+	private search: boolean = false;
+	private display: boolean = true;
 
-  @Watch('search')
-  public watchSearch() {
-	if (this.search === true) {
-		this.display = false;
+	@Watch('search')
+	public watchSearch() {
+		if (this.search === true) {
+			this.display = false;
+		}
 	}
-  }
 
-  get triggered() {
-	return this.$store.getters.showConcepts;
-  }
-
-  private reset() {
-	this.concept = null;
-	this.create = false;
-	this.submitted = false;
-	this.saving = false;
-  }
-
-  private setSearch(search: any) {
-	// removes concept picker if searching concept to keep it from looking messy
-	this.search = search;
-  }
-
-  private cancel() {
-	this.reset();
-	// TODO: Change emit to use store
-	this.$emit('cancelappellation');
-	this.$store.commit('triggerConcepts', false);
-  }
-
-  private isSaving() {
-	return this.saving;
-  }
-
-  private awaitingConcept() {
-	return this.concept == null;
-  }
-
-  private selectConcept(concept: any) {
-	this.concept = concept;
-  }
-
-  private createdConcept(concept: any) {
-	this.concept = concept;
-	this.create = false;
-  }
-
-  private createAppellation() {
-	let stringRep;
-	/*
-     * may want to change this at somepoint. If this is a concept for a text we set the position values to null
-     */
-	if (this.$store.getters.showConcepts) {
-		this.position.startOffset = null;
-		this.position.endOffset = null;
-		stringRep = this.text.title;
-	} else {
-		stringRep = this.position.representation;
+	get triggered() {
+		return this.$store.getters.showConcepts;
 	}
-	if (!(this.submitted || this.saving)) {
-		this.submitted = true; // Prevent multiple submissions.
-		this.saving = true;
-		Appellation.save({
-		position: {
-			occursIn: this.text.id,
-			position_type: 'CO',
-			position_value: [
-			this.position.startOffset,
-			this.position.endOffset,
-			].join(','),
-		},
-		stringRep,
-		startPos: this.position.startOffset,
-		endPos: this.position.endOffset,
-		occursIn: this.text.id,
-		createdBy: this.user.id,
-		project: this.project.id,
-		interpretation: this.concept.uri || this.concept.interpretation.uri,
-		})
-		.then((response: any) => {
-			this.reset();
-			if (this.$store.getters.showConcepts) {
-			this.$store.commit('setTextAppellation', response.body);
-			if (this.$store.getters.getValidator === 2) {
-				this.$store.commit('setValidator', 0);
-			}
-			}
-			this.$store.commit('triggerConcepts');
-			this.$store.commit(
-			'conceptLabel',
-			response.body.interpretation_label,
+
+	private reset() {
+		this.concept = null;
+		this.create = false;
+		this.submitted = false;
+		this.saving = false;
+	}
+
+	private setSearch(search: any) {
+		// removes concept picker if searching concept to keep it from looking messy
+		this.search = search;
+	}
+
+	private cancel() {
+		this.reset();
+		this.$store.commit('triggerConcepts', false);
+	}
+
+	private isSaving() {
+		return this.saving;
+	}
+
+	private awaitingConcept() {
+		return this.concept == null;
+	}
+
+	private selectConcept(concept: any) {
+		this.concept = concept;
+	}
+
+	private createdConcept(concept: any) {
+		this.concept = concept;
+		this.create = false;
+	}
+
+	private createAppellation() {
+		let stringRep;
+		/**
+		 * may want to change this at somepoint. If this is a concept for a text we set the position values to null
+		 */
+		if (this.$store.getters.showConcepts) {
+			this.position.startOffset = null;
+			this.position.endOffset = null;
+			stringRep = this.text.title;
+		} else {
+			stringRep = this.position.representation;
+		}
+		if (!(this.submitted || this.saving)) {
+			this.submitted = true; // Prevent multiple submissions.
+			this.saving = true;
+
+			// ToDo: Implement and fix the REST call
+			Vue.$axios.post('/save_appellation', {
+				position: {
+					occursIn: this.text.id,
+					position_type: 'CO',
+					position_value: [
+					this.position.startOffset,
+					this.position.endOffset,
+					].join(','),
+				},
+				stringRep,
+				startPos: this.position.startOffset,
+				endPos: this.position.endOffset,
+				occursIn: this.text.id,
+				createdBy: this.user.id,
+				project: this.project.id,
+				interpretation: this.concept.uri || this.concept.interpretation.uri,
+			})
+			.then((response: any) => {
+				this.reset();
+				if (this.$store.getters.showConcepts) {
+					this.$store.commit('setTextAppellation', response.body);
+					if (this.$store.getters.getValidator === 2) {
+						this.$store.commit('setValidator', 0);
+					}
+				}
+				this.$store.commit('triggerConcepts');
+				this.$store.commit(
+					'conceptLabel',
+					response.body.interpretation_label,
+				);
+			})
+			.catch((error: any): void => {
+				this.saving = false;
+			});
+		}
+	}
+
+	private ready() {
+		if (this.triggered && this.concept) {
+			return true;
+		} else {
+			return (
+				this.position.startOffset >= 0 &&
+				this.position.endOffset &&
+				this.position.representation.trim().length > 0 &&
+				this.text.id &&
+				this.user.id &&
+				this.concept
 			);
-			// TODO: Change emit for store
-			this.$emit('createdappellation', response.body);
-		})
-		.catch((error: any): void => {
-			this.saving = false;
-		});
+		}
 	}
-  }
-  private ready() {
-	if (this.triggered && this.concept) {
-		return true;
-	} else {
-		return (
-		this.position.startOffset >= 0 &&
-		this.position.endOffset &&
-		this.position.representation.trim().length > 0 &&
-		this.text.id &&
-		this.user.id &&
-		this.concept
-		);
-	}
-  }
 }
 </script>
-
-<style scoped>
-.project-item {
-  padding: 0;
-  margin: 10px 0;
-}
-#title {
-  background: grey;
-}
-</style>

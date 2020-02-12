@@ -29,63 +29,62 @@
 
 <script lang="ts">
 // TODO: Convert file to typescript where possible
-import { VForm } from '@/interfaces/GlobalTypes';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import ConceptListItem from './ConceptListItem.vue';
 
 @Component({
-  name: 'ConceptSearch',
-  components: {
-	'concept-list-item': ConceptListItem,
-  },
+	name: 'ConceptSearch',
+	components: {
+		'concept-list-item': ConceptListItem,
+	},
 })
 export default class ConceptSearch extends Vue {
-  private query: string = '';
-  private concepts: object[] = [];
-  private searching: boolean = false;
-  private error: boolean = false;
-  private pos: string = '';
-  private force: boolean = false;
+	private query: string = '';
+	private concepts: object[] = [];
+	private searching: boolean = false;
+	private error: boolean = false;
+	private pos: string = '';
+	private force: boolean = false;
 
-  private selectConcept(concept: any) {
-	// Clear the concept search results.
-	this.concepts = [];
-	this.$emit('selectconcept', concept);
-  }
-  private ready() {
+	private selectConcept(concept: any) {
+		// Clear the concept search results.
+		this.concepts = [];
+		this.$store.commit('selectconcept', concept);
+	}
+
+	private ready() {
 	// TODO: should be able to recover from errors.
 	return !(this.searching || this.error);
-  }
-
-  private search() {
-	this.searching = true; // Instant feedback for the user.
-
-	this.$emit('search', this.searching); // emit search to remove concept picker
-
-	// Asynchronous quries are beautiful.
-	const self = this; // Need a closure since Concept is global.
-	const payload: any = {
-		search: this.query,
-	};
-	if (this.pos !== '') {
-		payload.pos = this.pos;
 	}
-	if (this.force) {
-		payload.force = 'force';
-	}
-	Concept.search(payload)
-		.then((response: any) => {
-		self.concepts = response.body.results;
-		self.searching = false;
-		})
-		.catch((error: any) => {
-		self.error = true;
-		self.searching = false;
+
+	private search() {
+		this.searching = true; // Instant feedback for the user.
+
+		this.$emit('search', this.searching); // emit search to remove concept picker
+
+		// Asynchronous quries are beautiful.
+		const self = this; // Need a closure since Concept is global.
+		const payload: any = {
+			search: this.query,
+		};
+		if (this.pos !== '') {
+			payload.pos = this.pos;
+		}
+		if (this.force) {
+			payload.force = 'force';
+		}
+
+		// ToDo: Fix axios call
+		this.$axios.get('/concept', {
+			params: payload,
+		}).then((response: any) => {
+			self.concepts = response.body.results;
+			self.searching = false;
+		}).catch((error: any) => {
+			self.error = true;
+			self.searching = false;
 		});
-  }
+	}
 }
 </script>
-
-<style scoped>
-</style>

@@ -148,11 +148,20 @@
 </template>
 
 <script lang="ts">
-import { VForm } from '@/interfaces/GlobalTypes';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+
+import { getOffsetTop } from '@/utils/annotations';
+import AppellationCreator from './AppellationCreator.vue';
+import AppellationList from './AppellationList.vue';
+import DateAppellationCreator from './DateAppellationCreator.vue';
+import RelationCreator from './RelationCreator.vue';
+import RelationList from './RelationList.vue';
+import RelationTemplateSelector from './RelationTemplateSelector.vue';
+import TextDisplay from './TextDisplay.vue';
+
 @Component({
-  name: 'Appellator',
-  components: {
+	name: 'Appellator',
+	components: {
 		'appellation-list': AppellationList,
 		'relation-list': RelationList,
 		'text-display': TextDisplay,
@@ -163,28 +172,20 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 	},
 })
 export default class Appellator extends Vue {
-
 	private appellations: any[] = [];
 	private dateappellations: any[] = [];
 	private relations: any[] = [];
 	private selected: any | null = null;
 	private selectedText: any | null = null;
-	private user: any = {
-		id: USER_ID,
-		username: USER_NAME,
-	};
-	private text: any = {
-		id: TEXT_ID,
-		title: TEXT_TITLE,
-	};
-	private project: any = {
-		id: PROJECT_ID,
-		name: PROJECT_NAME,
-	};
+
+	// ToDo: Fix `user`, `text` and `project` values
+	private user: any = { id: '', username: ''};
+	private text: any = { id: '', title: ''};
+	private project: any = { id: '', name: ''};
 	private sidebarShown: boolean = false;
-	private template: AsyncGeneratorFunctionConstructor | null = null;
+	private template: any = {};
 	private creatingRelation: boolean = true;
-	private textListener: AsyncGeneratorFunctionConstructor | null = null;
+	private textListener: any;
 	private sidebar: string = 'relations';
 	private createDateAppellation: boolean = false;
 	private swimmerPosition: string = 'static';
@@ -194,6 +195,15 @@ export default class Appellator extends Vue {
 	private swimmerWidth: number = 0;
 	private submitAppellationClicked: boolean = false;
 	private massAssignmentFailed: boolean = false;
+	private selectedRelation: any;
+	private selectedConcept: any;
+
+	// ToDo: Fix the types
+	private start: string = '';
+	private end: string = '';
+	private occur: string = '';
+	private ready: boolean = false;
+	private error: boolean = false;
 
 	public mounted() {
 		this.updateAppellations();
@@ -210,10 +220,13 @@ export default class Appellator extends Vue {
 	public created() {
 		window.addEventListener('scroll', this.handleScroll);
 		window.addEventListener('resize', this.handleScroll);
-		document.getElementById('graphContainer').onmouseup = function() {
-			this.updateSwimRef();
-			this.handleScroll();
-		};
+		const graphContainer = document.getElementById('graphContainer');
+		if (graphContainer) {
+			graphContainer.onmouseup = () => {
+				this.updateSwimRef();
+				this.handleScroll();
+			};
+		}
 	}
 
 	public destroyed() {
@@ -238,7 +251,7 @@ export default class Appellator extends Vue {
 		this.filterTextAppellationFromAppellationList();
 	}
 
-	 /*************************************************
+	/*************************************************
 	 * Start Methods to create relationships to text *
 	 *************************************************/
 	public watchStoreForConcepts() {
@@ -250,7 +263,7 @@ export default class Appellator extends Vue {
 				if (val) {
 					// FIXME: This should set selected text to the actual text id
 					this.selectedText = this.text.title;
-					this.textListener === null;
+					this.textListener = null;
 				} else {
 					this.unselectText();
 				}
@@ -259,6 +272,7 @@ export default class Appellator extends Vue {
 			},
 		);
 	}
+
 	public watchStoreForAssignmentFailed() {
 		this.$store.watch(
 			(state) => {
@@ -271,10 +285,12 @@ export default class Appellator extends Vue {
 			},
 		);
 	}
-	public registerData(field, data) {
-		this.field_data[this.fieldHash(field)] = data;
-		this.ready = this.readyToCreate();
+	public registerData(field: any, data: any) {
+		// ToDo: Fix this function
+		// this.field_data[this.fieldHash(field)] = data;
+		// this.ready = this.readyToCreate();
 	}
+
 	public filterTextAppellationFromAppellationList() {
 		let i = this.appellations.length - 1;
 		/*
@@ -308,6 +324,7 @@ export default class Appellator extends Vue {
 			return 0;
 		}
 	}
+
 	public createRelationsFromText() {
 		const validator = this.validateCreateRelationsToTextData();
 		if (validator > 0) {
@@ -315,9 +332,9 @@ export default class Appellator extends Vue {
 			return;
 		}
 		this.filterTextAppellationFromAppellationList();
-		RelationTemplateResource.text({
-			id: this.$store.getters.getTemplate.id,
-		}, {
+
+		// TODO: Implement and fix the axios call
+		this.$axios.post(`/relationtemplate/${this.$store.getters.getTemplate.id}`, {
 			appellations: this.$store.getters.getAppellationsToSubmit,
 			textAppellation: this.$store.getters.getTextAppellation,
 			start: this.start,
@@ -338,11 +355,13 @@ export default class Appellator extends Vue {
 			this.$store.commit('massAppellationAssignmentFailed');
 		}); // TODO: implement callback and exception handling!!
 	}
+
 	// TODO: Change function to SubmitAllAppellations
 	public showSubmitAllAppellationsSidebar() {
 		this.sidebar = 'submitAllAppellations';
 		this.submitAppellationClicked = true;
 	}
+
 	/***********************************************
 	* End Methods to create relationships to text *
 	***********************************************/
@@ -354,150 +373,186 @@ export default class Appellator extends Vue {
 			return shadowElem.clientWidth + 2;
 		}
 	}
+
 	public handleScroll() {
 		const shadowElem = document.getElementById('shadow-swimlane');
 		const swimmer = document.getElementById('sticky-swimlane');
 		const scrolled = this.swimmerRef - window.scrollY;
-		this.swimmerWidth = shadowElem.clientWidth + 2;
-		if (scrolled < 0) {
-			this.swimmerTop = 0;
-		} else {
-			this.swimmerTop = this.swimmerRef - window.scrollY;
+		if (shadowElem) {
+			this.swimmerWidth = shadowElem.clientWidth + 2;
+			if (scrolled < 0) {
+				this.swimmerTop = 0;
+			} else {
+				this.swimmerTop = this.swimmerRef - window.scrollY;
+			}
 		}
 	}
+
 	public updateSwimRef() {
 		const shadowElem = document.getElementById('shadow-swimlane');
-		this.swimmerRef = getOffsetTop(shadowElem);
+		if (shadowElem) {
+			this.swimmerRef = getOffsetTop(shadowElem);
+		}
 	}
+
 	public toggleDateAppellation() {
 		this.createDateAppellation = !this.createDateAppellation;
 	}
+
 	public fieldIsListeningForText() {
 		this.textListener = true;
 	}
+
 	public fieldIsDoneListeningForText() {
 		this.textListener = null;
 	}
+
 	public selectedTemplate(template: any) {
 		this.template = template;
 	}
+
 	public createdRelation(relation: any) {
 		this.template = null;
 		this.updateRelations();
 		this.updateAppellations();
 	}
+
 	public cancelRelation() {
 		this.template = null;
 	}
+
 	public sidebarIsShown() {
 		return this.sidebarShown;
 	}
+
 	public showSidebar() {
 		this.sidebarShown = true;
 	}
+
 	public hideSidebar() {
 		this.sidebarShown = false;
 	}
+
 	public selectConcept(concept: any) {
-		this.selected_concept = concept;
+		this.selectedConcept = concept;
 	}
+
 	public hideAllAppellations() {
 		this.appellations.forEach((a) => {
 			a.visible = false;
 		});
 	}
+
 	public showAllAppellations() {
 		this.appellations.forEach((a) => {
 			a.visible = true;
 		});
 	}
-	public showAppellation(appellation) {
+
+	public showAppellation(appellation: any) {
 		this.appellations.forEach((a) => {
 			if (a.id === appellation.id) { a.visible = true; }
 		});
 	}
-	public hideAppellation(appellation) {
+
+	public hideAppellation(appellation: any) {
 		this.appellations.forEach((a) => {
 			if (a.id === appellation.id) { a.visible = false; }
 		});
 	}
+
 	public hideAllDateAppellations() {
 		this.dateappellations.forEach((a) => {
 			a.visible = false;
 		});
 	}
+
 	public showAllDateAppellations() {
 		this.dateappellations.forEach((a) => {
 			a.visible = true;
 		});
 	}
+
 	public showDateAppellation(appellation: any) {
 		this.dateappellations.forEach((a) => {
 			if (a.id === appellation.id) { a.visible = true; }
 		});
 	}
+
 	public hideDateAppellation(appellation: any) {
 		this.dateappellations.forEach((a) => {
 			if (a.id === appellation.id) { a.visible = false; }
 		});
 	}
+
 	public scrollToAppellation(appellation: any) {
-		window.scrollTo(0, getTextPosition(appellation.position).top);
+		// ToDo: Fix this
+		// window.scrollTo(0, getTextPosition(appellation.position).top);
 	}
+
 	public selectAppellation(appellation: any) {
 		this.appellations.forEach((a) => {
 			a.selected = (a.id === appellation.id);
 		});
 		// TODO: Remove both emit and bus
-		AppellationBus.$emit('selectedappellation', appellation);
-		EventBus.$emit('cleartextselection');
+		this.$store.commit('selectedappellation', appellation);
+		this.$store.commit('cleartextselection');
 		this.unselectText();
 		this.unselectDateAppellation();
 		this.scrollToAppellation(appellation);
 	}
+
 	public selectDateAppellation(appellation: any) {
 		this.dateappellations.forEach((a) => {
 			a.selected = (a.id === appellation.id);
 		});
 		// TODO: Remove emits
-		AppellationBus.$emit('selecteddateappellation', appellation);
-		EventBus.$emit('cleartextselection');
+		this.$store.commit('selecteddateappellation', appellation);
+		this.$store.commit('cleartextselection');
 		this.unselectText();
 		this.unselectAppellation();
 		this.scrollToAppellation(appellation);
 	}
+
 	public selectAppellationsById(appellationIds: any) {
 		this.appellations.forEach((appellation) => {
 			appellation.selected = (appellationIds.indexOf(appellation.id) > -1);
 		});
 	}
+
 	public unselectAppellation() {
 		this.appellations.forEach((a) => {
 			a.selected = false;
 		});
 	}
+
 	public unselectDateAppellation() {
 		this.dateappellations.forEach((a) => {
 			a.selected = false;
 		});
 	}
+
 	public selectText(position: any) {
 		this.unselectAppellation();
 		if (!this.textListener) {
 			this.selectedText = position;
 		}
 		// TODO:Remove emit
-		TextBus.$emit('selectedtext', position);
+		this.$store.commit('selectedtext', position);
 	}
+
 	public unselectText() {
 		this.selectedText = null;
 	}
+
 	public textIsSelected() {
 		return this.selectedText != null && this.textListener === null;
 	}
+
 	public cancelAppellation() {
 		this.selectedText = null;
 	}
+
 	public createdAppellation(appellation: any) {
 		const offsets = appellation.position.position_value.split(',');
 		appellation.position.startOffset = offsets[0];
@@ -509,6 +564,7 @@ export default class Appellator extends Vue {
 		this.selectedText = null;
 		this.updateAppellations(); // call update appellations when a new appelation is created to update list
 	}
+
 	public createdDateAppellation(appellation: any) {
 		const offsets = appellation.position.position_value.split(',');
 		appellation.position.startOffset = offsets[0];
@@ -519,14 +575,18 @@ export default class Appellator extends Vue {
 		this.selectDateAppellation(appellation);
 		this.selectedText = null;
 	}
-	public updateAppellations(callback: any) {
+
+	public updateAppellations(callback: any = null) {
 		// "CO" is the "character offset" DocumentPosition type. For image
 		//  annotation this should be changed to "BB".
-		Appellation.query({
-			position_type: 'CO',
-			text: this.text.id,
-			limit: 500,
-			project: this.project.id,
+		// ToDo: Implement and fix axios call
+		this.$axios.get('/appellations', {
+			params: {
+				position_type: 'CO',
+				text: this.text.id,
+				limit: 500,
+				project: this.project.id,
+			},
 		}).then((response: any) => {
 			// DocumentPosition.position_value is represented with a
 			//  TextField, so serialized as a string. Start and end offsets
@@ -541,19 +601,23 @@ export default class Appellator extends Vue {
 				return appellation;
 
 			});
-		 if (callback) {
-			callback(response);
+			if (callback) {
+				callback(response);
 			}
 		});
 	}
-public updateDateAppellations(callback: any) {
+
+	public updateDateAppellations(callback: any = null) {
 		// "CO" is the "character offset" DocumentPosition type. For image
 		//  annotation this should be changed to "BB".
-		DateAppellation.query({
-			position_type: 'CO',
-			text: this.text.id,
-			limit: 500,
-			project: this.project.id,
+		// ToDo: Implement and fix axios call
+		this.$axios.get('/appellations', {
+			params: {
+				position_type: 'CO',
+				text: this.text.id,
+				limit: 500,
+				project: this.project.id,
+			},
 		}).then((response: any) => {
 			// DocumentPosition.position_value is represented with a
 			//  TextField, so serialized as a string. Start and end offsets
@@ -566,11 +630,14 @@ public updateDateAppellations(callback: any) {
 				appellation.selected = false;
 				return appellation;
 			});
-		 if (callback) { callback(response); }
+			if (callback) {
+				callback(response);
+			}
 		});
 	}
-public selectRelation(relation: any); {
-		this.selected_relation = relation;
+
+	public selectRelation(relation: any) {
+		this.selectedRelation = relation;
 		this.selected = null;
 		this.relations.forEach((r: any) => {
 			r.selected = (r.id === relation.id);
@@ -587,45 +654,36 @@ public selectRelation(relation: any); {
 		this.dateappellations.forEach((appellation: any) => {
 			appellation.selected = (dateAppellationIds.indexOf(appellation.id) > -1);
 		});
-	},
-updateRelations(callback: any); {
-		Relation.query({
-			text: this.text.id,
-			limit: 500,
-			project: this.project.id,
+	}
+
+	private updateRelations(callback: any = null) {
+		// ToDo: Implement/Fix the axios call
+		this.$axios.get('/relation', {
+			params: {
+				text: this.text.id,
+				limit: 500,
+				project: this.project.id,
+			},
 		}).then((response: any) => {
 			this.relations = response.body.results;
 			if (callback) {
 				callback(response);
 			}
-		}). catch (function(error: any) {
+		}). catch (() => {
 			// TODO: handle errors
 		});
-  if (reloadGraph) {
-			reloadGraph();
-		}
 	}
-showRelationsSidebar(); {
+
+	private showRelationsSidebar() {
 		this.sidebar = 'relations';
-	},
-showAppellationsSidebar(); {
+	}
+
+	private showAppellationsSidebar() {
 		this.sidebar = 'appellations';
-	},
-showDateAppellationsSidebar(); {
+	}
+
+	private showDateAppellationsSidebar() {
 		this.sidebar = 'dateappellations';
 	}
-
-
-
 }
 </script>
-
-<style scoped>
-.project-item {
-  padding: 0;
-  margin: 10px 0;
-}
-#title {
-  background: grey;
-}
-</style>

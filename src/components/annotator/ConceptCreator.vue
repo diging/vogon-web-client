@@ -52,114 +52,109 @@ div.form
 </template>
 
 <script lang="ts">
-import { VForm } from '@/interfaces/GlobalTypes';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+
+import { truncateURI } from '@/utils/annotations';
+
 @Component({
-  name: 'ConceptCreator',
+	name: 'ConceptCreator',
 })
 export default class ConceptCreator extends Vue {
-  private oath: boolean = false;
-  private name: string = '';
-  private description: string = '';
-  private conceptTypes: any[] = [];
-  private pos: string = '';
-  private conceptType: string = '';
-  private error: boolean = false;
-  private submitted: boolean = false;
+	private oath: boolean = false;
+	private name: string = '';
+	private description: string = '';
+	private conceptTypes: any[] = [];
+	private pos: string = '';
+	private conceptType: string = '';
+	private error: boolean = false;
+	private submitted: boolean = false;
 
-  public mounted() {
-	this.updateTypes();
-  }
-
-  @Watch('name')
-  public watchName() {
-	this.tryAgain();
-  }
-
-  @Watch('description')
-  public watchDescription() {
-	this.tryAgain();
-  }
-
-  @Watch('pos')
-  public watchPos() {
-	this.tryAgain();
-  }
-
-  @Watch('conceptType')
-  public watchConceptType() {
-	this.tryAgain();
-  }
-
-  private ready() {
-	return (
-		this.oath &&
-		this.name.length > 1 &&
-		this.description.length > 10 &&
-		this.conceptType !== '' &&
-		!this.submitted
-	);
-  }
-  private tryAgain() {
-	this.submitted = false;
-	this.error = false;
-  }
-  private clear() {
-	this.oath = false;
-	this.name = '';
-	this.description = '';
-	this.conceptType = '';
-	this.pos = 'noun';
-	this.error = false;
-	this.submitted = false;
-  }
-  private createConcept() {
-	if (this.ready) {
-		this.submitted = true; // Immediately prevent further submissions.
-		// TODO: Change to axios
-		Concept.save({
-		uri: 'generate',
-		label: this.name,
-		description: this.description,
-		pos: this.pos,
-		typed: this.conceptType,
-		})
-		.then((response: any) => {
-			this.clear();
-			// TODO: Get ride of emit
-			this.$emit('createdconcept', response.body);
-		})
-		.catch((error: any) => {
-			this.error = true;
-		});
+	public mounted() {
+		this.updateTypes();
 	}
-  }
-  private updateTypes() {
-	// TODO: change to axios
-	ConceptType.query().then((response: any) => {
-		this.conceptTypes = response.body.results;
-	});
-  }
-  private labelType(ctype: any) {
-	if (ctype.label) {
-		return ctype.label;
-	} else {
-		if (ctype.authority) {
-		return ctype.authority.name + ': ' + truncateURI(ctype.uri);
-		} else {
-		return truncateURI(ctype.uri);
+
+	@Watch('name')
+	public watchName() {
+		this.tryAgain();
+	}
+
+	@Watch('description')
+	public watchDescription() {
+		this.tryAgain();
+	}
+
+	@Watch('pos')
+	public watchPos() {
+		this.tryAgain();
+	}
+
+	@Watch('conceptType')
+	public watchConceptType() {
+		this.tryAgain();
+	}
+
+	private ready() {
+		return (
+			this.oath &&
+			this.name.length > 1 &&
+			this.description.length > 10 &&
+			this.conceptType !== '' &&
+			!this.submitted
+		);
+	}
+
+	private tryAgain() {
+		this.submitted = false;
+		this.error = false;
+	}
+
+	private clear() {
+		this.oath = false;
+		this.name = '';
+		this.description = '';
+		this.conceptType = '';
+		this.pos = 'noun';
+		this.error = false;
+		this.submitted = false;
+	}
+
+	private createConcept() {
+		if (this.ready()) {
+			this.submitted = true; // Immediately prevent further submissions.
+			// TODO: Fix axios call
+			this.$axios.post('/concept', {
+				uri: 'generate',
+				label: this.name,
+				description: this.description,
+				pos: this.pos,
+				typed: this.conceptType,
+			}).then((response: any) => {
+				this.clear();
+				// TODO: Get ride of emit
+				this.$store.commit('createdconcept', response.body);
+			}).catch((error: any) => {
+				this.error = true;
+			});
 		}
 	}
-  }
+
+	private updateTypes() {
+		// TODO: Fix axios call
+		this.$axios.get('/type').then((response: any) => {
+			this.conceptTypes = response.body.results;
+		});
+	}
+
+	private labelType(ctype: any) {
+		if (ctype.label) {
+			return ctype.label;
+		} else {
+			if (ctype.authority) {
+				return ctype.authority.name + ': ' + truncateURI(ctype.uri);
+			} else {
+				return truncateURI(ctype.uri);
+			}
+		}
+	}
 }
 </script>
-
-<style scoped>
-.project-item {
-  padding: 0;
-  margin: 10px 0;
-}
-#title {
-  background: grey;
-}
-</style>

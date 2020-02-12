@@ -49,18 +49,14 @@
 <script lang="ts">
 import { Component, Prop, PropSync, Vue, Watch } from 'vue-property-decorator';
 
-import { VForm } from '@/interfaces/GlobalTypes';
 import store from '@/store';
 
 @Component({
-  name: 'AppellationDisplayItem',
+	name: 'AppellationDisplayItem',
 })
 export default class AppellationDisplayItem extends Vue {
-	@Prop()
-	private appellation!: any;
-
-	@Prop()
-	private index!: number;
+	@Prop() private appellation!: any;
+	@Prop() private index!: number;
 
 	private tooltip: boolean = false;
 
