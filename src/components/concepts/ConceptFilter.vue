@@ -37,7 +37,7 @@ export default class ConceptFilter extends Vue {
 		Vue.$axios.get(`/type`)
 			.then((response: AxiosResponse) => {
 				const allType: ConceptType = { id: 0, uri: '(Any)' };
-				this.types = [allType, ...response.data.results];
+				this.types = [allType, ...response.data];
 			})
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
