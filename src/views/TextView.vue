@@ -6,7 +6,7 @@
 			Loading(v-if="loading")
 			div(v-else)
 				SideDrawer(:text="text" :project="project")
-				ToolBar(:text="text")
+				ToolBar(:text="text" :relationsets="pendingRelationsets")
 				v-row
 					v-col(cols="6")
 						TextDisplay(:content="content" :appellations="appellations")
@@ -27,7 +27,7 @@ import ToolBar from '@/components/annotator/ToolBar.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
 import { Project } from '@/interfaces/ProjectTypes';
-import { Appellation, Relation } from '@/interfaces/RelationTypes';
+import { Appellation, Relation, RelationSet } from '@/interfaces/RelationTypes';
 import { TextDocument } from '@/interfaces/RepositoryTypes';
 
 @Component({
@@ -49,6 +49,7 @@ export default class TextView extends Vue {
 	private text?: TextDocument;
 	private appellations: Appellation[] = [];
 	private relations: Relation[] = [];
+	private pendingRelationsets: RelationSet[] = [];
 
 	private loading: boolean = true;
 	private error: boolean = false;
@@ -87,6 +88,7 @@ export default class TextView extends Vue {
 				});
 
 				this.relations = response.data.relations;
+				this.pendingRelationsets = response.data.pending_relationsets;
 			})
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
