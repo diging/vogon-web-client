@@ -48,6 +48,7 @@
 import { AxiosResponse } from 'axios';
 import { Component, Vue } from 'vue-property-decorator';
 
+import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
 import AnnotationList from '@/components/relations/AnnotationList.vue';
@@ -60,6 +61,7 @@ import { TextResource } from '@/interfaces/RepositoryTypes';
 	name: 'TextDetails',
 	components: {
 		Loading,
+		EmptyView,
 		ErrorIndicator,
 		TextSerialContent,
 		TextAdditionalContent,

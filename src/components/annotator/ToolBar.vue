@@ -80,7 +80,7 @@ export default class ToolBar extends Vue {
 		if (this.query !== '') {
 			all = false;
 		}
-		Vue.$axios.get('/relationtemplate/', {
+		Vue.$axios.get('/relationtemplate', {
 			params: {
 				format: 'json',
 				all,
@@ -89,7 +89,7 @@ export default class ToolBar extends Vue {
 		}).then((result) => {
 			this.loading = false;
 			this.showResults = true;
-			this.templates = result.data.templates;
+			this.templates = result.data;
 		}).catch((error) => {
 			// TODO: deal with errors
 		});

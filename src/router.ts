@@ -12,7 +12,6 @@ import ConceptEdit from './views/concepts/ConceptEdit.vue';
 import ConceptList from './views/concepts/ConceptList.vue';
 import ConceptTypeDetails from './views/concepts/ConceptTypeDetails.vue';
 import ConceptTypes from './views/concepts/ConceptTypes.vue';
-import Contributors from './views/Contributors.vue';
 import Dashboard from './views/dashboard/Dashboard.vue';
 import Home from './views/Home.vue';
 import About from './views/info/About.vue';
@@ -136,11 +135,6 @@ export default new Router({
 			path: '/relationtemplate/:id/edit',
 			name: 'template-update',
 			component: TemplateCreateOrUpdate,
-		},
-		{
-			path: '/contributors',
-			name: 'contributors',
-			component: Contributors,
 		},
 		{
 			path: '/about',

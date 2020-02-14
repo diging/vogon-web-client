@@ -1,6 +1,0 @@
-diff a/src/App.vue b/src/App.vue	(rejected hunks)
-@@ -12,2 +12,2 @@ import Vue from 'vue';
--import Header from "./components/global/Header.vue";
--import Footer from "./components/global/Footer.vue";
-+import Header from './components/global/Header.vue';
-+import Footer from './components/global/Footer.vue';
