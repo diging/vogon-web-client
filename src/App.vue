@@ -8,7 +8,6 @@
 </template>
 
 <script lang="ts">
-import SideDrawer from '@/components/annotator/SideDrawer.vue';
 import router from '@/router';
 import Vue from 'vue';
 import Footer from './components/global/Footer.vue';
@@ -23,7 +22,6 @@ export default Vue.extend({
 	components: {
 		Header,
 		Footer,
-		SideDrawer,
 	},
 	data: () => ({
 	}),
