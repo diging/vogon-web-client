@@ -21,7 +21,7 @@
 							label="Password Confirmation" 
 							required outlined password :type="show2 ? 'text' : 'password'" 
 							v-model="passwordConfirmation" 
-							:rules="[() => !!passwordConfirmation || 'Password Confirmation Required.']" 
+							:rules="[() => !!passwordConfirmation || 'Password Confirmation Required.',() => passwordConfirmation == password || 'Passwords should match']" 
 							:append-icon="show2 ? 'visibility' : 'visibility_off'" 
 							@click:append="show2 = !show2"
 						)
