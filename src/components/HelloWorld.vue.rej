@@ -1,6 +1,0 @@
-diff a/src/components/HelloWorld.vue b/src/components/HelloWorld.vue	(rejected hunks)
-@@ -119,2 +119,2 @@ export default Vue.extend({
--    msg: String
--  }
-+    msg: String,
-+  },

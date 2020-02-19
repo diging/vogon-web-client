@@ -20,33 +20,33 @@
 // 	return new Promise((resolve) => setTimeout(resolve, time));
 // };
 
-// /**
-//  * Truncate the last part of URL
-//  *
-//  * @param {string} url - URL string
-//  *
-//  * @example
-//  *      truncateURI("http://example.com/my/uri"); // "uri"
-//  */
-// export const truncateURI = (url: string): string | undefined => {
-// 	return url.split('/').pop();
-// };
+/**
+ * Truncate the last part of URL
+ *
+ * @param {string} url - URL string
+ *
+ * @example
+ *      truncateURI("http://example.com/my/uri"); // "uri"
+ */
+export const truncateURI = (url: string): string | undefined => {
+	return url.split('/').pop();
+};
 
-// /**
-//  * Top offset of an element
-//  *
-//  * @param {HTMLElement} element - HTML element object
-//  */
-// export const getOffsetTop = (element: HTMLElement): number => {
-// 	let offsetTop: number = 0;
-// 	do {
-// 		if (!isNaN(element.offsetTop)) {
-// 			offsetTop += element.offsetTop;
-// 		}
-// 	} while (element === element.offsetParent);
+/**
+ * Top offset of an element
+ *
+ * @param {HTMLElement} element - HTML element object
+ */
+export const getOffsetTop = (element: HTMLElement): number => {
+	let offsetTop: number = 0;
+	do {
+		if (!isNaN(element.offsetTop)) {
+			offsetTop += element.offsetTop;
+		}
+	} while (element === element.offsetParent);
 
-// 	return offsetTop;
-// };
+	return offsetTop;
+};
 
 // /**
 //  * Left offset of an element

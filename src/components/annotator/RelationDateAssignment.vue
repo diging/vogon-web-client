@@ -61,102 +61,93 @@
 </template>
 
 <script lang="ts">
-import { VForm } from '@/interfaces/GlobalTypes';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import RelationField from './RelationField.vue';
 
 @Component({
-  name: 'RelationDateAssignment',
-  components: {
-	'relation-field': RelationField,
-  },
+	name: 'RelationDateAssignment',
+	components: {
+		'relation-field': RelationField,
+	},
 })
 export default class RelationDateAssignment extends Vue {
-  @Prop()
-  private listner!: any;
+	@Prop()
+	private listner!: any;
 
-  private startTemplate: object = {
-	part_field: 'start',
-	part_id: -1,
-	concept_label: null,
-	evidence_required: true,
-	description: 'Please indicate the date when this relation began.',
-	type: 'DT',
-	concept_id: null,
-	label: 'Started',
-  };
-  private endTemplate: object = {
-	part_field: 'end',
-	part_id: -1,
-	concept_label: null,
-	evidence_required: true,
-	description: 'Please indicate the date when this relation ended.',
-	type: 'DT',
-	concept_id: null,
-	label: 'Ended',
-  };
-  private occurTemplate: object = {
-	part_field: 'occur',
-	part_id: -1,
-	concept_label: null,
-	evidence_required: true,
-	description:
-		'Please indicate the date when this relation occurred or was true.',
-	type: 'DT',
-	concept_id: null,
-	label: 'Occurred',
-  };
-  private collectStarted: boolean = false;
-  private collectOccurred: boolean = false;
-  private collectEnded: boolean = false;
+	private startTemplate: object = {
+		part_field: 'start',
+		part_id: -1,
+		concept_label: null,
+		evidence_required: true,
+		description: 'Please indicate the date when this relation began.',
+		type: 'DT',
+		concept_id: null,
+		label: 'Started',
+	};
 
-  public toggleCollectStarted() {
-	this.collectStarted = !this.collectStarted;
-  }
+	private endTemplate: object = {
+		part_field: 'end',
+		part_id: -1,
+		concept_label: null,
+		evidence_required: true,
+		description: 'Please indicate the date when this relation ended.',
+		type: 'DT',
+		concept_id: null,
+		label: 'Ended',
+	};
 
-  public toggleCollectOccurred() {
-	this.collectOccurred = !this.collectOccurred;
-  }
+	private occurTemplate: object = {
+		part_field: 'occur',
+		part_id: -1,
+		concept_label: null,
+		evidence_required: true,
+		description:
+			'Please indicate the date when this relation occurred or was true.',
+		type: 'DT',
+		concept_id: null,
+		label: 'Occurred',
+	};
+	private collectStarted: boolean = false;
+	private collectOccurred: boolean = false;
+	private collectEnded: boolean = false;
 
-  public toggleCollectEnded() {
-	this.collectEnded = !this.collectEnded;
-  }
-
-  public fieldIsListening(listeningField: any) {
-	this.listner = listeningField;
-	// TODO: Change emit to store
-	if (listeningField.type === 'CO') {
-		this.$emit('fieldislisteningfortext');
+	public toggleCollectStarted() {
+		this.collectStarted = !this.collectStarted;
 	}
-  }
 
-  public fieldIsDoneListening(listeningField: any) {
-	this.listner = null;
-	// TODO: Change emit to store
-	if (listeningField.type === 'CO') {
-		this.$emit('fieldisdonelisteningfortext');
+	public toggleCollectOccurred() {
+		this.collectOccurred = !this.collectOccurred;
 	}
-  }
 
-  public registerData(field: any, data: any) {
-	// TODO: Change emit to store
-	this.$emit('registerdata', field, data);
-  }
+	public toggleCollectEnded() {
+		this.collectEnded = !this.collectEnded;
+	}
 
-  public unregisterData(field: any) {
-	// TODO: Change emit to store
-	this.$emit('unregisterdata', field);
-  }
+	public fieldIsListening(listeningField: any) {
+		this.listner = listeningField;
+		// TODO: Change emit to store
+		if (listeningField.type === 'CO') {
+			this.$store.commit('fieldislisteningfortext');
+		}
+	}
+
+	public fieldIsDoneListening(listeningField: any) {
+		this.listner = null;
+		// TODO: Change emit to store
+		if (listeningField.type === 'CO') {
+			this.$store.commit('fieldisdonelisteningfortext');
+		}
+	}
+
+	public registerData(field: any, data: any) {
+		// TODO: Change emit to store
+		this.$store.commit('registerdata', field, data);
+	}
+
+	public unregisterData(field: any) {
+		// TODO: Change emit to store
+		this.$store.commit('unregisterdata', field);
+	}
 }
 </script>
-
-<style scoped>
-.project-item {
-  padding: 0;
-  margin: 10px 0;
-}
-#title {
-  background: grey;
-}
-</style>

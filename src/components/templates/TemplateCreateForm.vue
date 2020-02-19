@@ -123,7 +123,7 @@ import { RelationTemplate, RelationTemplateFieldRaw, RelationTemplateFormType } 
 	},
 })
 export default class TemplateCreateForm extends Vue {
-	@Prop({ default: null }) private template: RelationTemplate | null = null;
+	@Prop({ default: null }) private template!: RelationTemplate | null;
 
 	private edit: boolean = false; // Edit mode
 	private valid: boolean = false;
@@ -169,7 +169,7 @@ export default class TemplateCreateForm extends Vue {
 		TEMPLATE_RELATION_TYPES.HAS,
 	];
 
-	@Watch('template')
+	@Watch('template', { immediate: true, deep: true })
 	private onTemplateChange(val: RelationTemplate | null) {
 		if (val !== null && val) {
 			this.edit = true;

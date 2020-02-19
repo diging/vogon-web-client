@@ -29,44 +29,45 @@
 </template>
 
 <script lang="ts">
-import { VForm } from '@/interfaces/GlobalTypes';
 import { Component, Prop, Vue } from 'vue-property-decorator';
+
 @Component({
   name: 'SideDrawer',
 })
 export default class SideDrawer extends Vue {
-  @Prop()
-  private project: any = [];
-  @Prop()
-  private text: any = [];
-  @Prop()
-  private loading: boolean = true;
+	@Prop()
+	private project: any = [];
+	@Prop()
+	private text: any = [];
+	@Prop()
+	private loading: boolean = true;
 
-  private show: boolean = false;
+	private show: boolean = false;
 
-  public created() {
-	this.watchStore();
-  }
+	public created() {
+		this.watchStore();
+	}
 
-  get formattedDate() {
-	return new Date(this.text.added).toLocaleString();
-  }
-  public watchStore() {
-	this.$store.watch(
-		(state) => {
-		return this.$store.getters.getShowSideBar;
-		},
-		(newValue, oldValue) => {
-		// something changed do something
-		this.show = newValue;
-		},
-	);
-  }
+	get formattedDate() {
+		return new Date(this.text.added).toLocaleString();
+	}
+
+	public watchStore() {
+		this.$store.watch(
+			(state) => {
+				return this.$store.getters.getShowSideBar;
+			},
+			(newValue, oldValue) => {
+				// something changed do something
+				this.show = newValue;
+			},
+		);
+	}
 }
 </script>
 
 <style scoped>
 .no-wrap {
-  white-space: normal;
+	white-space: normal;
 }
 </style>

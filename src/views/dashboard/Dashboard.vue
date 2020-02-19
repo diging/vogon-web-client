@@ -98,7 +98,7 @@ export default class Dashboard extends Vue {
 	private data: UserDashboard = {};
 
 	public async mounted(): Promise<void> {
-		Vue.$axios.get('/dashboard')
+		Vue.$axios.get('/users/dashboard')
 			.then((response: AxiosResponse) => {
 				this.data = response.data;
 			})

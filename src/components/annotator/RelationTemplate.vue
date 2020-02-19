@@ -78,33 +78,35 @@ export default class RelationTemplateRender extends Vue {
 		});
 	}
 
-  // Since we only want one field to listen for an appellation at a time,
-  //  we keep track of the first field to announce that they are
-  //  listening. All other RelationField instances are expected to respect
-  //  that listener, and not start listening until the current field is
-  //  done.
-  public fieldIsListening(listeningField: any) {
-	this.listener = listeningField;
-	// TODO: Change emit to store
-	if (listeningField.type === 'CO') {
-		this.$emit('fieldislisteningfortext');
+	// Since we only want one field to listen for an appellation at a time,
+	//  we keep track of the first field to announce that they are
+	//  listening. All other RelationField instances are expected to respect
+	//  that listener, and not start listening until the current field is
+	//  done.
+	public fieldIsListening(listeningField: any) {
+		this.listener = listeningField;
+		// TODO: Change emit to store
+		if (listeningField.type === 'CO') {
+			this.$store.commit('fieldislisteningfortext');
+		}
 	}
-  }
 
-  public fieldIsDoneListening(listeningField: any) {
-	this.listener = null;
-	// TODO: Change emit to store
-	if (listeningField.type === 'CO') {
-		this.$emit('fieldisdonelisteningfortext');
+	public fieldIsDoneListening(listeningField: any) {
+		this.listener = null;
+		// TODO: Change emit to store
+		if (listeningField.type === 'CO') {
+			this.$store.commit('fieldisdonelisteningfortext');
+		}
 	}
-  }
-  public registerData(field: any, data: any) {
-	// TODO: Change emit to store
-	this.$emit('registerdata', field, data);
-  }
-  public unregisterData(field: any) {
-	this.$emit('unregisterdata', field);
-  }
+
+	public registerData(field: any, data: any) {
+		// TODO: Change emit to store
+		this.$store.commit('registerdata', field, data);
+	}
+
+	public unregisterData(field: any) {
+		this.$store.commit('unregisterdata', field);
+	}
 
 	private reset(): void {
 		this.$store.commit('setAnnotatorTemplate', null);

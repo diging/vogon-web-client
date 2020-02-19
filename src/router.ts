@@ -6,14 +6,12 @@ import LoginView from './views/auth/LoginView.vue';
 import SignUpView from './views/auth/SignUpView.vue';
 
 import Annotations from './views/annotations/Annotations.vue';
-import AnnotatorView from './views/AnnotatorView.vue';
 import ConceptAction from './views/concepts/ConceptAction.vue';
 import ConceptDetails from './views/concepts/ConceptDetails.vue';
 import ConceptEdit from './views/concepts/ConceptEdit.vue';
 import ConceptList from './views/concepts/ConceptList.vue';
 import ConceptTypeDetails from './views/concepts/ConceptTypeDetails.vue';
 import ConceptTypes from './views/concepts/ConceptTypes.vue';
-import Contributors from './views/Contributors.vue';
 import Dashboard from './views/dashboard/Dashboard.vue';
 import Home from './views/Home.vue';
 import About from './views/info/About.vue';
@@ -137,11 +135,6 @@ export default new Router({
 			path: '/relationtemplate/:id/edit',
 			name: 'template-update',
 			component: TemplateCreateOrUpdate,
-		},
-		{
-			path: '/contributors',
-			name: 'contributors',
-			component: Contributors,
 		},
 		{
 			path: '/about',
