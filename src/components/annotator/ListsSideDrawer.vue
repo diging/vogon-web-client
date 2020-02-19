@@ -16,7 +16,10 @@
 				template(v-else)
 					h5(class="caption text-center py-5") Template currently not selected!
 			v-tab-item(value="tab-4")
-				h1 Tab 4
+				AppellationCreator(
+					:appellations="appellations"
+					:text="$store.getters.getAnnotatorText"
+				)
 	
 		v-snackbar(
 			v-model="relationCreated"
@@ -29,6 +32,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
+import AppellationCreator from '@/components/annotator/AppellationCreator.vue';
 import AppellationList from '@/components/annotator/AppellationList.vue';
 import RelationTemplateRender from '@/components/annotator/RelationTemplate.vue';
 import { RelationTemplate } from '@/interfaces/RelationTypes';
@@ -36,6 +40,7 @@ import { RelationTemplate } from '@/interfaces/RelationTypes';
 @Component({
 	name: 'ListsSideDrawer',
 	components: {
+		AppellationCreator,
 		AppellationList,
 		RelationTemplateRender,
 	},

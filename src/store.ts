@@ -24,14 +24,21 @@ const initialState: RootState = {
 		currentTab: 'tab-1',
 		template: null,
 		selectedFieldAnnotations: [],
+		conceptTypes: [],
 		currentFieldIndex: -1,
 		currentFieldType: null,
 		appellations: [],
+		text: null,
+		highlightedText: null,
 		meta: {
 			project: -1,
 			occursIn: -1,
 		},
 		relationCreated: false,
+		selectedConcept: null,
+		searchingConcept: false,
+		createdAppellation: false,
+		createNewConcept: false,
 	},
 };
 
@@ -113,6 +120,9 @@ const mutations: MutationTree<RootState> = {
 	setAnnotatorTemplate(state, template) {
 		state.annotator.template = template;
 	},
+	setAnnotatorConceptTypes(state, types) {
+		state.annotator.conceptTypes = types;
+	},
 	setSelectedFieldAnnotations(state, annotations) {
 		state.annotator.selectedFieldAnnotations = annotations;
 	},
@@ -130,6 +140,28 @@ const mutations: MutationTree<RootState> = {
 	},
 	setAnnotatorMeta(state, meta) {
 		state.annotator.meta = meta;
+	},
+	setAnnotatorText(state, text) {
+		state.annotator.text = text;
+	},
+	setAnnotatorHighlightedText(state, text) {
+		state.annotator.highlightedText = text;
+	},
+	setAnnotatorSelectedConcept(state, concept) {
+		state.annotator.selectedConcept = concept;
+	},
+	setAnnotatorSearchingConcept(state, searching) {
+		state.annotator.searchingConcept = searching;
+	},
+	setAnnotatorCreatedAppellation(state, created) {
+		state.annotator.createdAppellation = created;
+	},
+	setAnnotatorCreateNewConcept(state, value) {
+		state.annotator.createNewConcept = value;
+	},
+	addAnnotatorNewAppellation(state, appellation) {
+		const index = state.annotator.appellations.length - 1;
+		state.annotator.appellations[index] = appellation;
 	},
 	setRelationCreated(state, value) {
 		state.annotator.relationCreated = value;
@@ -155,11 +187,18 @@ export default new Vuex.Store({
 		getTextContentStyle: (state) => state.text_content_styles,
 		getAnnotatorCurrentTab: (state) => state.annotator.currentTab,
 		getAnnotatorTemplate: (state) => state.annotator.template,
+		getAnnotatorConceptTypes: (state) => state.annotator.conceptTypes,
+		getAnnotatorText: (state) => state.annotator.text,
+		getAnnotatorHighlightedText: (state) => state.annotator.highlightedText,
 		getSelectedFieldAnnotations: (state) => state.annotator.selectedFieldAnnotations,
 		getCurrentFieldIndex: (state) => state.annotator.currentFieldIndex,
 		getCurrentFieldType: (state) => state.annotator.currentFieldType,
 		getAnnotatorAppellations: (state) => state.annotator.appellations,
 		getAnnotatorMeta: (state) => state.annotator.meta,
+		getAnnotatorSelectedConcept: (state) => state.annotator.selectedConcept,
+		getAnnotatorSearchingConcept: (state) => state.annotator.searchingConcept,
+		getAnnotatorCreatedAppellation: (state) => state.annotator.createdAppellation,
+		getAnnotatorCreateNewConcept: (state) => state.annotator.createNewConcept,
 		getRelationCreated: (state) => state.annotator.relationCreated,
 		templateOpenConcepts: (state) => state.templateCreator.open_concepts,
 	},

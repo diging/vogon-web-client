@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import AppellationDisplay from '@/components/annotator/AppellationDisplay.vue';
 import store from '@/store';
@@ -31,6 +31,7 @@ export default class TextDisplay extends Vue {
 	@Prop()
 	private appellations!: any[];
 
+	private currentAppellations: any[] = [];
 	private selectedPosition: any = null;
 	private selected: boolean = false;
 
@@ -39,9 +40,20 @@ export default class TextDisplay extends Vue {
 		window.addEventListener('resize', this.calculatePositions);
 	}
 
+	public created() {
+		this.currentAppellations = this.appellations;
+	}
+
+	@Watch('appellations')
+	private onAppellationChange(val: any) {
+		this.currentAppellations = val;
+		this.calculatePositions();
+		this.selected = false;
+	}
+
 	private calculatePositions() {
 		const container = this.$refs.textContent as Element;
-		const positions = this.appellations.map(
+		const positions = this.currentAppellations.map(
 			(appellation, i) => ({
 				...getAnnotationRectPositions(appellation, container),
 				...appellation,
@@ -66,6 +78,13 @@ export default class TextDisplay extends Vue {
 			if (selection !== null) {
 				const startOffset = Math.min(selection.anchorOffset, selection.focusOffset);
 				const endOffset = Math.max(selection.anchorOffset, selection.focusOffset);
+				const isTemplateFieldSelectMode = this.$store.getters.getCurrentFieldIndex >= 0 &&
+					this.$store.getters.getCurrentFieldType === 'CO';
+
+				if (!isTemplateFieldSelectMode) {
+					this.$store.commit('setAnnotatorCurrentTab', 'tab-4');
+					this.$store.commit('setAnnotatorSearchingConcept', false);
+				}
 
 				// If the user double-clicks (e.g. to select a whole word), the
 				// first mouse-up will get as far as here, even though no text has
@@ -77,7 +96,7 @@ export default class TextDisplay extends Vue {
 				// If there was a selection already, replace the existing selection
 				// with current selection
 				if (this.selected) {
-					this.appellations = this.appellations.slice(0, this.appellations.length - 1);
+					this.currentAppellations = this.currentAppellations.slice(0, this.currentAppellations.length - 1);
 				}
 
 				const raw = selection.toString();
@@ -92,10 +111,11 @@ export default class TextDisplay extends Vue {
 					selected: true,
 				};
 				this.selected = true;
+				this.$store.commit('setAnnotatorHighlightedText', selectedText);
 
 				// append the selected text to original list
-				this.appellations = [
-					...this.appellations,
+				this.currentAppellations = [
+					...this.currentAppellations,
 					selectedText,
 				];
 
@@ -104,10 +124,7 @@ export default class TextDisplay extends Vue {
 				clearMouseTextSelection();
 
 				// If in select mode, fill it in the template part field
-				if (
-					this.$store.getters.getCurrentFieldIndex >= 0 &&
-					this.$store.getters.getCurrentFieldType === 'CO'
-				) {
+				if (isTemplateFieldSelectMode) {
 					this.$store.commit('setSelectedFieldAnnotationsAt', {
 						pos: this.$store.getters.getCurrentFieldIndex,
 						annotation: {
