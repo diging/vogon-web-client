@@ -26,6 +26,7 @@ import TextDisplay from '@/components/annotator/TextDisplay.vue';
 import ToolBar from '@/components/annotator/ToolBar.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
+import { ConceptType } from '@/interfaces/ConceptTypes';
 import { Project } from '@/interfaces/ProjectTypes';
 import { Appellation, Relation, RelationSet } from '@/interfaces/RelationTypes';
 import { TextDocument } from '@/interfaces/RepositoryTypes';
@@ -47,6 +48,7 @@ export default class TextView extends Vue {
 	private content: string = '';
 	private project: Project = { name: '' };
 	private text?: TextDocument;
+	private conceptTypes: ConceptType[] = [];
 	private appellations: Appellation[] = [];
 	private relations: Relation[] = [];
 	private pendingRelationsets: RelationSet[] = [];
@@ -57,6 +59,7 @@ export default class TextView extends Vue {
 
 	public created() {
 		this.getContent();
+		this.watchStore();
 	}
 
 	private getContent() {
@@ -70,6 +73,7 @@ export default class TextView extends Vue {
 				this.content = response.data.content;
 				this.project = response.data.project;
 				this.text = response.data.text;
+				this.conceptTypes = response.data.concept_types;
 				this.appellations = response.data.appellations
 					.filter((item: any) => item.position)
 					.map((item: any) => ({
@@ -82,6 +86,8 @@ export default class TextView extends Vue {
 						},
 					}));
 				this.$store.commit('setAnnotatorAppellations', this.appellations);
+				this.$store.commit('setAnnotatorText', this.text);
+				this.$store.commit('setAnnotatorConceptTypes', this.conceptTypes);
 				this.$store.commit('setAnnotatorMeta', {
 					project: response.data.project.id,
 					occursIn: response.data.textid,
@@ -92,6 +98,18 @@ export default class TextView extends Vue {
 			})
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
+	}
+
+	private watchStore() {
+		this.$store.watch(
+			(state, getters) => getters.getAnnotatorCreatedAppellation,
+			(newValue, oldValue) => {
+				if (newValue) {
+					this.getContent();
+					this.$store.commit('setAnnotatorCreatedAppellation', false);
+				}
+			},
+		);
 	}
 }
 </script>

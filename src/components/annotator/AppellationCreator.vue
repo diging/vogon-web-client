@@ -1,49 +1,70 @@
 <template lang="pug">
-	div(class="appellation-creator" style="max-height: 80vh; overflow-y: scroll;")
-		div(class = "h4" v-if="triggered") Select Concept for Text
-		div(class="h4" v-else) What is this?
-			span(class="glyphicon glyphicon-question-sign" v-tooltip="'Create an appellation by attaching a concept from a controlled vocabulary. An appellation is a statement (by you) that the selected text refers to a specific concept.'")
-		p.text-warning
-		div(v-if="triggered")
-			span(class="appellation-creator-offsets")
-				{{ text.title }}
-		div(v-else)
-			span.appellation-creator-offsets
-				{{ position.startOffset }}&ndash;{{ position.endOffset }} :
-			span.appellation-creator-representation
-				{{ position.representation }}
-		div(v-if="concept != null" class="text-warning")
-			{{ concept.label }}
-			span(v-if="concept.authority != null")
-				({{ concept.authority.name }})
-		<!-- TODO:Not sure what this does -->
-		div(v-if="isSaving()" style="position: absolute; top: 0px;")
-			asdf
-		div(v-if="ready()" class="form-group clearfix")
-			div.btn-group.pull-right
-				a(v-on:click="createAppellation" class="btn btn-xs btn-success" v-bind:disabled="isSaving()")
-					Create #[span class="glyphicon glyphicon-save"]
-		div(v-if="concept == null" class="input-group")
-			div.checkbox
-				label
-					input(type="checkbox" v-model="create") I've tried so hard, but I can't find what I'm looking for!
-		concept-search(
-			@search="setSearch"
-			v-if="concept == null && !create"
-			v-on:selectconcept="selectConcept")
-		concept-creator(
-			v-if="create && concept == null"
-			v-on:createdconcept="createdConcept")
-		concept-picker(
-			v-show="display"
-			v-if="concept == null && !create"
-			v-bind:appellations=appellations
-			v-on:selectconcept="selectConcept")
-		div
-			a(v-on:click="cancel" class="btn btn-xs btn-danger") Cancel
+	div(class="pa-2")
+		v-expansion-panels
+			v-expansion-panel
+				v-expansion-panel-header 
+					strong Whas is this?
+					v-icon(small class="panel-icon") mdi-information
+				v-expansion-panel-content(class="text-left")
+					| Create an appellation by attaching a concept from a controlled vocabulary. 
+					| An appellation is a statement (by you) that the selected text refers to a 
+					| specific concept.
+
+		div(v-if="$store.getters.getAnnotatorHighlightedText" class="text-left pa-2 mt-2")
+			strong
+				| {{ $store.getters.getAnnotatorHighlightedText.position.startOffset }} – 
+				| {{ $store.getters.getAnnotatorHighlightedText.position.endOffset }}: &nbsp;
+			span(class="grey--text text--darken-2")
+				| {{ $store.getters.getAnnotatorHighlightedText.representation }}
+
+			v-checkbox(
+				v-if="!$store.getters.getAnnotatorSelectedConcept"
+				v-model="createNewConcept"
+				label="I've tried so hard, but I can't find what I'm looking for!"
+				dense
+				class="mt-2 pt-0"
+				color="red"
+			)
+
+			div(v-if="$store.getters.getAnnotatorSelectedConcept" class="my-3")
+				v-banner(elevation="1" class="selected-concept")
+					v-list-item
+						v-list-item-content
+							v-list-item-title
+								| {{ $store.getters.getAnnotatorSelectedConcept.label }}
+								span(v-if="$store.getters.getAnnotatorSelectedConcept.authority && $store.getters.getAnnotatorSelectedConcept.authority.name")
+									| &nbsp; ({{ $store.getters.getAnnotatorSelectedConcept.authority.name }})
+							v-list-item-subtitle
+								| {{ $store.getters.getAnnotatorSelectedConcept.description }}
+
+				div(class="relation-btn-container")
+					v-btn(color="success" class="mt-3 ml-auto" @click="create" :disabled="creating" :loading="creating")
+						v-icon(left) mdi-marker
+						| Create appellation
+
+				v-alert(v-if="createError" type="error" dense dismissible class="my-4")
+					| Error while creating appellation!
+
+			template(v-else-if="$store.getters.getAnnotatorCreateNewConcept")
+				ConceptCreator
+
+			template(v-else)
+				ConceptSearch
+				ConceptPicker(:concepts="concepts")
+
+			v-btn(
+				dense 
+				color="error" 
+				small 
+				@click="cancel"
+			) Cancel
+
 </template>
 
 <script lang="ts">
+import { AxiosResponse } from 'axios';
+import _ from 'lodash';
+import moment from 'moment';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import ConceptCreator from './ConceptCreator.vue';
@@ -53,137 +74,152 @@ import ConceptSearch from './ConceptSearch.vue';
 @Component({
 	name: 'AppellationCreator',
 	components: {
-		'concept-search': ConceptSearch,
-		'concept-creator': ConceptCreator,
-		'concept-picker': ConceptPicker,
+		ConceptSearch,
+		ConceptCreator,
+		ConceptPicker,
 	},
 })
 export default class AppellationCreator extends Vue {
-	@Prop() private position!: any;
-	@Prop() private user!: any;
 	@Prop() private text!: any;
-	@Prop() private project!: any;
 	@Prop() private appellations!: any;
 
-	private concept: any = {};
-	private create: boolean = false;
-	private submitted: boolean = false;
-	private saving: boolean = false;
-	private search: boolean = false;
-	private display: boolean = true;
+	private conceptsFinal: any[] = [];
 
-	@Watch('search')
-	public watchSearch() {
-		if (this.search === true) {
-			this.display = false;
+	private createNewConcept: boolean = false;
+	private creating: boolean = false;
+	private createError: boolean = false;
+
+	public created() {
+		this.merge(this.appellations);
+		this.watchStore();
+	}
+
+	@Watch('createNewConcept')
+	public onCreateNewConceptChange(val: boolean) {
+		this.$store.commit('setAnnotatorCreateNewConcept', val);
+	}
+
+	private watchStore() {
+		this.$store.watch(
+			(state, getters) => getters.getAnnotatorSearchingConcept,
+			(newValue, oldValue) => {
+				if (newValue) {
+					this.concepts = [];
+				} else {
+					this.merge(this.appellations);
+				}
+			},
+		);
+	}
+
+	get concepts() {
+		return this.conceptsFinal.map((item) => ({
+			...item.interpretation,
+			authority: {
+				name: item.interpretation.authority,
+			},
+		}));
+	}
+
+	set concepts(newValue) {
+		this.conceptsFinal = newValue;
+	}
+
+	private merge(appellations: any) {
+		this.conceptsFinal = [];
+
+		// Sort by date
+		const appellationsSorted: any[] = _.sortBy(
+			this.appellations,
+			(o) => -moment(o.created).unix(),
+		);
+		const appellationMap = new Map();
+
+		// set map items from appellations array
+		appellationsSorted.forEach((item: any) => {
+			if (appellationMap.has(item.interpretation.uri)) {
+				appellationMap.get(item.interpretation.uri).push(item);
+			} else {
+				appellationMap.set(item.interpretation.uri, [item]);
+			}
+		});
+		const appellationMapEntires = appellationMap.entries();
+
+		// add non-duplicate objects to `concepts` sorted by most recent
+		this.addConcepts(appellationMapEntires);
+
+		// sort appellationMap by length
+		const sortedMap = new Map(
+			[...appellationMap.entries()].sort(
+				(a, b) => b[1].length - a[1].length,
+			),
+		);
+		const sortedMapItems = sortedMap.entries();
+
+		// add non-duplicate objects to `concepts` sorted by most occuring
+		this.addConcepts(sortedMapItems);
+	}
+
+	private addConcepts(appellationMapEntires: any) {
+		let count = 0;
+		while (count <= 3) {
+			const appellation: any = appellationMapEntires.next().value;
+			if (!appellation) {
+				break;
+			}
+			if (!this.conceptsFinal.includes(appellation[1][0])) {
+				this.conceptsFinal.push(appellation[1][0]);
+				count++;
+			}
 		}
-	}
-
-	get triggered() {
-		return this.$store.getters.showConcepts;
-	}
-
-	private reset() {
-		this.concept = null;
-		this.create = false;
-		this.submitted = false;
-		this.saving = false;
-	}
-
-	private setSearch(search: any) {
-		// removes concept picker if searching concept to keep it from looking messy
-		this.search = search;
 	}
 
 	private cancel() {
-		this.reset();
-		this.$store.commit('triggerConcepts', false);
+		this.$store.commit('setAnnotatorHighlightedText', null);
+		this.$store.commit('setAnnotatorSelectedConcept', null);
 	}
 
-	private isSaving() {
-		return this.saving;
-	}
-
-	private awaitingConcept() {
-		return this.concept == null;
-	}
-
-	private selectConcept(concept: any) {
-		this.concept = concept;
-	}
-
-	private createdConcept(concept: any) {
-		this.concept = concept;
-		this.create = false;
-	}
-
-	private createAppellation() {
-		let stringRep;
-		/**
-		 * may want to change this at somepoint. If this is a concept for a text we set the position values to null
-		 */
-		if (this.$store.getters.showConcepts) {
-			this.position.startOffset = null;
-			this.position.endOffset = null;
-			stringRep = this.text.title;
-		} else {
-			stringRep = this.position.representation;
-		}
-		if (!(this.submitted || this.saving)) {
-			this.submitted = true; // Prevent multiple submissions.
-			this.saving = true;
-
-			// ToDo: Implement and fix the REST call
-			Vue.$axios.post('/save_appellation', {
-				position: {
-					occursIn: this.text.id,
-					position_type: 'CO',
-					position_value: [
-					this.position.startOffset,
-					this.position.endOffset,
-					].join(','),
-				},
-				stringRep,
-				startPos: this.position.startOffset,
-				endPos: this.position.endOffset,
+	private create() {
+		this.creating = true;
+		this.createError = false;
+		const highlighted = this.$store.getters.getAnnotatorHighlightedText;
+		const payload = {
+			position: {
 				occursIn: this.text.id,
-				createdBy: this.user.id,
-				project: this.project.id,
-				interpretation: this.concept.uri || this.concept.interpretation.uri,
-			})
-			.then((response: any) => {
-				this.reset();
-				if (this.$store.getters.showConcepts) {
-					this.$store.commit('setTextAppellation', response.body);
-					if (this.$store.getters.getValidator === 2) {
-						this.$store.commit('setValidator', 0);
-					}
-				}
-				this.$store.commit('triggerConcepts');
-				this.$store.commit(
-					'conceptLabel',
-					response.body.interpretation_label,
-				);
-			})
-			.catch((error: any): void => {
-				this.saving = false;
-			});
-		}
-	}
+				position_type: 'CO',
+				position_value: `${highlighted.position.startOffset},${highlighted.position.endOffset}`,
+			},
+			stringRep: highlighted.representation,
+			startPos: highlighted.position.startOffset,
+			endPos: highlighted.position.endOffset,
+			occursIn: this.text.id,
+			project: this.$store.getters.getAnnotatorMeta.project,
+			interpretation: this.$store.getters.getAnnotatorSelectedConcept.uri
+				|| this.$store.getters.getAnnotatorSelectedConcept.interpretation.uri,
+		};
 
-	private ready() {
-		if (this.triggered && this.concept) {
-			return true;
-		} else {
-			return (
-				this.position.startOffset >= 0 &&
-				this.position.endOffset &&
-				this.position.representation.trim().length > 0 &&
-				this.text.id &&
-				this.user.id &&
-				this.concept
-			);
-		}
+		Vue.$axios.post('/appellation', payload)
+			.then((response: AxiosResponse) => {
+				const appellation: any = response.data;
+				this.$store.commit('addAnnotatorNewAppellation', appellation);
+				this.$store.commit('setAnnotatorHighlightedText', null);
+				this.$store.commit('setAnnotatorSelectedConcept', null);
+				this.$store.commit('setAnnotatorCreatedAppellation', true);
+			})
+			.catch(() => this.createError = true)
+			.finally(() => this.creating = false);
 	}
 }
 </script>
+
+<style scoped>
+.panel-icon {
+	flex: inherit !important;
+}
+.relation-btn-container {
+	display: flex;
+}
+.selected-concept {
+	width: 100%;
+}
+</style>

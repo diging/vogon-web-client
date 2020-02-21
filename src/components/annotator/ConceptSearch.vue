@@ -1,90 +1,90 @@
 <template lang="pug">
-	div(id="concept-search" v-on:keyup.enter="search")
-		div.form-inline
-			div(class="form-group" style="width: 20%;")
-				label.sr-only Part of Speech
-				select.form-control.input-sm#concept-search-pos(v-model="pos")
-					option(value="noun") Noun
-					option(value="verb") Verb
-					option(value="") Any
-			div(class="form-group" style="width: 79%;")
-				div(class="input-group input-group-sm" style="width: 100%;")
-					input(type="text" class="form-control input-sm"  style="width: 100%;" v-model="query")
-					span.input-group-btn
-						a(v-if="ready()" class="btn btn-sm glyphicon glyphicon-search" v-on:click="search" style="color: green;")
-						span(v-if="searching" class="btn btn-sm glyphicon glyphicon-hourglass" style="color: orange;")
-						span(v-if="error" class="btn btn-sm glyphicon glyphicon-exclamation-sign" style="color: red;")
-		div
-			div.form-group
-				div.checkbox
-					label
-						input(type="checkbox" class="checkbox"  style="width: 100%;" v-model="force")
-							Force fresh search
-		div(class="list-group concept-search-list-group")
-			concept-list-item(
-				v-on:selectconcept="selectConcept"
-				v-bind:concept=concept
-				v-for="concept in concepts")
+	div(class="my-3 text-left")
+		v-select(
+			:items="posChoices"
+			outlined
+			dense
+			label="Part of Speech (PoS)"
+			v-model="pos"
+		)
+		v-text-field(
+			outlined
+			dense
+			placeholder="Search concept..."
+			label="Concept"
+			v-model="query"
+		)
+		v-checkbox(v-model="force" label="Force fresh search" dense class="mt-0 pt-0" color="red")
+		v-btn(dense outlined color="primary" @click="search" :loading="searching" :disabled="searching")
+			v-icon(left) mdi-magnify
+			| Search
+	
+		ConceptPicker(:concepts="concepts")
 </template>
 
 <script lang="ts">
-// TODO: Convert file to typescript where possible
+import { AxiosResponse } from 'axios';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import ConceptListItem from './ConceptListItem.vue';
+import ConceptPicker from '@/components/annotator/ConceptPicker.vue';
+import { Concept } from '@/interfaces/ConceptTypes';
 
 @Component({
 	name: 'ConceptSearch',
 	components: {
-		'concept-list-item': ConceptListItem,
+		ConceptPicker,
 	},
 })
 export default class ConceptSearch extends Vue {
+	private posChoices: any[] = [
+		{ text: 'Any', value: '' },
+		{ text: 'Noun', value: 'noun' },
+		{ text: 'Verb', value: 'verb' },
+	];
+	private pos: string = '';
 	private query: string = '';
-	private concepts: object[] = [];
+	private force: boolean = false;
+	private concepts: Concept[] = [];
+
 	private searching: boolean = false;
 	private error: boolean = false;
-	private pos: string = '';
-	private force: boolean = false;
 
-	private selectConcept(concept: any) {
-		// Clear the concept search results.
-		this.concepts = [];
-		this.$store.commit('selectconcept', concept);
+	public created() {
+		this.watchStore();
 	}
 
-	private ready() {
-	// TODO: should be able to recover from errors.
-	return !(this.searching || this.error);
+	private watchStore() {
+		this.$store.watch(
+			(state, getters) => getters.getAnnotatorSelectedConcept,
+			(newValue, oldValue) => {
+				if (newValue) {
+					this.concepts = [];
+				}
+			},
+		);
 	}
 
 	private search() {
-		this.searching = true; // Instant feedback for the user.
-
-		this.$emit('search', this.searching); // emit search to remove concept picker
-
-		// Asynchronous quries are beautiful.
-		const self = this; // Need a closure since Concept is global.
-		const payload: any = {
-			search: this.query,
+		this.searching = true;
+		this.$store.commit('setAnnotatorSearchingConcept', true);
+		const params: any = {
+			q: this.query,
 		};
 		if (this.pos !== '') {
-			payload.pos = this.pos;
+			params.pos = this.pos;
 		}
 		if (this.force) {
-			payload.force = 'force';
+			params.force = 'force';
 		}
 
-		// ToDo: Fix axios call
-		this.$axios.get('/concept', {
-			params: payload,
-		}).then((response: any) => {
-			self.concepts = response.body.results;
-			self.searching = false;
-		}).catch((error: any) => {
-			self.error = true;
-			self.searching = false;
-		});
+		Vue.$axios.get(`/concept/search`, {
+			params,
+		})
+			.then((response: AxiosResponse) => {
+				this.concepts = response.data.results;
+			})
+			.catch(() => this.error = true)
+			.finally(() => this.searching = false);
 	}
 }
 </script>

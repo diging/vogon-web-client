@@ -1,4 +1,6 @@
+import { Concept, ConceptType } from '@/interfaces/ConceptTypes';
 import { RelationTemplate } from '@/interfaces/RelationTypes';
+import { TextDocument } from '@/interfaces/RepositoryTypes';
 
 export interface RootState {
 	loggedIn: boolean;
@@ -18,7 +20,15 @@ export interface RootState {
 	annotator: {
 		currentTab: string;
 		template: RelationTemplate | null;
+		text: TextDocument | null;
+		highlightedText: {
+			position: { startOffset: number, endOffset: number },
+			visible: boolean,
+			interpretation: { label: string },
+			representation: string,
+		} | null;
 		selectedFieldAnnotations: any[]; // ToDo: Define type
+		conceptTypes: ConceptType[];
 		currentFieldIndex: number;
 		currentFieldType: string | null;
 		appellations: any[]; // ToDo: Define type
@@ -27,5 +37,9 @@ export interface RootState {
 			occursIn: number,
 		};
 		relationCreated: boolean,
+		selectedConcept: Concept | null,
+		searchingConcept: boolean,
+		createdAppellation: boolean,
+		createNewConcept: boolean,
 	};
 }
