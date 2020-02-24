@@ -11,11 +11,12 @@
 							h3(class="headline") Resource "{{ text.title }}"
 							v-list-item-subtitle(class="text--primary" v-text="text.uri")
 						v-col(cols="6")
-							div(v-if="project" class="float-right")
+							div(v-if="annotations !== 0 && project" class="float-right")
+								v-alert(type="success" text dense) This text cannot be removed from "{{ project }}"
+							div(v-else-if="project" class="float-right")
 								v-btn(color="primary" @click="removeText")
 									v-icon(left) mdi-minus
 									| Remove from project
-								//- v-alert(type="success" text dense) Already part of project "{{ project }}"
 							div(v-else-if="$route.query.project_id" class="float-right")
 								v-btn(color="primary" @click="addText")
 									v-icon(left) mdi-plus
@@ -77,6 +78,7 @@ export default class TextDetails extends Vue {
 	private project: string = '';
 	private text: TextResource = {id: 1, title: ''};
 	private relations: RelationSet[] = [];
+	private annotations: number = 0;
 
 	private snackbarText: string = '';
 	private snackbar: boolean = false;
@@ -97,6 +99,7 @@ export default class TextDetails extends Vue {
 				this.text = response.data.result as TextResource;
 				this.project = response.data.part_of_project && response.data.part_of_project.name;
 				this.relations = response.data.relations;
+				this.annotations = response.data.master_text.annotation_count;
 			})
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
