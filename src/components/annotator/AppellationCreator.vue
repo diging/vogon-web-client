@@ -3,7 +3,7 @@
 		v-expansion-panels
 			v-expansion-panel
 				v-expansion-panel-header 
-					strong Whas is this?
+					strong What is this?
 					v-icon(small class="panel-icon") mdi-information
 				v-expansion-panel-content(class="text-left")
 					| Create an appellation by attaching a concept from a controlled vocabulary. 
