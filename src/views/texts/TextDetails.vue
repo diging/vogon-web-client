@@ -11,9 +11,7 @@
 							h3(class="headline") Resource "{{ text.title }}"
 							v-list-item-subtitle(class="text--primary" v-text="text.uri")
 						v-col(cols="6")
-							div(v-if="annotations !== 0 && project" class="float-right")
-								v-alert(type="success" text dense) This text cannot be removed from "{{ project }}"
-							div(v-else-if="project" class="float-right")
+							div(v-if="project" class="float-right")
 								v-btn(color="primary" @click="removeText")
 									v-icon(left) mdi-minus
 									| Remove from project
@@ -78,7 +76,7 @@ export default class TextDetails extends Vue {
 	private project: string = '';
 	private text: TextResource = {id: 1, title: ''};
 	private relations: RelationSet[] = [];
-	private annotations: number = 0;
+	private masterId: number;
 
 	private snackbarText: string = '';
 	private snackbar: boolean = false;
@@ -99,7 +97,7 @@ export default class TextDetails extends Vue {
 				this.text = response.data.result as TextResource;
 				this.project = response.data.part_of_project && response.data.part_of_project.name;
 				this.relations = response.data.relations;
-				this.annotations = response.data.master_text.annotation_count;
+				this.masterId = response.data.master_text.id;
 			})
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
@@ -119,15 +117,19 @@ export default class TextDetails extends Vue {
 	}
 
 	private async removeText(): Promise<void> {
-		Vue.$axios.post(`/project/${this.$route.query.project_id}/remove_text`,
-				{ text_id: this.text.id, repository_id: this.$route.params.repoId },
-			)
+		Vue.$axios.delete(`/project/${this.$route.query.project_id}/delete_text`, {
+				data: { text_id: this.masterId },
+			})
 			.then((response: AxiosResponse) => {
 				this.getTextDetails();
 			})
-			.catch(() => {
+			.catch((error) => {
 				this.snackbar = true;
-				this.snackbarText = 'Error while removing text from the project';
+				if (error.response.status === 412) {
+					this.snackbarText = 'Text cannot be removed after annotations have been submitted to Quadriga';
+				} else {
+					this.snackbarText = 'Error while removing text from the project';
+				}
 			});
 	}
 }
