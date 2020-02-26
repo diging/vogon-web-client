@@ -9,7 +9,7 @@
 			v-list-item.text-left(two-line link)
 				v-list-item-content
 					v-list-item-title Project:
-					v-list-item-subtitle.text-capitalize #[a(href="project_url") {{ project.name }}]
+					v-list-item-subtitle.text-capitalize #[a(:href="`/project/${project.id}`") {{ project.name }}]
 			v-list-item.text-left(two-line link)
 				v-list-item-content
 					v-list-item-title Added On:
@@ -17,11 +17,13 @@
 			v-list-item.text-left(two-line link)
 				v-list-item-content
 					v-list-item-title Repository:
-					v-list-item-subtitle #[a(href="repo_url") {{ text.repository.name }}]
+					v-list-item-subtitle #[a(:href="`/repository/${text.repository.id}`") {{ text.repository.name }}]
 			v-list-item.text-left(two-line link)
 				v-list-item-content
 					v-list-item-title Part Of:
-					v-list-item-subtitle.text-capitalize #[a(href="repo_text") {{ text.part_of.title }}]
+					v-list-item-subtitle.text-capitalize
+						a(:href="`/repository/${text.repository.id}/text/${text.part_of.repository_source_id}`")
+							| {{ text.part_of.title }}
 			v-list-item.text-left(two-line link)
 				v-list-item-content
 					v-list-item-title URI:
@@ -29,18 +31,19 @@
 </template>
 
 <script lang="ts">
+import moment from 'moment';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
+import { Project } from '@/interfaces/ProjectTypes';
+import { TextDocument } from '@/interfaces/RepositoryTypes';
+
+
 @Component({
-  name: 'SideDrawer',
+	name: 'SideDrawer',
 })
 export default class SideDrawer extends Vue {
-	@Prop()
-	private project: any = [];
-	@Prop()
-	private text: any = [];
-	@Prop()
-	private loading: boolean = true;
+	@Prop() private project!: Project;
+	@Prop() private text!: TextDocument;
 
 	private show: boolean = false;
 
@@ -49,7 +52,10 @@ export default class SideDrawer extends Vue {
 	}
 
 	get formattedDate() {
-		return new Date(this.text.added).toLocaleString();
+		if (this.text && this.text.added) {
+			return moment(this.text.added).format('lll');
+		}
+		return '';
 	}
 
 	public watchStore() {
