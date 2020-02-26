@@ -62,10 +62,10 @@ export default Vue.extend({
 			this.$router.push('/');
 		},
 		login() {
-			this.$router.push('login');
+			this.$router.push('/login');
 		},
 		signup() {
-			this.$router.push('signup');
+			this.$router.push('/signup');
 		},
 		logout() {
 			localStorage.removeItem('token');

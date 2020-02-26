@@ -1,8 +1,10 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
+import ForgotPasswordView from './views/auth/ForgotPasswordView.vue';
 import GithubView from './views/auth/GithubView.vue';
 import LoginView from './views/auth/LoginView.vue';
+import ResetPasswordView from './views/auth/ResetPasswordView.vue';
 import SignUpView from './views/auth/SignUpView.vue';
 
 import Annotations from './views/annotations/Annotations.vue';
@@ -150,6 +152,16 @@ export default new Router({
 			path: '/signup',
 			name: 'signup',
 			component: SignUpView,
+		},
+		{
+			path: '/forgot-password',
+			name: 'forgot-password',
+			component: ForgotPasswordView,
+		},
+		{
+			path: '/reset-password/:token',
+			name: 'reset-password',
+			component: ResetPasswordView,
 		},
 		{
 			path: '/github',

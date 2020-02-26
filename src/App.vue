@@ -31,7 +31,9 @@ export default Vue.extend({
 		/**
 		 * run verify on pages other than signup and home during app setup
 		 */
-		if (this.$route.path !== '/signup' && this.$route.path !== '/' && this.$route.path !== '/about') {
+		if (this.$route.path !== '/signup' && this.$route.path !== '/' && this.$route.path !== '/about'
+			&& this.$route.path !== '/forgot-password' && !this.$route.path.startsWith('/reset-password')
+		) {
 			Vue.$verify(router, true);
 		} else {
 			Vue.$verify(router, false);
@@ -46,7 +48,9 @@ export default Vue.extend({
 		 * 		If no hooks are left, the navigation is confirmed.
 		 */
 		router.beforeEach((to, from, next) => {
-			if (to.path === '/signup' || to.path === '/' || to.path === '/about') {
+			if (to.path === '/signup' || to.path === '/' || to.path === '/about' || to.path === '/forgot-password'
+				|| to.path.startsWith('/reset-password')
+			) {
 				Vue.$verify(router, false);
 				next();
 			} else {
