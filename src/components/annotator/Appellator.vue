@@ -494,7 +494,6 @@ export default class Appellator extends Vue {
 		this.appellations.forEach((a) => {
 			a.selected = (a.id === appellation.id);
 		});
-		// TODO: Remove both emit and bus
 		this.$store.commit('selectedappellation', appellation);
 		this.$store.commit('cleartextselection');
 		this.unselectText();
