@@ -14,10 +14,10 @@
 					v-divider(v-if="index + 1 < collections.length" :key="index")
 			v-row
 				v-spacer(cols="1")
-				v-col(class="pagination" cols="1" offset="4" offset-xl="2")
+				v-col(class="pagination" cols="1" offset="4" offset-xl="3")
 					v-pagination(v-model="page" :length="Math.max(this.collections.length/this.perPage, 1)")
 				v-spacer(cols="1")
-				v-col(cols="2" xl="1")
+				v-col(cols="2")
 					p(class='rows')
 						| Rows per page:
 				v-col(cols="2" xl="1" class="row-select")
@@ -47,6 +47,7 @@ export default class RepoCollections extends Vue {
 	padding-right: 31px;
 }
 .rows {
-	padding-top: 10px;
+	font-size: 22px;
+	padding-top: 8px;
 }
 </style>
