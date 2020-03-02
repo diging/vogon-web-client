@@ -2,7 +2,8 @@
 	v-footer(padless dark)
 		v-card(class="flex" flat tile)
 			v-card-title(class="teal")
-				h4 VogonWeb #[strong Beta]
+				h4 VogonWeb #[strong Beta]&nbsp;
+				small {{version}}
 				
 				a.links(href="https://github.com/diging/vogon-web/releases/tag") Version 0.4
 				a(href="https://github.com/diging/vogon-web" class="btn btn-xs") 
@@ -16,12 +17,24 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { Component, Vue } from 'vue-property-decorator';
 
-export default Vue.extend({
+@Component({
 	name: 'Footer',
-	props: {},
-});
+	components: {},
+})
+
+export default class Footer extends Vue {
+	private version: string = '';
+
+	private async created(): Promise<void> {
+		fetch('https://api.github.com/repos/diging/vogon-web/releases/latest')
+		.then((res) => res.json())
+		.then((data) => {
+			this.version = data.tag_name;
+		});
+	}
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
