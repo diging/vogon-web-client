@@ -1,5 +1,5 @@
 <template lang="pug">
-	div(v-if="appellation.visible" @mouseover="tooltip = true" @mouseleave="tooltip = false")
+	div(v-if="visible" @mouseover="tooltip = true" @mouseleave="tooltip = false")
 		div(:style="{ ...appellation.positionStyle, zIndex: 5, width: 'auto', height: 30 }" class="appellation-tooltip" v-if="tooltip")
 			| {{ appellation.interpretation.label }}
 		li(
@@ -7,7 +7,8 @@
 			v-bind:class=`{
 				'appellation': appellation.interpretation != null,
 				'date-appellation': appellation.dateRepresentation != null,
-				'appellation-selected': appellation.selected
+				'appellation-selected': appellation.selected,
+				'appellation-focused': focused
 			}`
 			@click="onApellationClick()"
 		)
@@ -17,7 +18,8 @@
 			v-bind:class=`{
 				'appellation': appellation.interpretation != null,
 				'date-appellation': appellation.dateRepresentation != null,
-				'appellation-selected': appellation.selected
+				'appellation-selected': appellation.selected,
+				'appellation-focused': focused
 			}`
 			v-bind:style=`{
 				height: line.height + 'px',
@@ -41,7 +43,8 @@
 			v-bind:class=`{
 				'appellation': appellation.interpretation != null,
 				'date-appellation': appellation.dateRepresentation != null,
-				'appellation-selected': appellation.selected
+				'appellation-selected': appellation.selected,
+				'appellation-focused': focused
 			}`
 		)
 </template>
@@ -59,6 +62,38 @@ export default class AppellationDisplayItem extends Vue {
 	@Prop() private index!: number;
 
 	private tooltip: boolean = false;
+	private focused: boolean = false;
+	private visible: boolean = true;
+
+	public created() {
+		this.watchStore();
+	}
+
+	private watchStore() {
+		this.$store.watch(
+			(state, getters) => getters.getAnnotatorFocusedAppellation,
+			(newValue, oldValue) => {
+				if (newValue === this.appellation.id) {
+					this.focused = true;
+				} else {
+					this.focused = false;
+				}
+			},
+		);
+		this.$store.watch(
+			(state, getters) => getters.getAnnotatorHideAppellation,
+			(newValue, oldValue) => {
+				this.visible = !newValue;
+			},
+		);
+		this.$store.subscribe((mutation, state) => {
+			if (mutation.type === 'setAnnotatorShowAppellation' && mutation.payload === this.appellation.id) {
+				this.visible = true;
+			} else if (mutation.type === 'setAnnotatorHideAppellation' && mutation.payload === this.appellation.id) {
+				this.visible = false;
+			}
+		});
+	}
 
 	private getLabel() {
 		if (this.appellation.interpretation) {
@@ -91,6 +126,13 @@ export default class AppellationDisplayItem extends Vue {
 			// Reset
 			this.$store.commit('setCurrentFieldIndex', -1);
 			this.$store.commit('setCurrentFieldType', null);
+		} else {
+			const currentFocusedAppellation = this.$store.getters.getAnnotatorFocusedAppellation;
+			let focusedAppellation = this.appellation.id;
+			if (currentFocusedAppellation > 0 && currentFocusedAppellation === focusedAppellation) {
+				focusedAppellation = 0;
+			}
+			this.$store.commit('setAnnotatorFocusedAppellation', focusedAppellation);
 		}
 	}
 }
@@ -102,10 +144,15 @@ export default class AppellationDisplayItem extends Vue {
     background-color: blue;
     opacity: 0.3;
 }
+.appellation.appellation-focused {
+    border: 2px solid #d68a00;
+    background-color: orange;
+    opacity: 0.6;
+}
 .appellation {
-    border: 0.5px solid orange;
-    background-color: #FBC02D;
-    opacity: 0.4;
+    border: 1px solid black;
+    background-color: yellow;
+    opacity: 0.2;
     list-style-type: none;
     margin: 0;
     padding: 0;

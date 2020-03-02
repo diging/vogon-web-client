@@ -39,6 +39,9 @@ const initialState: RootState = {
 		searchingConcept: false,
 		createdAppellation: false,
 		createNewConcept: false,
+		focusedAppellation: 0,
+		hideAllAppellations: false,
+		hiddenAppellations: {},
 	},
 };
 
@@ -159,6 +162,18 @@ const mutations: MutationTree<RootState> = {
 	setAnnotatorCreateNewConcept(state, value) {
 		state.annotator.createNewConcept = value;
 	},
+	setAnnotatorFocusedAppellation(state, appellationId) {
+		state.annotator.focusedAppellation = appellationId;
+	},
+	toggleAnnotatorHideAppellation(state) {
+		state.annotator.hideAllAppellations = !state.annotator.hideAllAppellations;
+	},
+	setAnnotatorHideAppellation(state, appellationId) {
+		state.annotator.hiddenAppellations[appellationId] = true;
+	},
+	setAnnotatorShowAppellation(state, appellationId) {
+		delete state.annotator.hiddenAppellations[appellationId];
+	},
 	addAnnotatorNewAppellation(state, appellation) {
 		const index = state.annotator.appellations.length - 1;
 		state.annotator.appellations[index] = appellation;
@@ -199,6 +214,9 @@ export default new Vuex.Store({
 		getAnnotatorSearchingConcept: (state) => state.annotator.searchingConcept,
 		getAnnotatorCreatedAppellation: (state) => state.annotator.createdAppellation,
 		getAnnotatorCreateNewConcept: (state) => state.annotator.createNewConcept,
+		getAnnotatorFocusedAppellation: (state) => state.annotator.focusedAppellation,
+		getAnnotatorHideAppellation: (state) => state.annotator.hideAllAppellations,
+		getAnnotatorHiddenAppellations: (state) => state.annotator.hiddenAppellations,
 		getRelationCreated: (state) => state.annotator.relationCreated,
 		templateOpenConcepts: (state) => state.templateCreator.open_concepts,
 	},

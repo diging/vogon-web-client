@@ -1,12 +1,17 @@
 <template lang="pug">
-	v-list(three-line dense)
-		template(v-for="(appellation, index) in appellations")
-			v-list-item(:key="appellation.id")
-				v-list-item-content
-					v-list-item-title.text-left {{ appellation.interpretation.label }}
-					v-list-item-subtitle().text-left  Created by <strong>{{ getCreatorName(appellation.createdBy) }}</strong> on {{ getFormattedDate(appellation.created) }}
-			v-divider
-		v-divider
+	div
+		div(class="text-right")
+			v-btn(text tile class="mr-2" @click="$store.commit('toggleAnnotatorHideAppellation')")
+				template(v-if="$store.getters.getAnnotatorHideAppellation")
+					v-icon(left) mdi-eye-off
+					| Show all
+				template(v-else)
+					v-icon(left) mdi-eye
+					| Hide all
+		v-list(three-line dense)
+			template(v-for="(appellation, i) in appellations")
+				AppellationListItem(:key="appellation.id" :appellation="appellation")
+				v-divider(v-if="i + 1 < appellations.length")
 </template>
 
 <script lang="ts">
@@ -62,19 +67,6 @@ export default class AppellationList extends Vue {
 	// 			this.$store.commit('setValidator', 0)
 	// 		}
 	// }
-
-	private getCreatorName(creator: any) {
-		const decoded = JwtDecode<TokenDto>(localStorage.getItem('token') || '');
-		if (creator.id === decoded.user_id) {
-			return 'you';
-		} else {
-			return creator.username;
-		}
-	}
-
-	private getFormattedDate(isodate: string) {
-		return moment(isodate).format('dddd LL [at] LT');
-	}
 
 	get conceptLabel() {
 		return this.$store.getters.conceptLabel;
