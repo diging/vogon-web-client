@@ -91,8 +91,20 @@ export default class AppellationDisplayItem extends Vue {
 				this.visible = true;
 			} else if (mutation.type === 'setAnnotatorHideAppellation' && mutation.payload === this.appellation.id) {
 				this.visible = false;
+			} else if (mutation.type === 'setAnnotatorUpdatedAppellation' && mutation.payload === this.appellation.id) {
+				this.visible = true;
 			}
 		});
+		this.$store.watch(
+			(state, getters) => getters.getAnnotatorEditAppellationMode,
+			(newValue, oldValue) => {
+				if (newValue && newValue.id === this.appellation.id) {
+					this.visible = false;
+				} else {
+					this.visible = true;
+				}
+			},
+		);
 	}
 
 	private getLabel() {

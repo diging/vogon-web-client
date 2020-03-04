@@ -11,7 +11,11 @@
 					v-col(cols="6")
 						TextDisplay(:content="content" :appellations="appellations")
 					v-col(cols="6")
-						ListsSideDrawer(:relations='relations' :appellations="appellations")
+						ListsSideDrawer(
+							:relations='relations' 
+							:appellations="appellations"
+							:relationsets="relationsets"
+						)
 </template>
 
 <script lang="ts">
@@ -51,6 +55,7 @@ export default class TextView extends Vue {
 	private conceptTypes: ConceptType[] = [];
 	private appellations: Appellation[] = [];
 	private relations: Relation[] = [];
+	private relationsets: RelationSet[] = [];
 	private pendingRelationsets: RelationSet[] = [];
 
 	private loading: boolean = true;
@@ -95,6 +100,7 @@ export default class TextView extends Vue {
 
 				this.relations = response.data.relations;
 				this.pendingRelationsets = response.data.pending_relationsets;
+				this.relationsets = response.data.relationsets;
 			})
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);

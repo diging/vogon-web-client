@@ -1,8 +1,8 @@
 <template lang="pug">
-	v-list(three-line)
-		template(v-for="(relation, index) in relations")
-			v-list-item(:key="relation.id")
-				v-list-item-content
+	v-list(three-line dense class="relationset-list")
+		template(v-for="(relation, i) in relations")
+			RelationListItem(:key="relation.id" :relation="relation")
+			v-divider(v-if="i + 1 < relations.length")
 </template>
 
 <script lang="ts">
@@ -13,16 +13,21 @@ import RelationListItem from '@/components/annotator/RelationListItem.vue';
 @Component({
 	name: 'RelationList',
 	components: {
-		'relation-list-item': RelationListItem,
+		RelationListItem,
 	},
 })
 export default class RelationList extends Vue {
 	@Prop()
 	private relations: any[] = [];
-
-	// FIXME: Change this emit to use the store
-	private selectRelation(relation: any) {
-		this.$store.commit('selectrelation', relation);
-	}
 }
 </script>
+
+<style scoped>
+.relationset-list {
+	max-height: 600px;
+	overflow-y: auto;
+	margin-top: 16px;
+	margin-bottom: 16px;
+	padding: 10px;
+}
+</style>

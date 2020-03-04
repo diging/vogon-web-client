@@ -42,6 +42,8 @@ const initialState: RootState = {
 		focusedAppellation: 0,
 		hideAllAppellations: false,
 		hiddenAppellations: {},
+		editAppellationId: null,
+		updatedAppellationId: 0,
 	},
 };
 
@@ -174,6 +176,12 @@ const mutations: MutationTree<RootState> = {
 	setAnnotatorShowAppellation(state, appellationId) {
 		delete state.annotator.hiddenAppellations[appellationId];
 	},
+	setAnnotatorEditAppellationMode(state, appellation) {
+		state.annotator.editAppellationId = appellation;
+	},
+	setAnnotatorUpdatedAppellation(state, appellationId) {
+		state.annotator.updatedAppellationId = appellationId;
+	},
 	addAnnotatorNewAppellation(state, appellation) {
 		const index = state.annotator.appellations.length - 1;
 		state.annotator.appellations[index] = appellation;
@@ -217,6 +225,7 @@ export default new Vuex.Store({
 		getAnnotatorFocusedAppellation: (state) => state.annotator.focusedAppellation,
 		getAnnotatorHideAppellation: (state) => state.annotator.hideAllAppellations,
 		getAnnotatorHiddenAppellations: (state) => state.annotator.hiddenAppellations,
+		getAnnotatorEditAppellationMode: (state) => state.annotator.editAppellationId,
 		getRelationCreated: (state) => state.annotator.relationCreated,
 		templateOpenConcepts: (state) => state.templateCreator.open_concepts,
 	},
