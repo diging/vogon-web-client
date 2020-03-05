@@ -12,7 +12,9 @@
 							v-list-item-subtitle(class="text--primary" v-text="text.uri")
 						v-col(cols="6")
 							div(v-if="project" class="float-right")
-								v-alert(type="success" text dense) Already part of project "{{ project }}"
+								v-btn(color="primary" @click="removeText")
+									v-icon(left) mdi-minus
+									| Remove from project
 							div(v-else-if="$route.query.project_id" class="float-right")
 								v-btn(color="primary" @click="addText")
 									v-icon(left) mdi-plus
@@ -74,6 +76,7 @@ export default class TextDetails extends Vue {
 	private project: string = '';
 	private text: TextResource = {id: 1, title: ''};
 	private relations: RelationSet[] = [];
+	private masterId: number;
 
 	private snackbarText: string = '';
 	private snackbar: boolean = false;
@@ -94,6 +97,7 @@ export default class TextDetails extends Vue {
 				this.text = response.data.result as TextResource;
 				this.project = response.data.part_of_project && response.data.part_of_project.name;
 				this.relations = response.data.relations;
+				this.masterId = response.data.master_text.id;
 			})
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
@@ -109,6 +113,23 @@ export default class TextDetails extends Vue {
 			.catch(() => {
 				this.snackbar = true;
 				this.snackbarText = 'Error while adding text to the project';
+			});
+	}
+
+	private async removeText(): Promise<void> {
+		Vue.$axios.delete(`/project/${this.$route.query.project_id}/delete_text`, {
+				data: { text_id: this.masterId },
+			})
+			.then((response: AxiosResponse) => {
+				this.getTextDetails();
+			})
+			.catch((error) => {
+				this.snackbar = true;
+				if (error.response.status === 412) {
+					this.snackbarText = 'Text cannot be removed after annotations have been submitted to Quadriga';
+				} else {
+					this.snackbarText = 'Error while removing text from the project';
+				}
 			});
 	}
 }
