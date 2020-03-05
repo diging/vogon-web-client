@@ -18,7 +18,7 @@
 					v-pagination(v-model="page" :length="Math.max(this.collections.length/this.perPage, 1)")
 				v-spacer(cols="1")
 				v-col(cols="2")
-					p(class='rows')
+					p(class='rows-per-page')
 						| Rows per page:
 				v-col(cols="2" xl="1" class="row-select")
 					v-select(:items="items" solo label="Rows" v-model="perPage" )
@@ -46,8 +46,8 @@ export default class RepoCollections extends Vue {
 .row-select {
 	padding-right: 31px;
 }
-.rows {
-	font-size: 22px;
+.rows-per-page {
+	font-size: 19px;
 	padding-top: 8px;
 }
 </style>
