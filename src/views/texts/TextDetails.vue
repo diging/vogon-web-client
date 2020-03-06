@@ -112,7 +112,11 @@ export default class TextDetails extends Vue {
 				this.project = response.data.part_of_project && response.data.part_of_project.name;
 				this.relations = response.data.relations;
 				this.masterId = response.data.master_text.id;
-				response.data.submitted ? this.submitted = true : this.submitted = false;
+				if (response.data.submitted) {
+					this.submitted = true;
+				} else {
+					this.submitted = false;
+				}
 			})
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
