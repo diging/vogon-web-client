@@ -11,10 +11,7 @@
 			v-tab-item(value="tab-2")
 				RelationList(:relations="relationsets")
 			v-tab-item(value="tab-3")
-				template(v-if="template")
-					RelationTemplateRender(v-bind:template="template" v-bind:appellations="appellations")
-				template(v-else)
-					h5(class="caption text-center py-5") Template currently not selected!
+				RelationTemplateRender(v-bind:template="template" v-bind:appellations="appellations")
 			v-tab-item(value="tab-4")
 				AppellationCreator(
 					:appellations="appellations"
