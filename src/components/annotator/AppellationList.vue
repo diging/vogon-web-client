@@ -8,7 +8,7 @@
 				template(v-else)
 					v-icon(left) mdi-eye
 					| Hide all
-		v-list(three-line dense class="appellation-list")
+		v-list(three-line dense class="appellation-list" id="appellation-list")
 			template(v-for="(appellation, i) in appellations")
 				AppellationListItem(:key="appellation.id" :appellation="appellation")
 				v-divider(v-if="i + 1 < appellations.length")

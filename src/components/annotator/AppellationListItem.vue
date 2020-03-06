@@ -1,5 +1,5 @@
 <template lang="pug">
-	div(:class="`text-left pa-2 ${focused}`")
+	div(:class="`text-left pa-2 ${focused}`" ref="listItem")
 		v-row
 			v-col(:cols="9")
 				div(class="subtitle-1") {{ appellation.interpretation.label }}
@@ -20,6 +20,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import VueScrollTo from 'vue-scrollto';
 
 import { getCreatorName, getFormattedDate } from '@/utils/annotations';
 
@@ -50,6 +51,9 @@ export default class AppellationListItem extends Vue {
 			(newValue, oldValue) => {
 				if (newValue === this.appellation.id) {
 					this.focused = 'focused';
+					VueScrollTo.scrollTo(this.$refs[`listItem`] as Element, {
+						container: '#appellation-list',
+					});
 				} else {
 					this.focused = '';
 					this.edit = false;
