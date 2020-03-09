@@ -1,8 +1,11 @@
 <template lang="pug">
-	v-navigation-drawer(v-model="show" absolute)
+	v-navigation-drawer(v-model="show" absolute class="side-drawer")
 		v-list-item
 			v-list-item-content
-				v-list-item-title(class="title") Stats
+				v-list-item-title(class="title") 
+					| Stats
+					v-btn(class="float-right" small icon @click="close()")
+						v-icon mdi-close
 
 		v-divider
 		v-list()
@@ -69,11 +72,18 @@ export default class SideDrawer extends Vue {
 			},
 		);
 	}
+
+	private close() {
+		this.$store.commit('toggleSideBarMutation');
+	}
 }
 </script>
 
 <style scoped>
 .no-wrap {
 	white-space: normal;
+}
+.side-drawer {
+	z-index: 3;
 }
 </style>
