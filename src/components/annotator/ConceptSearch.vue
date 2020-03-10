@@ -13,6 +13,7 @@
 			placeholder="Search concept..."
 			label="Concept"
 			v-model="query"
+			@keyup.enter.native="search" 
 		)
 		v-checkbox(v-model="force" label="Force fresh search" dense class="mt-0 pt-0" color="red")
 		v-btn(dense outlined color="primary" @click="search" :loading="searching" :disabled="searching")
@@ -30,61 +31,62 @@ import ConceptPicker from '@/components/annotator/ConceptPicker.vue';
 import { Concept } from '@/interfaces/ConceptTypes';
 
 @Component({
-	name: 'ConceptSearch',
-	components: {
-		ConceptPicker,
-	},
+  name: 'ConceptSearch',
+  components: {
+	ConceptPicker,
+  },
 })
 export default class ConceptSearch extends Vue {
-	private posChoices: any[] = [
-		{ text: 'Any', value: '' },
-		{ text: 'Noun', value: 'noun' },
-		{ text: 'Verb', value: 'verb' },
-	];
-	private pos: string = '';
-	private query: string = '';
-	private force: boolean = false;
-	private concepts: Concept[] = [];
+  private posChoices: any[] = [
+	{ text: 'Any', value: '' },
+	{ text: 'Noun', value: 'noun' },
+	{ text: 'Verb', value: 'verb' },
+  ];
+  private pos: string = '';
+  private query: string = '';
+  private force: boolean = false;
+  private concepts: Concept[] = [];
 
-	private searching: boolean = false;
-	private error: boolean = false;
+  private searching: boolean = false;
+  private error: boolean = false;
 
-	public created() {
-		this.watchStore();
+  public created() {
+	this.watchStore();
+  }
+
+  private watchStore() {
+	this.$store.watch(
+		(state, getters) => getters.getAnnotatorSelectedConcept,
+		(newValue, oldValue) => {
+		if (newValue) {
+			this.concepts = [];
+		}
+		},
+	);
+  }
+
+  private search() {
+	this.searching = true;
+	this.$store.commit('setAnnotatorSearchingConcept', true);
+	const params: any = {
+		q: this.query,
+	};
+	if (this.pos !== '') {
+		params.pos = this.pos;
+	}
+	if (this.force) {
+		params.force = 'force';
 	}
 
-	private watchStore() {
-		this.$store.watch(
-			(state, getters) => getters.getAnnotatorSelectedConcept,
-			(newValue, oldValue) => {
-				if (newValue) {
-					this.concepts = [];
-				}
-			},
-		);
-	}
-
-	private search() {
-		this.searching = true;
-		this.$store.commit('setAnnotatorSearchingConcept', true);
-		const params: any = {
-			q: this.query,
-		};
-		if (this.pos !== '') {
-			params.pos = this.pos;
-		}
-		if (this.force) {
-			params.force = 'force';
-		}
-
-		Vue.$axios.get(`/concept/search`, {
-			params,
+	Vue.$axios
+		.get(`/concept/search`, {
+		params,
 		})
-			.then((response: AxiosResponse) => {
-				this.concepts = response.data.results;
-			})
-			.catch(() => this.error = true)
-			.finally(() => this.searching = false);
-	}
+		.then((response: AxiosResponse) => {
+		this.concepts = response.data.results;
+		})
+		.catch(() => (this.error = true))
+		.finally(() => (this.searching = false));
+  }
 }
 </script>
