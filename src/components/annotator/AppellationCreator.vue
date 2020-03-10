@@ -25,7 +25,6 @@
 				class="mt-2 pt-0"
 				color="red"
 			)
-
 			div(v-if="$store.getters.getAnnotatorSelectedConcept" class="my-3")
 				v-banner(elevation="1" class="selected-concept")
 					v-list-item
@@ -72,154 +71,154 @@ import ConceptPicker from './ConceptPicker.vue';
 import ConceptSearch from './ConceptSearch.vue';
 
 @Component({
-	name: 'AppellationCreator',
-	components: {
-		ConceptSearch,
-		ConceptCreator,
-		ConceptPicker,
-	},
+  name: 'AppellationCreator',
+  components: {
+	ConceptSearch,
+	ConceptCreator,
+	ConceptPicker,
+  },
 })
 export default class AppellationCreator extends Vue {
-	@Prop() private text!: any;
-	@Prop() private appellations!: any;
+  @Prop() private text!: any;
+  @Prop() private appellations!: any;
 
-	private conceptsFinal: any[] = [];
+  private conceptsFinal: any[] = [];
 
-	private createNewConcept: boolean = false;
-	private creating: boolean = false;
-	private createError: boolean = false;
+  private createNewConcept: boolean = false;
+  private creating: boolean = false;
+  private createError: boolean = false;
 
-	public created() {
-		this.merge(this.appellations);
-		this.watchStore();
-	}
+  public created() {
+	this.merge(this.appellations);
+	this.watchStore();
+  }
 
-	@Watch('createNewConcept')
-	public onCreateNewConceptChange(val: boolean) {
-		this.$store.commit('setAnnotatorCreateNewConcept', val);
-	}
+  @Watch('createNewConcept')
+  public onCreateNewConceptChange(val: boolean) {
+	this.$store.commit('setAnnotatorCreateNewConcept', val);
+  }
 
-	private watchStore() {
-		this.$store.watch(
-			(state, getters) => getters.getAnnotatorSearchingConcept,
-			(newValue, oldValue) => {
-				if (newValue) {
-					this.concepts = [];
-				} else {
-					this.merge(this.appellations);
-				}
-			},
-		);
-	}
+  private watchStore() {
+	this.$store.watch(
+		(state, getters) => getters.getAnnotatorSearchingConcept,
+		(newValue, oldValue) => {
+		if (newValue) {
+			this.concepts = [];
+		} else {
+			this.merge(this.appellations);
+		}
+		},
+	);
+  }
 
-	get concepts() {
-		return this.conceptsFinal.map((item) => ({
-			...item.interpretation,
-			authority: {
-				name: item.interpretation.authority,
-			},
-		}));
-	}
+  get concepts() {
+	return this.conceptsFinal.map((item) => ({
+		...item.interpretation,
+		authority: {
+		name: item.interpretation.authority,
+		},
+	}));
+  }
 
-	set concepts(newValue) {
-		this.conceptsFinal = newValue;
-	}
+  set concepts(newValue) {
+	this.conceptsFinal = newValue;
+  }
 
-	private merge(appellations: any) {
-		this.conceptsFinal = [];
+  private merge(appellations: any) {
+	this.conceptsFinal = [];
 
-		// Sort by date
-		const appellationsSorted: any[] = _.sortBy(
-			this.appellations,
-			(o) => -moment(o.created).unix(),
-		);
-		const appellationMap = new Map();
+	// Sort by date
+	const appellationsSorted: any[] = _.sortBy(
+		this.appellations,
+		(o) => -moment(o.created).unix(),
+	);
+	const appellationMap = new Map();
 
-		// set map items from appellations array
-		appellationsSorted.forEach((item: any) => {
-			if (appellationMap.has(item.interpretation.uri)) {
-				appellationMap.get(item.interpretation.uri).push(item);
-			} else {
-				appellationMap.set(item.interpretation.uri, [item]);
-			}
-		});
-		const appellationMapEntires = appellationMap.entries();
+	// set map items from appellations array
+	appellationsSorted.forEach((item: any) => {
+		if (appellationMap.has(item.interpretation.uri)) {
+		appellationMap.get(item.interpretation.uri).push(item);
+		} else {
+		appellationMap.set(item.interpretation.uri, [item]);
+		}
+	});
+	const appellationMapEntires = appellationMap.entries();
 
-		// add non-duplicate objects to `concepts` sorted by most recent
-		this.addConcepts(appellationMapEntires);
+	// add non-duplicate objects to `concepts` sorted by most recent
+	this.addConcepts(appellationMapEntires);
 
-		// sort appellationMap by length
-		const sortedMap = new Map(
-			[...appellationMap.entries()].sort(
-				(a, b) => b[1].length - a[1].length,
-			),
-		);
-		const sortedMapItems = sortedMap.entries();
+	// sort appellationMap by length
+	const sortedMap = new Map(
+		[...appellationMap.entries()].sort((a, b) => b[1].length - a[1].length),
+	);
+	const sortedMapItems = sortedMap.entries();
 
-		// add non-duplicate objects to `concepts` sorted by most occuring
-		this.addConcepts(sortedMapItems);
-	}
+	// add non-duplicate objects to `concepts` sorted by most occuring
+	this.addConcepts(sortedMapItems);
+  }
 
-	private addConcepts(appellationMapEntires: any) {
-		let count = 0;
-		while (count <= 3) {
-			const appellation: any = appellationMapEntires.next().value;
-			if (!appellation) {
-				break;
-			}
-			if (!this.conceptsFinal.includes(appellation[1][0])) {
-				this.conceptsFinal.push(appellation[1][0]);
-				count++;
-			}
+  private addConcepts(appellationMapEntires: any) {
+	let count = 0;
+	while (count <= 3) {
+		const appellation: any = appellationMapEntires.next().value;
+		if (!appellation) {
+		break;
+		}
+		if (!this.conceptsFinal.includes(appellation[1][0])) {
+		this.conceptsFinal.push(appellation[1][0]);
+		count++;
 		}
 	}
+  }
 
-	private cancel() {
+  private cancel() {
+	this.$store.commit('setAnnotatorHighlightedText', null);
+	this.$store.commit('setAnnotatorSelectedConcept', null);
+  }
+
+  private create() {
+	this.creating = true;
+	this.createError = false;
+	const highlighted = this.$store.getters.getAnnotatorHighlightedText;
+	const payload = {
+		position: {
+		occursIn: this.text.id,
+		position_type: 'CO',
+		position_value: `${highlighted.position.startOffset},${highlighted.position.endOffset}`,
+		},
+		stringRep: highlighted.representation,
+		startPos: highlighted.position.startOffset,
+		endPos: highlighted.position.endOffset,
+		occursIn: this.text.id,
+		project: this.$store.getters.getAnnotatorMeta.project,
+		interpretation:
+		this.$store.getters.getAnnotatorSelectedConcept.uri ||
+		this.$store.getters.getAnnotatorSelectedConcept.interpretation.uri,
+	};
+
+	Vue.$axios
+		.post('/appellation', payload)
+		.then((response: AxiosResponse) => {
+		const appellation: any = response.data;
+		this.$store.commit('addAnnotatorNewAppellation', appellation);
 		this.$store.commit('setAnnotatorHighlightedText', null);
 		this.$store.commit('setAnnotatorSelectedConcept', null);
-	}
-
-	private create() {
-		this.creating = true;
-		this.createError = false;
-		const highlighted = this.$store.getters.getAnnotatorHighlightedText;
-		const payload = {
-			position: {
-				occursIn: this.text.id,
-				position_type: 'CO',
-				position_value: `${highlighted.position.startOffset},${highlighted.position.endOffset}`,
-			},
-			stringRep: highlighted.representation,
-			startPos: highlighted.position.startOffset,
-			endPos: highlighted.position.endOffset,
-			occursIn: this.text.id,
-			project: this.$store.getters.getAnnotatorMeta.project,
-			interpretation: this.$store.getters.getAnnotatorSelectedConcept.uri
-				|| this.$store.getters.getAnnotatorSelectedConcept.interpretation.uri,
-		};
-
-		Vue.$axios.post('/appellation', payload)
-			.then((response: AxiosResponse) => {
-				const appellation: any = response.data;
-				this.$store.commit('addAnnotatorNewAppellation', appellation);
-				this.$store.commit('setAnnotatorHighlightedText', null);
-				this.$store.commit('setAnnotatorSelectedConcept', null);
-				this.$store.commit('setAnnotatorCreatedAppellation', true);
-			})
-			.catch(() => this.createError = true)
-			.finally(() => this.creating = false);
-	}
+		this.$store.commit('setAnnotatorCreatedAppellation', true);
+		})
+		.catch(() => (this.createError = true))
+		.finally(() => (this.creating = false));
+  }
 }
 </script>
 
 <style scoped>
 .panel-icon {
-	flex: inherit !important;
+  flex: inherit !important;
 }
 .relation-btn-container {
-	display: flex;
+  display: flex;
 }
 .selected-concept {
-	width: 100%;
+  width: 100%;
 }
 </style>
