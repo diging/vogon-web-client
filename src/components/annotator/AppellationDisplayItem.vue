@@ -29,6 +29,7 @@
 				width: line.width + 'px',
 				'z-index': 2
 			}`
+			@click="onApellationClick()"
 		)
 
 		li(v-if="multipleLinesAreSelected()"
@@ -46,6 +47,7 @@
 				'appellation-selected': appellation.selected,
 				'appellation-focused': focused
 			}`
+			@click="onApellationClick()"
 		)
 </template>
 
@@ -100,6 +102,8 @@ export default class AppellationDisplayItem extends Vue {
 			(newValue, oldValue) => {
 				if (newValue && newValue.id === this.appellation.id) {
 					this.visible = false;
+				} else if (newValue === null) {
+					this.focused = false;
 				} else {
 					this.visible = true;
 				}
@@ -139,6 +143,7 @@ export default class AppellationDisplayItem extends Vue {
 			this.$store.commit('setCurrentFieldIndex', -1);
 			this.$store.commit('setCurrentFieldType', null);
 		} else {
+			this.$store.commit('setAnnotatorCurrentTab', 'tab-1');
 			const currentFocusedAppellation = this.$store.getters.getAnnotatorFocusedAppellation;
 			let focusedAppellation = this.appellation.id;
 			if (currentFocusedAppellation > 0 && currentFocusedAppellation === focusedAppellation) {

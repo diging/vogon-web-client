@@ -49,6 +49,7 @@
 <script lang="ts">
 import { AxiosResponse } from 'axios';
 import { Component, Vue } from 'vue-property-decorator';
+
 import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';

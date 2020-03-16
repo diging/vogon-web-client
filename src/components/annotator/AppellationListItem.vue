@@ -1,18 +1,16 @@
 <template lang="pug">
 	div(:class="`text-left pa-2 ${focused}`" ref="listItem")
 		v-row
-			v-col(:cols="9")
+			v-col(:cols="10" @click="focusAppellation" class="focus-icon")
 				div(class="subtitle-1") {{ appellation.interpretation.label }}
 				div(class="subtitle-2 appellation-subtitle") Created by <strong>{{ creator }}</strong> on {{ date }}
 				div(v-if="edit") 
 					| (You are currently editing this appellation ...)
 					v-alert(dense type="error" class="my-4" v-if="appellation.relationsFrom.length || appellation.relationsTo.length")
 						| This appellation is part of existing relation(s) !!
-			v-col(:cols="3" class="text-right")
+			v-col(:cols="2" class="text-right")
 				v-btn(v-if="!appellation.submitted" @click="editAppellation" small icon class="d-inline-block mr-1")
 					v-icon(left :color="edit ? `green` : `default`") mdi-pencil
-				v-btn(@click="focusAppellation" small icon class="d-inline-block mr-1")
-					v-icon(left) mdi-hand-right
 				v-btn(@click="toggleVisibility" small icon class="d-inline-block mr-1" :disabled="$store.getters.getAnnotatorHideAppellation")
 					v-icon(v-if="visible" left) mdi-eye
 					v-icon(v-else left) mdi-eye-off
