@@ -17,6 +17,7 @@
 </template>
 
 <script lang="ts">
+import axios from 'axios';
 import { Component, Vue } from 'vue-property-decorator';
 
 @Component({
@@ -27,11 +28,10 @@ export default class Footer extends Vue {
 	private version: string = '';
 
 	private async created(): Promise<void> {
-		fetch('https://api.github.com/repos/diging/vogon-web/releases/latest')
-			.then((res) => res.json())
-			.then((data) => {
-				this.version = data.tag_name;
-			});
+	axios.get('https://api.github.com/repos/diging/vogon-web/releases/latest')
+		.then((data) => {
+		this.version = data.data.tag_name;
+		});
 	}
 }
 </script>
