@@ -22,39 +22,40 @@ export default class GithubForm extends Vue {
   private error: boolean = false;
   private valid: boolean = false;
 
-	public mounted() {
-		if (this.$route.query.code) {
-			this.getAccessToken(this.$route.query.code);
-		}
+  public created() {
+	if (this.$route.query.code) {
+		this.getAccessToken(this.$route.query.code);
 	}
+  }
 
-	/**
-	 * get access code from github after getting auth code from github
-	 * @param {String} code - Github authorization code from querystring.
-	 */
-	public getAccessToken(code: string | Array<string | null>) {
-		Vue.$axios.get('github-token/', {
-			params: {
-				code,
-			},
+  /**
+   * get access code from github after getting auth code from github
+   * @param {String} code - Github authorization code from querystring.
+   */
+  public getAccessToken(code: string | Array<string | null>) {
+	Vue.$axios
+		.get('github-token/', {
+		params: {
+			code,
+		},
 		})
 		.then((result) => {
-			this.$router.push('home');
+		this.$router.push('home');
 		})
 		.catch((error) => {
-			// TODO: deal with errors
-			this.error = true;
+		// TODO: deal with errors
+		this.error = true;
 		});
-	}
+  }
 }
 </script>
 
 <style scoped>
 .project-item {
-	padding: 0;
-	margin: 10px 0;
+  padding: 0;
+  margin: 10px 0;
 }
 #title {
-	background: grey;
+  background: grey;
 }
 </style>
