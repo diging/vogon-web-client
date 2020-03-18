@@ -23,6 +23,10 @@ export default class AppellationDisplay extends Vue {
 	private appellations: any[] = [];
 
 	public async created() {
+		this.watchStore();
+	}
+
+	private watchStore() {
 		store.subscribe((mutation: any, state: any) => {
 			if (mutation.type === 'setTextContentStyle' && state.text_content_styles.positions) {
 				this.appellations = state.text_content_styles.positions.map((position: any, i: number) => {
@@ -47,6 +51,8 @@ export default class AppellationDisplay extends Vue {
 				});
 
 				this.$forceUpdate();
+			} else if (mutation.type === 'setAnnotatorHighlightedText' && mutation.payload === null) {
+				this.appellations.pop();
 			}
 		});
 	}

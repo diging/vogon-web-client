@@ -41,5 +41,10 @@ export interface RootState {
 		searchingConcept: boolean,
 		createdAppellation: boolean,
 		createNewConcept: boolean,
+		focusedAppellation: number,
+		hideAllAppellations: boolean,
+		hiddenAppellations: any,
+		editAppellationId: any,
+		updatedAppellationId: number,
 	};
 }

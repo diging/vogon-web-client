@@ -1,147 +1,109 @@
 <template lang="pug">
-	li(v-bind:class=`{
-				'list-group-item': true,
-				'appellation-list-item': true,
-				'appellation-selected': isSelected()
-			}`)
-		span.pull-right.text-muted.btn-group
-			a.btn.btn-xs(v-on:click="select")
-				span.glyphicon.glyphicon-hand-down
-			a.btn.btn-xs(v-on:click="toggle")
-				span(v-if="appellation.visible" class="glyphicon glyphicon glyphicon-eye-open")
-				span(v-else class="glyphicon glyphicon glyphicon-eye-close")
-		p {{ label() }}
-		div.text-warning
-			input(v-if="sidebar === 'submitAllAppellations'" type="checkbox" v-model="checked" aria-label="...")
-			p 
-				| Created by <strong>{{ getCreatorName(appellation.createdBy) }}</strong> on {{ getFormattedDate(appellation.created) }}
+	div(:class="`text-left pa-2 ${focused}`" ref="listItem")
+		v-row
+			v-col(:cols="10" @click="focusAppellation" class="focus-icon")
+				div(class="subtitle-1") {{ appellation.interpretation.label }}
+				div(class="subtitle-2 appellation-subtitle") Created by <strong>{{ creator }}</strong> on {{ date }}
+				div(v-if="edit") 
+					| (You are currently editing this appellation ...)
+					v-alert(dense type="error" class="my-4" v-if="appellation.relationsFrom.length || appellation.relationsTo.length")
+						| This appellation is part of existing relation(s) !!
+			v-col(:cols="2" class="text-right")
+				v-btn(v-if="!appellation.submitted" @click="editAppellation" small icon class="d-inline-block mr-1")
+					v-icon(left :color="edit ? `green` : `default`") mdi-pencil
+				v-btn(@click="toggleVisibility" small icon class="d-inline-block mr-1" :disabled="$store.getters.getAnnotatorHideAppellation")
+					v-icon(v-if="visible" left) mdi-eye
+					v-icon(v-else left) mdi-eye-off
 </template>
 
 <script lang="ts">
-import JwtDecode from 'jwt-decode';
-import moment from 'moment';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import VueScrollTo from 'vue-scrollto';
 
-import { TokenDto } from '@/interfaces/GlobalTypes';
+import { getCreatorName, getFormattedDate } from '@/utils/annotations';
 
 @Component({
 	name: 'AppellationListItem',
 })
 export default class AppellationListItem extends Vue {
 	@Prop() private appellation!: any;
-  	// FIXME: find and assign types for both of these
-  	@Prop() private sidebar!: any;
-  	@Prop() private index!: any;
+	private focused: string = '';
+	private visible: boolean = true;
+	private edit: boolean = false;
 
-	private checked: boolean = true;
-	private canUncheckAll: boolean = false;
-	private canCheckAll: boolean = false;
-
-	public mounted() {
-		this.watchUncheckStore();
-		this.watchCheckStore();
-		this.$root.$on('appellationClicked', (data: any) => {
-			if (data === this.appellation) {
-				this.checked = !this.checked;
-			}
-		});
+	get creator() {
+		return getCreatorName(this.appellation.createdBy);
 	}
 
-	@Watch('checked')
-	public checkedChanged() {
-		if (this.checked === false) {
-			this.$store.commit('removeAppellation', this.index);
-			this.$store.commit('setSelectFalse');
-		} else {
-			if (this.$store.getters.getValidator === 3) {
-				this.$store.commit('setValidator', 0);
-			}
-			this.$store.commit('addAppellation', this.appellation);
-			this.$store.commit('setDeselectFalse');
-		}
+	get date() {
+		return getFormattedDate(this.appellation.created);
 	}
 
-	private watchUncheckStore() {
+	public created() {
+		this.watchStore();
+	}
+
+	private watchStore() {
 		this.$store.watch(
-			(state) => {
-				return this.$store.getters.getDeselect;
-			},
-			(val) => {
-				if (val) {
-					this.uncheckAll();
-					this.canCheckAll = true;
+			(state, getters) => getters.getAnnotatorFocusedAppellation,
+			(newValue, oldValue) => {
+				if (newValue === this.appellation.id) {
+					this.focused = 'focused';
+					VueScrollTo.scrollTo(this.$refs[`listItem`] as Element, {
+						container: '#appellation-list',
+					});
+				} else {
+					this.focused = '';
+					this.edit = false;
 				}
 			},
 		);
 	}
 
-	private watchCheckStore() {
-		this.$store.watch(
-			(state) => {
-				return this.$store.getters.getSelect;
-			},
-			(val) => {
-				if (val) {
-					this.checkAll();
-				}
-			},
-		);
+	private focusAppellation() {
+		const currentFocusedAppellation = this.$store.getters.getAnnotatorFocusedAppellation;
+		let focusedAppellation = this.appellation.id;
+		if (currentFocusedAppellation > 0 && currentFocusedAppellation === focusedAppellation) {
+			focusedAppellation = 0;
+		}
+		this.$store.commit('setAnnotatorFocusedAppellation', focusedAppellation);
 	}
 
-	private uncheckAll() {
-		this.checked = false;
-	}
-
-	private checkAll() {
-		this.checked = true;
-	}
-
-	private hide() {
-		// TODO: Get rid of emit
-		this.$store.commit('hideappellation', this.appellation);
-	}
-
-	private show() {
-		// TODO: Get rid of emit
-		this.$store.commit('showappellation', this.appellation);
-	}
-
-	private toggle() {
-		if (this.appellation.visible) {
-			this.hide();
+	private toggleVisibility() {
+		if (this.visible) {
+			this.$store.commit('setAnnotatorHideAppellation', this.appellation.id);
 		} else {
-			this.show();
+			this.$store.commit('setAnnotatorShowAppellation', this.appellation.id);
 		}
+		this.visible = !this.visible;
 	}
 
-	private isSelected() {
-		return this.appellation.selected;
-	}
-
-	private select() {
-		// TODO: Get rid of emit
-		this.$store.commit('selectappellation', this.appellation);
-	}
-
-	private label() {
-		if (this.appellation.interpretation) {
-			return this.appellation.interpretation.label;
-		} else if (this.appellation.dateRepresentation) {
-			return this.appellation.dateRepresentation;
-		}
-	}
-
-	private getCreatorName(creator: any) {
-		const decoded = JwtDecode<TokenDto>(localStorage.getItem('token') || '');
-		if (creator.id === decoded.user_id) {
-			return 'you';
+	private editAppellation() {
+		if (!this.focused) {
+			this.edit = true;
+			this.$store.commit('setAnnotatorEditAppellationMode', this.appellation);
+			this.focusAppellation();
 		} else {
-			return creator.username;
+			if (!this.edit) {
+				this.edit = true;
+				this.$store.commit('setAnnotatorEditAppellationMode', this.appellation);
+			} else {
+				this.edit = false;
+				this.$store.commit('setAnnotatorEditAppellationMode', null);
+			}
 		}
-	}
-
-	private getFormattedDate(isodate: string) {
-		return moment(isodate).format('dddd LL [at] LT');
 	}
 }
 </script>
+
+<style scoped>
+.appellation-subtitle {
+	color: #8a6d3b;
+}
+.focus-icon {
+	cursor: pointer;
+}
+.focused {
+	background: rgba(255, 165, 0, 0.5);
+}
+</style>

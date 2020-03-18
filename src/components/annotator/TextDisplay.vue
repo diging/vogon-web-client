@@ -84,6 +84,11 @@ export default class TextDisplay extends Vue {
 				if (!isTemplateFieldSelectMode) {
 					this.$store.commit('setAnnotatorCurrentTab', 'tab-4');
 					this.$store.commit('setAnnotatorSearchingConcept', false);
+					const selectedAppellation = this.$store.getters.getAnnotatorEditAppellationMode;
+					if (selectedAppellation) {
+						const concept = selectedAppellation.interpretation;
+						this.$store.commit('setAnnotatorSelectedConcept', concept);
+					}
 				}
 
 				// If the user double-clicks (e.g. to select a whole word), the

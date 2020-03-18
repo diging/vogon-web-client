@@ -1,41 +1,56 @@
 <template lang="pug">
 	div(class="template-container")
-		h3 {{ template.name }}
-		p(class="grey--text text--darken-2") {{ template.description }}
-		RelationFieldItem(
-			v-for="(field, i) in template.fields"
-			v-bind:field="field"
-			v-bind:pos="i"
-			v-bind:appellations="appellations"
-		)
+		v-menu(bottom left offset-y)
+			template(v-slot:activator="{ on }")
+				v-text-field(hide-details v-model="query" filled rounded single-line label="Search for Relation Templates" dense  class="mb-3")
+					template(v-slot:append)
+						v-fade-transition(leave-absolute)
+							v-icon(v-on="on" @click="searchRelationTemplates()") search
+			v-list(two-line)
+				template(v-for="(template, i) in templates" )
+					v-list-item(:key="i" @click="showTemplate(template)")
+						v-list-item-content(class="template-list")
+							v-list-item-title(v-html="template.name")
+							v-list-item-subtitle(v-html="template.description")
+					v-divider(v-if="i + 1 < templates.length" )
 
-		v-row
-			v-col(:cols="6")
-				v-btn(
-					outlined
-					dense
-					@click="reset()"
-				)
-					v-icon(left) mdi-close
-					| Cancel
-			v-col(:cols="6")
-				v-btn(
-					dense
-					:disabled="disabled"
-					:loading="creatingRelation"
-					@click="createRelation()"
-					color="success"
-					class="float-right"
-				)
-					v-icon(left) mdi-link-plus
-					| Create relation
-		
-		v-alert(
-			type="error" 
-			dense 
-			v-if="error"
-			dismissible
-		) Error while creating relation!
+		template(v-if="template")
+			h3 {{ template.name }}
+			p(class="grey--text text--darken-2") {{ template.description }}
+			RelationFieldItem(
+				v-for="(field, i) in template.fields"
+				v-bind:field="field"
+				v-bind:pos="i"
+				v-bind:appellations="appellations"
+			)
+
+			v-row
+				v-col(:cols="6")
+					v-btn(
+						outlined
+						dense
+						@click="reset()"
+					)
+						v-icon(left) mdi-close
+						| Cancel
+				v-col(:cols="6")
+					v-btn(
+						dense
+						:disabled="disabled"
+						:loading="creatingRelation"
+						@click="createRelation()"
+						color="success"
+						class="float-right"
+					)
+						v-icon(left) mdi-link-plus
+						| Create relation
+			
+			v-alert(
+				type="error" 
+				dense 
+				v-if="error"
+				dismissible
+			) Error while creating relation!
 
 </template>
 
@@ -43,7 +58,7 @@
 import { AxiosResponse } from 'axios';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { RelationTemplate, RelationTemplateField } from '@/interfaces/RelationTypes';
+import { RelationSet, RelationTemplate, RelationTemplateField } from '@/interfaces/RelationTypes';
 import RelationFieldItem from './RelationField.vue';
 
 @Component({
@@ -54,6 +69,8 @@ import RelationFieldItem from './RelationField.vue';
 })
 export default class RelationTemplateRender extends Vue {
 	private listener: any = null;
+	private query: string = '';
+	private templates: RelationTemplate[] = [];
 
 	@Prop()
 	private template!: RelationTemplate;
@@ -76,36 +93,6 @@ export default class RelationTemplateRender extends Vue {
 				}
 			}
 		});
-	}
-
-	// Since we only want one field to listen for an appellation at a time,
-	//  we keep track of the first field to announce that they are
-	//  listening. All other RelationField instances are expected to respect
-	//  that listener, and not start listening until the current field is
-	//  done.
-	public fieldIsListening(listeningField: any) {
-		this.listener = listeningField;
-		// TODO: Change emit to store
-		if (listeningField.type === 'CO') {
-			this.$store.commit('fieldislisteningfortext');
-		}
-	}
-
-	public fieldIsDoneListening(listeningField: any) {
-		this.listener = null;
-		// TODO: Change emit to store
-		if (listeningField.type === 'CO') {
-			this.$store.commit('fieldisdonelisteningfortext');
-		}
-	}
-
-	public registerData(field: any, data: any) {
-		// TODO: Change emit to store
-		this.$store.commit('registerdata', field, data);
-	}
-
-	public unregisterData(field: any) {
-		this.$store.commit('unregisterdata', field);
 	}
 
 	private reset(): void {
@@ -158,6 +145,35 @@ export default class RelationTemplateRender extends Vue {
 			this.creatingRelation = false;
 			this.disabled = false;
 		});
+	}
+
+	private searchRelationTemplates(): void {
+		let all = true;
+		if (this.query !== '') {
+			all = false;
+		}
+		Vue.$axios.get('/relationtemplate', {
+			params: {
+				format: 'json',
+				all,
+				search: this.query,
+			},
+		}).then((result) => {
+			this.templates = result.data;
+		}).catch((error) => {
+			// TODO: deal with errors
+		});
+	}
+
+	private showTemplate(template: RelationTemplate): void {
+		this.$store.commit('setAnnotatorCurrentTab', 'tab-3');
+		this.$store.commit('setAnnotatorTemplate', template);
+
+		let fieldAnnotations: any[] = [];
+		if (template.fields) {
+			fieldAnnotations = template.fields.map((i) => null);
+		}
+		this.$store.commit('setSelectedFieldAnnotations', fieldAnnotations);
 	}
 }
 </script>
