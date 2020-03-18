@@ -19,11 +19,22 @@
 								v-btn(color="primary" @click="addText")
 									v-icon(left) mdi-plus
 									| Add to project
+					v-alert(
+						type="warning"
+						dense
+						v-if="text.state !== 'OK'"
+					) The item is still pending with Giles. Wait until then for starting annotations
 				p(class="body-1")
 					| The following content objects are associated with this resource. 
 					| Select a content object to begin annotating that object in VogonWeb. 
-				TextSerialContent(v-bind:contents="text.aggregate_content")
-				TextAdditionalContent(v-bind:contents="text.content")
+				TextSerialContent(
+					v-bind:contents="text.aggregate_content"
+					v-bind:ready="text.state === 'OK'"
+				)
+				TextAdditionalContent(
+					v-bind:contents="text.content"
+					v-bind:ready="text.state === 'OK'"
+				)
 				v-card(class="card-annotations mt-4")
 					v-row(class="annotation-title")
 						v-col(md="6")

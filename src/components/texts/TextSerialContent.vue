@@ -13,6 +13,7 @@
 						div
 							template(v-for="(resource, i) in content.resources")
 								v-btn(
+									:disabled="!ready"
 									class="ma-2" color="primary" fab :key="resource.id" x-small elevation=0 
 									:href="`/repository/${$route.params.repoId}/text/${$route.params.textId}/content/${resource.id}${queryParam}?part_of=${$route.params.textId}`"
 								) {{ i+1 }}
@@ -31,6 +32,7 @@ import { TextAggregatedContent } from '@/interfaces/RepositoryTypes';
 })
 export default class TextSerialContent extends Vue {
 	@Prop() private readonly contents!: TextAggregatedContent[];
+	@Prop() private readonly ready!: boolean;
 	private queryParam = '';
 
 	public created() {
