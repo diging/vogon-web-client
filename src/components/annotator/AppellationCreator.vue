@@ -36,11 +36,13 @@
 									| &nbsp; ({{ $store.getters.getAnnotatorSelectedConcept.authority.name }})
 							v-list-item-subtitle
 								| {{ $store.getters.getAnnotatorSelectedConcept.description }}
+					v-btn(small class="my-2" @click="$store.commit('setAnnotatorSelectedConcept', null)") Choose new concept
 
 				div(class="relation-btn-container")
-					v-btn(color="success" class="mt-3 ml-auto" @click="create" :disabled="creating" :loading="creating")
+					v-btn(color="success" class="mt-3 ml-auto" @click="createOrUpdate" :disabled="creating" :loading="creating")
 						v-icon(left) mdi-marker
-						| Create appellation
+						template(v-if="$store.getters.getAnnotatorEditAppellationMode") Update appellation
+						template(v-else) Create appellation
 
 				v-alert(v-if="createError" type="error" dense dismissible class="my-4")
 					| Error while creating appellation!
@@ -66,11 +68,9 @@ import { AxiosResponse } from 'axios';
 import _ from 'lodash';
 import moment from 'moment';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-
 import ConceptCreator from './ConceptCreator.vue';
 import ConceptPicker from './ConceptPicker.vue';
 import ConceptSearch from './ConceptSearch.vue';
-
 @Component({
 	name: 'AppellationCreator',
 	components: {
@@ -82,23 +82,18 @@ import ConceptSearch from './ConceptSearch.vue';
 export default class AppellationCreator extends Vue {
 	@Prop() private text!: any;
 	@Prop() private appellations!: any;
-
 	private conceptsFinal: any[] = [];
-
 	private createNewConcept: boolean = false;
 	private creating: boolean = false;
 	private createError: boolean = false;
-
 	public created() {
 		this.merge(this.appellations);
 		this.watchStore();
 	}
-
 	@Watch('createNewConcept')
 	public onCreateNewConceptChange(val: boolean) {
 		this.$store.commit('setAnnotatorCreateNewConcept', val);
 	}
-
 	private watchStore() {
 		this.$store.watch(
 			(state, getters) => getters.getAnnotatorSearchingConcept,
@@ -111,7 +106,6 @@ export default class AppellationCreator extends Vue {
 			},
 		);
 	}
-
 	get concepts() {
 		return this.conceptsFinal.map((item) => ({
 			...item.interpretation,
@@ -120,21 +114,17 @@ export default class AppellationCreator extends Vue {
 			},
 		}));
 	}
-
 	set concepts(newValue) {
 		this.conceptsFinal = newValue;
 	}
-
 	private merge(appellations: any) {
 		this.conceptsFinal = [];
-
 		// Sort by date
 		const appellationsSorted: any[] = _.sortBy(
 			this.appellations,
 			(o) => -moment(o.created).unix(),
 		);
 		const appellationMap = new Map();
-
 		// set map items from appellations array
 		appellationsSorted.forEach((item: any) => {
 			if (appellationMap.has(item.interpretation.uri)) {
@@ -144,10 +134,8 @@ export default class AppellationCreator extends Vue {
 			}
 		});
 		const appellationMapEntires = appellationMap.entries();
-
 		// add non-duplicate objects to `concepts` sorted by most recent
 		this.addConcepts(appellationMapEntires);
-
 		// sort appellationMap by length
 		const sortedMap = new Map(
 			[...appellationMap.entries()].sort(
@@ -155,11 +143,9 @@ export default class AppellationCreator extends Vue {
 			),
 		);
 		const sortedMapItems = sortedMap.entries();
-
 		// add non-duplicate objects to `concepts` sorted by most occuring
 		this.addConcepts(sortedMapItems);
 	}
-
 	private addConcepts(appellationMapEntires: any) {
 		let count = 0;
 		while (count <= 3) {
@@ -173,13 +159,11 @@ export default class AppellationCreator extends Vue {
 			}
 		}
 	}
-
 	private cancel() {
 		this.$store.commit('setAnnotatorHighlightedText', null);
 		this.$store.commit('setAnnotatorSelectedConcept', null);
 	}
-
-	private create() {
+	private createOrUpdate() {
 		this.creating = true;
 		this.createError = false;
 		const highlighted = this.$store.getters.getAnnotatorHighlightedText;
@@ -197,7 +181,13 @@ export default class AppellationCreator extends Vue {
 			interpretation: this.$store.getters.getAnnotatorSelectedConcept.uri
 				|| this.$store.getters.getAnnotatorSelectedConcept.interpretation.uri,
 		};
-
+		if (this.$store.getters.getAnnotatorEditAppellationMode) {
+			this.update(payload, this.$store.getters.getAnnotatorEditAppellationMode.id);
+		} else {
+			this.create(payload);
+		}
+	}
+	private create(payload: any) {
 		Vue.$axios.post('/appellation', payload)
 			.then((response: AxiosResponse) => {
 				const appellation: any = response.data;
@@ -205,6 +195,18 @@ export default class AppellationCreator extends Vue {
 				this.$store.commit('setAnnotatorHighlightedText', null);
 				this.$store.commit('setAnnotatorSelectedConcept', null);
 				this.$store.commit('setAnnotatorCreatedAppellation', true);
+			})
+			.catch(() => this.createError = true)
+			.finally(() => this.creating = false);
+	}
+	private update(payload: any, appellationId: number) {
+		Vue.$axios.patch(`/appellation/${appellationId}`, payload)
+			.then((response: AxiosResponse) => {
+				this.$store.commit('setAnnotatorEditAppellationMode', null);
+				this.$store.commit('setAnnotatorSelectedConcept', null);
+				this.$store.commit('setAnnotatorHighlightedText', null);
+				this.$store.commit('setAnnotatorCreatedAppellation', true);
+				this.$store.commit('setAnnotatorUpdatedAppellation', appellationId);
 			})
 			.catch(() => this.createError = true)
 			.finally(() => this.creating = false);

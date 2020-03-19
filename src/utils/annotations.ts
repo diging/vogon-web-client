@@ -1,6 +1,8 @@
 // Commented out due to most of the functions not currently working.
+import JwtDecode from 'jwt-decode';
+import moment from 'moment';
 
-// import moment from 'moment';
+import { TokenDto } from '@/interfaces/GlobalTypes';
 
 // if (typeof(String.prototype.trim) === 'undefined') {
 // 	String.prototype.trim = function() {
@@ -229,20 +231,18 @@ export const clearMouseTextSelection = (): void => {
 // 	return element.getClientRects()[0].top + window.scrollY;
 // };
 
-// export const getCreatorName = (
-// 	creator: { id: number, username: string },
-// 	userId: number,
-// ): string => {
-// 	if (creator.id === userId) {
-// 		return 'you';
-// 	} else {
-// 		return creator.username;
-// 	}
-// };
+export const getCreatorName = (creator: { id: number, username: string }) => {
+	const decoded = JwtDecode<TokenDto>(localStorage.getItem('token') || '');
+	if (creator.id === decoded.user_id) {
+		return 'you';
+	} else {
+		return creator.username;
+	}
+};
 
-// /**
-//  * Formats ISODate string to eg: `4 November, 2019 at 15:03`
-//  */
-// export const getFormattedDate = (isodate: string): string => {
-// 	return moment(isodate).format('D MMMM, YYYY \\at HH:mm');
-// };
+/**
+ * Formats ISODate string
+ */
+export const getFormattedDate = (isodate: string): string => {
+	return moment(isodate).format('lll');
+};

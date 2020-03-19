@@ -2,19 +2,16 @@
 	v-card
 		v-tabs(v-model="tab" )
 			v-tab(href="#tab-1") Annotations
-			v-tab(href="#tab-2") Date Annotations
-			v-tab(href="#tab-3") Relations
+			v-tab(href="#tab-2") Relations
+			v-tab(href="#tab-3") Template
 			v-tab(href="#tab-4") Search
 		v-tabs-items(v-model="tab")
 			v-tab-item(value="tab-1")
 				AppellationList(:appellations="appellations")
 			v-tab-item(value="tab-2")
-				h1 Tab 2
+				RelationList(:relations="relationsets")
 			v-tab-item(value="tab-3")
-				template(v-if="template")
-					RelationTemplateRender(v-bind:template="template" v-bind:appellations="appellations")
-				template(v-else)
-					h5(class="caption text-center py-5") Template currently not selected!
+				RelationTemplateRender(v-bind:template="template" v-bind:appellations="appellations")
 			v-tab-item(value="tab-4")
 				AppellationCreator(
 					:appellations="appellations"
@@ -34,6 +31,7 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import AppellationCreator from '@/components/annotator/AppellationCreator.vue';
 import AppellationList from '@/components/annotator/AppellationList.vue';
+import RelationList from '@/components/annotator/RelationList.vue';
 import RelationTemplateRender from '@/components/annotator/RelationTemplate.vue';
 import { RelationTemplate } from '@/interfaces/RelationTypes';
 
@@ -42,14 +40,14 @@ import { RelationTemplate } from '@/interfaces/RelationTypes';
 	components: {
 		AppellationCreator,
 		AppellationList,
+		RelationList,
 		RelationTemplateRender,
 	},
 })
 export default class ListsSideDrawer extends Vue {
-	@Prop()
-	private relations!: object[];
-	@Prop()
-	private appellations!: object[];
+	@Prop() private relations!: object[];
+	@Prop() private appellations!: object[];
+	@Prop() private relationsets!: object[];
 
 	private tab: string = 'tab-4';
 	private show: boolean = false;

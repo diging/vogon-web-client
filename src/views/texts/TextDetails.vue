@@ -71,7 +71,6 @@ import TextAdditionalContent from '@/components/texts/TextAdditionalContent.vue'
 import TextSerialContent from '@/components/texts/TextSerialContent.vue';
 import { RelationSet } from '@/interfaces/RelationTypes';
 import { TextResource } from '@/interfaces/RepositoryTypes';
-
 @Component({
 	name: 'TextDetails',
 	components: {
@@ -89,23 +88,20 @@ export default class TextDetails extends Vue {
 	private project: string = '';
 	private text: TextResource = {id: 1, title: ''};
 	private relations: RelationSet[] = [];
-	private masterId: number;
-	private submitted: boolean = true;
+	private masterId: number | null = null;
+  private submitted: boolean = true;
 
 	private snackbarText: string = '';
 	private snackbar: boolean = false;
-
 	public async mounted(): Promise<void> {
 		this.getTextDetails();
 	}
-
 	private async getTextDetails(): Promise<void> {
 		let queryParam = '';
 		const projectId = this.$route.query.project_id;
 		if (projectId) {
 			queryParam = `?project_id=${projectId}`;
 		}
-
 		Vue.$axios.get(`/repository/${this.$route.params.repoId}/texts/${this.$route.params.textId}${queryParam}`)
 			.then((response: AxiosResponse) => {
 				this.text = response.data.result as TextResource;
@@ -121,7 +117,6 @@ export default class TextDetails extends Vue {
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
 	}
-
 	private async addText(): Promise<void> {
 		Vue.$axios.post(`/project/${this.$route.query.project_id}/add_text`,
 				{ text_id: this.text.id, repository_id: this.$route.params.repoId },
@@ -134,7 +129,6 @@ export default class TextDetails extends Vue {
 				this.snackbarText = 'Error while adding text to the project';
 			});
 	}
-
 	private async removeText(): Promise<void> {
 		Vue.$axios.delete(`/project/${this.$route.query.project_id}/delete_text`, {
 				data: { text_id: this.masterId },
