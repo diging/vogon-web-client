@@ -39,7 +39,7 @@
 
 						v-col(:span="6" :offset="1")
 							v-card
-								div.item.text
+								div.item.text(class='open-source')
 									h3 Open-source development
 									p
 										|VogonWeb is open source software, released under the #[a(href="http://www.gnu.org/licenses/gpl-3.0.en.html") GNU General Public License v3].
@@ -100,5 +100,8 @@ li {
 }
 a {
 	color: #42b983;
+}
+.open-source{
+  padding: 1px  20px 15px 20px;
 }
 </style>
