@@ -1,5 +1,5 @@
 <template lang="pug">
-	v-card
+	v-card(v-on:mouseup="handleMouseUp")
 		v-tabs(v-model="tab" )
 			v-tab(href="#tab-1") Annotations
 			v-tab(href="#tab-2") Date Annotations
@@ -96,7 +96,15 @@ export default class ListsSideDrawer extends Vue {
 		if (val !== oldVal) {
 			this.$store.commit('setRelationCreated', val);
 		}
-	}
+  }
+
+  private handleMouseUp(event: Event) {
+	setTimeout(() => {
+		if (this.tab !== this.$store.getters.getAnnotatorCurrentTab) {
+		this.$store.commit('setAnnotatorCurrentTab', this.tab);
+		}
+	}, 100);
+  }
 }
 </script>
 
