@@ -57,6 +57,8 @@
 									v-icon(left) mdi-plus
 									span Add text
 
+					v-btn(outlined @click="exportAffiliations") Export affiliation relations
+
 					v-dialog(v-if="isOwner" v-model="changeOwnerDialog" scrollable max-width="500px")
 						template(v-slot:activator="{ on }")
 							v-btn(small v-on="on" class="mt-4" color="error") 
@@ -144,6 +146,8 @@ export default class ProjectDetails extends Vue {
 	private project: Project = { name: '', participants: [], texts: []};
 	private loading: boolean = true;
 	private error: boolean = false;
+	private exporting: boolean = false;
+	private exportError: boolean = false;
 	private textHeaders = [{text: 'Title', value: 'title'}, {text: 'Added', value: 'added'}];
 	private navItems = [
 		{ text: 'Projects', to: '/project', link: true, exact: true },
@@ -230,6 +234,23 @@ export default class ProjectDetails extends Vue {
 				this.settingAsDefault = false;
 				this.setAsDefaultDialog = false;
 			});
+	}
+
+	private exportAffiliations() {
+		this.exporting = true;
+		Vue.$axios.get(`/project/${this.$route.params.id}/export_affiliations`,
+			{ responseType: 'blob' },
+		)
+			.then((response) => {
+				const url = window.URL.createObjectURL(new Blob([response.data]));
+				const link = document.createElement('a');
+				link.href = url;
+				link.setAttribute('download', 'affiliations_export.csv');
+				document.body.appendChild(link);
+				link.click();
+			})
+			.catch(() => this.exportError = true)
+			.finally(() => this.exporting = false);
 	}
 }
 </script>
