@@ -50,7 +50,7 @@ import { TextDocument } from '@/interfaces/RepositoryTypes';
 })
 export default class TextView extends Vue {
 	private content: string = '';
-	private project: Project = { name: '' };
+	private project: Project = { name: '', participants: [] };
 	private text?: TextDocument;
 	private conceptTypes: ConceptType[] = [];
 	private appellations: Appellation[] = [];
