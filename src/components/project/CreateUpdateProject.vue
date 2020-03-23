@@ -55,6 +55,7 @@ export default class CreateUpdateProject extends Vue {
 			id: 1,
 			username: 'user',
 		}, // ToDo: Change with token
+		participants: [],
 	};
 	private updating: boolean = false;
 	private valid: boolean = false;
