@@ -4,6 +4,7 @@ import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
 import moment from 'moment';
 import Vue from 'vue';
 import './plugins/axios';
+import './plugins/utils';
 import './plugins/verify';
 
 import 'material-design-icons-iconfont/dist/material-design-icons.css';

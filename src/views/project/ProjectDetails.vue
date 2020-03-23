@@ -15,7 +15,7 @@
 							| &nbsp;on {{moment(project.created).format('lll')}}
 						div(class="body-2 mt-2") {{ project.num_texts }} text(s), {{ project.num_relations }} relation(s)
 					v-col(md="6")
-						div(class="float-right")
+						div(class="float-right" v-if="editable")
 							CreateUpdateProject(update :project="Object.assign({}, project)" v-bind:getProjectDetails="getProjectDetails")
 							v-btn(tile depressed color="teal" class="ma-2" dark :to="`/repository?project_id=${this.$route.params.id}`")
 								v-icon(left) mdi-plus
@@ -51,13 +51,22 @@ import { Project } from '@/interfaces/ProjectTypes';
 	},
 })
 export default class ProjectDetails extends Vue {
-	private project: Project = { name: ''};
+	private project: Project = { name: '', participants: []};
 	private loading: boolean = true;
 	private error: boolean = false;
 	private textHeaders = [{text: 'Title', value: 'title'}, {text: 'Added', value: 'added'}];
 
 	public async mounted(): Promise<void> {
 		this.getProjectDetails();
+	}
+
+	get editable(): boolean {
+		const userId = this.$utils.getUserId();
+		if (this.project && this.project.ownedBy) {
+			return this.project.ownedBy.id === userId ||
+				this.project.participants.indexOf(userId) >= 0;
+		}
+		return false;
 	}
 
 	private getProjectDetails() {
