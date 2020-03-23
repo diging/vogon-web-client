@@ -14,6 +14,7 @@ declare global {
   interface Window {
     axios: AxiosInstance;
     verify: VerifyToken;
+    utils: any;
   }
 }
 
@@ -21,9 +22,11 @@ declare module 'vue/types/vue' {
   interface Vue {
     $axios: AxiosInstance;
     $verify: VerifyToken;
+    $utils: any;
   }
   interface VueConstructor {
     $axios: AxiosInstance;
     $verify: VerifyToken;
+    $utils: any;
   }
 }

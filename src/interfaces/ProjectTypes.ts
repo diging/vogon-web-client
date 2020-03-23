@@ -19,6 +19,7 @@ export interface Project {
 	texts?: Text[] | number[];
 	num_texts?: number;
 	num_relations?: number;
+	participants: number[];
 }
 
 export interface ProjectFilterParams extends PaginatedFilter {
