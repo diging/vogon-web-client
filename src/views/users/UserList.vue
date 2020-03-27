@@ -80,10 +80,6 @@ export default class UserList extends Vue {
 		{text: 'Contributions', value: 'contributions'},
 	];
 
-	public mounted(): void {
-		this.getUsers();
-	}
-
 	public async getUsers(page: number = 1): Promise<void> {
 		this.loading = true;
 		const params = {
