@@ -14,12 +14,24 @@
 							strong "{{ project.ownedBy.username }}" 
 							| &nbsp;on {{moment(project.created).format('lll')}}
 						div(class="body-2 mt-2") {{ project.num_texts }} text(s), {{ project.num_relations }} relation(s)
+
 					v-col(md="6")
-						div(class="float-right" v-if="editable")
-							CreateUpdateProject(update :project="Object.assign({}, project)" v-bind:getProjectDetails="getProjectDetails")
+						div(class="float-right" v-if="isEditable")
+							CreateUpdateProject(
+								v-if="isOwner"
+								update
+								:project="Object.assign({}, project)" 
+								v-bind:getProjectDetails="getProjectDetails"
+							)
 							v-btn(tile depressed color="teal" class="ma-2" dark v-bind:href="`/repository?project_id=${this.$route.params.id}`")
 								v-icon(left) mdi-plus
 								span Add text
+				
+				ProjectCollaborators(
+					:project="project"
+					:isOwner="isOwner"
+					:onAdd="getProjectDetails"
+				)
 			br
 			v-card(class="card-project-text")
 				v-card-title Texts
@@ -39,12 +51,14 @@ import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
 import CreateUpdateProject from '@/components/project/CreateUpdateProject.vue';
+import ProjectCollaborators from '@/components/project/ProjectCollaborators.vue';
 import { Project } from '@/interfaces/ProjectTypes';
 
 @Component({
 	name: 'ProjectDetails',
 	components: {
 		CreateUpdateProject,
+		ProjectCollaborators,
 		EmptyView,
 		ErrorIndicator,
 		Loading,
@@ -60,17 +74,16 @@ export default class ProjectDetails extends Vue {
 		this.getProjectDetails();
 	}
 
-	get editable(): boolean {
-		const userId = this.$utils.getUserId();
-		if (this.project && this.project.ownedBy) {
-			return this.project.ownedBy.id === userId ||
-				this.project.participants.indexOf(userId) >= 0;
-		}
-		return false;
+	get isEditable(): boolean {
+		return Vue.$utils.permissions.isProjectCollaborator(this.project);
+	}
+
+	get isOwner(): boolean {
+		return Vue.$utils.permissions.isProjectOwner(this.project);
 	}
 
 	private getProjectDetails() {
-		Vue.$axios.get(`/project/${this.$route.params.id}`)
+		return Vue.$axios.get(`/project/${this.$route.params.id}`)
 			.then((response: AxiosResponse) => {
 				this.project = response.data as Project;
 			})
