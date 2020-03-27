@@ -11,19 +11,25 @@
 							h3(class="headline") Resource "{{ text.title }}"
 							v-list-item-subtitle(class="text--primary" v-text="text.uri")
 						v-col(cols="6")
-							div(v-if="project" class="float-right")
+							div(v-if="partOfProject && isEditable" class="float-right")
 								v-btn(color="primary" @click="removeText")
 									v-icon(left) mdi-minus
 									| Remove from project
-							div(v-else-if="$route.query.project_id" class="float-right")
+							div(v-else-if="$route.query.project_id && isEditable" class="float-right")
 								v-btn(color="primary" @click="addText")
 									v-icon(left) mdi-plus
 									| Add to project
 				p(class="body-1")
 					| The following content objects are associated with this resource. 
 					| Select a content object to begin annotating that object in VogonWeb. 
-				TextSerialContent(v-bind:contents="text.aggregate_content")
-				TextAdditionalContent(v-bind:contents="text.content")
+				TextSerialContent(
+					v-bind:contents="text.aggregate_content" 
+					v-bind:editable="isEditable"
+				)
+				TextAdditionalContent(
+					v-bind:contents="text.content"
+					v-bind:editable="isEditable"
+				)
 				v-card(class="card-annotations mt-4")
 					v-row(class="annotation-title")
 						v-col(md="6")
@@ -56,88 +62,108 @@ import Loading from '@/components/global/Loading.vue';
 import AnnotationList from '@/components/relations/AnnotationList.vue';
 import TextAdditionalContent from '@/components/texts/TextAdditionalContent.vue';
 import TextSerialContent from '@/components/texts/TextSerialContent.vue';
+import { Project } from '@/interfaces/ProjectTypes';
 import { RelationSet } from '@/interfaces/RelationTypes';
 import { TextResource } from '@/interfaces/RepositoryTypes';
 @Component({
-	name: 'TextDetails',
-	components: {
-		Loading,
-		EmptyView,
-		ErrorIndicator,
-		TextSerialContent,
-		TextAdditionalContent,
-		AnnotationList,
-	},
+  name: 'TextDetails',
+  components: {
+	Loading,
+	EmptyView,
+	ErrorIndicator,
+	TextSerialContent,
+	TextAdditionalContent,
+	AnnotationList,
+  },
 })
 export default class TextDetails extends Vue {
-	private loading: boolean = true;
-	private error: boolean = false;
-	private project: string = '';
-	private text: TextResource = {id: 1, title: ''};
-	private relations: RelationSet[] = [];
-	private masterId: number | null = null;
-	private snackbarText: string = '';
-	private snackbar: boolean = false;
-	public async mounted(): Promise<void> {
-		this.getTextDetails();
+  private loading: boolean = true;
+  private error: boolean = false;
+  private project: Project | null = null;
+  private partOfProject: Project | null = null;
+  private text: TextResource = { id: 1, title: '' };
+  private relations: RelationSet[] = [];
+  private masterId: number | null = null;
+  private snackbarText: string = '';
+  private snackbar: boolean = false;
+
+  get isEditable(): boolean {
+	if (this.project) {
+		return Vue.$utils.permissions.isProjectCollaborator(this.project);
 	}
-	private async getTextDetails(): Promise<void> {
-		let queryParam = '';
-		const projectId = this.$route.query.project_id;
-		if (projectId) {
-			queryParam = `?project_id=${projectId}`;
+	return false;
+  }
+
+  public async mounted(): Promise<void> {
+	this.getTextDetails();
+  }
+  private async getTextDetails(): Promise<void> {
+	let queryParam = '';
+	const projectId = this.$route.query.project_id;
+	if (projectId) {
+		queryParam = `?project_id=${projectId}`;
+	}
+	Vue.$axios
+		.get(
+		`/repository/${this.$route.params.repoId}/texts/${this.$route.params.textId}${queryParam}`,
+		)
+		.then((response: AxiosResponse) => {
+		this.text = response.data.result as TextResource;
+		if (response.data.part_of_project) {
+			this.partOfProject = response.data.part_of_project;
 		}
-		Vue.$axios.get(`/repository/${this.$route.params.repoId}/texts/${this.$route.params.textId}${queryParam}`)
-			.then((response: AxiosResponse) => {
-				this.text = response.data.result as TextResource;
-				this.project = response.data.part_of_project && response.data.part_of_project.name;
-				this.relations = response.data.relations;
-				this.masterId = response.data.master_text.id;
-			})
-			.catch(() => this.error = true)
-			.finally(() => this.loading = false);
-	}
-	private async addText(): Promise<void> {
-		Vue.$axios.post(`/project/${this.$route.query.project_id}/add_text`,
-				{ text_id: this.text.id, repository_id: this.$route.params.repoId },
-			)
-			.then((response: AxiosResponse) => {
-				this.getTextDetails();
-			})
-			.catch(() => {
-				this.snackbar = true;
-				this.snackbarText = 'Error while adding text to the project';
-			});
-	}
-	private async removeText(): Promise<void> {
-		Vue.$axios.delete(`/project/${this.$route.query.project_id}/delete_text`, {
-				data: { text_id: this.masterId },
-			})
-			.then((response: AxiosResponse) => {
-				this.getTextDetails();
-			})
-			.catch((error) => {
-				this.snackbar = true;
-				if (error.response.status === 412) {
-					this.snackbarText = 'Text cannot be removed after annotations have been submitted to Quadriga';
-				} else {
-					this.snackbarText = 'Error while removing text from the project';
-				}
-			});
-	}
+		this.project = response.data.project_details;
+		this.relations = response.data.relations;
+		this.masterId = response.data.master_text.id;
+		})
+		.catch(() => (this.error = true))
+		.finally(() => (this.loading = false));
+  }
+  private async addText(): Promise<void> {
+	Vue.$axios
+		.post(`/project/${this.$route.query.project_id}/add_text`, {
+		text_id: this.text.id,
+		repository_id: this.$route.params.repoId,
+		})
+		.then((response: AxiosResponse) => {
+		this.getTextDetails();
+		})
+		.catch(() => {
+		this.snackbar = true;
+		this.snackbarText = 'Error while adding text to the project';
+		});
+  }
+  private async removeText(): Promise<void> {
+	Vue.$axios
+		.delete(`/project/${this.$route.query.project_id}/delete_text`, {
+		data: { text_id: this.masterId },
+		})
+		.then((response: AxiosResponse) => {
+		this.getTextDetails();
+		})
+		.catch((error) => {
+		this.snackbar = true;
+		if (error.response.status === 412) {
+			this.snackbarText =
+			'Text cannot be removed after annotations have been submitted to Quadriga';
+		} else {
+			this.snackbarText = 'Error while removing text from the project';
+		}
+		});
+  }
 }
 </script>
 
 <style scoped>
 .text-details {
-	padding: 20px;
-	margin-bottom: 20px;
+  padding: 20px;
+  margin-bottom: 20px;
 }
 .card-annotations {
-	padding: 20px 0;
-	text-align: left;
+  padding: 20px 0;
+  text-align: left;
 }
 .annotation-title {
-	padding: 0 16px 8px;
+  padding: 0 16px 8px;
 }
 </style>
