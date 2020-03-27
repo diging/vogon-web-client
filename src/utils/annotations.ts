@@ -246,3 +246,15 @@ export const getCreatorName = (creator: { id: number, username: string }) => {
 export const getFormattedDate = (isodate: string): string => {
 	return moment(isodate).format('lll');
 };
+
+export default {
+	truncateURI,
+	getOffsetTop,
+	getTextPosition,
+	getPointPosition,
+	getStyle,
+	getAnnotationRectPositions,
+	clearMouseTextSelection,
+	getCreatorName,
+	getFormattedDate,
+};
