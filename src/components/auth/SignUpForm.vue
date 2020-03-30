@@ -26,7 +26,7 @@
 							@click:append="show2 = !show2"
 						)
 						v-text-field(class="mt-4" label="Full Name" required outlined v-model="fullName" :rules="[() => !!fullName || 'Full Name Required.']")
-						v-text-field(class="mt-4" label="Email" required outlined v-model="email" :rules="[() => !!email || 'Email Required.']")
+						v-text-field(class="mt-4" label="Email" required outlined v-model="email" :rules="[() => !!email || 'Email Required.',v => /.+@.+\..+/.test(v) || 'E-mail must be valid']")
 						v-text-field(class="mt-4" label="Affiliation" required outlined v-model="affiliation" :rules="[() => !!affiliation|| 'Affiliation Required.']")
 
 					v-alert(v-if="error" v-model="error" type="error" dense dismissible class="mx-4")
