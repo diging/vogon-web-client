@@ -89,7 +89,7 @@ export default class TextDetails extends Vue {
 	private text: TextResource = {id: 1, title: ''};
 	private relations: RelationSet[] = [];
 	private masterId: number | null = null;
-  private submitted: boolean = true;
+	private submitted: boolean = true;
 
 	private snackbarText: string = '';
 	private snackbar: boolean = false;
@@ -130,7 +130,7 @@ export default class TextDetails extends Vue {
 			});
 	}
 	private async removeText(): Promise<void> {
-		Vue.$axios.delete(`/project/${this.$route.query.project_id}/delete_text`, {
+		Vue.$axios.delete(`/project/${this.$route.query.project_id}`, {
 				data: { text_id: this.masterId },
 			})
 			.then(() => {
