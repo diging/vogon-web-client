@@ -5,11 +5,11 @@
 				h4 VogonWeb #[strong Beta]&nbsp;
 				
 				p
-					| #[a(href="https://github.com/diging/vogon-web/releases/tag" class="version") {{version}}]
-				a(href="https://github.com/diging/vogon-web" class="btn btn-xs") 
-					i(class="fab fa-github" )
+					| #[a(href="https://github.com/diging/vogon-web/releases/tag" class="version color") {{version}}]&nbsp;
+				a(href="https://github.com/diging/vogon-web" class="btn btn-xs")
+					i(class="fab fa-github color" )
 				a(href="https://diging.atlassian.net/projects/VGNWB/summary" class="btn btn-xs")
-					i(class="fab fa-jira")
+					i(class="fab fa-jira color spacing")
 				v-spacer
 				a(href="http://devo-evo.lab.asu.edu" target="_blank")
 					img(src="../../assets/images/logos/devoevolab.png")
@@ -49,9 +49,16 @@ img {
 	float: right;
 	padding-top: 2%;
 }
-.version{
-	color: white;
+.version {
 	position: relative;
-	top: 1.2vh;
+	top: 0.22cm;
+  text-decoration: none;
+}
+.color {
+  color: white;
+}
+.spacing{
+  position: relative;
+  left: 0.2cm;
 }
 </style>
