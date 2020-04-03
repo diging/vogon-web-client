@@ -3,9 +3,9 @@
 		v-card(class="flex" flat tile)
 			v-card-title(class="teal")
 				h4 VogonWeb #[strong Beta]&nbsp;
-				small {{version}}
 				
-				a.links(href="https://github.com/diging/vogon-web/releases/tag") Version 0.4
+				p
+					| #[a(href="https://github.com/diging/vogon-web/releases/tag" class="version") {{version}}]
 				a(href="https://github.com/diging/vogon-web" class="btn btn-xs") 
 					i(class="fab fa-github" )
 				a(href="https://diging.atlassian.net/projects/VGNWB/summary" class="btn btn-xs")
@@ -48,5 +48,10 @@ export default class Footer extends Vue {
 img {
 	float: right;
 	padding-top: 2%;
+}
+.version{
+	color: white;
+	position: relative;
+	top: 1.2vh;
 }
 </style>
