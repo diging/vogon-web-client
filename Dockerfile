@@ -9,7 +9,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get autoremove && apt-get autocl
 # most of these are for lxml which needs a bunch of dependancies installed
 RUN apt-get install -y vim
 
-RUN git clone -b docker https://github.com/diging/vogon-web-client.git
+RUN git clone -b master https://github.com/diging/vogon-web-client.git
 RUN mkdir /dist
 WORKDIR /usr/src/app/vogon-web-client
 RUN npm install
