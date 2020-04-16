@@ -1,22 +1,25 @@
 import LoginForm from '@/components/auth/LoginForm.vue';
 import { createLocalVue, mount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuetify from 'vuetify';
 // jest.mock('axios')
 
-const localVue = createLocalVue();
 
 describe('LoginForm.vue', () => {
-  let vuetify: any;
+  let wrapper: any;
+  Vue.use(Vuetify);
 
   beforeEach(() => {
-	vuetify = new Vuetify();
+	const localVue = createLocalVue();
+	localVue.use(Vuetify);
+
+	wrapper = mount(LoginForm, {
+		localVue,
+	});
   });
 
   it('should log in successfully', async () => {
-	const wrapper = mount(LoginForm, {
-		vuetify,
-		localVue,
-	});
+
 	wrapper.setData({ valid: true });
 	wrapper.setData({ password: 'tr' });
 	wrapper.setData({ username: 'tr' });
