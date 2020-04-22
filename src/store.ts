@@ -45,6 +45,7 @@ const initialState: RootState = {
 		editAppellationId: null,
 		updatedAppellationId: 0,
 	},
+	notifications: [],
 };
 
 const mutations: MutationTree<RootState> = {
@@ -189,6 +190,9 @@ const mutations: MutationTree<RootState> = {
 	setRelationCreated(state, value) {
 		state.annotator.relationCreated = value;
 	},
+	setNotifications(state, notifications) {
+		state.notifications = notifications;
+	},
 };
 
 export default new Vuex.Store({
@@ -228,6 +232,7 @@ export default new Vuex.Store({
 		getAnnotatorEditAppellationMode: (state) => state.annotator.editAppellationId,
 		getRelationCreated: (state) => state.annotator.relationCreated,
 		templateOpenConcepts: (state) => state.templateCreator.open_concepts,
+		notifications: (state) => state.notifications,
 	},
 	actions: {},
 });
