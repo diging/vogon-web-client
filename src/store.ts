@@ -48,6 +48,7 @@ const initialState: RootState = {
 		focusedAppellationsForRelations: {},
 		focusedRelationId: null,
 	},
+	notifications: [],
 };
 
 const mutations: MutationTree<RootState> = {
@@ -201,6 +202,9 @@ const mutations: MutationTree<RootState> = {
 	setFocusedRelationId(state, relationId) {
 		state.annotator.focusedRelationId = relationId;
 	},
+	setNotifications(state, notifications) {
+		state.notifications = notifications;
+	},
 };
 
 export default new Vuex.Store({
@@ -242,6 +246,7 @@ export default new Vuex.Store({
 		getFocusedAppellationsForRelations: (state) => state.annotator.focusedAppellationsForRelations,
 		getFocusedRelationId: (state) => state.annotator.focusedRelationId,
 		templateOpenConcepts: (state) => state.templateCreator.open_concepts,
+		notifications: (state) => state.notifications,
 	},
 	actions: {},
 });

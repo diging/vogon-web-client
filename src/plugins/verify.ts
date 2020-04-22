@@ -1,5 +1,7 @@
 import Vue, { PluginObject } from 'vue';
 import VueRouter from 'vue-router';
+import { AxiosResponse } from 'axios';
+
 import store from './../store';
 
 /**
@@ -12,28 +14,29 @@ import store from './../store';
  * @param {Boolean} gaurded - indicates whether the route is gaurded or not 
  */ 
 const _verify = function(router: VueRouter, gaurded: boolean):void {
-  if (gaurded == true) {
-    Vue.$axios
-      .post(
-        'token/verify/',
-        {
-          token: localStorage.getItem('token'),
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        },
-      )
-      .then(() => {
-        store.commit('loggedInMutation', true);
-      })
-      .catch(() => {
-        store.commit('loggedInMutation', false);
-        localStorage.removeItem('token');
-        router.push({ path: '/login' });
-      });
-  }
+	Vue.$axios
+		.post(
+			'token/verify/',
+			{
+				token: localStorage.getItem('token'),
+			},
+			{
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			},
+		)
+		.then((response: AxiosResponse) => {
+			store.commit('loggedInMutation', true);
+			store.commit('setNotifications', response.data.notifications);
+		})
+		.catch(() => {
+			store.commit('loggedInMutation', false);
+			localStorage.removeItem('token');
+			if(gaurded == true) {
+				router.push({ path: '/login' });
+			}
+		});
 };
 
 

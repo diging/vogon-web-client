@@ -1,4 +1,5 @@
 import { Concept, ConceptType } from '@/interfaces/ConceptTypes';
+import { Notification } from '@/interfaces/GlobalTypes';
 import { RelationTemplate } from '@/interfaces/RelationTypes';
 import { TextDocument } from '@/interfaces/RepositoryTypes';
 
@@ -50,4 +51,5 @@ export interface RootState {
 		focusedAppellationsForRelations: any;
 		focusedRelationId: any;
 	};
+	notifications: Notification[];
 }
