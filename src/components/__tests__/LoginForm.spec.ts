@@ -7,14 +7,17 @@ import Vuetify from 'vuetify';
 
 describe('LoginForm.vue', () => {
   let wrapper: any;
+  let vuetify: any;
   Vue.use(Vuetify);
 
   beforeEach(() => {
 	const localVue = createLocalVue();
-	localVue.use(Vuetify);
+	vuetify = new Vuetify();
+	// localVue.use(Vuetify);
 
 	wrapper = mount(LoginForm, {
 		localVue,
+		vuetify,
 	});
   });
 
@@ -23,7 +26,8 @@ describe('LoginForm.vue', () => {
 	wrapper.setData({ valid: true });
 	wrapper.setData({ password: 'tr' });
 	wrapper.setData({ username: 'tr' });
-	await wrapper.find('v-btn').trigger('click');
+	// console.log(wrapper.find('.v-btn').props());
+	await wrapper.find('.v-btn').trigger('click');
 	expect((wrapper.vm as any).$root.$data.loggedIn).toBe(true);
   });
 });
