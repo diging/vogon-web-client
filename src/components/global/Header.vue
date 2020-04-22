@@ -20,16 +20,38 @@
 				v-list-item(v-for="item in data_items" :key="item.title" v-bind:to="item.link")
 					v-list-item-title(v-text="item.title")
 		v-spacer
-		v-toolbar-items.hidden-sm-and-down
+		v-toolbar-items.hidden-sm-and-down(class="pr-4")
 			v-btn(text v-if="!this.$store.getters.loggedIn" @click="login") Login
 			v-btn(text v-if="!this.$store.getters.loggedIn" @click="signup") Sign Up
 			v-btn(text v-if="this.$store.getters.loggedIn" @click="logout") Log Out
 			v-btn(text v-if="this.$store.getters.loggedIn" href="/dashboard") Dashboard
+			v-menu(offset-y :close-on-content-click="false")
+				template(v-slot:activator="{ on }")
+					v-badge(
+						:value="unreadCount"
+						:content="unreadCount"
+						overlap
+						class="notification-btn"
+					)
+						v-btn(text icon small v-on="on")
+							v-icon() mdi-bell
+
+				v-card(class="notification-container")
+					template(v-for="notification, i in notifications")
+						v-list-item(
+							:key="i"
+							:class="`notification-item ${notification.unread && 'notification-unread'}`"
+						)
+							v-list-item-content(class="text-left")
+								| {{ notification.verb }}
+						v-divider(v-if="i + 1 < notifications.length" )
 			
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+
+import { Notification } from '@/interfaces/GlobalTypes';
 
 export default Vue.extend({
 	name: 'Header',
@@ -51,9 +73,14 @@ export default Vue.extend({
 				{ title: 'Use Cases' },
 				{ title: 'Our Team' },
 			],
+			notifications: [],
+			unreadCount: 0,
 		};
   },
 
+	created() {
+		this.watchStore();
+	},
 	methods: {
 		handleSelect(key: string, keyPath: string[]) {
 			this.activeIndex = key;
@@ -71,6 +98,15 @@ export default Vue.extend({
 			localStorage.removeItem('token');
 			this.login();
 		},
+		watchStore() {
+			this.$store.watch(
+				(state, getters) => getters.notifications,
+				(newValue, oldValue) => {
+					this.notifications = newValue;
+					this.unreadCount = newValue.filter((i: Notification) => i.unread).length;
+				},
+			);
+		},
 	},
 });
 </script>
@@ -83,5 +119,22 @@ li a {
 }
 .v-toolbar {
 	flex: unset;
+}
+.notification-btn {
+	align-self: center;
+	cursor: pointer;
+}
+.notification-container {
+	width: 400px;
+	padding: 0px;
+	max-height: 500px;
+	overflow-y: scroll;
+}
+.notification-item {
+	cursor: pointer;
+}
+.notification-unread {
+	background-color: #ECEFF1;
+	border-left: 2px solid #009688;
 }
 </style>

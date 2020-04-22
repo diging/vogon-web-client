@@ -1,5 +1,7 @@
 import Vue, { PluginObject } from 'vue';
 import VueRouter from 'vue-router';
+import { AxiosResponse } from 'axios';
+
 import store from './../store';
 
 /**
@@ -24,8 +26,9 @@ const _verify = function(router: VueRouter, gaurded: boolean):void {
 				},
 			},
 		)
-		.then(() => {
+		.then((response: AxiosResponse) => {
 			store.commit('loggedInMutation', true);
+			store.commit('setNotifications', response.data.notifications);
 		})
 		.catch(() => {
 			store.commit('loggedInMutation', false);
