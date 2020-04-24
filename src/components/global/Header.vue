@@ -25,7 +25,10 @@
 			v-btn(text v-if="!this.$store.getters.loggedIn" @click="signup") Sign Up
 			v-btn(text v-if="this.$store.getters.loggedIn" @click="logout") Log Out
 			v-btn(text v-if="this.$store.getters.loggedIn" to="/dashboard") Dashboard
-			v-menu(offset-y :close-on-content-click="false")
+			v-menu(
+				offset-y 
+				:close-on-content-click="false"
+			)
 				template(v-slot:activator="{ on }")
 					v-badge(
 						:value="unreadCount"
@@ -41,6 +44,9 @@
 						v-list-item(
 							:key="i"
 							:class="`notification-item ${notification.unread && 'notification-unread'}`"
+							:href="`/project/${notification.action_object.id}`"
+							target="_blank"
+							@click="readNotification(notification)"
 						)
 							v-list-item-content(class="text-left")
 								| {{ notification.verb }}
@@ -52,6 +58,7 @@
 import Vue from 'vue';
 
 import { Notification } from '@/interfaces/GlobalTypes';
+import router from '@/router';
 
 export default Vue.extend({
 	name: 'Header',
@@ -106,6 +113,14 @@ export default Vue.extend({
 					this.unreadCount = newValue.filter((i: Notification) => i.unread).length;
 				},
 			);
+		},
+		readNotification(notification: Notification) {
+			if (notification.unread) {
+				Vue.$axios.post(`/notifications/${notification.id}/mark_as_read`)
+					.then(() => {
+						Vue.$verify(router, true);
+					});
+			}
 		},
 	},
 });
