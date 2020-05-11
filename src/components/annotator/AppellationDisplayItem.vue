@@ -104,6 +104,7 @@ export default class AppellationDisplayItem extends Vue {
 					this.visible = false;
 				} else if (newValue === null) {
 					this.focused = false;
+					this.visible = true;
 				} else {
 					this.visible = true;
 				}

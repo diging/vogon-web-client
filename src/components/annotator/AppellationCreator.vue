@@ -183,6 +183,7 @@ export default class AppellationCreator extends Vue {
 		};
 		if (this.$store.getters.getAnnotatorEditAppellationMode) {
 			this.update(payload, this.$store.getters.getAnnotatorEditAppellationMode.id);
+			this.$store.commit('setAnnotatorEditAppellationMode', null);
 		} else {
 			this.create(payload);
 		}
