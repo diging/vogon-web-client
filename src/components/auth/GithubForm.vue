@@ -22,10 +22,10 @@ export default class GithubForm extends Vue {
   private error: boolean = false;
   private valid: boolean = false;
 
-  public created() {
-	if (this.$route.query.code) {
-		this.getAccessToken(this.$route.query.code);
-	}
+	public created() {
+		if (this.$route.query.code) {
+			this.getAccessToken(this.$route.query.code);
+		}
   }
 
   /**

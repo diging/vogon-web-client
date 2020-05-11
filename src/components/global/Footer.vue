@@ -2,13 +2,14 @@
 	v-footer(padless dark)
 		v-card(class="flex" flat tile)
 			v-card-title(class="teal")
-				h4 VogonWeb #[strong Beta]
+				h4 VogonWeb #[strong Beta]&nbsp;
 				
-				a.links(href="https://github.com/diging/vogon-web/releases/tag") Version 0.4
-				a(href="https://github.com/diging/vogon-web" class="btn btn-xs") 
-					i(class="fab fa-github" )
+				p
+					| #[a(href="https://github.com/diging/vogon-web/releases/tag" class="version color") {{version}}]&nbsp;
+				a(href="https://github.com/diging/vogon-web" class="btn btn-xs")
+					i(class="fab fa-github color" )
 				a(href="https://diging.atlassian.net/projects/VGNWB/summary" class="btn btn-xs")
-					i(class="fab fa-jira")
+					i(class="fab fa-jira color spacing")
 				v-spacer
 				a(href="http://devo-evo.lab.asu.edu" target="_blank")
 					img(src="../../assets/images/logos/devoevolab.png")
@@ -16,12 +17,23 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import axios from 'axios';
+import { Component, Vue } from 'vue-property-decorator';
 
-export default Vue.extend({
+@Component({
 	name: 'Footer',
-	props: {},
-});
+	components: {},
+})
+export default class Footer extends Vue {
+	private version: string = '';
+
+	private async created(): Promise<void> {
+	axios.get('https://api.github.com/repos/diging/vogon-web/releases/latest')
+		.then((data) => {
+		this.version = data.data.tag_name;
+		});
+	}
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -36,5 +48,17 @@ export default Vue.extend({
 img {
 	float: right;
 	padding-top: 2%;
+}
+.version {
+	position: relative;
+	top: 0.22cm;
+  text-decoration: none;
+}
+.color {
+  color: white;
+}
+.spacing{
+  position: relative;
+  left: 0.2cm;
 }
 </style>
