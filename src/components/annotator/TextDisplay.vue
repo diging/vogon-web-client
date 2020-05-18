@@ -42,6 +42,11 @@ export default class TextDisplay extends Vue {
 
 	public created() {
 		this.currentAppellations = this.appellations;
+		// store.subscribe((mutation: any, state: any) => {
+		// 	if (mutation.type === 'setAnnotatorHighlightedText' && mutation.payload === null) {
+		// 		clearMouseTextSelection();
+		// 	}
+		// })
 	}
 
 	@Watch('appellations')
@@ -74,7 +79,7 @@ export default class TextDisplay extends Vue {
 
 			// Get the start and end position of the selection. The selection
 			// may have been left-to-right or right-to-left.
-			const selection = window.getSelection();
+			const selection: any = window.getSelection();
 			if (selection !== null) {
 				const startOffset = Math.min(selection.anchorOffset, selection.focusOffset);
 				const endOffset = Math.max(selection.anchorOffset, selection.focusOffset);
@@ -89,6 +94,20 @@ export default class TextDisplay extends Vue {
 						const concept = selectedAppellation.interpretation;
 						this.$store.commit('setAnnotatorSelectedConcept', concept);
 					}
+				}
+
+				if (selection.anchorOffset === selection.focusOffset &&
+						selection.anchorOffset === selection.baseOffset &&
+						selection.anchorOffset === selection.extentOffset &&
+						selection.toString() === ''
+				) {
+					this.$store.commit('setAnnotatorHighlightedText', null);
+					this.$store.commit('setAnnotatorSelectedConcept', null);
+					if (this.currentAppellations.length > 0 && this.currentAppellations[this.currentAppellations.length - 1].current) {
+						this.currentAppellations = this.currentAppellations.slice(0, this.currentAppellations.length - 1);
+					}
+					this.calculatePositions();
+					this.selected = false;
 				}
 
 				// If the user double-clicks (e.g. to select a whole word), the
@@ -114,6 +133,7 @@ export default class TextDisplay extends Vue {
 					interpretation: { label: raw },
 					representation: raw,
 					selected: true,
+					current: true,
 				};
 				this.selected = true;
 				this.$store.commit('setAnnotatorHighlightedText', selectedText);
