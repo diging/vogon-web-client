@@ -7,13 +7,13 @@
 			v-tab(href="#tab-4") Search
 			v-tab(href="#tab-5") Network Graph
 		v-tabs-items(v-model="tab")
-			v-tab-item(value="tab-1")
+			v-tab-item(value="tab-1" eager)
 				AppellationList(:appellations="appellations")
-			v-tab-item(value="tab-2")
+			v-tab-item(value="tab-2" eager)
 				RelationList(:relations="relationsets")
-			v-tab-item(value="tab-3")
+			v-tab-item(value="tab-3" eager)
 				RelationTemplateRender(v-bind:template="template" v-bind:appellations="appellations")
-			v-tab-item(value="tab-4")
+			v-tab-item(value="tab-4" eager)
 				AppellationCreator(
 					:appellations="appellations"
 					:text="$store.getters.getAnnotatorText"
@@ -94,12 +94,11 @@ export default class ListsSideDrawer extends Vue {
 				this.show = newValue;
 			},
 		);
-		this.$store.watch(
-			(state, getters) => getters.getAnnotatorCurrentTab,
-			(newValue, oldValue) => {
-				this.tab = newValue;
-			},
-		);
+		this.$store.subscribe((mutation, state) => {
+			if (mutation.type === 'setAnnotatorCurrentTab') {
+				this.tab = mutation.payload;
+			}
+		});
 		this.$store.watch(
 			(state, getters) => getters.getAnnotatorTemplate,
 			(newValue, oldValue) => {
