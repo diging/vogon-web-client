@@ -95,6 +95,12 @@ export default class AppellationDisplayItem extends Vue {
 				this.visible = false;
 			} else if (mutation.type === 'setAnnotatorUpdatedAppellation' && mutation.payload === this.appellation.id) {
 				this.visible = true;
+			} else if (mutation.type === 'setFocusedAppellationsForRelations') {
+				if (mutation.payload[this.appellation.id]) {
+					this.focused = true;
+				} else {
+					this.focused = false;
+				}
 			}
 		});
 		this.$store.watch(
@@ -132,6 +138,8 @@ export default class AppellationDisplayItem extends Vue {
 		if (this.appellation.selected) {
 			return;
 		}
+
+		this.$store.commit('setFocusedRelationId', null);
 
 		const currentFieldIndex = this.$store.getters.getCurrentFieldIndex;
 		if (currentFieldIndex >= 0) {

@@ -46,5 +46,7 @@ export interface RootState {
 		hiddenAppellations: any,
 		editAppellationId: any,
 		updatedAppellationId: number,
+		focusedAppellationsForRelations: any;
+		focusedRelationId: any;
 	};
 }
