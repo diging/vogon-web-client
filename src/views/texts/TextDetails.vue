@@ -112,7 +112,7 @@ export default class TextDetails extends Vue {
 	public async mounted(): Promise<void> {
 		this.getTextDetails();
 	}
-	
+
 	get isEditable(): boolean {
 		if (this.project) {
 			return Vue.$utils.permissions.isProjectCollaborator(this.project);
@@ -144,6 +144,7 @@ export default class TextDetails extends Vue {
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
 	}
+
 	private async addText(): Promise<void> {
 		Vue.$axios.post(`/project/${this.$route.query.project_id}/add_text`,
 				{ text_id: this.text.id, repository_id: this.$route.params.repoId },
@@ -156,6 +157,7 @@ export default class TextDetails extends Vue {
 				this.snackbarText = 'Error while adding text to the project';
 			});
 	}
+
 	private async removeText(): Promise<void> {
 		Vue.$axios.delete(`/project/${this.$route.query.project_id}`, {
 				data: { text_id: this.masterId },
@@ -172,7 +174,7 @@ export default class TextDetails extends Vue {
 				}
 			});
 	}
-	
+
 }
 </script>
 
