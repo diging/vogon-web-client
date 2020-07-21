@@ -21,7 +21,7 @@ const initialState: RootState = {
 	validator: 0,
 	text_content_styles: {},
 	annotator: {
-		currentTab: 'tab-1',
+		currentTab: 'tab-4',
 		template: null,
 		selectedFieldAnnotations: [],
 		conceptTypes: [],
