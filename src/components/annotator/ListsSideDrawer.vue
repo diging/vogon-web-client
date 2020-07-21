@@ -94,7 +94,14 @@ export default class ListsSideDrawer extends Vue {
 		if (val !== oldVal) {
 			this.$store.commit('setRelationCreated', val);
 		}
+  }
+
+  @Watch('tab')
+  public changeTab() {
+		if (this.tab !== this.$store.getters.getAnnotatorCurrentTab) {
+		this.$store.commit('setAnnotatorCurrentTab', this.tab);
 	}
+  }
 }
 </script>
 
