@@ -12,28 +12,28 @@ import store from './../store';
  * @param {Boolean} gaurded - indicates whether the route is gaurded or not 
  */ 
 const _verify = function(router: VueRouter, gaurded: boolean):void {
-	Vue.$axios
-		.post(
-			'token/verify/',
-			{
-				token: localStorage.getItem('token'),
-			},
-			{
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			},
-		)
-		.then(() => {
-			store.commit('loggedInMutation', true);
-		})
-		.catch(() => {
-			store.commit('loggedInMutation', false);
-			localStorage.removeItem('token');
-			if(gaurded == true) {
-				router.push({ path: '/login' });
-			}
-		});
+  if (gaurded == true) {
+    Vue.$axios
+      .post(
+        'token/verify/',
+        {
+          token: localStorage.getItem('token'),
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+      .then(() => {
+        store.commit('loggedInMutation', true);
+      })
+      .catch(() => {
+        store.commit('loggedInMutation', false);
+        localStorage.removeItem('token');
+        router.push({ path: '/login' });
+      });
+  }
 };
 
 
