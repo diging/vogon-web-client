@@ -5,7 +5,14 @@ export interface Repository {
 	name: string;
 	description?: string;
 	configuration?: string;
-	collections?: TextCollection[];
+	collections?: TextCollectionResult;
+}
+
+export interface TextCollectionResult {
+	count: number;
+	previous?: string;
+	next?: string;
+	results: TextCollection[];
 }
 
 export interface TextCollection {

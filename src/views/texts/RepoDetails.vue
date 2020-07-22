@@ -12,9 +12,14 @@
 				br
 				v-card(class="card-project-text")
 					v-card-title Collections
-					template(v-if="!repo.collections.length")
+					template(v-if="!repo.collections.results.length")
 						EmptyView No collections found!
-					RepoCollections(v-else v-bind:collections="repo.collections" v-bind:repoId="$route.params.id" v-bind:queryParam="queryParam")
+					RepoCollections(
+						v-else
+						v-bind:collectionResults="repo.collections" 
+						v-bind:repoId="$route.params.id" 
+						v-bind:queryParam="queryParam"
+					)
 
 </template>
 
