@@ -1,5 +1,28 @@
 <template lang="pug">
 	v-list(two-line)
+		v-row(class="mx-3")
+			v-col(:cols="6")
+				div(:style="{ maxWidth: '400px', width: '100%' }")
+					v-text-field(
+						v-model="query"
+						@keyup.enter.native="() => { page = 1; getRepoDetails(1); }" 
+						outlined
+						dense
+						placeholder="Search collection by name..."
+						label="Search"
+					)
+						template(v-slot:append-outer)
+							v-btn(@click="() => { page = 1; getRepoDetails(1); }" small text dense)
+								v-icon mdi-magnify
+			v-col(:cols="6")
+				v-btn(
+					class="float-right"
+					@click="all = !all"
+					outlined
+				)
+					v-icon mdi-filter-variant
+					template(v-if="all") My Collections
+					template(v-else) View all
 		div
 			Loading(v-if="loading")
 			template(v-else v-for="(collection, index) in collections.results")
@@ -23,7 +46,7 @@
 
 <script lang="ts">
 import { AxiosResponse } from 'axios';
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import Loading from '@/components/global/Loading.vue';
 import { PAGE_SIZE } from '@/constants';
@@ -46,6 +69,8 @@ export default class RepoCollections extends Vue {
 	private PAGE_SIZE: number = PAGE_SIZE;
 	private page: number = 1;
 	private items: number[] = [5, 10, 15];
+	private query: string = '';
+	private all: boolean = true;
 
 	get collections(): TextCollectionResult {
 		if (!this.repoCollecitons) {
@@ -58,13 +83,25 @@ export default class RepoCollections extends Vue {
 		this.repoCollecitons = value;
 	}
 
+	@Watch('all')
+	public onAllChange(val: boolean, old: boolean) {
+		this.getRepoDetails();
+		this.page = 1;
+	}
+
 	private async getRepoDetails(page: number = 1): Promise<void> {
 		this.loading = true;
+		const params: any = {
+			limit: PAGE_SIZE,
+			offset: (page - 1) * PAGE_SIZE,
+			q: this.query,
+		};
+		if (!this.all) {
+			params.user = true;
+		}
+
 		Vue.$axios.get(`/repository/${this.$route.params.id}`, {
-			params: {
-				limit: PAGE_SIZE,
-				offset: (page - 1) * PAGE_SIZE,
-			},
+			params,
 		})
 			.then((response: AxiosResponse) => {
 				this.collections = response.data.collections;
