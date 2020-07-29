@@ -1,19 +1,17 @@
 <template lang="pug">
-	v-footer(padless dark)
-		v-card(class="flex" flat tile)
-			v-card-title(class="teal")
-				h4 VogonWeb #[strong Beta]&nbsp;
+	v-footer(padless)
+		v-card.background(class="flex" flat tile)
+			v-card-title.pa-0.px-5
+				h6.white--text VogonWeb #[strong Beta]
 				
-				p
-					| #[a(href="https://github.com/diging/vogon-web/releases/tag" class="version color") {{version}}]&nbsp;
-				a(href="https://github.com/diging/vogon-web" class="btn btn-xs")
-					i(class="fab fa-github color" )
+				a.caption.links(href="https://github.com/diging/vogon-web/releases/tag") Version 0.4
+				a(href="https://github.com/diging/vogon-web" class="btn btn-xs") 
+					i(class="fab fa-github" )
 				a(href="https://diging.atlassian.net/projects/VGNWB/summary" class="btn btn-xs")
 					i(class="fab fa-jira color spacing")
 				v-spacer
 				a(href="http://devo-evo.lab.asu.edu" target="_blank")
-					img(src="../../assets/images/logos/devoevolab.png")
-			v-card-actions.grey.darken-3.justify-center #{ new Date().getFullYear() } — #[strong Laubichler Lab]
+					img(src="../../assets/images/logos/Laubichler lab logo-13.png" height="50px")
 </template>
 
 <script lang="ts">

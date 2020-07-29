@@ -212,9 +212,10 @@ export const clearMouseTextSelection = (): void => {
 		const sel = window.getSelection();
 		if (sel !== null) {  // Chrome
 			sel.empty();
-		} else if (window.getSelection()!.removeAllRanges) {  // Firefox
-			window.getSelection()!.removeAllRanges();
 		}
+		// else if (window.getSelection()!.removeAllRanges) {  // Firefox
+		// 	window.getSelection()!.removeAllRanges();
+		// }
 	}
 };
 

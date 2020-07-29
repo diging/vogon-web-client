@@ -85,7 +85,7 @@ export default class ToolBar extends Vue {
 	margin: 10px 0;
 }
 #title {
-	background: grey;
+	background: black;
 }
 pre {
 	white-space: pre-wrap;
