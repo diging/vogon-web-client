@@ -103,6 +103,7 @@ export default class TextDisplay extends Vue {
 				) {
 					this.$store.commit('setAnnotatorHighlightedText', null);
 					this.$store.commit('setAnnotatorSelectedConcept', null);
+					this.$store.commit('setAnnotatorEditAppellationMode', null);
 					if (this.currentAppellations.length > 0 && this.currentAppellations[this.currentAppellations.length - 1].current) {
 						this.currentAppellations = this.currentAppellations.slice(0, this.currentAppellations.length - 1);
 					}

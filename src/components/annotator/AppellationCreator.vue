@@ -162,7 +162,9 @@ export default class AppellationCreator extends Vue {
 	private cancel() {
 		this.$store.commit('setAnnotatorHighlightedText', null);
 		this.$store.commit('setAnnotatorSelectedConcept', null);
+		this.$store.commit('setAnnotatorEditAppellationMode', null);
 	}
+
 	private createOrUpdate() {
 		this.creating = true;
 		this.createError = false;
