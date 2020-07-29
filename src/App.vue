@@ -78,9 +78,5 @@ export default Vue.extend({
 		}
 	}
 }
-.main {
-	text-align: left;
-	width: 100%;
-	margin-bottom: 20px;
-}
+
 </style>

@@ -1,14 +1,13 @@
 <template lang="pug">
-	v-app-bar(app fixed elevate-on-scroll)
-		v-app-bar-nav-icon(to="/")
-			img(src="../../assets/images/logos/VogonTiny_beta.png")
-		v-toolbar-title(class="ml-4 mr-4") Vogon Web
+	v-app-bar.background(app fixed elevate-on-scroll dark)
+		router-link(to="/")
+			img(height="50px" src="../../assets/images/logos/logo-17.png")
 		v-btn(text large to="/project" class="subheading font-weight-medium") Projects
 		v-btn(text large to="/relationtemplate" class="subheading font-weight-medium") Templates
 		v-btn(text large to="/about" class="subheading font-weight-medium") About
-		v-menu(offset-y open-on-hover)
+		v-menu(v-if="$store.getters.loggedIn" class="ml-3" offset-y open-on-hover style="display: block")
 			template(v-slot:activator="{ on }")
-				v-btn(text v-on="on") Data
+				v-btn(text v-on="on" v-if="this.$store.getters.loggedIn") Data
 					v-icon mdi-menu-down
 			v-list
 				v-list-item(v-for="item in data_items" :key="item.title" v-bind:to="item.link")
@@ -160,8 +159,9 @@ li a {
 	color: inherit; /* blue colors for links too */
 	text-decoration: inherit; /* no underline */
 }
-.v-toolbar {
-	flex: unset;
+.logo {
+	background: transparent;
+	width: 300px;
 }
 .notification-btn {
 	align-self: center;

@@ -12,7 +12,10 @@ export default new Vuetify({
   theme: {
     themes: {
       light: {
-        primary: colors.teal.base,
+        background: "#284259",
+        primary: "#04BF8A",
+        darkgrey: "#424242",
+        lightgrey: "#E7E7E7"
       },
     },
   },
