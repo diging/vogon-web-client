@@ -6,6 +6,7 @@
 					v-card-title#title Citesphere Authorization
 					v-card-text
 						a(href=`https://diging-dev.asu.edu/citesphere-review/api/v1/oauth/authorize?scope=read&client_id=${process.env.VUE_APP_CITESPHERE_CLIENT_ID}&response_type=code&state=vogon`) authorize
+						v-alert(v-if="error" type="error" dense dismissible class="my-4") {{ errorMsg }}
 					v-card-actions
 
 </template>
@@ -20,12 +21,19 @@ export default class CitesphereAuth extends Vue {
   private password: string = '';
   private username: string = '';
   private error: boolean = false;
+  private errorMsg: string = '';
   private valid: boolean = false;
 
 	public created() {
 		if (this.$route.query.code) {
 			this.getAccessToken(this.$route.query.code);
-		}
+	}
+  if (this.$route.query.error) {
+		const errorCode = this.$route.query.error;
+		const errorDescription = this.$route.query.error_description;
+		this.error = true;
+		this.errorMsg = `Error while authorizing User - Code: ${errorCode}, Description: ${errorDescription}`;
+	}
   }
 
   /**
