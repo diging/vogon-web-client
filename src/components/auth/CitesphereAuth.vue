@@ -2,10 +2,10 @@
 	v-row(align="center" justify="center")
 		v-col(cols="6")
 			v-card
-				v-form(ref="loginForm" v-model="valid")
-					v-card-title#title Github Authorization
+				v-form(ref="citesphereAuth" v-model="valid")
+					v-card-title#title Citesphere Authorization
 					v-card-text
-						a(href=`https://github.com/login/oauth/authorize?scope=user&client_id=${process.env.VUE_APP_GITHUB_CLIENT_ID}`) authorize
+						a(href=`https://diging-dev.asu.edu/citesphere-review/api/v1/oauth/authorize?scope=read&client_id=${process.env.VUE_APP_CITESPHERE_CLIENT_ID}&response_type=code&state=vogon`) authorize
 					v-card-actions
 
 </template>
@@ -14,9 +14,9 @@
 import { VForm } from '@/interfaces/GlobalTypes';
 import { Component, Vue } from 'vue-property-decorator';
 @Component({
-  name: 'GithubForm',
+  name: 'CitesphereAuth',
 })
-export default class GithubForm extends Vue {
+export default class CitesphereAuth extends Vue {
   private password: string = '';
   private username: string = '';
   private error: boolean = false;
@@ -29,33 +29,21 @@ export default class GithubForm extends Vue {
   }
 
   /**
-   * get access code from github after getting auth code from github
-   * @param {String} code - Github authorization code from querystring.
+   * get access code from citesphere after getting auth code from citesphere
+   * @param {String} code - Citesphere authorization code from querystring.
    */
   public getAccessToken(code: string | Array<string | null>) {
-	Vue.$axios
-		.get('github-token/', {
+	Vue.$axios.get('citesphere-token/', {
 		params: {
-			code,
+		code,
 		},
-		})
+	})
 		.then((result) => {
-			this.$router.push('dashboard');
+		this.$router.push('/dashboard');
 		})
 		.catch((error) => {
-		// TODO: deal with errors
 		this.error = true;
 		});
   }
 }
 </script>
-
-<style scoped>
-.project-item {
-  padding: 0;
-  margin: 10px 0;
-}
-#title {
-  background: grey;
-}
-</style>
