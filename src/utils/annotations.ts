@@ -173,7 +173,7 @@ export const getAnnotationRectPositions = (appellation: any, container: Element)
 		// clientLeft/clientWidth don't account for inner padding.
 		let padding = parseInt(getStyle(container, 'padding'), 10);
 		if (!padding) { // Firefox.
-			padding = parseInt(getStyle(container, 'paddingLeft'), 10);
+			padding = parseInt(getStyle(container, 'padding-left'), 10);
 		}
 
 		const left = container.clientLeft + padding;
