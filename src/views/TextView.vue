@@ -16,6 +16,17 @@
 							:appellations="appellations"
 							:relationsets="relationsets"
 						)
+				v-dialog(
+					v-if="network"
+					v-model="graphDialog"
+					persistent
+					max-width="1000px"
+				)
+					v-card
+						v-card-title Network graph
+						v-card-text
+							| Graph data
+							NetworkGraph(:network="network")
 </template>
 
 <script lang="ts">
@@ -24,6 +35,7 @@ import { Component, Vue } from 'vue-property-decorator';
 
 import AppellationList from '@/components/annotator/AppellationList.vue';
 import ListsSideDrawer from '@/components/annotator/ListsSideDrawer.vue';
+import NetworkGraph from '@/components/annotator/NetworkGraph.vue';
 import RelationList from '@/components/annotator/RelationList.vue';
 import SideDrawer from '@/components/annotator/SideDrawer.vue';
 import TextDisplay from '@/components/annotator/TextDisplay.vue';
@@ -44,6 +56,7 @@ import { TextDocument } from '@/interfaces/RepositoryTypes';
 		RelationList,
 		AppellationList,
 		ListsSideDrawer,
+		NetworkGraph,
 		ErrorIndicator,
 		Loading,
 	},
@@ -57,10 +70,12 @@ export default class TextView extends Vue {
 	private relations: Relation[] = [];
 	private relationsets: RelationSet[] = [];
 	private pendingRelationsets: RelationSet[] = [];
+	private network: any = null;
 
 	private loading: boolean = true;
 	private error: boolean = false;
 	private queryParam: string = '';
+	private graphDialog: boolean = true;
 
 	public created() {
 		this.getContent();
@@ -104,6 +119,11 @@ export default class TextView extends Vue {
 			})
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
+
+		Vue.$axios.get(`/annotate/${this.$route.params.id}/network${this.queryParam}`)
+			.then((response: AxiosResponse) => {
+				this.network = response.data.elements;
+			});
 	}
 
 	private watchStore() {
