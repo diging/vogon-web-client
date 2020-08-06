@@ -1,6 +1,6 @@
 
 <template lang="pug">
-	v-container
+	div(class="text-container")
 		ErrorIndicator(v-if="error") Error while loading text details!
 		template(v-else)
 			Loading(v-if="loading")
@@ -15,18 +15,8 @@
 							:relations='relations' 
 							:appellations="appellations"
 							:relationsets="relationsets"
+							:network="network"
 						)
-				v-dialog(
-					v-if="network"
-					v-model="graphDialog"
-					persistent
-					max-width="1000px"
-				)
-					v-card
-						v-card-title Network graph
-						v-card-text
-							| Graph data
-							NetworkGraph(:network="network")
 </template>
 
 <script lang="ts">
@@ -75,7 +65,6 @@ export default class TextView extends Vue {
 	private loading: boolean = true;
 	private error: boolean = false;
 	private queryParam: string = '';
-	private graphDialog: boolean = true;
 
 	public created() {
 		this.getContent();
@@ -169,5 +158,8 @@ li {
 }
 a {
   color: #42b983;
+}
+.text-container {
+	max-width: 100%;
 }
 </style>
