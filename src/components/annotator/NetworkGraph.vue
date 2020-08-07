@@ -134,6 +134,16 @@ export default class NetworkGraph extends Vue {
 			],
 		});
 		cy.fit();
+
+		cy.on('select', 'node', (event: any) => {
+			const node: any = event.target;
+			const appellationId = node._private.data.appellations[0];
+			this.$store.commit('setAnnotatorFocusedAppellation', appellationId);
+		});
+
+		cy.on('unselect', 'node', (event: any) => {
+			this.$store.commit('setAnnotatorFocusedAppellation', 0);
+		});
 	}
 
 	private resize(cy: any) {
