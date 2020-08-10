@@ -1,7 +1,8 @@
 <template lang="pug">
 	div
-		v-layout(wrap)
+		div
 			h1 How does it work?
+			br
 			div(style="margin-left: 10px;")
 				img(src="../../../assets/images/images/annotated.png" class="img img-rounded img-thumbnail img-responsive")
 			p
@@ -23,9 +24,9 @@
 						|A second user who views the annotations can subsequently find the specific place
 						|where the passage interpreted by the first user as #[span.text-warning Albert Einstein]
 						|is located.
-		v-layout(wrap)
+		div
 			h1 What can I annotate?
-			div.pull-right
+			div.pull-right.pa-2
 				img(src="../../../assets/images/images/text.png" class="img img-rounded img-thumbnail img-responsive")
 			p
 				|In the first iteration of VogonWeb (up through version 0.4), we focused on annotating #[strong plain text documents].
@@ -36,7 +37,9 @@
 				|relation extraction).
 			p
 				|In the next minor version of VogonWeb (version 0.5), we will incorporate annotation of raw images (e.g. photos of archival
-				|documents) and markup (e.g. webpages).#[strong If you're interested in using these features, please #[a href="mailto:erick.peirson@asu.edu" get in touch!]]
+				|documents) and markup (e.g. webpages). &nbsp;
+				strong If you're interested in using these features, please &nbsp;
+					a(href="mailto:diging@asu.edu") get in touch
 			p
 				|In the future, we also hope to incorporate direct annotation of PDF documents. We've also been dreaming about audio and
 				|video annotation, but that's much further down the road.
@@ -45,7 +48,10 @@
 			p
 				|Here are a few use-cases from real projects that have used or are currently using the Vogon/Quadriga
 				|annotation platform. VogonWeb is under constant development, and we need your input to make it even
-				|more wonderful. Please contact #[a href="mailto:erick.peirson@asu.edu" Erick] to get involved.
+				|more wonderful. Please contact &nbsp;
+				a(href="mailto:diging@asu.edu") diging@asu.edu
+				|&nbsp; to get involved.
+				
 			div
 				h3 Documenting Archival Research
 				p
