@@ -4,7 +4,7 @@
 			v-card-title.pa-0.px-5
 				h6.white--text VogonWeb #[strong Beta]
 				
-				a.caption.links(href="https://github.com/diging/vogon-web/releases/tag") Version 0.4
+				a.caption.links(href="https://github.com/diging/vogon-web/releases/tag") Version {{version}}
 				a(href="https://github.com/diging/vogon-web" class="btn btn-xs") 
 					i(class="fab fa-github" )
 				a(href="https://diging.atlassian.net/projects/VGNWB/summary" class="btn btn-xs")
@@ -17,7 +17,6 @@
 <script lang="ts">
 import axios from 'axios';
 import { Component, Vue } from 'vue-property-decorator';
-
 @Component({
 	name: 'Footer',
 	components: {},
@@ -26,10 +25,10 @@ export default class Footer extends Vue {
 	private version: string = '';
 
 	private async created(): Promise<void> {
-	axios.get('https://api.github.com/repos/diging/vogon-web/releases/latest')
-		.then((data) => {
-		this.version = data.data.tag_name;
-		});
+		axios.get('https://api.github.com/repos/diging/vogon-web/releases/latest')
+			.then((data) => {
+				this.version = data.data.tag_name;
+			});
 	}
 }
 </script>
