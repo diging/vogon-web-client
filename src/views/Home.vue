@@ -27,7 +27,7 @@
 								AnnotationList(v-bind:annotations="annotations")
 				br
 
-		v-container.pa-5(class="grey lighten-4" style="border-radius: 10px")
+		v-container.pa-5(class="grey lighten-4" style="border-radius: 10px; text-align: center")
 			v-row
 				v-col
 					h2.text-center Our Process
@@ -71,9 +71,9 @@
 
 		v-container.mt-5
 			h2.text-center What's it all good for?
-			v-carousel.background.mt-5.heightchange
+			v-carousel.background.mt-5.pt-3.pb-12.heightchange(height="auto")
 				v-carousel-item.white--text.pa-5(v-for="item in testimonials" :key="item.heading")
-					h3.mt-5 {{ item.heading }}
+					h3.mt-5.text-center {{ item.heading }}
 					p.mt-5.text-left(style="width: 80%; margin: auto") "{{ item.body }}"
 				
 </template>

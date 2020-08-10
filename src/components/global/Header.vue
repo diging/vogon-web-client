@@ -7,7 +7,7 @@
 		v-btn(text large to="/about" class="subheading font-weight-medium") About
 		v-menu(v-if="$store.getters.loggedIn" class="ml-3" offset-y open-on-hover style="display: block")
 			template(v-slot:activator="{ on }")
-				v-btn(text v-on="on" v-if="this.$store.getters.loggedIn") Data
+				v-btn(text v-on="on" v-if="$store.getters.loggedIn") Data
 					v-icon mdi-menu-down
 			v-list
 				v-list-item(v-for="item in data_items" :key="item.title" v-bind:to="item.link")
