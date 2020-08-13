@@ -23,7 +23,7 @@
 						type="warning"
 						dense
 						v-if="text.state !== 'OK'"
-					) The item is still pending with Giles. Wait until then for starting annotations
+					) The item is still pending with Amphora. Wait until then for starting annotations
 				p(class="body-1")
 					| The following content objects are associated with this resource. 
 					| Select a content object to begin annotating that object in VogonWeb. 
