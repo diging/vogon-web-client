@@ -16,6 +16,7 @@
 						v-list-item-subtitle(v-text="content.content_type")
 					v-list-item-action
 						v-btn(
+							:disabled="!ready"
 							depressed color="primary" small
 							:href="`/repository/${$route.params.repoId}/text/${$route.params.textId}/content/${content.id}${queryParam}`"
 						)
@@ -37,6 +38,7 @@ import { TextContentResource } from '@/interfaces/RepositoryTypes';
 })
 export default class TextAdditionalContent extends Vue {
 	@Prop() private readonly contents!: TextContentResource[];
+	@Prop() private readonly ready!: boolean;
 	private queryParam = '';
 
 	public created() {
