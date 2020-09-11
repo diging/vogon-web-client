@@ -8,6 +8,6 @@ apt-get update && apt-get upgrade -y && apt-get autoremove && apt-get autoclean
 mkdir vogon-client/dist/
 vogon-web-client/npm install
 vogon-web-client/npm run build
-cp -r /usr/src/app/vogon-web-client/dist /usr/src/app/vogon-client/dist/
+sudo docker cp -r /usr/src/app/vogon-web-client/dist /usr/src/app/vogon-client/dist/
 source vogon-client/.env
 tail -f /dev/null
