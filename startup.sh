@@ -6,7 +6,9 @@ apt-get update && apt-get upgrade -y && apt-get autoremove && apt-get autoclean
 # most of these are for lxml which needs a bunch of dependancies installed
 docker cp -r vogon-client-vol:.env vogon-client:/vogon-client
 cd ..
-mkdir vogon-client-vol/dist/
+cd vogon-client-vol
+mkdir dist/
+cd ..
 cd vogon-web-client
 npm install
 npm run build
