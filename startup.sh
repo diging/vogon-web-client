@@ -4,10 +4,10 @@ mkdir logs/
 mkdir bin
 apt-get update && apt-get upgrade -y && apt-get autoremove && apt-get autoclean
 # most of these are for lxml which needs a bunch of dependancies installed
-cp -r .env ../vogon-client
+cp  ../.env .
 cd ..
 cd vogon-client-vol
-mkdir dist/
+mkdir dist
 cd ..
 cd vogon-web-client
 npm install
