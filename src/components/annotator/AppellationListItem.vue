@@ -14,10 +14,10 @@
 					v-icon(v-else left) mdi-eye-off
 
 		div(v-if="edit") 
-				| (You are currently editing this appellation ...)
-				br
-				v-alert(dense type="error" class="my-4" v-if="appellation.relationsFrom.length || appellation.relationsTo.length")
-					| This appellation is part of existing relation(s) !!
+			| (You are currently editing this appellation ...)
+			br
+			v-alert(dense type="error" class="my-4" v-if="appellation.relationsFrom.length || appellation.relationsTo.length")
+				| This appellation is part of existing relation(s) !!
 </template>
 
 <script lang="ts">
