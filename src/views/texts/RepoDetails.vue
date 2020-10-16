@@ -60,7 +60,7 @@ export default class RepoDetails extends Vue {
 
 	private async getRepoDetails() {
 		this.loading = true;
-		Vue.$axios.get(`/repository/${this.$route.params.id}`, {
+		Vue.$axios.get(`/repository/amphora/${this.$route.params.id}`, {
 			params: {
 				limit: PAGE_SIZE,
 			},

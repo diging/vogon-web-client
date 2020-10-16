@@ -40,7 +40,7 @@ export default class TextContent extends Vue {
 			queryParam += `part_of=${partOf}`;
 		}
 
-		Vue.$axios.get(`/repository/${repoId}/texts/${textId}/content/${contentId}${queryParam}`)
+		Vue.$axios.get(`/repository/amphora/${repoId}/texts/${textId}/content/${contentId}${queryParam}`)
 			.then((response: AxiosResponse) => {
 				if (response.data.success) {
 					let queryParamRedirect = '';

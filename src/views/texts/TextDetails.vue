@@ -113,7 +113,7 @@ export default class TextDetails extends Vue {
 		if (projectId) {
 			queryParam = `?project_id=${projectId}`;
 		}
-		Vue.$axios.get(`/repository/${this.$route.params.repoId}/texts/${this.$route.params.textId}${queryParam}`)
+		Vue.$axios.get(`/repository/amphora/${this.$route.params.repoId}/texts/${this.$route.params.textId}${queryParam}`)
 			.then((response: AxiosResponse) => {
 				this.text = response.data.result as TextResource;
 				this.project = response.data.part_of_project && response.data.part_of_project.name;
