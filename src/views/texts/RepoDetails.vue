@@ -44,7 +44,7 @@ import { Repository } from '@/interfaces/RepositoryTypes';
 	},
 })
 export default class RepoDetails extends Vue {
-	private repo: Repository = {id: 1, name: ''};
+	private repo: Repository = {id: 1, name: '', repo_type: 'Amphora'};
 	private loading: boolean = true;
 	private error: boolean = false;
 	private queryParam: string = '';

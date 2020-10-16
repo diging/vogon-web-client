@@ -5,6 +5,7 @@ export interface Repository {
 	name: string;
 	description?: string;
 	configuration?: string;
+	repo_type: string;
 	collections?: TextCollectionResult;
 }
 

@@ -10,7 +10,7 @@
 				template(v-if="!repos.length")
 					EmptyView No repositories found!
 				template(v-else)
-					v-list-item(v-for="repo in repos" :key="repo.id" class="repo-item" v-bind:to="`/repository/${repo.id}${queryParam}`")
+					v-list-item(v-for="repo in repos" :key="repo.id" class="repo-item" v-bind:to="repoURL(repo)")
 						v-card(width="100%" elevat)
 							v-card-title {{repo.name}}
 							v-card-text {{repo.description}}
@@ -53,6 +53,15 @@ export default class RepoList extends Vue {
 			})
 			.catch(() => (this.error = true))
 			.finally(() => (this.loading = false));
+	}
+
+	private repoURL(repo: Repository): string {
+		if (repo.repo_type === 'Amphora') {
+			return `/repository/amphora/${repo.id}${this.queryParam}`;
+		} else if (repo.repo_type === 'Citesphere') {
+			return `/repository/citesphere/${repo.id}${this.queryParam}`;
+		}
+		return '';
 	}
 }
 </script>
