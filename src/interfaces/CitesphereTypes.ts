@@ -29,6 +29,7 @@ export interface CitesphereGroupMeta {
 	type: string;
 	created: string;
 	lastModified: string;
+	numItems: number;
 }
 
 export interface CitesphereCollection {
@@ -36,6 +37,7 @@ export interface CitesphereCollection {
 	name: string;
 	numberOfItems: number;
 	numberOfCollections: number;
+	children: CitesphereCollection[];
 }
 
 export interface CitesphereItem {
@@ -43,4 +45,11 @@ export interface CitesphereItem {
 	title: string;
 	itemType: string;
 	dateAdded: string;
+	authors: CitesphereItemAuthor[];
+	editors: CitesphereItemAuthor[];
+}
+
+export interface CitesphereItemAuthor {
+	firstName: string;
+	lastName: string;
 }
