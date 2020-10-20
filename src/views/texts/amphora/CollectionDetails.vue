@@ -22,7 +22,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
-import TextResources from '@/components/texts/TextResources.vue';
+import TextResources from '@/components/texts/amphora/TextResources.vue';
 import { TextCollection } from '@/interfaces/RepositoryTypes';
 
 @Component({
