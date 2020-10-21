@@ -5,7 +5,7 @@
 				v-form(ref="citesphereAuth" v-model="valid")
 					v-card-title#title Citesphere Authorization
 					v-card-text
-						a(href=`https://diging-dev.asu.edu/citesphere-review/api/v1/oauth/authorize?scope=read&client_id=${process.env.VUE_APP_CITESPHERE_CLIENT_ID}&response_type=code&state=vogon`) authorize
+						a(href=`https://diging-dev.asu.edu/citesphere-review/api/oauth/authorize?scope=read&client_id=${process.env.VUE_APP_CITESPHERE_CLIENT_ID}&response_type=code&state=vogon`) authorize
 						v-alert(v-if="error" type="error" dense dismissible class="my-4") {{ errorMsg }}
 					v-card-actions
 

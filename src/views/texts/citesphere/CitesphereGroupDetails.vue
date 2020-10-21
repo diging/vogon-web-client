@@ -17,6 +17,7 @@
 							v-card-title Collections
 							v-card-text
 								v-treeview(
+									v-if="groupDetails.collections.length > 0"
 									:items="groupDetails.collections"
 									:load-children="fetchCollections"
 									:active.sync="selectedCollections"
@@ -33,6 +34,8 @@
 											| {{ open ? `mdi-folder-open` : `mdi-folder` }}
 									template(v-slot:append="{ item }")
 										v-chip(small) {{ item.numberOfItems }}
+								
+								div(v-else) No collections!
 					v-col(:cols="9")
 						v-card(tile outlined)
 							v-card-title Items
@@ -45,7 +48,7 @@
 									:page.sync="page"
 									:items-per-page="50"
 									:server-items-length="itemsCount" 
-									hide-default-footer
+									:footer-props="{'items-per-page-options':['', 50]}"
 								)
 									template(v-slot:item.itemType="{ item }")
 										div(class="item-type") {{ item.itemType.toLowerCase().split("_").join(" ") }}
@@ -111,7 +114,6 @@ export default class CitesphereGroupDetails extends Vue {
 			this.queryParam = `?project_id=${projectId}`;
 		}
 
-		// TODO: Error handle
 		Vue.$axios.get(`/repository/citesphere/${this.$route.params.repoId}/groups/${this.$route.params.groupId}`)
 			.then((response: AxiosResponse) => {
 				this.groupDetails = response.data as CitesphereGroupInfo;
@@ -122,7 +124,6 @@ export default class CitesphereGroupDetails extends Vue {
 	}
 
 	private async fetchCollections(collection: CitesphereCollection) {
-		// TODO: Error handle
 		return Vue.$axios.get(
 			`/repository/citesphere/${this.$route.params.repoId}/groups/${
 				this.$route.params.groupId
@@ -134,7 +135,6 @@ export default class CitesphereGroupDetails extends Vue {
 	}
 
 	private async getItems(page: number = 1) {
-		// TODO: Error handle
 		this.itemsLoading = true;
 		let url;
 		const queryParams = `page=${page}`;
