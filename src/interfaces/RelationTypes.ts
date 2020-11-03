@@ -43,12 +43,12 @@ export interface RelationTemplateFieldRaw {
 export interface RelationTemplate {
 	id: number;
 	created: string;
-	name?: string;
-	description?: string;
-	expression?: string;
-	terminal_nodes?: string;
-	template_parts?: RelationTemplateFieldRaw[];
-	fields?: [RelationTemplateField];
+	name: string;
+	description: string;
+	expression: string;
+	terminal_nodes: string;
+	template_parts: RelationTemplateFieldRaw[];
+	fields: RelationTemplateField[];
 }
 
 export interface DateAppellation {
@@ -108,7 +108,7 @@ export interface RelationTemplateFormNodeType {
 	};
 	concept: ConceptType | null;
 	label: string;
-	description?: string;
+	description: string;
 	prompt: boolean;
 	relation_id?: number;
 	specific_concept: Concept | null;
