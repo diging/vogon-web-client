@@ -11,19 +11,43 @@
 							h3(class="headline") Resource "{{ text.title }}"
 							v-list-item-subtitle(class="text--primary" v-text="text.uri")
 						v-col(cols="6")
-							div(v-if="project" class="float-right")
-								v-btn(color="primary" @click="removeText")
-									v-icon(left) mdi-minus
+							div(v-if="project && !submitted" class="float-right")
+								v-tooltip(left)
+									template(v-slot:activator="{ on }")
+										v-btn(color="#db1a04" v-on="on" @click="removeText")
+											div(class="delete-button-text")
+												v-icon(left) mdi-trash-can-outline
+									span
 									| Remove from project
+							div(v-else-if="project && submitted" class="float-right")
+								v-tooltip(left)
+									template(v-slot:activator="{ on }")
+										div(v-on="on")
+											v-btn(color="#db1a04" disabled)
+												div(class="delete-button-text")
+													v-icon(left) mdi-trash-can-outline
+									span
+									| Texts cannot be removed after annotations have been submitted
 							div(v-else-if="$route.query.project_id" class="float-right")
 								v-btn(color="primary" @click="addText")
 									v-icon(left) mdi-plus
 									| Add to project
+					v-alert(
+						type="warning"
+						dense
+						v-if="text.state !== 'OK'"
+					) The item is still pending with Amphora. Wait until then for starting annotations
 				p(class="body-1")
 					| The following content objects are associated with this resource. 
 					| Select a content object to begin annotating that object in VogonWeb. 
-				TextSerialContent(v-bind:contents="text.aggregate_content")
-				TextAdditionalContent(v-bind:contents="text.content")
+				TextSerialContent(
+					v-bind:contents="text.aggregate_content"
+					v-bind:ready="text.state === 'OK'"
+				)
+				TextAdditionalContent(
+					v-bind:contents="text.content"
+					v-bind:ready="text.state === 'OK'"
+				)
 				v-card(class="card-annotations mt-4")
 					v-row(class="annotation-title")
 						v-col(md="6")
@@ -76,6 +100,8 @@ export default class TextDetails extends Vue {
 	private text: TextResource = {id: 1, title: ''};
 	private relations: RelationSet[] = [];
 	private masterId: number | null = null;
+	private submitted: boolean = true;
+
 	private snackbarText: string = '';
 	private snackbar: boolean = false;
 	public async mounted(): Promise<void> {
@@ -93,6 +119,11 @@ export default class TextDetails extends Vue {
 				this.project = response.data.part_of_project && response.data.part_of_project.name;
 				this.relations = response.data.relations;
 				this.masterId = response.data.master_text.id;
+				if (response.data.submitted) {
+					this.submitted = true;
+				} else {
+					this.submitted = false;
+				}
 			})
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
@@ -110,11 +141,11 @@ export default class TextDetails extends Vue {
 			});
 	}
 	private async removeText(): Promise<void> {
-		Vue.$axios.delete(`/project/${this.$route.query.project_id}/delete_text`, {
+		Vue.$axios.delete(`/project/${this.$route.query.project_id}`, {
 				data: { text_id: this.masterId },
 			})
-			.then((response: AxiosResponse) => {
-				this.getTextDetails();
+			.then(() => {
+				this.project = '';
 			})
 			.catch((error) => {
 				this.snackbar = true;
@@ -139,5 +170,9 @@ export default class TextDetails extends Vue {
 }
 .annotation-title {
 	padding: 0 16px 8px;
+}
+.delete-button-text{
+	color: white;
+	padding-left: 10px;
 }
 </style>

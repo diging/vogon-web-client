@@ -5,6 +5,7 @@
 			v-tab(href="#tab-2") Relations
 			v-tab(href="#tab-3") Template
 			v-tab(href="#tab-4") Search
+			v-tab(href="#tab-5") Network Graph
 		v-tabs-items(v-model="tab")
 			v-tab-item(value="tab-1")
 				AppellationList(:appellations="appellations")
@@ -17,6 +18,26 @@
 					:appellations="appellations"
 					:text="$store.getters.getAnnotatorText"
 				)
+			v-tab-item(value="tab-5")
+				v-dialog(
+					v-model="graphDialog"
+					persistent
+					max-width="1000px"
+				)
+					v-card
+						v-card-title
+							div(class="netowrk-graph-title")
+								div Network graph
+								v-spacer
+								v-btn(icon @click="graphDialog = false")
+									v-icon mdi-close
+						v-card-text
+							NetworkGraph(:network="network")
+				div(style="display: flex;" class="px-1")
+					v-spacer
+					v-btn(icon @click="graphDialog = true")
+						v-icon mdi-fullscreen
+				NetworkGraph(v-if="network" :network="network")
 	
 		v-snackbar(
 			v-model="relationCreated"
@@ -31,6 +52,7 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import AppellationCreator from '@/components/annotator/AppellationCreator.vue';
 import AppellationList from '@/components/annotator/AppellationList.vue';
+import NetworkGraph from '@/components/annotator/NetworkGraph.vue';
 import RelationList from '@/components/annotator/RelationList.vue';
 import RelationTemplateRender from '@/components/annotator/RelationTemplate.vue';
 import { RelationTemplate } from '@/interfaces/RelationTypes';
@@ -40,6 +62,7 @@ import { RelationTemplate } from '@/interfaces/RelationTypes';
 	components: {
 		AppellationCreator,
 		AppellationList,
+		NetworkGraph,
 		RelationList,
 		RelationTemplateRender,
 	},
@@ -48,10 +71,12 @@ export default class ListsSideDrawer extends Vue {
 	@Prop() private relations!: object[];
 	@Prop() private appellations!: object[];
 	@Prop() private relationsets!: object[];
+	@Prop() private network!: object[];
 
 	private tab: string = 'tab-4';
 	private show: boolean = false;
 	private listToggle: string = '';
+	private graphDialog: boolean = false;
 
 	private relationCreated: boolean = false;
 	private timeout: number = 2000;
@@ -94,9 +119,21 @@ export default class ListsSideDrawer extends Vue {
 		if (val !== oldVal) {
 			this.$store.commit('setRelationCreated', val);
 		}
+  }
+
+  @Watch('tab')
+  public changeTab() {
+		if (this.tab !== this.$store.getters.getAnnotatorCurrentTab) {
+		this.$store.commit('setAnnotatorCurrentTab', this.tab);
 	}
+  }
 }
 </script>
 
 <style scoped>
+.netowrk-graph-title {
+	display: flex;
+	width: 100%;
+	text-align: left;
+}
 </style>

@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
+import CitesphereAuthView from './views/auth/CitesphereAuthView.vue';
 import ForgotPasswordView from './views/auth/ForgotPasswordView.vue';
 import GithubView from './views/auth/GithubView.vue';
 import LoginView from './views/auth/LoginView.vue';
@@ -167,6 +168,11 @@ export default new Router({
 			path: '/github',
 			name: 'github',
 			component: GithubView,
+		},
+		{
+			path: '/auth/citesphere',
+			name: 'citesphere-auth',
+			component: CitesphereAuthView,
 		},
 		{
 			path: '/annotate/:id',

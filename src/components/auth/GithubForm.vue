@@ -22,10 +22,10 @@ export default class GithubForm extends Vue {
   private error: boolean = false;
   private valid: boolean = false;
 
-  public created() {
-	if (this.$route.query.code) {
-		this.getAccessToken(this.$route.query.code);
-	}
+	public created() {
+		if (this.$route.query.code) {
+			this.getAccessToken(this.$route.query.code);
+		}
   }
 
   /**
@@ -40,7 +40,7 @@ export default class GithubForm extends Vue {
 		},
 		})
 		.then((result) => {
-		this.$router.push('home');
+			this.$router.push('dashboard');
 		})
 		.catch((error) => {
 		// TODO: deal with errors

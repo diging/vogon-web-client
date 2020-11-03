@@ -1,6 +1,6 @@
 
 <template lang="pug">
-	v-container
+	div(class="text-container")
 		ErrorIndicator(v-if="error") Error while loading text details!
 		template(v-else)
 			Loading(v-if="loading")
@@ -15,6 +15,7 @@
 							:relations='relations' 
 							:appellations="appellations"
 							:relationsets="relationsets"
+							:network="network"
 						)
 </template>
 
@@ -24,6 +25,7 @@ import { Component, Vue } from 'vue-property-decorator';
 
 import AppellationList from '@/components/annotator/AppellationList.vue';
 import ListsSideDrawer from '@/components/annotator/ListsSideDrawer.vue';
+import NetworkGraph from '@/components/annotator/NetworkGraph.vue';
 import RelationList from '@/components/annotator/RelationList.vue';
 import SideDrawer from '@/components/annotator/SideDrawer.vue';
 import TextDisplay from '@/components/annotator/TextDisplay.vue';
@@ -44,6 +46,7 @@ import { TextDocument } from '@/interfaces/RepositoryTypes';
 		RelationList,
 		AppellationList,
 		ListsSideDrawer,
+		NetworkGraph,
 		ErrorIndicator,
 		Loading,
 	},
@@ -57,6 +60,7 @@ export default class TextView extends Vue {
 	private relations: Relation[] = [];
 	private relationsets: RelationSet[] = [];
 	private pendingRelationsets: RelationSet[] = [];
+	private network: any = null;
 
 	private loading: boolean = true;
 	private error: boolean = false;
@@ -104,6 +108,11 @@ export default class TextView extends Vue {
 			})
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
+
+		Vue.$axios.get(`/annotate/${this.$route.params.id}/network${this.queryParam}`)
+			.then((response: AxiosResponse) => {
+				this.network = response.data.elements;
+			});
 	}
 
 	private watchStore() {
@@ -116,6 +125,11 @@ export default class TextView extends Vue {
 				}
 			},
 		);
+		this.$store.subscribe((mutation: any, state: any) => {
+			if (mutation.type === 'setRelationCreated' && mutation.payload === true) {
+				this.getContent();
+			}
+		});
 	}
 }
 </script>
@@ -149,5 +163,8 @@ li {
 }
 a {
   color: #42b983;
+}
+.text-container {
+	max-width: 100%;
 }
 </style>

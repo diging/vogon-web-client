@@ -1,8 +1,10 @@
 FROM node:13.8
 
 WORKDIR /usr/src/app
+RUN mkdir host
 RUN git clone -b docker https://github.com/diging/vogon-web-client.git
-WORKDIR /usr/src/app
-RUN ["chmod", "+x", "/usr/src/app/vogon-web-client/startup.sh"]
 
+
+RUN ["chmod", "+x", "/usr/src/app/vogon-web-client/startup.sh"]
+WORKDIR /usr/src/app/vogon-web-client
 ENTRYPOINT ["./startup.sh"]
