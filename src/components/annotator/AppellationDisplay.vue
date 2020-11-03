@@ -3,6 +3,7 @@
 		appellation-display-item(
 			v-for="(appellation, i) in appellations"
 			:appellation="appellation"
+			:key="appellation.id"
 			:index="i"
 		)
 </template>
