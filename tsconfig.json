@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-	"strictNullChecks": false,
-	"strict": false,
+	  "strictNullChecks": true,
+	  "strict": true,
     "target": "esnext",
     "module": "esnext",
     "jsx": "preserve",

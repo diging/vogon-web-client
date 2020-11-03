@@ -19,6 +19,7 @@
 			p(class="grey--text text--darken-2") {{ template.description }}
 			RelationFieldItem(
 				v-for="(field, i) in template.fields"
+				v-bind:key="field.part_id"
 				v-bind:field="field"
 				v-bind:pos="i"
 				v-bind:appellations="appellations"
