@@ -78,12 +78,14 @@ export default class Login extends Vue {
 				this.$router.push('/login');
 			})
 			.catch((error: AxiosError) => {
-		this.error = true;
-		if (error.response.status === 412) {
-			this.errorMsg = String(error.response.data[0]).slice(0, -1);
-			for (let i = 1; i < error.response.data.length; i++) {
-			this.errorMsg = this.errorMsg.concat(', ' + String(error.response.data[i]).slice(0, -1));
-			}
+				this.error = true;
+				if (error && error.response && error.response.status === 412) {
+					this.errorMsg = String(error.response.data[0]).slice(0, -1);
+					for (let i = 1; i < error.response.data.length; i++) {
+						this.errorMsg = this.errorMsg.concat(
+							', ' + String(error.response.data[i]).slice(0, -1),
+						);
+					}
 				} else {
 					this.errorMsg = 'User could not be created';
 				}

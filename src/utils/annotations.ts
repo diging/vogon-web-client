@@ -209,10 +209,10 @@ export const getAnnotationRectPositions = (appellation: any, container: Element)
  */
 export const clearMouseTextSelection = (): void => {
 	if (window.getSelection !== null) {
-		const sel = window.getSelection();
+		const sel: any = window.getSelection();
 		if (sel !== null) {  // Chrome
 			sel.empty();
-		} else if (window.getSelection()!.removeAllRanges) {  // Firefox
+		} else if (sel.removeAllRanges) {  // Firefox
 			window.getSelection()!.removeAllRanges();
 		}
 	}
