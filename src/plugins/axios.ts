@@ -19,7 +19,7 @@ const config = {
   // baseURL: process.env.baseURL || process.env.apiUrl || ""
   // timeout: 60 * 1000, // Timeout
   // withCredentials: true, // Check cross-site Access-Control
-  baseURL: process.env.VUE_APP_BASE_URL,
+  baseURL: process.env.VUE_APP_BACKEND_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
     ...authHeader,
