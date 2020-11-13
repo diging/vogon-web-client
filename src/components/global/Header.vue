@@ -24,7 +24,7 @@
 			v-btn(text v-if="!this.$store.getters.loggedIn" @click="login") Login
 			v-btn(text v-if="!this.$store.getters.loggedIn" @click="signup") Sign Up
 			v-btn(text v-if="this.$store.getters.loggedIn" @click="logout") Log Out
-			v-btn(text v-if="this.$store.getters.loggedIn" href="/dashboard") Dashboard
+			v-btn(text v-if="this.$store.getters.loggedIn" to="/dashboard") Dashboard
 			
 </template>
 

@@ -37,7 +37,7 @@
 						v-btn(class="mr-4" color="teal" :disabled="!valid" large depressed @click="signUp") Sign Up
 
 					div(class="my-2") Have an account?
-						a(href="/login" class="mx-2") Login
+						router-link(to="/login" class="mx-2") Login
 						| instead
 </template>
 

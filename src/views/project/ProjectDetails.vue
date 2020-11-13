@@ -17,7 +17,7 @@
 					v-col(md="6")
 						div(class="float-right")
 							CreateUpdateProject(update :project="Object.assign({}, project)" v-bind:getProjectDetails="getProjectDetails")
-							v-btn(tile depressed color="teal" class="ma-2" dark v-bind:href="`/repository?project_id=${this.$route.params.id}`")
+							v-btn(tile depressed color="teal" class="ma-2" dark :to="`/repository?project_id=${this.$route.params.id}`")
 								v-icon(left) mdi-plus
 								span Add text
 			br
@@ -28,7 +28,7 @@
 				template(v-else)
 					v-data-table(:headers="textHeaders" :items="project.texts")
 						template(v-slot:item.title="{ item }")
-							a(v-bind:href="`/repository/${item.repository_id}/text/${item.repository_source_id}?project_id=${project.id}`") {{ item.title }}
+							router-link(:to="`/repository/${item.repository_id}/text/${item.repository_source_id}?project_id=${project.id}`") {{ item.title }}
 </template>
 
 <script lang="ts">

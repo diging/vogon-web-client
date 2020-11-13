@@ -1,5 +1,5 @@
 <template lang="pug">
-	v-list-item(v-bind:href="`/project/${project.id}`" class="project-card")
+	v-list-item(:to="`/project/${project.id}`" class="project-card")
 		v-list-item-content
 			div(class="title font-weight-regular") {{project.name}}
 			

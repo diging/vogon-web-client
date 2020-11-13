@@ -17,7 +17,7 @@
 								template(v-for="(text, index) in data.recent_texts")
 									v-list-item(
 										:key="text.id"
-										v-bind:href="`/repository/${text.repository_id}/text/${text.repository_source_id}`"
+										:to="`/repository/${text.repository_id}/text/${text.repository_source_id}`"
 									)
 										v-list-item-content
 											v-list-item-title(v-text="text.title")
@@ -32,7 +32,7 @@
 								template(v-for="(text, index) in data.added_texts")
 									v-list-item(
 										:key="text.id"
-										v-bind:href="`/repository/${text.repository_id}/text/${text.repository_source_id}`"
+										:to="`/repository/${text.repository_id}/text/${text.repository_source_id}`"
 									)
 										v-list-item-content
 											v-list-item-title(v-text="text.title")
@@ -46,20 +46,20 @@
 							template(v-else)
 								v-list
 									template(v-for="(project, index) in data.projects")
-										v-list-item(:key="project.id" v-bind:href="`/project/${project.id}`")
+										v-list-item(:key="project.id" :to="`/project/${project.id}`")
 											v-list-item-content
 												v-list-item-title(v-text="project.name")
 												v-list-item-subtitle(v-text="project.description")
 										v-divider(v-if="index + 1 < data.projects.length")
 								v-card-actions
 									v-spacer
-									v-btn(text :href="`/project?ownedBy=${data.user.username}`") View all
+									v-btn(text :to="`/project?ownedBy=${data.user.username}`") View all
 				br
 				v-row
 					v-col(:cols="6")
 						h2 My recent Annotations
 					v-col(:cols="6")
-						v-btn(class="float-right" dense outlined :href="`/relations?createdBy=${data.user.username}`") See all
+						v-btn(class="float-right" dense outlined :to="`/relations?createdBy=${data.user.username}`") See all
 				br
 				v-card(outlined class="user-dashboard")
 					EmptyView(
