@@ -1,0 +1,6 @@
+FROM node:13.8
+
+WORKDIR /usr/src/app
+RUN mkdir host
+
+ENTRYPOINT ["./host/startup.sh"]
