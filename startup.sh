@@ -7,6 +7,6 @@ apt-get update && apt-get upgrade -y && apt-get autoremove && apt-get autoclean
 cp  ../host/.env .
 
 
-npm install
-npm run build
+npx install
+npx run build
 cp -r dist ../host/
