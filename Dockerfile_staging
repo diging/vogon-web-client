@@ -1,0 +1,5 @@
+FROM node:13.8
+
+WORKDIR /usr/src/app
+
+ENTRYPOINT ["./host/startup_staging.sh"]
