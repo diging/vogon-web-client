@@ -5,7 +5,6 @@
 			:appellation="appellation"
 			:key="appellation.id"
 			:index="i"
-			:key="appellation.id"
 		)
 </template>
 
