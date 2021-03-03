@@ -1,7 +1,7 @@
 <template lang="pug">
 	v-app
 		Header
-		v-main
+		v-content
 			v-container
 				router-view
 		Footer
