@@ -10,7 +10,7 @@
 				template(v-if="!repos.length")
 					EmptyView No repositories found!
 				template(v-else)
-					v-list-item(v-for="repo in repos" :key="repo.id" class="repo-item" v-bind:href="`/repository/${repo.id}${queryParam}`")
+					v-list-item(v-for="repo in repos" :key="repo.id" class="repo-item" v-bind:to="`/repository/${repo.id}${queryParam}`")
 						v-card(width="100%" elevat)
 							v-card-title {{repo.name}}
 							v-card-text {{repo.description}}

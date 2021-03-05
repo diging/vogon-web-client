@@ -3,7 +3,7 @@
 		v-div
 			template(v-for="(collection, index) in collections")
 				v-div(v-if="(index >= perPage*(page - 1)) && (index <= (perPage*page) - 1)")
-					v-list-item(:key="collection.id" v-bind:href="`/repository/${repoId}/collections/${collection.id}${queryParam}`")
+					v-list-item(:key="collection.id" v-bind:to="`/repository/${repoId}/collections/${collection.id}${queryParam}`")
 						v-list-item-content
 							v-list-item-title(v-text="collection.name")
 							v-list-item-subtitle(class="text--primary" v-text="collection.description")
