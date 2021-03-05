@@ -14,8 +14,7 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import AppellationDisplay from '@/components/annotator/AppellationDisplay.vue';
 import store from '@/store';
 import {
-	clearMouseTextSelection, getAnnotationRectPositions, getPointPosition, getStyle,
-	getTextPosition,
+	clearMouseTextSelection, getAnnotationRectPositions,
 } from '@/utils/annotations';
 
 @Component({
@@ -42,11 +41,6 @@ export default class TextDisplay extends Vue {
 
 	public created() {
 		this.currentAppellations = this.appellations;
-		// store.subscribe((mutation: any, state: any) => {
-		// 	if (mutation.type === 'setAnnotatorHighlightedText' && mutation.payload === null) {
-		// 		clearMouseTextSelection();
-		// 	}
-		// })
 	}
 
 	@Watch('appellations')
