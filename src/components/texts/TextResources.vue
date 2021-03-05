@@ -1,7 +1,7 @@
 <template lang="pug">
 	v-list(two-line)
 		template(v-for="(resource, index) in resources")
-			v-list-item(:key="resource.id" v-bind:href="`/repository/${repoId}/text/${resource.id}${queryParam}`")
+			v-list-item(:key="resource.id" v-bind:to="`/repository/${repoId}/text/${resource.id}${queryParam}`")
 				v-list-item-content
 					v-list-item-title(class="font-weight-medium" v-text="resource.title")
 					v-list-item-subtitle(class="text--primary" v-text="resource.uri")
