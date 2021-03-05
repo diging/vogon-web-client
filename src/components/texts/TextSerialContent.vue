@@ -15,7 +15,7 @@
 								v-btn(
 									:disabled="!ready"
 									class="ma-2" color="primary" fab :key="resource.id" x-small elevation=0 
-									:href="`/repository/${$route.params.repoId}/text/${$route.params.textId}/content/${resource.id}${queryParam}?part_of=${$route.params.textId}`"
+									:to="`/repository/${$route.params.repoId}/text/${$route.params.textId}/content/${resource.id}${queryParam}?part_of=${$route.params.textId}`"
 								) {{ i+1 }}
 				v-divider(v-if="index + 1 < contents.length" :key="index")
 </template>

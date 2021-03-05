@@ -18,7 +18,7 @@
 						v-btn(
 							:disabled="!ready"
 							depressed color="primary" small
-							:href="`/repository/${$route.params.repoId}/text/${$route.params.textId}/content/${content.id}${queryParam}`"
+							:to="`/repository/${$route.params.repoId}/text/${$route.params.textId}/content/${content.id}${queryParam}`"
 						)
 							v-icon(left small) mdi-tag 
 							| Annotate

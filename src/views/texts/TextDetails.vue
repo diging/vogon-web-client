@@ -56,7 +56,7 @@
 							div(class="float-right")
 								v-btn(
 									class="view-annotations" 
-									v-bind:href="`/relations?occursIn=${text.uri}`" 
+									v-bind:to="`/relations?occursIn=${text.uri}`" 
 									dense outlined
 								) View all
 					v-card-text

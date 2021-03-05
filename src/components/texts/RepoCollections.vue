@@ -27,7 +27,7 @@
 			Loading(v-if="loading")
 			template(v-else v-for="(collection, index) in collections.results")
 				div
-					v-list-item(:key="collection.id" v-bind:href="`/repository/${repoId}/collections/${collection.id}${queryParam}`")
+					v-list-item(:key="collection.id" v-bind:to="`/repository/${repoId}/collections/${collection.id}${queryParam}`")
 						v-list-item-content
 							v-list-item-title(v-text="collection.name")
 							v-list-item-subtitle(class="text--primary" v-text="collection.description")
