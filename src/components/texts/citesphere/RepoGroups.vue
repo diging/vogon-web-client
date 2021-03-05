@@ -3,7 +3,7 @@
 		v-div
 			template(v-for="(group, index) in groups")
 				v-div(v-if="(index >= perPage*(page - 1)) && (index <= (perPage*page) - 1)")
-					v-list-item(:key="group.id" v-bind:href="`/repository/citesphere/${repoId}/groups/${group.id}${queryParam}`")
+					v-list-item(:key="group.id" v-bind:to="`/repository/citesphere/${repoId}/groups/${group.id}${queryParam}`")
 						v-list-item-content
 							v-list-item-title(v-text="group.name")
 							v-list-item-subtitle(class="text--primary" v-text="group.description")

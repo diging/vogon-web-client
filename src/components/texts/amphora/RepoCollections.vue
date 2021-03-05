@@ -50,7 +50,7 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import Loading from '@/components/global/Loading.vue';
 import { PAGE_SIZE } from '@/constants';
-import { TextCollection, TextCollectionResult } from '@/interfaces/RepositoryTypes';
+import { TextCollectionResult } from '@/interfaces/RepositoryTypes';
 
 @Component({
 	name: 'RepoCollections',
