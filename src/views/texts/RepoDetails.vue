@@ -12,9 +12,14 @@
 				br
 				v-card(class="card-project-text")
 					v-card-title Collections
-					template(v-if="!repo.collections.length")
+					template(v-if="!repo.collections.results.length")
 						EmptyView No collections found!
-					RepoCollections(v-else v-bind:collections="repo.collections" v-bind:repoId="$route.params.id" v-bind:queryParam="queryParam")
+					RepoCollections(
+						v-else
+						v-bind:collectionResults="repo.collections" 
+						v-bind:repoId="$route.params.id" 
+						v-bind:queryParam="queryParam"
+					)
 
 </template>
 
@@ -26,6 +31,7 @@ import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
 import RepoCollections from '@/components/texts/RepoCollections.vue';
+import { PAGE_SIZE } from '@/constants';
 import { Repository } from '@/interfaces/RepositoryTypes';
 
 @Component({
@@ -49,7 +55,16 @@ export default class RepoDetails extends Vue {
 			this.queryParam = `?project_id=${projectId}`;
 		}
 
-		Vue.$axios.get(`/repository/${this.$route.params.id}`)
+		this.getRepoDetails();
+	}
+
+	private async getRepoDetails() {
+		this.loading = true;
+		Vue.$axios.get(`/repository/${this.$route.params.id}`, {
+			params: {
+				limit: PAGE_SIZE,
+			},
+		})
 			.then((response: AxiosResponse) => {
 				this.repo = response.data as Repository;
 			})
