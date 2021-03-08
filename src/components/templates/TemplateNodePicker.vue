@@ -48,7 +48,7 @@
 						v-list-item-action
 							v-btn(icon @click="nodeSpecificConcept = null")
 								v-icon mdi-close
-				div(v-else) [Select a concept from below ...]
+				div(v-else) Select a concept from below ...
 
 			br
 			v-autocomplete(
