@@ -26,7 +26,7 @@
 								| &nbsp;{{ concept.uri }}
 							v-col(:cols="6" class="px-3 py-0")
 								strong Type:
-								| &nbsp;{{ concept.typed.label }}
+								| &nbsp;{{ concept.typed_label }}
 
 					v-card-actions
 						v-spacer
