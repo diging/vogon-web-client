@@ -37,20 +37,8 @@
 		)
 
 		template(v-if="nodeType === TEMPLATE_RELATION_TYPES.SPECIFIC_CONCEPT")
-			v-banner(elevation="1" class="template-input selected-concept")
-				v-icon(slot="icon" size="24") mdi-book-outline
-				template(v-if="nodeSpecificConcept")
-					v-list-item
-						v-list-item-content
-							v-list-item-title
-								strong {{ nodeSpecificConcept.label }}
-							p {{ nodeSpecificConcept.description }}
-						v-list-item-action
-							v-btn(icon @click="nodeSpecificConcept = null")
-								v-icon mdi-close
-				div(v-else) Select a concept from below ...
+			div(class="mb-4") Search and select specific concept here:
 
-			br
 			v-autocomplete(
 				v-model="selectedConcept"
 				class="template-input mb-4"
@@ -74,6 +62,19 @@
 					v-list-item-content(class="text-left")
 						v-list-item-title {{ item.label }}
 						v-list-item-subtitle {{ item.description }}
+
+			v-banner(elevation="1" class="template-input selected-concept")
+				v-icon(slot="icon" size="24") mdi-book-outline
+				template(v-if="nodeSpecificConcept")
+					v-list-item
+						v-list-item-content
+							v-list-item-title
+								strong {{ nodeSpecificConcept.label }}
+							p {{ nodeSpecificConcept.description }}
+						v-list-item-action
+							v-btn(icon @click="nodeSpecificConcept = null")
+								v-icon mdi-close
+				div(v-else) Selected conept from above...
 
 		v-text-field(
 			v-if="nodeType"
@@ -240,5 +241,9 @@ export default class TemplateNodePicker extends Vue {
 .selected-concept .v-banner__wrapper {
 	padding-top: 0;
 	padding-bottom: 0;
+}
+
+.selected-concept {
+	border-radius: 4px !important;
 }
 </style>
