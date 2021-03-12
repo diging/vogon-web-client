@@ -14,11 +14,11 @@
 						div(class="flex-grow-1")    
 						v-btn(class="mr-4" color="teal" :disabled="!valid" large depressed @click="login") Login
 
-					div.px-2
+					div.px-2.text-center
 						| Forgot password?
 						router-link(to="/forgot-password" class="mx-2") Click here
 
-					div(class="my-2 px-2") Don't have an account?
+					div.mt-2.pb-4.px-2.text-center Don't have an account?
 						a(href="/signup" class="mx-2") Signup
 						| for one
 </template>

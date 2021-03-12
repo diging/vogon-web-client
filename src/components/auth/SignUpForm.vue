@@ -36,7 +36,7 @@
 						div(class="flex-grow-1")    
 						v-btn(class="mr-4" color="teal" :disabled="!valid" large depressed @click="signUp") Sign Up
 
-					div(class="my-2") Have an account?
+					div.my-2.pb-4.text-center Have an account?
 						router-link(to="/login" class="mx-2") Login
 						| instead
 </template>
