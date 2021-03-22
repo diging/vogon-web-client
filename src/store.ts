@@ -35,6 +35,7 @@ const initialState: RootState = {
 			occursIn: -1,
 		},
 		relationCreated: false,
+		apellationDeleted: false,
 		selectedConcept: null,
 		searchingConcept: false,
 		createdAppellation: false,
@@ -190,6 +191,9 @@ const mutations: MutationTree<RootState> = {
 	},
 	setRelationCreated(state, value) {
 		state.annotator.relationCreated = value;
+	},
+	setAppellationDeleted(state, value) {
+		state.annotator.apellationDeleted = value;
 	},
 	setFocusedAppellationsForRelations(state, appellations) {
 		state.annotator.focusedAppellationsForRelations = appellations;

@@ -37,6 +37,7 @@ export interface RootState {
 			occursIn: number,
 		};
 		relationCreated: boolean,
+		apellationDeleted: boolean,
 		selectedConcept: Concept | null,
 		searchingConcept: boolean,
 		createdAppellation: boolean,
