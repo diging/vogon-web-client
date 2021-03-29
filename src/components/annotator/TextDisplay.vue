@@ -171,7 +171,6 @@ export default class TextDisplay extends Vue {
 	text-align: left;
 }
 #text-content {
-	border: 1px solid #ccc;
 	padding: 10px;
 	background: #fff;
 }

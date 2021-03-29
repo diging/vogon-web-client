@@ -1,6 +1,6 @@
 <template lang="pug">
-	v-card
-		v-tabs(v-model="tab" )
+	div(class="tools-container")
+		v-tabs(v-model="tab" show-arrows)
 			v-tab(href="#tab-1") Annotations
 			v-tab(href="#tab-2") Relations
 			v-tab(href="#tab-3") Template
@@ -100,6 +100,12 @@ export default class ListsSideDrawer extends Vue {
 			}
 		});
 		this.$store.watch(
+			(state, getters) => getters.getAnnotatorCurrentTab,
+			(newValue, oldValue) => {
+				this.tab = newValue;
+			},
+		);
+		this.$store.watch(
 			(state, getters) => getters.getAnnotatorTemplate,
 			(newValue, oldValue) => {
 				this.template = newValue;
@@ -134,5 +140,9 @@ export default class ListsSideDrawer extends Vue {
 	display: flex;
 	width: 100%;
 	text-align: left;
+}
+.tools-container {
+	padding: 10px;
+	background: #fff;
 }
 </style>

@@ -1,5 +1,5 @@
 <template lang="pug">
-	v-app-bar
+	v-app-bar(:elevation="0" flat)
 		v-app-bar-nav-icon(@click="showSideBar")
 		v-spacer
 		v-toolbar-title.text-capitalize {{ text.title }}
@@ -7,7 +7,6 @@
 		v-btn(class="mx-2" small color="primary" v-if="!submitted && relationsets && relationsets.length > 0" @click="submitRelationsDialog = true")
 			v-icon(left small) mdi-sync
 			| Submit relations
-		v-app-bar-nav-icon(@click="showLists")
 
 		v-dialog(v-model="submitRelationsDialog" max-width="700")
 			v-card
@@ -53,10 +52,6 @@ export default class ToolBar extends Vue {
 		this.$store.commit('toggleSideBarMutation');
 	}
 
-	private showLists() {
-		this.$store.commit('toggleLists');
-	}
-
 	private submitRelations() {
 		this.submitting = true;
 		let relationsets: RelationSet[] = [];
@@ -97,9 +92,6 @@ pre {
 }
 #test {
 	float: left;
-}
-#text-content {
-	padding: 3%;
 }
 .template-list {
 	text-align: left;

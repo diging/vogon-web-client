@@ -6,17 +6,24 @@
 			Loading(v-if="loading")
 			div(v-else)
 				SideDrawer(:text="text" :project="project")
-				ToolBar(:text="text" :relationsets="pendingRelationsets")
-				v-row
-					v-col(cols="6")
-						TextDisplay(:content="content" :appellations="appellations")
-					v-col(cols="6")
-						ListsSideDrawer(
-							:relations='relations' 
-							:appellations="appellations"
-							:relationsets="relationsets"
-							:network="network"
+				v-card(outlined)
+					div(class="annotation-toolbar")
+						ToolBar(:text="text" :relationsets="pendingRelationsets")
+					v-row(no-gutters)
+						v-col(
+							cols="6"
+							style="border-right: 1px solid #ccc;"
 						)
+							TextDisplay(:content="content" :appellations="appellations")
+						v-col(
+							cols="6"
+						)
+							ListsSideDrawer(
+								:relations='relations' 
+								:appellations="appellations"
+								:relationsets="relationsets"
+								:network="network"
+							)
 </template>
 
 <script lang="ts">
@@ -169,5 +176,8 @@ a {
 }
 .text-container {
 	max-width: 100%;
+}
+.annotation-toolbar {
+	border-bottom: 1px solid #ccc;
 }
 </style>
