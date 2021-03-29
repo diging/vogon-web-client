@@ -71,7 +71,7 @@ import { RelationTemplate } from '@/interfaces/RelationTypes';
 export default class TemplateList extends Vue {
 	private loading: boolean = true;
 	private error: boolean = false;
-	private all: boolean = false;
+	private all: boolean = true;
 	private deleteDialog: boolean = false;
 	private snackbar: boolean = false;
 	private msg: string = '';
