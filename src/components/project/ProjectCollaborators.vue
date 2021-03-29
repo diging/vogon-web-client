@@ -2,6 +2,10 @@
 	div(class="mt-3")
 		strong Collaborators
 		br
+		v-chip(class="mr-2 mt-2" color="green darken-2" text-color="white")
+			v-avatar(left)
+				v-icon mdi-account-circle
+			| {{ project.ownedBy.full_name || project.ownedBy.username }}
 		v-chip(
 			v-for="participant in project.participants"
 			class="mr-2 mt-2"
@@ -9,6 +13,7 @@
 			text-color="white"
 			:close="isOwner"
 			@click:close="participantToRemove=participant; removeDialog=true"
+			:key="participant.username"
 		)
 			v-avatar(left)
 				v-icon mdi-account-circle
@@ -32,6 +37,7 @@
 				            class="field-text mt-3"
 							append-outer-icon="mdi-magnify"
 							@click:append-outer="searchUser"
+							@keyup.enter.native="searchUser"
 						)
 
 						ErrorIndicator(v-if="searchError") Error while seraching users!
