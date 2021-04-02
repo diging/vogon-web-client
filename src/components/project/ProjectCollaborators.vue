@@ -65,7 +65,7 @@
 					v-divider
 					v-card-actions
 						v-spacer
-						v-btn(color="blue darken-1" text @click="usersDialog = false") Close
+						v-btn(color="blue darken-1" text @click="usersDialog = false; selectedUser = null;") Close
 						v-btn(
 							color="blue darken-1"
 							text
@@ -145,7 +145,10 @@ export default class ProjectCollaborators extends Vue {
 					this.onAdd().then(() => this.usersDialog = false);
 				})
 				.catch(() => this.addUserError = true)
-				.finally(() => this.addingUser = false);
+				.finally(() => {
+					this.addingUser = false;
+					this.selectedUser = null;
+				});
 		}
 	}
 

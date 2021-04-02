@@ -40,28 +40,49 @@
 							v-icon() mdi-bell
 
 				v-card(class="notification-container")
+					div(v-if="notifications.length === 0")
+						div(class="text-center mt-6")
+							v-icon(large) mdi-check-box-multiple-outline
+						div(class="mb-6") No notifications. All clear!
 					template(v-for="notification, i in notifications")
 						v-list-item(
 							:key="i"
 							:class="`notification-item ${notification.unread && 'notification-unread'}`"
-							:href="`/project/${notification.action_object.id}`"
-							target="_blank"
 							@click="readNotification(notification)"
 						)
-							v-list-item-content(class="text-left")
-								| {{ notification.verb }}
+							v-list-item-content(
+								class="text-left"
+							)
+								v-row(no-gutters style="flex-wrap: nowrap;")
+									v-col(:cols="1" style="min-width: 100px; max-width: 100%;" class="flex-grow-1 flex-shrink-0")
+										router-link(
+											:to="`/project/${notification.action_object.id}`"
+											target="_blank"
+											class="notification-link"
+										)
+											| {{ notification.verb }}
+					
+									v-col(class="flex-grow-0 flex-shrink-0 align-self-center")
+										v-btn(icon @click="deleteNotification(notification)")
+													v-icon mdi-close-box
 						v-divider(v-if="i + 1 < notifications.length" )
+					v-btn(style="width: 100%" text small @click="deleteAllNotifications()" :disabled="notifications.length === 0")
+						| Clear all
 			
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 
+import EmptyView from '@/components/global/EmptyView.vue';
 import { Notification } from '@/interfaces/GlobalTypes';
 import router from '@/router';
 
 export default Vue.extend({
 	name: 'Header',
+	components: {
+		EmptyView,
+	},
 	props: {
 		msg: String,
 	},
@@ -122,6 +143,19 @@ export default Vue.extend({
 					});
 			}
 		},
+		deleteNotification(notification: Notification) {
+			// Clear from list
+			const newNotifications = this.notifications.filter(
+				(i: Notification) => i.id !== notification.id);
+			this.$store.commit('setNotifications', newNotifications);
+
+			// Make delete call
+			Vue.$axios.post(`/notifications/${notification.id}/mark_as_deleted`);
+		},
+		deleteAllNotifications() {
+			this.$store.commit('setNotifications', []);
+			Vue.$axios.post(`/notifications/mark_all_as_deleted`);
+		},
 	},
 });
 </script>
@@ -143,7 +177,7 @@ li a {
 	width: 400px;
 	padding: 0px;
 	max-height: 500px;
-	overflow-y: scroll;
+	overflow-y: auto;
 }
 .notification-item {
 	cursor: pointer;
@@ -151,5 +185,9 @@ li a {
 .notification-unread {
 	background-color: #ECEFF1;
 	border-left: 2px solid #009688;
+}
+.notification-link {
+	text-decoration: none;
+	color: rgba(0,0,0,.87);
 }
 </style>
