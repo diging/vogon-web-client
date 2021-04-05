@@ -16,6 +16,7 @@ export interface Project {
 	created?: string;
 	quadriga_id?: string;
 	ownedBy?: User;
+	createdBy?: User;
 	texts?: Text[] | number[];
 	num_texts?: number;
 	num_relations?: number;

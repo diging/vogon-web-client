@@ -5,9 +5,12 @@
 			
 			div(class="text--primary") {{project.description}}
 			span
-				| Created by 
-				strong "{{project.ownedBy.username}}"
-				| &nbsp;on {{moment(project.created).format('lll')}}
+				| Owned by 
+				strong "{{ project.ownedBy.username }}",
+				| &nbsp;created on 
+				| &nbsp;{{ moment(project.created).format('lll') }} by 
+				strong "{{ project.createdBy.username }}"
+
 			div(class="teal--text") 
 				strong {{project.num_texts}} texts, {{project.num_relations}} relations
 </template>
