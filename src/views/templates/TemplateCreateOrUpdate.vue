@@ -70,6 +70,7 @@ import Loading from '@/components/global/Loading.vue';
 import TemplateCreateForm from '@/components/templates/TemplateCreateForm.vue';
 import { ConceptType } from '@/interfaces/ConceptTypes';
 import { RelationTemplate } from '@/interfaces/RelationTypes';
+import { get } from 'lodash';
 
 @Component({
 	name: 'TemplateCreateOrUpdate',
@@ -85,20 +86,30 @@ export default class TemplateCreateOrUpdate extends Vue {
 	private template: RelationTemplate | null = null;
 
 	public created() {
-		if (this.$route.params.id) {
-			Vue.$axios.get(`/relationtemplate/${this.$route.params.id}`)
-				.then((response: AxiosResponse) => {
-					this.template = response.data;
-				})
-				.catch(() => this.error = true);
-		}
-		Vue.$axios.get('/relationtemplate/create_form')
-			.then((response: AxiosResponse) => {
-				const types: ConceptType[] = response.data.open_concepts;
-				this.$store.commit('setTemplateOpenConcepts', types);
+		this.getOpenConceptsData()
+			.then(() => {
+				if (this.$route.params.id) {
+					return this.getTemplateData();
+				}
+				return Promise.resolve();
 			})
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
+	}
+
+	private getOpenConceptsData() {
+		return Vue.$axios.get('/relationtemplate/create_form')
+			.then((response: AxiosResponse) => {
+				const types: ConceptType[] = response.data.open_concepts;
+				this.$store.commit('setTemplateOpenConcepts', types);
+			});
+	}
+
+	private getTemplateData() {
+		return Vue.$axios.get(`/relationtemplate/${this.$route.params.id}`)
+			.then((response: AxiosResponse) => {
+				this.template = response.data;
+			});
 	}
 }
 </script>

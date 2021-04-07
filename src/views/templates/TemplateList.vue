@@ -9,7 +9,7 @@
 						template(v-if="all") My templates
 						template(v-else) View all
 						v-icon(right) mdi-filter-variant
-					v-btn(class="ms-3" color="primary" href="/relationtemplate/add") Create
+					v-btn(class="ms-3" color="primary" to="/relationtemplate/add") Create
 
 		p Relation templates provide a mechanism for mapping annotations onto complex nested relations (quadruples).
 
@@ -31,7 +31,7 @@
 				EmptyView(v-else) No templates found!
 
 			template(v-slot:item.name="{ item }")
-				a(v-bind:href="`/relationtemplate/${item.id}/edit`" class="template-link")
+				router-link(v-bind:to="`/relationtemplate/${item.id}/edit`" class="template-link")
 					span(class="subtitle-1 font-weight-medium") {{ item.name }}
 
 			template(v-slot:item.actions="{ item }")
@@ -71,7 +71,7 @@ import { RelationTemplate } from '@/interfaces/RelationTypes';
 export default class TemplateList extends Vue {
 	private loading: boolean = true;
 	private error: boolean = false;
-	private all: boolean = false;
+	private all: boolean = true;
 	private deleteDialog: boolean = false;
 	private snackbar: boolean = false;
 	private msg: string = '';

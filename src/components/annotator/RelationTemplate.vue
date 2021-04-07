@@ -6,13 +6,15 @@
 					template(v-slot:append)
 						v-fade-transition(leave-absolute)
 							v-icon(v-on="on" @click="searchRelationTemplates()") search
-			v-list(two-line)
-				template(v-for="(template, i) in templates" )
-					v-list-item(:key="i" @click="showTemplate(template)")
-						v-list-item-content(class="template-list")
-							v-list-item-title(v-html="template.name")
-							v-list-item-subtitle(v-html="template.description")
-					v-divider(v-if="i + 1 < templates.length" )
+			
+			div(class="template-list")
+				v-list(two-line)
+					template(v-for="(template, i) in templates" )
+						v-list-item(:key="i" @click="showTemplate(template)")
+							v-list-item-content(class="template-item-content")
+								v-list-item-title(v-html="template.name")
+								div(class="template-description" v-html="template.description")
+						v-divider(v-if="i + 1 < templates.length" )
 
 		template(v-if="template")
 			h3 {{ template.name }}
@@ -180,8 +182,19 @@ export default class RelationTemplateRender extends Vue {
 </script>
 
 <style scoped>
+.template-list {
+	max-height: 500px;
+	overflow-y: auto;
+}
+.template-item-content {
+	max-width: 500px;
+}
 .template-container {
 	text-align: left;
 	padding: 20px;
+}
+.template-description {
+	font-size: 0.875rem;
+	color: rgba(0,0,0,.6);
 }
 </style>

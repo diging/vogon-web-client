@@ -59,27 +59,27 @@
 									v-chip(class="ma-2") {{ part.internal_id }}
 								td
 									TemplateNodePicker(
-										:node="part.source"
+										:node.sync="part.source"
 										:choices="nodeChoices"
 									)
 								td
 									TemplateNodePicker(
-										:node="part.predicate"
+										:node.sync="part.predicate"
 										:choices="predChoices"
 									)
 								td
 									TemplateNodePicker(
-										:node="part.object"
+										:node.sync="part.object"
 										:choices="nodeChoices"
 									)
 								td
 									v-btn(fab small outlined color="error" @click="clearRow(i)")
 										v-icon mdi-close
 
-				div(class="text-center my-3")
-					v-btn(@click="addRow()" outlined dense)
-						v-icon(left) mdi-plus
-						| Add relation
+			div(class="text-center my-3")
+				v-btn(@click="addRow()" outlined dense)
+					v-icon(left) mdi-plus
+					| Add relation
 
 		v-btn(
 			v-if="edit"
@@ -103,7 +103,6 @@
 
 		div(v-if="errorMsg !== ''" class="mt-4 error-container")
 			v-alert(v-model="error" type="error" dense dismissible) {{ errorMsg }}
-
 </template>
 
 <script lang="ts">
@@ -123,19 +122,19 @@ import { RelationTemplate, RelationTemplateFieldRaw, RelationTemplateFormType } 
 	},
 })
 export default class TemplateCreateForm extends Vue {
-	@Prop({ default: null }) private template!: RelationTemplate | null;
+	@Prop() private template!: RelationTemplate;
 
-	private edit: boolean = false; // Edit mode
 	private valid: boolean = false;
 	private errorMsg: string = '';
 	private error: boolean = false;
 	private creating: boolean = false;
 
-	private id?: number;
-	private name?: string = '';
-	private description?: string = '';
-	private expression?: string = '';
-	private terminalNodes?: string = '';
+	// Template fields
+	private id: number = -1;
+	private name: string = '';
+	private description: string = '';
+	private expression: string = '';
+	private terminalNodes: string = '';
 	private defaultValues: RelationTemplateFormType = {
 		source: {
 			type: { key: '', label: '' }, concept: null, label: '', description: '',
@@ -169,47 +168,54 @@ export default class TemplateCreateForm extends Vue {
 		TEMPLATE_RELATION_TYPES.HAS,
 	];
 
-	@Watch('template', { immediate: true, deep: true })
-	private onTemplateChange(val: RelationTemplate | null) {
-		if (val !== null && val) {
-			this.edit = true;
-			this.name = val.name;
-			this.description = val.description;
-			this.expression = val.expression;
-			this.terminalNodes = val.terminal_nodes;
-			this.id = val.id;
-			if (val.template_parts) {
-				this.templateParts = val.template_parts.map((part: RelationTemplateFieldRaw) => ({
-					id: part.id,
-					internal_id: part.internal_id,
-					source: {
-						type: TEMPLATE_RELATION_TYPES_KEYS[part.source_node_type],
-						concept: part.source_type,
-						label: part.source_label,
-						description: part.source_description,
-						prompt: part.source_prompt_text,
-						relation_id: part.source_relationtemplate_internal_id,
-						specific_concept: part.source_concept,
-					},
-					predicate: {
-						type: TEMPLATE_RELATION_TYPES_KEYS[part.predicate_node_type],
-						concept: part.predicate_type,
-						label: part.predicate_label,
-						description: part.predicate_description,
-						prompt: part.predicate_prompt_text,
-						specific_concept: part.predicate_concept,
-					},
-					object: {
-						type: TEMPLATE_RELATION_TYPES_KEYS[part.object_node_type],
-						concept: part.object_type,
-						label: part.object_label,
-						description: part.object_description,
-						prompt: part.object_prompt_text,
-						relation_id: part.object_relationtemplate_internal_id,
-						specific_concept: part.object_concept,
-					},
-				}));
-			}
+	get edit() {
+		return !!this.$route.params.id;
+	}
+
+	public async created() {
+		if (this.edit) {
+			this.initializeFields();
+		}
+	}
+
+	private initializeFields() {
+		this.id = this.template.id;
+		this.name = this.template.name;
+		this.description = this.template.description;
+		this.expression = this.template.expression;
+		this.terminalNodes = this.template.terminal_nodes;
+
+		if (this.template.template_parts) {
+			this.templateParts = this.template.template_parts.map((part: RelationTemplateFieldRaw) => ({
+				id: part.id,
+				internal_id: part.internal_id,
+				source: {
+					type: TEMPLATE_RELATION_TYPES_KEYS[part.source_node_type],
+					concept: part.source_type,
+					label: part.source_label,
+					description: part.source_description,
+					prompt: part.source_prompt_text,
+					relation_id: part.source_relationtemplate_internal_id,
+					specific_concept: part.source_concept,
+				},
+				predicate: {
+					type: TEMPLATE_RELATION_TYPES_KEYS[part.predicate_node_type],
+					concept: part.predicate_type,
+					label: part.predicate_label,
+					description: part.predicate_description,
+					prompt: part.predicate_prompt_text,
+					specific_concept: part.predicate_concept,
+				},
+				object: {
+					type: TEMPLATE_RELATION_TYPES_KEYS[part.object_node_type],
+					concept: part.object_type,
+					label: part.object_label,
+					description: part.object_description,
+					prompt: part.object_prompt_text,
+					relation_id: part.object_relationtemplate_internal_id,
+					specific_concept: part.object_concept,
+				},
+			}));
 		}
 	}
 
@@ -256,7 +262,7 @@ export default class TemplateCreateForm extends Vue {
 			terminal_nodes: this.terminalNodes,
 			parts,
 		};
-		if (this.id) {
+		if (this.id !== -1) {
 			payload.id = this.id;
 		}
 		this.creating = true;

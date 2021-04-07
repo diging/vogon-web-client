@@ -2,7 +2,7 @@
 	div
 		v-select(
 			class="template-input mt-4"
-			v-model="node.type"
+			v-model="nodeType"
 			:items="choices"
 			label="Select a node type"
 			item-text="label"
@@ -13,11 +13,11 @@
 		)
 
 		v-select(
-			v-if="node.type === TEMPLATE_RELATION_TYPES.OPEN_CONCEPT"
-			v-model="node.concept"
+			v-if="nodeType === TEMPLATE_RELATION_TYPES.OPEN_CONCEPT"
+			v-model="nodeConcept"
 			class="template-input mb-4"
 			:items="$store.getters.templateOpenConcepts"
-			label="Select concept"
+			label="Select Concept Type"
 			item-text="label"
 			item-value="id"
 			return-object
@@ -26,8 +26,8 @@
 		)
 
 		v-text-field(
-			v-if="node.type === TEMPLATE_RELATION_TYPES.RELATION"
-			v-model="node.relation_id"
+			v-if="nodeType === TEMPLATE_RELATION_TYPES.RELATION"
+			v-model="nodeRelationId"
 			type="number"
 			class="template-input mb-4"
 			label="Relation Id"
@@ -36,21 +36,9 @@
 			dense
 		)
 
-		template(v-if="node.type === TEMPLATE_RELATION_TYPES.SPECIFIC_CONCEPT")
-			v-banner(elevation="1" class="template-input selected-concept")
-				v-icon(slot="icon" size="24") mdi-book-outline
-				template(v-if="node.specific_concept")
-					v-list-item
-						v-list-item-content
-							v-list-item-title
-								strong {{ node.specific_concept.label }}
-							p {{ node.specific_concept.description }}
-						v-list-item-action
-							v-btn(icon @click="node.specific_concept = null")
-								v-icon mdi-close
-				div(v-else) [Select a concept from below ...]
-					
-			br
+		template(v-if="nodeType === TEMPLATE_RELATION_TYPES.SPECIFIC_CONCEPT")
+			div(class="mb-4") Search and select specific concept here:
+
 			v-autocomplete(
 				v-model="selectedConcept"
 				class="template-input mb-4"
@@ -74,19 +62,33 @@
 					v-list-item-content(class="text-left")
 						v-list-item-title {{ item.label }}
 						v-list-item-subtitle {{ item.description }}
-						
+
+			v-banner(elevation="1" class="template-input selected-concept")
+				v-icon(slot="icon" size="24") mdi-book-outline
+				template(v-if="nodeSpecificConcept")
+					v-list-item
+						v-list-item-content
+							v-list-item-title
+								strong {{ nodeSpecificConcept.label }}
+							p {{ nodeSpecificConcept.description }}
+						v-list-item-action
+							v-btn(icon @click="nodeSpecificConcept = null")
+								v-icon mdi-close
+				div(v-else) Selected conept from above...
+
 		v-text-field(
-			v-if="node.type"
+			v-if="nodeType"
 			class="template-input mt-8"
-			v-model="node.label"
-			label="Label*"
-			required
+			v-model="nodeLabel"
+			:label="labelRequired ? `Label*`: `Label`"
+			:required="labelRequired"
 			outlined
 			dense
 		)
+
 		v-textarea(
-			v-if="node.type"
-			v-model="node.description"
+			v-if="nodeType"
+			v-model="nodeDescription"
 			class="template-input my-0"
 			label="Description"
 			placeholder="Any additional explanatory information, to be displayed to the user."
@@ -95,8 +97,8 @@
 		)
 
 		v-checkbox(
-			v-if="node.type"
-			v-model="node.prompt"
+			v-if="nodeType"
+			v-model="nodePrompt"
 			class="template-input my-0"
 			label="Prompt for evidence"
 		)
@@ -104,47 +106,58 @@
 
 <script lang="ts">
 import { AxiosResponse } from 'axios';
+import _ from 'lodash';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import { TEMPLATE_RELATION_TYPES } from '@/constants';
-import { Concept } from '@/interfaces/ConceptTypes';
+import { Concept, ConceptType } from '@/interfaces/ConceptTypes';
 import { RelationTemplateFormNodeType } from '@/interfaces/RelationTypes';
 
 @Component({
 	name: 'TemplateNodePicker',
 })
 export default class TemplateNodePicker extends Vue {
-	@Prop() private node: RelationTemplateFormNodeType = {
-		type: { key: '', label: '' }, concept: null, label: '', description: '',
-		prompt: false, relation_id: -1, specific_concept: null,
-	};
+	@Prop() private node!: RelationTemplateFormNodeType;
 	@Prop() private choices: any;
 
 	private TEMPLATE_RELATION_TYPES = TEMPLATE_RELATION_TYPES;
 
+	// Field values
+	private nodeType: any = { key: '', label: '' };
+	private nodeConcept: ConceptType | null = null;
+	private nodeRelationId: number = -1;
+	private nodeSpecificConcept: Concept | null = null;
+	private nodeLabel: string = '';
+	private nodeDescription: string = '';
+	private nodePrompt: boolean = false;
+
+	// Specific concept selection
+	private selectedConcept: any = null;
 	private conceptsLoading: boolean = false;
-	private conceptsError: boolean = false;
 	private searchValue: string = '';
 	private concepts: Concept[] = [];
-	private selectedConcept: any = null;
+	private conceptsError: boolean = false;
 
-	@Watch('selectedConcept')
-	private onConceptSelect(concept: Concept) {
-		if (concept) {
-			this.node.specific_concept = concept;
-		}
+	get labelRequired(): boolean {
+		return (
+			this.nodeType === TEMPLATE_RELATION_TYPES.OPEN_CONCEPT ||
+			this.nodePrompt
+		);
 	}
 
-	@Watch('node.type')
-	private onNodeTypeChange(val: any, oldVal: any) {
-		if (oldVal && oldVal.key !== val.key) {
-			// Clear previously selected values
-			if (oldVal.key === TEMPLATE_RELATION_TYPES.OPEN_CONCEPT.key) {
-				this.node.concept = null;
-			} else if (oldVal.key === TEMPLATE_RELATION_TYPES.SPECIFIC_CONCEPT.key) {
-				this.node.specific_concept = null;
-			} else if (oldVal.key === TEMPLATE_RELATION_TYPES.RELATION.key) {
-				this.node.relation_id = -1;
+	public async created() {
+		this.initializeFields();
+	}
+
+	private initializeFields() {
+		if (this.node) {
+			this.nodeType = this.node.type;
+			this.nodeConcept = this.node.concept;
+			this.nodeSpecificConcept = this.node.specific_concept;
+			this.nodeDescription = this.node.description;
+			this.nodeLabel = this.node.label;
+			if (this.node.relation_id) {
+				this.nodeRelationId = this.node.relation_id;
 			}
 		}
 	}
@@ -161,6 +174,62 @@ export default class TemplateNodePicker extends Vue {
 			.catch(() => this.conceptsError = true)
 			.finally(() => this.conceptsLoading = false);
 	}
+
+	@Watch('nodeType')
+	private onNodeTypeChange(val: any, oldVal: any) {
+		if (oldVal && oldVal.key !== val.key) {
+			const newNode = _.cloneDeep(this.node);
+			newNode.type = val;
+
+			// Clear previously selected values
+			if (oldVal.key === TEMPLATE_RELATION_TYPES.OPEN_CONCEPT.key) {
+				newNode.concept = null;
+			} else if (oldVal.key === TEMPLATE_RELATION_TYPES.SPECIFIC_CONCEPT.key) {
+				newNode.specific_concept = null;
+			} else if (oldVal.key === TEMPLATE_RELATION_TYPES.RELATION.key) {
+				newNode.relation_id = -1;
+			}
+
+			this.$emit('update:node', newNode);
+		}
+	}
+
+	@Watch('nodeConcept')
+	private onNodeConceptChange(val: any) {
+		this.$emit('update:node', { ...this.node, concept: val });
+	}
+
+	@Watch('nodeRelationId')
+	private onNodeRelationIdChange(val: number) {
+		this.$emit('update:node', { ...this.node, relation_id: val });
+	}
+
+	@Watch('nodeSpecificConcept')
+	private onNodeSpecificConceptChange(val: any) {
+		this.$emit('update:node', { ...this.node, specific_concept: val });
+	}
+
+	@Watch('selectedConcept')
+	private onConceptSelect(concept: Concept) {
+		if (concept) {
+			this.nodeSpecificConcept = concept;
+		}
+	}
+
+	@Watch('nodeLabel')
+	private onNodeLabelChange(val: string) {
+		this.$emit('update:node', { ...this.node, label: val });
+	}
+
+	@Watch('nodeDescription')
+	private onNodeDescriptionChange(val: string)  {
+		this.$emit('update:node', { ...this.node, description: val });
+	}
+
+	@Watch('nodePrompt')
+	private onNodePromptChange(val: boolean)  {
+		this.$emit('update:node', { ...this.node, prompt: val });
+	}
 }
 </script>
 
@@ -172,5 +241,9 @@ export default class TemplateNodePicker extends Vue {
 .selected-concept .v-banner__wrapper {
 	padding-top: 0;
 	padding-bottom: 0;
+}
+
+.selected-concept {
+	border-radius: 4px !important;
 }
 </style>
