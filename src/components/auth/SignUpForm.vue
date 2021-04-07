@@ -75,7 +75,10 @@ export default class Login extends Vue {
 				affiliation: this.affiliation,
 			})
 			.then((response: AxiosResponse) => {
-				this.$router.push('/login');
+				const { access } = response.data;
+				localStorage.setItem('token', access);
+				Vue.$axios.defaults.headers.common.Authorization = `Bearer ${access}`;
+				this.$router.push('/github');
 			})
 			.catch((error: AxiosError) => {
 				this.error = true;
