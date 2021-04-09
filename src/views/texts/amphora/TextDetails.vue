@@ -10,6 +10,26 @@
 						v-col(cols="6")
 							h3(class="headline") Resource "{{ text.title }}"
 							v-list-item-subtitle(class="text--primary" v-text="text.uri")
+							
+							div(v-if="partOfProject" class="mt-2 mb-2")
+								strong Project:&nbsp;
+								router-link(
+									class="project-name"
+									:to="`/project/${partOfProject.id}`"
+								) {{ partOfProject.name }}
+
+							template(v-if="partOfProject && isOwner && !submitted")
+								v-dialog(v-model="projectMoveDialog" scrollable max-width="500px")
+									template(v-slot:activator="{ on }")
+										v-btn(small v-on="on" color="error" depressed) Move to another Project
+									
+									ProjectSearch(
+										:currentProject="partOfProject"
+										:choosingProject="movingProject"
+										:onProjectChoose="moveProject"
+										:onClose="() => { projectMoveDialog = false; }"
+									)
+
 						v-col(cols="6")
 							div(v-if="partOfProject && isEditable && !submitted" class="float-right")
 								v-tooltip(left)
@@ -67,13 +87,12 @@
 						template(v-else)
 							AnnotationList(v-bind:annotations="relations")
 
-		v-snackbar(v-model="snackbar" top)
+		v-snackbar(v-model="snackbar" top :color="snackbarColor" :timeout="3000")
 			| {{ snackbarText }}
-			v-btn(color="red" text @click="snackbar = false") Close
 </template>
 
 <script lang="ts">
-import { AxiosResponse } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 import { Component, Vue } from 'vue-property-decorator';
 
 import EmptyView from '@/components/global/EmptyView.vue';
@@ -82,6 +101,7 @@ import Loading from '@/components/global/Loading.vue';
 import AnnotationList from '@/components/relations/AnnotationList.vue';
 import TextAdditionalContent from '@/components/texts/amphora/TextAdditionalContent.vue';
 import TextSerialContent from '@/components/texts/amphora/TextSerialContent.vue';
+import ProjectSearch from '@/components/texts/ProjectSearch.vue';
 import { Project } from '@/interfaces/ProjectTypes';
 import { RelationSet } from '@/interfaces/RelationTypes';
 import { TextResource } from '@/interfaces/RepositoryTypes';
@@ -95,6 +115,7 @@ import { TextResource } from '@/interfaces/RepositoryTypes';
 		TextSerialContent,
 		TextAdditionalContent,
 		AnnotationList,
+		ProjectSearch,
   },
 })
 export default class TextDetails extends Vue {
@@ -109,6 +130,10 @@ export default class TextDetails extends Vue {
 
 	private snackbarText: string = '';
 	private snackbar: boolean = false;
+	private snackbarColor: string = 'error';
+
+	private projectMoveDialog: boolean = false;
+	private movingProject: boolean = false;
 
 	public async mounted(): Promise<void> {
 		this.getTextDetails();
@@ -121,7 +146,12 @@ export default class TextDetails extends Vue {
 		return false;
 	}
 
+	get isOwner(): boolean {
+		return Vue.$utils.permissions.isProjectOwner(this.project);
+	}
+
 	private async getTextDetails(): Promise<void> {
+		this.loading = true;
 		let queryParam = '';
 		const projectId = this.$route.query.project_id;
 		if (projectId) {
@@ -156,6 +186,7 @@ export default class TextDetails extends Vue {
 			.catch(() => {
 				this.snackbar = true;
 				this.snackbarText = 'Error while adding text to the project';
+				this.snackbarColor = 'error';
 			});
 	}
 
@@ -173,6 +204,43 @@ export default class TextDetails extends Vue {
 				} else {
 					this.snackbarText = 'Error while removing text from the project';
 				}
+			});
+	}
+
+	private async moveProject(targetProject: Project): Promise<void> {
+		if (!this.partOfProject) {
+			return;
+		}
+
+		this.movingProject = true;
+		Vue.$axios.post(
+			`/repository/${this.$route.params.repoId}/texts/${this.$route.params.textId}/transfer_to_project`,
+			{
+				project_id: this.partOfProject.id,
+				target_project_id: targetProject.id,
+			},
+		)
+			.then((response: AxiosResponse) => {
+				this.snackbarText = response.data.message;
+				this.snackbarColor = 'success';
+				this.snackbar = true;
+				this.projectMoveDialog = false;
+				this.$router.push(
+					`/repository/${this.$route.params.repoId}/text/${this.$route.params.textId}?project_id=${targetProject.id}`,
+				);
+				this.getTextDetails();
+			})
+			.catch((error: AxiosError) => {
+				if (error.response && error.response.data && error.response.data.message) {
+					this.snackbarText = error.response.data.message;
+				} else {
+					this.snackbarText = error.message;
+				}
+				this.snackbarColor = 'error';
+				this.snackbar = true;
+			})
+			.finally(() => {
+				this.movingProject = false;
 			});
 	}
 
@@ -194,5 +262,11 @@ export default class TextDetails extends Vue {
 .delete-button-text{
 	color: white;
 	padding-left: 10px;
+}
+.project-name:link, .project-name:visited {
+	text-decoration: none;
+}
+.project-name:hover, .project-name:active {
+	text-decoration: underline;
 }
 </style>

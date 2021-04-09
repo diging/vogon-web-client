@@ -15,7 +15,7 @@
 				@keyup.enter.native="searchUser"
 			)
 
-			ErrorIndicator(v-if="searchError") Error while seraching users!
+			ErrorIndicator(v-if="searchError") Error while searching users!
 			template(v-else)
 				Loading(v-if="searching")
 				template(v-else)
