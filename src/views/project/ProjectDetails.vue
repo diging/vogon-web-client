@@ -9,7 +9,33 @@
 				v-card(tile outlined class="project-details")
 					v-row
 						v-col(md="6")
-							h3(class="headline") {{ project.name }}
+							div(class="d-flex justify-start")
+								h3(class="headline") {{ project.name }}
+								v-tooltip(
+									v-if="isOwner && !project.is_default"
+									top
+								)
+									template(v-slot:activator="{ on, attrs }")
+										v-icon(
+											v-bind="attrs"
+											v-on="on"
+											class="ml-2"
+											@click="setAsDefaultDialog = true;"
+										) mdi-star-outline
+									span Set this as your default project
+						
+								v-tooltip(
+									v-if="project.is_default"
+									top
+								)
+									template(v-slot:activator="{ on, attrs }")
+										v-icon(
+											v-bind="attrs"
+											v-on="on"
+											class="ml-2"
+										) mdi-star
+									span This is your default project
+
 							h4(class="subtitle-1") {{ project.description }}
 							span(class="body-2 blue-grey--text text--darken-1") Owned by 
 								strong "{{ project.ownedBy.username }}",
@@ -59,7 +85,32 @@
 							template(v-slot:item.title="{ item }")
 								router-link(:to="`/repository/${item.repository_id}/text/${item.repository_source_id}?project_id=${project.id}`") {{ item.title }}
 		
-		v-snackbar(v-model="changeOwnerSnackbar" top :color="changeOwnerSnackColor" :timeout="3000") {{ changeOwnerSnackMsg }}
+		v-snackbar(v-model="snackbar" top :color="snackColor" :timeout="3000") {{ snackbarMsg }}
+	
+		v-dialog(
+			v-model="setAsDefaultDialog"
+			width="500"
+			:persistent="settingAsDefault"
+		)
+			v-card(class="pa-2")
+				v-card-title(class="headline") Set as default project
+				v-card-text(class="text-left") Are you sure you want to set this project as default?
+				v-card-actions
+					v-spacer
+					v-btn(
+						text 
+						color="green darken-1" 
+						@click="setAsDefaultDialog = false"
+						:disabled="settingAsDefault"
+					) Cancel
+					v-btn(
+						text 
+						color="red darken-1" 
+						@click="setAsDefault();"
+						:disabled="settingAsDefault"
+						:loading="settingAsDefault"
+					) Yes
+				
 </template>
 
 <script lang="ts">
@@ -94,9 +145,12 @@ export default class ProjectDetails extends Vue {
 
 	private changeOwnerDialog: boolean = false;
 	private changingOwner: boolean = false;
-	private changeOwnerSnackbar: boolean = false;
-	private changeOwnerSnackMsg: string = '';
-	private changeOwnerSnackColor: string = 'success';
+	private snackbar: boolean = false;
+	private snackbarMsg: string = '';
+	private snackColor: string = 'success';
+
+	private setAsDefaultDialog: boolean = false;
+	private settingAsDefault: boolean = false;
 
 	public async mounted(): Promise<void> {
 		this.getProjectDetails();
@@ -126,22 +180,46 @@ export default class ProjectDetails extends Vue {
 			target_user_id: targetUser.id,
 		})
 			.then((response: AxiosResponse) => {
-				this.changeOwnerSnackMsg = response.data.message;
-				this.changeOwnerSnackColor = 'success';
-				this.changeOwnerSnackbar = true;
+				this.snackbarMsg = response.data.message;
+				this.snackColor = 'success';
+				this.snackbar = true;
 				this.getProjectDetails();
 			})
 			.catch((error: AxiosError) => {
 				if (error.response && error.response.data && error.response.data.message) {
-					this.changeOwnerSnackMsg = error.response.data.message;
+					this.snackbarMsg = error.response.data.message;
 				} else {
-					this.changeOwnerSnackMsg = error.message;
+					this.snackbarMsg = error.message;
 				}
-				this.changeOwnerSnackColor = 'error';
-				this.changeOwnerSnackbar = true;
+				this.snackColor = 'error';
+				this.snackbar = true;
 			})
 			.finally(() => {
 				this.changingOwner = false;
+			});
+	}
+
+	private setAsDefault() {
+		this.settingAsDefault = true;
+		this.$axios.post(`/project/${this.project.id}/set_as_default`)
+			.then((response: AxiosResponse) => {
+				this.snackbarMsg = response.data.message;
+				this.snackColor = 'success';
+				this.snackbar = true;
+				this.getProjectDetails();
+			})
+			.catch((error: AxiosError) => {
+				if (error.response && error.response.data && error.response.data.message) {
+					this.snackbarMsg = error.response.data.message;
+				} else {
+					this.snackbarMsg = error.message;
+				}
+				this.snackColor = 'error';
+				this.snackbar = true;
+			})
+			.finally(() => {
+				this.settingAsDefault = false;
+				this.setAsDefaultDialog = false;
 			});
 	}
 }

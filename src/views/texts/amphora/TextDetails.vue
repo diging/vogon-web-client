@@ -11,12 +11,12 @@
 							h3(class="headline") Resource "{{ text.title }}"
 							v-list-item-subtitle(class="text--primary" v-text="text.uri")
 							
-							div(v-if="partOfProject" class="mt-2 mb-2")
+							div(v-if="project" class="mt-2 mb-2")
 								strong Project:&nbsp;
 								router-link(
 									class="project-name"
-									:to="`/project/${partOfProject.id}`"
-								) {{ partOfProject.name }}
+									:to="`/project/${project.id}`"
+								) {{ project.name }}
 
 							template(v-if="partOfProject && isOwner && !submitted")
 								v-dialog(v-model="projectMoveDialog" scrollable max-width="500px")
@@ -166,11 +166,16 @@ export default class TextDetails extends Vue {
 				this.project = response.data.project_details;
 				this.relations = response.data.relations;
 				this.masterId = response.data.master_text.id;
-				if (response.data.submitted) {
-					this.submitted = true;
-				} else {
-					this.submitted = false;
-				}
+				this.submitted = response.data.submitted;
+				// if (this.project && !projectId) {
+				// 	const query = this.$route.query;
+				// 	this.$router.replace({
+				// 		query: {
+				// 			...query,
+				// 			project_id: `${this.project.id}`,
+				// 		},
+				// 	});
+				// }
 			})
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
