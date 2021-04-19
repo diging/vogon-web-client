@@ -6,6 +6,7 @@
 		div(v-else)
 			Loading(v-if="loading")
 			template(v-else)
+				Breadcrumbs(:items="navItems")
 				v-card(tile outlined class="project-details")
 					v-row
 						v-col(md="6")
@@ -117,6 +118,7 @@
 import { AxiosError, AxiosResponse } from 'axios';
 import { Component, Vue } from 'vue-property-decorator';
 
+import Breadcrumbs from '@/components/global/Breadcrumbs.vue';
 import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
@@ -129,6 +131,7 @@ import { Project } from '@/interfaces/ProjectTypes';
 @Component({
 	name: 'ProjectDetails',
 	components: {
+		Breadcrumbs,
 		CreateUpdateProject,
 		ProjectCollaborators,
 		EmptyView,
@@ -142,6 +145,10 @@ export default class ProjectDetails extends Vue {
 	private loading: boolean = true;
 	private error: boolean = false;
 	private textHeaders = [{text: 'Title', value: 'title'}, {text: 'Added', value: 'added'}];
+	private navItems = [
+		{ text: 'Projects', to: '/project', link: true, exact: true },
+		{ text: '', to: '', link: true, exact: true },
+	];
 
 	private changeOwnerDialog: boolean = false;
 	private changingOwner: boolean = false;
@@ -169,6 +176,8 @@ export default class ProjectDetails extends Vue {
 		return Vue.$axios.get(`/project/${this.$route.params.id}`)
 			.then((response: AxiosResponse) => {
 				this.project = response.data as Project;
+				this.navItems[1].text = this.project.name;
+				this.navItems[1].to = `/project/${this.project.id}`;
 			})
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);

@@ -53,7 +53,7 @@
 										v-divider(v-if="index + 1 < data.projects.length")
 								v-card-actions
 									v-spacer
-									v-btn(text :to="`/project?ownedBy=${data.user.username}`") View all
+									v-btn(text :to="`/project?field=owner&query=${data.user.username}`") View all
 				br
 				v-row
 					v-col(:cols="6")

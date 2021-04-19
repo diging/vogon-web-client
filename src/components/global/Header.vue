@@ -3,14 +3,8 @@
 		v-app-bar-nav-icon(to="/")
 			img(src="../../assets/images/logos/VogonTiny_beta.png")
 		v-toolbar-title(class="ml-4") Vogon Web
-		v-menu(class="ml-3" offset-y open-on-hover)
-			template(v-slot:activator="{ on }")
-				v-btn(text v-on="on") Annotate
-					v-icon mdi-menu-down
-			v-list
-				v-list-item(v-for="item in annotate_items" :key="item.title" v-bind:to="item.link")
-					v-list-item-title(v-text="item.title")
-		v-btn(text large to="/users" class="subheading font-weight-medium") Contributors
+		v-btn(text large to="/project" class="subheading font-weight-medium") Projects
+		v-btn(text large to="/relationtemplates" class="subheading font-weight-medium") Templates
 		v-btn(text large to="/about" class="subheading font-weight-medium") About
 		v-menu(offset-y open-on-hover)
 			template(v-slot:activator="{ on }")
@@ -94,7 +88,7 @@ export default Vue.extend({
 				{ title: 'Concepts', link: '/concept' },
 				{ title: 'Concept Types', link: '/types' },
 				{ title: 'Annotations', link: '/relations' },
-				{ title: 'Templates', link: '/relationtemplate' },
+				{ title: 'Contributors', link: '/contributors' },
 			],
 			info_items: [
 				{ title: 'Overview' },

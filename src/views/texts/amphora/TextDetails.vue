@@ -5,18 +5,19 @@
 		div(v-else)
 			Loading(v-if="loading")
 			template(v-else)
+				Breadcrumbs(:items="navItems" class="mt-2")
 				v-card(tile outlined class="text-details")
 					v-row
 						v-col(cols="6")
 							h3(class="headline") Resource "{{ text.title }}"
 							v-list-item-subtitle(class="text--primary" v-text="text.uri")
 							
-							div(v-if="project" class="mt-2 mb-2")
+							div(v-if="partOfProject" class="mt-2 mb-2")
 								strong Project:&nbsp;
 								router-link(
 									class="project-name"
-									:to="`/project/${project.id}`"
-								) {{ project.name }}
+									:to="`/project/${partOfProject.id}`"
+								) {{ partOfProject.name }}
 
 							template(v-if="partOfProject && isOwner && !submitted")
 								v-dialog(v-model="projectMoveDialog" scrollable max-width="500px")
@@ -95,6 +96,7 @@
 import { AxiosError, AxiosResponse } from 'axios';
 import { Component, Vue } from 'vue-property-decorator';
 
+import Breadcrumbs from '@/components/global/Breadcrumbs.vue';
 import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
@@ -107,8 +109,9 @@ import { RelationSet } from '@/interfaces/RelationTypes';
 import { TextResource } from '@/interfaces/RepositoryTypes';
 
 @Component({
-  name: 'TextDetails',
-  components: {
+	name: 'TextDetails',
+	components: {
+		Breadcrumbs,
 		Loading,
 		EmptyView,
 		ErrorIndicator,
@@ -116,7 +119,7 @@ import { TextResource } from '@/interfaces/RepositoryTypes';
 		TextAdditionalContent,
 		AnnotationList,
 		ProjectSearch,
-  },
+	},
 })
 export default class TextDetails extends Vue {
 	private loading: boolean = true;
@@ -134,6 +137,15 @@ export default class TextDetails extends Vue {
 
 	private projectMoveDialog: boolean = false;
 	private movingProject: boolean = false;
+
+	private navItems = [
+		{ text: 'Projects', to: '/project', link: true, exact: true },
+		{ text: '', to: '', link: true, exact: true },
+		{ text: 'Repositories', to: '/repository', link: true, exact: true },
+		{ text: '', to: '', link: true, exact: true },
+		{ text: 'Text', link: false },
+		{ text: '', link: false },
+	];
 
 	public async mounted(): Promise<void> {
 		this.getTextDetails();
@@ -167,15 +179,24 @@ export default class TextDetails extends Vue {
 				this.relations = response.data.relations;
 				this.masterId = response.data.master_text.id;
 				this.submitted = response.data.submitted;
-				// if (this.project && !projectId) {
-				// 	const query = this.$route.query;
-				// 	this.$router.replace({
-				// 		query: {
-				// 			...query,
-				// 			project_id: `${this.project.id}`,
-				// 		},
-				// 	});
-				// }
+
+				if (this.project && !projectId) {
+					const query = this.$route.query;
+					this.$router.replace({
+						query: {
+							...query,
+							project_id: `${this.project.id}`,
+						},
+					});
+				}
+				if (this.project) {
+					this.navItems[1].text = this.project.name;
+					this.navItems[1].to = `/project/${this.project.id}`;
+				}
+				const repo = response.data.repository;
+				this.navItems[3].text = repo.name;
+				this.navItems[3].to = `/repository/${repo.id}${queryParam}`;
+				this.navItems[5].text = this.text.title;
 			})
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
