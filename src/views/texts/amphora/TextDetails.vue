@@ -61,13 +61,14 @@
 				p(class="body-1")
 					| The following content objects are associated with this resource. 
 					| Select a content object to begin annotating that object in VogonWeb. 
-				TextSerialContent(
-					v-bind:contents="text.aggregate_content"
-					v-bind:ready="text.state === 'OK'"
-					v-bind:editable="isEditable"
-				)
 				TextAdditionalContent(
 					v-bind:contents="text.content"
+					v-bind:ready="text.state === 'OK'"
+					v-bind:editable="isEditable"
+					class="mb-4"
+				)
+				TextSerialContent(
+					v-bind:contents="text.aggregate_content"
 					v-bind:ready="text.state === 'OK'"
 					v-bind:editable="isEditable"
 				)
