@@ -12,11 +12,13 @@
 					v-row(no-gutters)
 						v-col(
 							cols="6"
+							class="annotation-fixed-content pb-10"
 							style="border-right: 1px solid #ccc;"
 						)
 							TextDisplay(:content="content" :appellations="appellations")
 						v-col(
 							cols="6"
+							class="annotation-fixed-content"
 						)
 							ListsSideDrawer(
 								:relations='relations' 
@@ -179,5 +181,9 @@ a {
 }
 .annotation-toolbar {
 	border-bottom: 1px solid #ccc;
+}
+.annotation-fixed-content {
+	max-height: calc(100vh - 206px);
+	overflow-y: auto;
 }
 </style>
