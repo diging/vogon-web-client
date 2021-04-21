@@ -25,6 +25,7 @@
 				v-bind:field="field"
 				v-bind:pos="i"
 				v-bind:appellations="appellations"
+				:key="field.label"
 			)
 
 			v-row

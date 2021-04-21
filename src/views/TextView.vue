@@ -126,7 +126,10 @@ export default class TextView extends Vue {
 			},
 		);
 		this.$store.subscribe((mutation: any, state: any) => {
-			if (mutation.type === 'setRelationCreated' && mutation.payload === true) {
+			if ((mutation.type === 'setRelationCreated' ||
+				 mutation.type === 'setAppellationDeleted') &&
+				mutation.payload === true
+			) {
 				this.getContent();
 			}
 		});

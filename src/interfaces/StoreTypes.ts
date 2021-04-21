@@ -37,6 +37,7 @@ export interface RootState {
 			occursIn: number,
 		};
 		relationCreated: boolean,
+		apellationDeleted: boolean,
 		selectedConcept: Concept | null,
 		searchingConcept: boolean,
 		createdAppellation: boolean,
@@ -46,5 +47,7 @@ export interface RootState {
 		hiddenAppellations: any,
 		editAppellationId: any,
 		updatedAppellationId: number,
+		focusedAppellationsForRelations: any;
+		focusedRelationId: any;
 	};
 }

@@ -22,7 +22,7 @@
                     v-icon(color="success") mdi-check
                 v-tooltip(v-else bottom)
                     template(v-slot:activator="{ on }")
-                        v-btn(icon v-on="on" :color="active ? `success` : `grey`" @click="toggleActive()")
+                        v-btn(outlined fab x-small v-on="on" :color="active ? `success` : `grey`" @click="toggleActive()")
                             v-icon mdi-eyedropper-variant
                     span Pick annotations from the text
         
@@ -41,7 +41,7 @@
                     v-icon(color="success") mdi-check
                 v-tooltip(v-else bottom)
                     template(v-slot:activator="{ on }")
-                        v-btn(icon v-on="on" :color="active ? `success` : `grey`" @click="toggleActive()")
+                        v-btn(outlined fab x-small v-on="on" :color="active ? `success` : `grey`" @click="toggleActive()")
                             v-icon mdi-cursor-text
                     span Select from text
 </template>
