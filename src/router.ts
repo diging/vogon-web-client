@@ -22,11 +22,13 @@ import ProjectDetails from './views/project/ProjectDetails.vue';
 import ProjectList from './views/project/ProjectList.vue';
 import TemplateCreateOrUpdate from './views/templates/TemplateCreateOrUpdate.vue';
 import TemplateList from './views/templates/TemplateList.vue';
-import CollectionDetails from './views/texts/CollectionDetails.vue';
-import RepoDetails from './views/texts/RepoDetails.vue';
+import CollectionDetails from './views/texts/amphora/CollectionDetails.vue';
+import RepoDetails from './views/texts/amphora/RepoDetails.vue';
+import TextContent from './views/texts/amphora/TextContent.vue';
+import TextDetails from './views/texts/amphora/TextDetails.vue';
+import CitesphereGroupDetails from './views/texts/citesphere/CitesphereGroupDetails.vue';
+import CitesphereRepoDeatils from './views/texts/citesphere/CitesphereRepoDeatils.vue';
 import RepoList from './views/texts/RepoList.vue';
-import TextContent from './views/texts/TextContent.vue';
-import TextDetails from './views/texts/TextDetails.vue';
 import TextView from './views/TextView.vue';
 import UserDetail from './views/users/UserDetail.vue';
 import UserList from './views/users/UserList.vue';
@@ -63,24 +65,34 @@ export default new Router({
 			component: RepoList,
 		},
 		{
-			path: '/repository/:id',
-			name: 'repo-details',
+			path: '/repository/amphora/:id',
+			name: 'amphora-repo-details',
 			component: RepoDetails,
 		},
 		{
-			path: '/repository/:repoId/collections/:colId',
-			name: 'collection-details',
+			path: '/repository/amphora/:repoId/collections/:colId',
+			name: 'amphora-collection-details',
 			component: CollectionDetails,
 		},
 		{
-			path: '/repository/:repoId/text/:textId',
-			name: 'text-details',
+			path: '/repository/amphora/:repoId/text/:textId',
+			name: 'amphora-text-details',
 			component: TextDetails,
 		},
 		{
-			path: '/repository/:repoId/text/:textId/content/:contentId',
-			name: 'text-content',
+			path: '/repository/amphora/:repoId/text/:textId/content/:contentId',
+			name: 'amphora-text-content',
 			component: TextContent,
+		},
+		{
+			path: '/repository/citesphere/:id',
+			name: 'citesphere-repo-details',
+			component: CitesphereRepoDeatils,
+		},
+		{
+			path: '/repository/citesphere/:repoId/groups/:groupId',
+			name: 'citesphere-group-details',
+			component: CitesphereGroupDetails,
 		},
 		{
 			path: '/concept',

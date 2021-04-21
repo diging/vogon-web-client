@@ -78,10 +78,11 @@ import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
 import AnnotationList from '@/components/relations/AnnotationList.vue';
-import TextAdditionalContent from '@/components/texts/TextAdditionalContent.vue';
-import TextSerialContent from '@/components/texts/TextSerialContent.vue';
+import TextAdditionalContent from '@/components/texts/amphora/TextAdditionalContent.vue';
+import TextSerialContent from '@/components/texts/amphora/TextSerialContent.vue';
 import { RelationSet } from '@/interfaces/RelationTypes';
 import { TextResource } from '@/interfaces/RepositoryTypes';
+
 @Component({
 	name: 'TextDetails',
 	components: {
@@ -113,7 +114,7 @@ export default class TextDetails extends Vue {
 		if (projectId) {
 			queryParam = `?project_id=${projectId}`;
 		}
-		Vue.$axios.get(`/repository/${this.$route.params.repoId}/texts/${this.$route.params.textId}${queryParam}`)
+		Vue.$axios.get(`/repository/amphora/${this.$route.params.repoId}/texts/${this.$route.params.textId}${queryParam}`)
 			.then((response: AxiosResponse) => {
 				this.text = response.data.result as TextResource;
 				this.project = response.data.part_of_project && response.data.part_of_project.name;

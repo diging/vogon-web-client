@@ -11,15 +11,10 @@
 					h4(class="subtitle-1") {{ repo.description }}
 				br
 				v-card(class="card-project-text")
-					v-card-title Collections
-					template(v-if="!repo.collections.results.length")
-						EmptyView No collections found!
-					RepoCollections(
-						v-else
-						v-bind:collectionResults="repo.collections" 
-						v-bind:repoId="$route.params.id" 
-						v-bind:queryParam="queryParam"
-					)
+					v-card-title Groups
+					template(v-if="!repo.groups.length")
+						EmptyView No groups found!
+					RepoGroups(v-else v-bind:groups="repo.groups" v-bind:repoId="$route.params.id" v-bind:queryParam="queryParam")
 
 </template>
 
@@ -30,21 +25,20 @@ import { Component, Vue } from 'vue-property-decorator';
 import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
-import RepoCollections from '@/components/texts/RepoCollections.vue';
-import { PAGE_SIZE } from '@/constants';
-import { Repository } from '@/interfaces/RepositoryTypes';
+import RepoGroups from '@/components/texts/citesphere/RepoGroups.vue';
+import { CitesphereRepository } from '@/interfaces/CitesphereTypes';
 
 @Component({
-	name: 'RepoDetails',
+	name: 'CitesphereRepoDetails',
 	components: {
 		Loading,
 		ErrorIndicator,
-		RepoCollections,
+		RepoGroups,
 		EmptyView,
 	},
 })
-export default class RepoDetails extends Vue {
-	private repo: Repository = {id: 1, name: ''};
+export default class CitesphereRepoDetails extends Vue {
+	private repo: CitesphereRepository = {id: 1, name: '', repo_type: 'Citesphere'};
 	private loading: boolean = true;
 	private error: boolean = false;
 	private queryParam: string = '';
@@ -55,18 +49,9 @@ export default class RepoDetails extends Vue {
 			this.queryParam = `?project_id=${projectId}`;
 		}
 
-		this.getRepoDetails();
-	}
-
-	private async getRepoDetails() {
-		this.loading = true;
-		Vue.$axios.get(`/repository/${this.$route.params.id}`, {
-			params: {
-				limit: PAGE_SIZE,
-			},
-		})
+		Vue.$axios.get(`/repository/citesphere/${this.$route.params.id}`)
 			.then((response: AxiosResponse) => {
-				this.repo = response.data as Repository;
+				this.repo = response.data as CitesphereRepository;
 			})
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
