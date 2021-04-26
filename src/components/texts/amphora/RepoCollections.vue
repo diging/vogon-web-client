@@ -27,7 +27,7 @@
 			Loading(v-if="loading")
 			template(v-else v-for="(collection, index) in collections.results")
 				div
-					v-list-item(:key="collection.id" v-bind:to="`/repository/${repoId}/collections/${collection.id}${queryParam}`")
+					v-list-item(:key="collection.id" v-bind:to="`/repository/amphora/${repoId}/collections/${collection.id}${queryParam}`")
 						v-list-item-content
 							v-list-item-title(v-text="collection.name")
 							v-list-item-subtitle(class="text--primary" v-text="collection.description")
@@ -36,8 +36,9 @@
 								v-badge
 									template(v-slot:badge) {{collection.size}}
 					v-divider(v-if="index + 1 < collections.results.length" :key="index")
-			v-row
+			v-row(align="center" justify="center")
 				v-pagination(
+					class="my-4"
 					v-model="page" 
 					:length="Math.ceil(collections.count / PAGE_SIZE)"
 					v-on:input="getRepoDetails"

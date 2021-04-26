@@ -59,6 +59,11 @@ import { Project } from '@/interfaces/ProjectTypes';
 
 @Component({
 	name: 'ProjectSearch',
+	components: {
+		EmptyView,
+		ErrorIndicator,
+		Loading,
+	},
 })
 export default class ProjectSearch extends Vue {
 	@Prop() private currentProject!: Project;
@@ -71,6 +76,10 @@ export default class ProjectSearch extends Vue {
 	private searching: boolean = false;
 	private searchError: boolean = false;
 	private selectedProject: number | null = null;
+
+	public async mounted(): Promise<void> {
+		this.searchProject();
+	}
 
 	private chooseProject() {
 		if (this.selectedProject !== null && this.selectedProject >= 0) {

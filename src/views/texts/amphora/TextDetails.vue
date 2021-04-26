@@ -35,7 +35,7 @@
 							div(v-if="partOfProject && isEditable && !submitted" class="float-right")
 								v-tooltip(left)
 									template(v-slot:activator="{ on }")
-										v-btn(color="#db1a04" v-on="on" @click="removeText")
+										v-btn(color="#db1a04" v-on="on" @click="removeText" :loading="removingText" :disabled="removingText")
 											div(class="delete-button-text")
 												v-icon(left) mdi-trash-can-outline
 									span
@@ -50,7 +50,7 @@
 									span
 									| Texts cannot be removed after annotations have been submitted
 							div(v-else-if="$route.query.project_id && isEditable" class="float-right")
-								v-btn(color="primary" @click="addText")
+								v-btn(color="primary" @click="addText" :loading="addingText" :disabled="addingText")
 									v-icon(left) mdi-plus
 									| Add to project
 					v-alert(
@@ -138,6 +138,8 @@ export default class TextDetails extends Vue {
 
 	private projectMoveDialog: boolean = false;
 	private movingProject: boolean = false;
+	private addingText: boolean = false;
+	private removingText: boolean = false;
 
 	private navItems = [
 		{ text: 'Projects', to: '/project', link: true, exact: true },
@@ -196,7 +198,7 @@ export default class TextDetails extends Vue {
 				}
 				const repo = response.data.repository;
 				this.navItems[3].text = repo.name;
-				this.navItems[3].to = `/repository/${repo.id}${queryParam}`;
+				this.navItems[3].to = `/repository/amphora/${repo.id}${queryParam}`;
 				this.navItems[5].text = this.text.title;
 			})
 			.catch(() => this.error = true)
@@ -204,13 +206,19 @@ export default class TextDetails extends Vue {
 	}
 
 	private async addText(): Promise<void> {
+		this.addingText = true;
 		Vue.$axios.post(`/project/${this.$route.query.project_id}/add_text`,
 				{ text_id: this.text.id, repository_id: this.$route.params.repoId },
 			)
 			.then((response: AxiosResponse) => {
+				this.addingText = false;
+				this.snackbar = true;
+				this.snackbarText = 'Successfully added text to the project';
+				this.snackbarColor = 'success';
 				this.getTextDetails();
 			})
 			.catch(() => {
+				this.addingText = false;
 				this.snackbar = true;
 				this.snackbarText = 'Error while adding text to the project';
 				this.snackbarColor = 'error';
@@ -218,14 +226,23 @@ export default class TextDetails extends Vue {
 	}
 
 	private async removeText(): Promise<void> {
+		this.removingText = true;
 		Vue.$axios.delete(`/project/${this.$route.query.project_id}`, {
 				data: { text_id: this.masterId },
 			})
 			.then(() => {
+				this.removingText = false;
+				this.snackbar = true;
+				this.snackbarText = 'Successfully removed text from the project';
+				this.snackbarColor = 'success';
 				this.project = null;
+				this.partOfProject = null;
+				this.getTextDetails();
 			})
 			.catch((error) => {
+				this.removingText = false;
 				this.snackbar = true;
+				this.snackbarColor = 'error';
 				if (error.response.status === 412) {
 					this.snackbarText = 'Text cannot be removed after annotations have been submitted to Quadriga';
 				} else {
@@ -241,7 +258,7 @@ export default class TextDetails extends Vue {
 
 		this.movingProject = true;
 		Vue.$axios.post(
-			`/repository/${this.$route.params.repoId}/texts/${this.$route.params.textId}/transfer_to_project`,
+			`/repository/amphora/${this.$route.params.repoId}/texts/${this.$route.params.textId}/transfer_to_project`,
 			{
 				project_id: this.partOfProject.id,
 				target_project_id: targetProject.id,
@@ -252,8 +269,9 @@ export default class TextDetails extends Vue {
 				this.snackbarColor = 'success';
 				this.snackbar = true;
 				this.projectMoveDialog = false;
+				const param = `?project_id=${targetProject.id}`;
 				this.$router.push(
-					`/repository/${this.$route.params.repoId}/text/${this.$route.params.textId}?project_id=${targetProject.id}`,
+					`/repository/amphora/${this.$route.params.repoId}/text/${this.$route.params.textId}${param}`,
 				);
 				this.getTextDetails();
 			})
@@ -270,7 +288,6 @@ export default class TextDetails extends Vue {
 				this.movingProject = false;
 			});
 	}
-
 }
 </script>
 

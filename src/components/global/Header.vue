@@ -2,9 +2,9 @@
 	v-app-bar(app fixed elevate-on-scroll)
 		v-app-bar-nav-icon(to="/")
 			img(src="../../assets/images/logos/VogonTiny_beta.png")
-		v-toolbar-title(class="ml-4") Vogon Web
+		v-toolbar-title(class="ml-4 mr-4") Vogon Web
 		v-btn(text large to="/project" class="subheading font-weight-medium") Projects
-		v-btn(text large to="/relationtemplates" class="subheading font-weight-medium") Templates
+		v-btn(text large to="/relationtemplate" class="subheading font-weight-medium") Templates
 		v-btn(text large to="/about" class="subheading font-weight-medium") About
 		v-menu(offset-y open-on-hover)
 			template(v-slot:activator="{ on }")
@@ -88,7 +88,7 @@ export default Vue.extend({
 				{ title: 'Concepts', link: '/concept' },
 				{ title: 'Concept Types', link: '/types' },
 				{ title: 'Annotations', link: '/relations' },
-				{ title: 'Contributors', link: '/contributors' },
+				{ title: 'Contributors', link: '/users' },
 			],
 			info_items: [
 				{ title: 'Overview' },

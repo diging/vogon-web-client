@@ -67,7 +67,7 @@ export default class CollectionDetails extends Vue {
 				this.navItems[1].text = project.name;
 				this.navItems[1].to = `/project/${project.id}`;
 				this.navItems[3].text = repo.name;
-				this.navItems[3].to = `/repository/${repo.id}${this.queryParam}`;
+				this.navItems[3].to = `/repository/amphora/${repo.id}${this.queryParam}`;
 				this.navItems[5].text = this.collection.name;
 			})
 			.catch(() => this.error = true)

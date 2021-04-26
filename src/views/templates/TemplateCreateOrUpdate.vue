@@ -2,9 +2,7 @@
 	div(class="main")
 		h2(class="display-1" v-if="$route.params.id") Edit relation template
 		h2(class="display-1" v-else) Create new relation template
-		v-banner(class="mt-2" two-line)
-			v-avatar(slot="icon" size="40" color="blue lighten-1")
-				v-icon(icon="mdi-information" color="white") mdi-information-outline
+		v-alert(class="mt-2" prominent type="info" icon="mdi-information" outlined)
 			p(class="mt-2")
 				| The data structures that Vogon produces (known as Quadruples) can
 				| be extremely complex, containing many levels of nested
@@ -19,7 +17,7 @@
 			Loading(v-if="loading")
 			TemplateCreateForm(v-else class="mt-4 pa-4" :template="template")
 
-		v-sheet(class="mt-5 pa-4" elevation="2")
+		v-card(class="mt-5 pa-4" outlined)
 			h3(class="mb-3") Node types
 			v-list-item
 				v-list-item-icon
