@@ -19,7 +19,7 @@
 						router-link(to="/forgot-password" class="mx-2") Click here
 
 					div.mt-2.pb-4.px-2.text-center Don't have an account?
-						a(href="/signup" class="mx-2") Signup
+						router-link(to="/signup" class="mx-2") Signup
 						| for one
 </template>
 

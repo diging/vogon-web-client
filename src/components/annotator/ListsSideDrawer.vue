@@ -74,7 +74,6 @@ export default class ListsSideDrawer extends Vue {
 	@Prop() private network!: object[];
 
 	private tab: string = 'tab-4';
-	private show: boolean = false;
 	private listToggle: string = '';
 	private graphDialog: boolean = false;
 
@@ -88,12 +87,6 @@ export default class ListsSideDrawer extends Vue {
 	}
 
 	public watchStore() {
-		this.$store.watch(
-			(state, getters) => getters.getShowLists,
-			(newValue, oldValue) => {
-				this.show = newValue;
-			},
-		);
 		this.$store.subscribe((mutation, state) => {
 			if (mutation.type === 'setAnnotatorCurrentTab') {
 				this.tab = mutation.payload;
