@@ -57,21 +57,23 @@
 									v-icon(left) mdi-plus
 									span Add text
 
-					v-btn(outlined @click="exportAffiliations") Export affiliation relations
+					div(class="d-flex mt-4")
+						v-btn(small outlined @click="exportAffiliations" class="mr-2") 
+							| Export affiliation relations
 
-					v-dialog(v-if="isOwner" v-model="changeOwnerDialog" scrollable max-width="500px")
-						template(v-slot:activator="{ on }")
-							v-btn(small v-on="on" class="mt-4" color="error") 
-								v-icon(left) mdi-account-switch
-								span Transfer Ownership
+						v-dialog(v-if="isOwner" v-model="changeOwnerDialog" scrollable max-width="500px")
+							template(v-slot:activator="{ on }")
+								v-btn(small v-on="on" color="error" depressed) 
+									v-icon(left) mdi-account-switch
+									span Transfer Ownership
 
-						UserSearch(
-							:choosingUser="changingOwner"
-							:onUserChoose="changeOwner"
-							:onClose="() => { changeOwnerDialog = false; }"
-							okText="Transfer Ownership"
-							cancelText="Cancel"
-						)
+							UserSearch(
+								:choosingUser="changingOwner"
+								:onUserChoose="changeOwner"
+								:onClose="() => { changeOwnerDialog = false; }"
+								okText="Transfer Ownership"
+								cancelText="Cancel"
+							)
 					
 					ProjectCollaborators(
 						:project="project"
