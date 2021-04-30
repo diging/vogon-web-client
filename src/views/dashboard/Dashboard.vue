@@ -17,7 +17,7 @@
 								template(v-for="(text, index) in data.recent_texts")
 									v-list-item(
 										:key="text.id"
-										:to="`/repository/${text.repository_id}/text/${text.repository_source_id}`"
+										:to="`/repository/amphora/${text.repository_id}/text/${text.repository_source_id}`"
 									)
 										v-list-item-content
 											v-list-item-title(v-text="text.title")
@@ -32,7 +32,7 @@
 								template(v-for="(text, index) in data.added_texts")
 									v-list-item(
 										:key="text.id"
-										:to="`/repository/${text.repository_id}/text/${text.repository_source_id}`"
+										:to="`/repository/amphora/${text.repository_id}/text/${text.repository_source_id}`"
 									)
 										v-list-item-content
 											v-list-item-title(v-text="text.title")

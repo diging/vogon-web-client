@@ -12,7 +12,7 @@
 			v-list-item.text-left(two-line link)
 				v-list-item-content
 					v-list-item-title Project:
-					v-list-item-subtitle.text-capitalize #[a(:href="`/project/${project.id}`") {{ project.name }}]
+					v-list-item-subtitle.text-capitalize #[router-link(:to="`/project/${project.id}`") {{ project.name }}]
 			v-list-item.text-left(two-line link)
 				v-list-item-content
 					v-list-item-title Added On:
@@ -20,12 +20,12 @@
 			v-list-item.text-left(two-line link)
 				v-list-item-content
 					v-list-item-title Repository:
-					v-list-item-subtitle #[a(:href="`/repository/${text.repository.id}`") {{ text.repository.name }}]
+					v-list-item-subtitle #[router-link(:to="`/repository/amphora/${text.repository.id}`") {{ text.repository.name }}]
 			v-list-item.text-left(two-line link)
 				v-list-item-content
 					v-list-item-title Part Of:
 					v-list-item-subtitle.text-capitalize
-						a(:href="`/repository/${text.repository.id}/text/${text.part_of.repository_source_id}`")
+						router-link(:to="`/repository/amphora/${text.repository.id}/text/${text.part_of.repository_source_id}?project_id=${project.id}`")
 							| {{ text.part_of.title }}
 			v-list-item.text-left(two-line link)
 				v-list-item-content

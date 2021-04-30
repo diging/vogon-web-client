@@ -13,7 +13,7 @@
 				EmptyView(v-else) No concept types found!
 
 			template(v-slot:item.label="{ item }")
-				a(v-bind:href="`/types/${item.id}`" class="type-link") {{ item.label }}
+				router-link(:to="`/types/${item.id}`" class="type-link") {{ item.label }}
 </template>
 
 <script lang="ts">

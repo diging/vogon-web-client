@@ -16,7 +16,7 @@
 							h2(class="headline") Recent Annotations
 						v-col(md="6")
 							div(class="float-right")
-								v-btn(class="view-annotations" v-bind:href="`/relations`" dense outlined) View all
+								v-btn(class="view-annotations" v-bind:to="`/relations`" dense outlined) View all
 					ErrorIndicator(v-if="error") Error while loading annotations!
 					template(v-else)
 						Loading(v-if="loading")

@@ -20,8 +20,8 @@
 			div
 				v-icon(small color="primary") mdi-book-variant
 				| &nbsp;&nbsp;
-				a(
-					v-bind:href="`/repository/${annotation.occursIn.repository_id}/text/${annotation.occursIn.repository_source_id}`"
+				router-link(
+					:to="`/repository/amphora/${annotation.occursIn.repository_id}/text/${annotation.occursIn.repository_source_id}`"
 					class="annotation-link"
 				) {{ annotation.occurs_in_text }}
 

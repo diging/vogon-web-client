@@ -30,7 +30,7 @@
 
 					v-card-actions
 						v-spacer
-						v-btn(outlined dense :href="`/concept/${$route.params.id}`") Take me back!
+						v-btn(outlined dense :to="`/concept/${$route.params.id}`") Take me back!
 						v-btn(color="error" dense @click="performAction()" :loading="performingAction" :disabled="performingAction")
 							v-icon(left) mdi-check-circle-outline
 							template(v-if="matches.length || candidates.length") I accept the risks: {{ action }} anyway!
