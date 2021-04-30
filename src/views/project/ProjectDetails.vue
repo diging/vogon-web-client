@@ -88,7 +88,7 @@
 					template(v-else)
 						v-data-table(:headers="textHeaders" :items="project.texts")
 							template(v-slot:item.title="{ item }")
-								router-link(:to="`/repository/${item.repository_id}/text/${item.repository_source_id}?project_id=${project.id}`") {{ item.title }}
+								router-link(:to="`/repository/amphora${item.repository_id}/text/${item.repository_source_id}?project_id=${project.id}`") {{ item.title }}
 		
 		v-snackbar(v-model="snackbar" top :color="snackColor" :timeout="3000") {{ snackbarMsg }}
 	

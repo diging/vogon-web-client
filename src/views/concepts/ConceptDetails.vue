@@ -23,7 +23,7 @@
 							v-col(md="6")
 								div(class="float-right")
 									v-btn(
-										v-bind:href="`/relations?terminal_nodes=${concept.uri}`" 
+										v-bind:to="`/relations?terminal_nodes=${concept.uri}`" 
 										dense outlined
 									) View all
 					template(v-if="!concept.relations.length")

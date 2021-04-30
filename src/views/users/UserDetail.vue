@@ -56,7 +56,7 @@
 							v-card-title Recent Annotations
 						v-col(md="6")
 							div(class="float-right")
-								v-btn(class="view-annotations" v-bind:href="`/relations`" dense outlined) View all
+								v-btn(class="view-annotations" :to="`/relations`" dense outlined) View all
 					v-card-text
 						template(v-if="!user.relations.length")
 							EmptyView No annotations found!

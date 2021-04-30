@@ -28,7 +28,7 @@
 
 			template(v-slot:item.concept_detail="{ item }")
 				div(class="concept-title-container")
-					a(v-bind:href="`/concept/${item.id}`" class="concept-link")
+					router-link(:to="`/concept/${item.id}`" class="concept-link")
 						span(class="subtitle-1 font-weight-medium") {{ item.label }}
 					v-chip(color="blue-grey darken-1" dark small class="concept-appellation-count")
 						| {{ item.appellation_set.length }}
@@ -50,11 +50,11 @@
 				v-btn(
 					v-if="item.concept_state === CONCEPT_STATES.PENDING && !item.conceptpower_namespaced"
 					depressed small color="success"
-					:href="`/concept/${item.id}/approve`"
+					:to="`/concept/${item.id}/approve`"
 				) Approve
 				template(v-else-if="item.concept_state === CONCEPT_STATES.APPROVED")
-					v-btn(v-if="item.typed" depressed small color="success" :href="`/concept/${item.id}/add`") Add
-					v-btn(v-else depressed small color="primary" :href="`/concept/${item.id}/edit`") Set Type
+					v-btn(v-if="item.typed" depressed small color="success" :to="`/concept/${item.id}/add`") Add
+					v-btn(v-else depressed small color="primary" :to="`/concept/${item.id}/edit`") Set Type
 </template>
 
 <script lang="ts">
