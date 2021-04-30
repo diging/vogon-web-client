@@ -14,10 +14,10 @@
 					v-list-item-title(v-text="item.title")
 		v-spacer
 		v-toolbar-items.hidden-sm-and-down(class="pr-4")
-			v-btn(text v-if="!logggedIn" @click="login") Login
-			v-btn(text v-if="!logggedIn" @click="signup") Sign Up
-			v-btn(text v-if="logggedIn" @click="logout") Log Out
-			v-btn(text v-if="logggedIn" to="/dashboard") Dashboard
+			v-btn(text v-if="!loggedIn" @click="login") Login
+			v-btn(text v-if="!loggedIn" @click="signup") Sign Up
+			v-btn(text v-if="loggedIn" @click="logout") Log Out
+			v-btn(text v-if="loggedIn" to="/dashboard") Dashboard
 			v-menu(
 				offset-y 
 				:close-on-content-click="false"
@@ -36,7 +36,7 @@
 					div(v-if="notifications.length === 0")
 						div(class="text-center mt-6")
 							v-icon(large) mdi-check-box-multiple-outline
-						div(class="mb-6") No notifications. All clear!
+						div(class="text-center mb-6") No notifications. All clear!
 					template(v-for="notification, i in notifications")
 						v-list-item(
 							:key="i"
