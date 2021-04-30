@@ -14,12 +14,13 @@
 						div(class="flex-grow-1")    
 						v-btn(class="mr-4" color="teal" :disabled="!valid" large depressed @click="login") Login
 
-				div Forgot password?
-					router-link(to="/forgot-password" class="mx-2") Click here
+					div.px-2.text-center
+						| Forgot password?
+						router-link(to="/forgot-password" class="mx-2") Click here
 
-				div(class="my-2") Don't have an account?
-					router-link(to="/signup" class="mx-2") Signup
-					| for one
+					div.mt-2.pb-4.px-2.text-center Don't have an account?
+						router-link(to="/signup" class="mx-2") Signup
+						| for one
 </template>
 
 <script lang="ts">

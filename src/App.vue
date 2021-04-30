@@ -1,7 +1,7 @@
 <template lang="pug">
 	v-app
 		Header
-		v-content
+		v-main
 			v-container
 				router-view
 		Footer
@@ -65,7 +65,6 @@ export default Vue.extend({
 	font-family: "Avenir", Helvetica, Arial, sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	text-align: center;
 	color: #2c3e50;
 }
 #nav {
@@ -78,9 +77,5 @@ export default Vue.extend({
 		}
 	}
 }
-.main {
-	text-align: left;
-	width: 100%;
-	margin-bottom: 20px;
-}
+
 </style>

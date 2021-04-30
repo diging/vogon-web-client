@@ -1,6 +1,6 @@
 <template lang="pug">
-	v-card
-		v-tabs(v-model="tab" )
+	div(class="tools-container")
+		v-tabs(v-model="tab" show-arrows)
 			v-tab(href="#tab-1") Annotations
 			v-tab(href="#tab-2") Relations
 			v-tab(href="#tab-3") Template
@@ -74,7 +74,6 @@ export default class ListsSideDrawer extends Vue {
 	@Prop() private network!: object[];
 
 	private tab: string = 'tab-4';
-	private show: boolean = false;
 	private listToggle: string = '';
 	private graphDialog: boolean = false;
 
@@ -88,17 +87,17 @@ export default class ListsSideDrawer extends Vue {
 	}
 
 	public watchStore() {
-		this.$store.watch(
-			(state, getters) => getters.getShowLists,
-			(newValue, oldValue) => {
-				this.show = newValue;
-			},
-		);
 		this.$store.subscribe((mutation, state) => {
 			if (mutation.type === 'setAnnotatorCurrentTab') {
 				this.tab = mutation.payload;
 			}
 		});
+		this.$store.watch(
+			(state, getters) => getters.getAnnotatorCurrentTab,
+			(newValue, oldValue) => {
+				this.tab = newValue;
+			},
+		);
 		this.$store.watch(
 			(state, getters) => getters.getAnnotatorTemplate,
 			(newValue, oldValue) => {
@@ -134,5 +133,9 @@ export default class ListsSideDrawer extends Vue {
 	display: flex;
 	width: 100%;
 	text-align: left;
+}
+.tools-container {
+	padding: 10px;
+	background: #fff;
 }
 </style>
