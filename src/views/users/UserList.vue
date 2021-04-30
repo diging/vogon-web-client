@@ -32,7 +32,7 @@
 						template(v-else)
 							v-icon(x-large) mdi-account-circle
 					div
-						a(class="body-1 font-weight-bold user-link" v-bind:href="`/users/${item.id}`") {{ item.username }}
+						router-link(class="body-1 font-weight-bold user-link" :to="`/users/${item.id}`") {{ item.username }}
 							span(v-if="item.full_name" class="font-weight-light grey--text text--darken-1 subtitle-2") 
 								| &nbsp; | {{ item.full_name }}
 						h5(class="subtitle-2 .font-weight-light") {{ item.email }}

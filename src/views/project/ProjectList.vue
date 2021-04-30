@@ -7,10 +7,9 @@
 				div(class="float-right")
 					CreateUpdateProject(v-bind:getProjectDetails="getProjectDetails")
 
-		v-card(class="card-projects")
+		v-card(class="card-projects mt-4")
 			ProjectFilter(
-				:filters="filters"
-				:onApply="() => { page = 1; getProjectList()}"
+				:onApply="onApplyFilter"
 				class="mb-6"
 			)
 			ErrorIndicator(v-if="error") Error while loading projects!
@@ -35,7 +34,6 @@
 <script lang="ts">
 import { AxiosResponse } from 'axios';
 import { Component, Vue } from 'vue-property-decorator';
-import { Location } from 'vue-router';
 
 import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
@@ -44,8 +42,7 @@ import CreateUpdateProject from '@/components/project/CreateUpdateProject.vue';
 import ProjectFilter from '@/components/project/ProjectFilter.vue';
 import ProjectItem from '@/components/project/ProjectItem.vue';
 import { PAGE_SIZE } from '@/constants';
-import { VForm } from '@/interfaces/GlobalTypes';
-import { Project, ProjectFilterParams } from '@/interfaces/ProjectTypes';
+import { Project } from '@/interfaces/ProjectTypes';
 
 
 @Component({
@@ -63,8 +60,10 @@ export default class ProjectList extends Vue {
 	private projects: Project[] = [];
 	private loading: boolean = true;
 	private error: boolean = false;
-	private filters: ProjectFilterParams = {
-		ownedBy__username: '',
+	private filters: any = {
+		field: '',
+		name: '',
+		collaborator: this.$utils.getUserId(),
 		limit: PAGE_SIZE,
 		offset: 0,
 	};
@@ -77,20 +76,21 @@ export default class ProjectList extends Vue {
 		this.getProjectList();
 	}
 
-	private getFilter(page: number): ProjectFilterParams {
-		const params: ProjectFilterParams = {};
-		const ownedBy = this.$route.query.ownedBy || this.filters.ownedBy__username;
-		if (ownedBy) {
-			params.ownedBy__username = ownedBy.toString();
-		}
-		params.limit = this.filters.limit;
-		params.offset = (page - 1) * PAGE_SIZE;
+	private getFilter(page: number): any {
+		const field = this.$route.query.field || this.filters.field;
+		const query = this.$route.query.query || this.filters.query;
+		const params: any = {
+			[field]: query,
+			collaborator: this.filters.collaborator,
+			limit: this.filters.limit,
+			offset: (page - 1) * PAGE_SIZE,
+		};
 
 		return params;
 	}
 
 	private getProjectList(page: number = 1) {
-		const params: ProjectFilterParams = this.getFilter(page);
+		const params = this.getFilter(page);
 
 		Vue.$axios
 			.get('/project', { params })
@@ -109,6 +109,17 @@ export default class ProjectList extends Vue {
 				params: { id: project.id.toString() },
 			});
 		}
+	}
+
+	private onApplyFilter(query: string, field: string, showUserProjects: string) {
+		this.filters.query = query;
+		this.filters.field = field;
+		if (showUserProjects) {
+			this.filters.collaborator = this.$utils.getUserId();
+		} else {
+			this.filters.collaborator = '';
+		}
+		this.getProjectList();
 	}
 }
 </script>

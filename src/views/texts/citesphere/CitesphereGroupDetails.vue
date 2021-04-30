@@ -140,12 +140,12 @@ export default class CitesphereGroupDetails extends Vue {
 		const queryParams = `page=${page}`;
 		if (this.selectedCollections.length > 0) {
 			url = `/repository/citesphere/${this.$route.params.repoId}/groups/${
-		this.$route.params.groupId
-		}/collections/${this.selectedCollections[0]}/items?${queryParams}`;
+			this.$route.params.groupId
+			}/collections/${this.selectedCollections[0]}/items?${queryParams}`;
 		} else {
 			url = `/repository/citesphere/${this.$route.params.repoId}/groups/${
-		this.$route.params.groupId
-		}/items?${queryParams}`;
+			this.$route.params.groupId
+			}/items?${queryParams}`;
 		}
 
 		Vue.$axios.get(url)

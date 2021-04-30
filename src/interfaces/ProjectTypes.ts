@@ -16,11 +16,10 @@ export interface Project {
 	created?: string;
 	quadriga_id?: string;
 	ownedBy?: User;
+	createdBy?: User;
+	is_default?: boolean;
 	texts?: Text[] | number[];
 	num_texts?: number;
 	num_relations?: number;
-}
-
-export interface ProjectFilterParams extends PaginatedFilter {
-	ownedBy__username?: string;
+	participants: number[];
 }

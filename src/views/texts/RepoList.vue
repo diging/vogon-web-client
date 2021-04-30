@@ -7,6 +7,7 @@
 		div(v-else)
 			Loading(v-if="loading")
 			v-list(v-else color="transparent")
+				Breadcrumbs(:items="navItems" class="mt-2")
 				template(v-if="!repos.length")
 					EmptyView No repositories found!
 				template(v-else)
@@ -21,6 +22,7 @@
 import { AxiosResponse } from 'axios';
 import { Component, Vue } from 'vue-property-decorator';
 
+import Breadcrumbs from '@/components/global/Breadcrumbs.vue';
 import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
@@ -29,6 +31,7 @@ import { Repository } from '@/interfaces/RepositoryTypes';
 @Component({
 	name: 'RepoList',
 	components: {
+		Breadcrumbs,
 		Loading,
 		ErrorIndicator,
 		EmptyView,
@@ -39,6 +42,11 @@ export default class RepoList extends Vue {
 	private loading: boolean = true;
 	private error: boolean = false;
 	private queryParam: string = '';
+	private navItems = [
+		{ text: 'Projects', to: '/project', link: true, exact: true },
+		{ text: '', to: '', link: true, exact: true },
+		{ text: 'Repositories', link: false },
+	];
 
 	public mounted(): void {
 		const projectId = this.$route.query.project_id;
@@ -47,9 +55,13 @@ export default class RepoList extends Vue {
 		}
 
 		Vue.$axios
-			.get('/repository')
+			.get(`/repository${this.queryParam}`)
 			.then((response: AxiosResponse) => {
 				this.repos = response.data.results;
+
+				const project = response.data.project;
+				this.navItems[1].text = project.name;
+				this.navItems[1].to = `/project/${project.id}`;
 			})
 			.catch(() => (this.error = true))
 			.finally(() => (this.loading = false));

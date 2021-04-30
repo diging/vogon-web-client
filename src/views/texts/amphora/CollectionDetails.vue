@@ -6,6 +6,7 @@
 		div(v-else)
 			Loading(v-if="loading")
 			div(v-else)
+				Breadcrumbs(:items="navItems" class="mt-2")
 				h3(class="title font-weight-regular") Browsing colleciton "{{ collection.name }}"
 				br
 				v-card(tile outlined class="col-details")
@@ -19,6 +20,7 @@
 import { AxiosResponse } from 'axios';
 import { Component, Vue } from 'vue-property-decorator';
 
+import Breadcrumbs from '@/components/global/Breadcrumbs.vue';
 import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
@@ -28,6 +30,7 @@ import { TextCollection } from '@/interfaces/RepositoryTypes';
 @Component({
 	name: 'CollectionDetails',
 	components: {
+		Breadcrumbs,
 		Loading,
 		EmptyView,
 		ErrorIndicator,
@@ -39,16 +42,33 @@ export default class CollectionDetails extends Vue {
 	private error: boolean = false;
 	private collection: TextCollection = {id: 1, name: ''};
 	private queryParam: string = '';
+	private navItems = [
+		{ text: 'Projects', to: '/project', link: true, exact: true },
+		{ text: '', to: '', link: true, exact: true },
+		{ text: 'Repositories', to: '/repository', link: true, exact: true },
+		{ text: '', to: '', link: true, exact: true },
+		{ text: 'Collections', link: false },
+		{ text: '', link: false },
+	];
 
 	public async mounted(): Promise<void> {
 		const projectId = this.$route.query.project_id;
 		if (projectId) {
 			this.queryParam = `?project_id=${projectId}`;
+			this.navItems[2].to = `${this.navItems[2].to}${this.queryParam}`;
 		}
 
 		Vue.$axios.get(`/repository/amphora/${this.$route.params.repoId}/collections/${this.$route.params.colId}`)
 			.then((response: AxiosResponse) => {
 				this.collection = response.data as TextCollection;
+
+				const project = response.data.project;
+				const repo = response.data.repository;
+				this.navItems[1].text = project.name;
+				this.navItems[1].to = `/project/${project.id}`;
+				this.navItems[3].text = repo.name;
+				this.navItems[3].to = `/repository/amphora/${repo.id}${this.queryParam}`;
+				this.navItems[5].text = this.collection.name;
 			})
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);

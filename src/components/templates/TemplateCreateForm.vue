@@ -1,5 +1,5 @@
 <template lang="pug">
-	v-card
+	v-card(outlined)
 		v-form(ref="form" v-model="valid")
 			v-text-field(
 				v-model="name"

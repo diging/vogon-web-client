@@ -36,3 +36,13 @@ export interface PaginatedFilter {
 	offset?: number;
 	limit?: number;
 }
+
+export interface Notification {
+	id: number;
+	unread: boolean;
+	verb: string;
+	timestamp: string;
+	action_object: {
+		id: number;
+	};
+}
