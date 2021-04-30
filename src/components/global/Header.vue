@@ -1,9 +1,9 @@
 <template lang="pug">
 	v-app-bar.background(app fixed elevate-on-scroll dark)
 		router-link(to="/")
-			img(height="50px" src="../../assets/images/logos/logo-17.png")
-		v-btn(text large to="/project" class="subheading font-weight-medium") Projects
-		v-btn(text large to="/relationtemplate" class="subheading font-weight-medium") Templates
+			img(height="50px" src="../../assets/images/logos/logo-17.png" class="mr-3")
+		v-btn(v-if="$store.getters.loggedIn" text large to="/project" class="subheading font-weight-medium") Projects
+		v-btn(v-if="$store.getters.loggedIn" text large to="/relationtemplate" class="subheading font-weight-medium") Templates
 		v-btn(text large to="/about" class="subheading font-weight-medium") About
 		v-menu(v-if="$store.getters.loggedIn" class="ml-3" offset-y open-on-hover style="display: block")
 			template(v-slot:activator="{ on }")
