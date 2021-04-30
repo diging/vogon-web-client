@@ -2,22 +2,22 @@
 	v-app-bar.background(app fixed elevate-on-scroll dark)
 		router-link(to="/")
 			img(height="50px" src="../../assets/images/logos/logo-17.png" class="mr-3")
-		v-btn(v-if="$store.getters.loggedIn" text large to="/project" class="subheading font-weight-medium") Projects
-		v-btn(v-if="$store.getters.loggedIn" text large to="/relationtemplate" class="subheading font-weight-medium") Templates
+		v-btn(v-if="loggedIn" text large to="/project" class="subheading font-weight-medium") Projects
+		v-btn(v-if="loggedIn" text large to="/relationtemplate" class="subheading font-weight-medium") Templates
 		v-btn(text large to="/about" class="subheading font-weight-medium") About
-		v-menu(v-if="$store.getters.loggedIn" class="ml-3" offset-y open-on-hover style="display: block")
+		v-menu(v-if="loggedIn" class="ml-3" offset-y open-on-hover style="display: block")
 			template(v-slot:activator="{ on }")
-				v-btn(text v-on="on" v-if="$store.getters.loggedIn") Data
+				v-btn(text v-on="on" v-if="loggedIn") Data
 					v-icon mdi-menu-down
 			v-list
-				v-list-item(v-for="item in data_items" :key="item.title" v-bind:to="item.link")
+				v-list-item(v-for="item in dataItems" :key="item.title" v-bind:to="item.link")
 					v-list-item-title(v-text="item.title")
 		v-spacer
 		v-toolbar-items.hidden-sm-and-down(class="pr-4")
-			v-btn(text v-if="!this.$store.getters.loggedIn" @click="login") Login
-			v-btn(text v-if="!this.$store.getters.loggedIn" @click="signup") Sign Up
-			v-btn(text v-if="this.$store.getters.loggedIn" @click="logout") Log Out
-			v-btn(text v-if="this.$store.getters.loggedIn" to="/dashboard") Dashboard
+			v-btn(text v-if="!loggedIn" @click="login") Login
+			v-btn(text v-if="!loggedIn" @click="signup") Sign Up
+			v-btn(text v-if="loggedIn" @click="logout") Log Out
+			v-btn(text v-if="loggedIn" to="/dashboard") Dashboard
 			v-menu(
 				offset-y 
 				:close-on-content-click="false"
@@ -36,7 +36,7 @@
 					div(v-if="notifications.length === 0")
 						div(class="text-center mt-6")
 							v-icon(large) mdi-check-box-multiple-outline
-						div(class="mb-6") No notifications. All clear!
+						div(class="text-center mb-6") No notifications. All clear!
 					template(v-for="notification, i in notifications")
 						v-list-item(
 							:key="i"
@@ -65,92 +65,87 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { Component, Vue } from 'vue-property-decorator';
 
 import EmptyView from '@/components/global/EmptyView.vue';
 import { Notification } from '@/interfaces/GlobalTypes';
 import router from '@/router';
 
-export default Vue.extend({
+@Component({
 	name: 'Header',
 	components: {
 		EmptyView,
 	},
-	props: {
-		msg: String,
-	},
-	data() {
-		return {
-			activeIndex: '1',
-			annotate_items: [{ title: 'Text', link: '/repository' }, { title: 'Projects', link: '/project' }],
-			data_items: [
-				{ title: 'Concepts', link: '/concept' },
-				{ title: 'Concept Types', link: '/types' },
-				{ title: 'Annotations', link: '/relations' },
-				{ title: 'Contributors', link: '/users' },
-			],
-			info_items: [
-				{ title: 'Overview' },
-				{ title: 'Use Cases' },
-				{ title: 'Our Team' },
-			],
-			notifications: [],
-			unreadCount: 0,
-		};
-  },
+})
+export default class Header extends Vue {
+	private activeIndex: string = '1';
+	private dataItems: object[] = [
+		{ title: 'Concepts', link: '/concept' },
+		{ title: 'Concept Types', link: '/types' },
+		{ title: 'Annotations', link: '/relations' },
+		{ title: 'Contributors', link: '/users' },
+	];
+	private loggedIn: boolean = this.$store.getters.loggedIn;
+	private notifications: any[] = [];
+	private unreadCount: number = 0;
 
-	created() {
+	public created() {
 		this.watchStore();
-	},
-	methods: {
-		handleSelect(key: string, keyPath: string[]) {
-			this.activeIndex = key;
-		},
-		pushHome() {
-			this.$router.push('/');
-		},
-		login() {
-			this.$router.push('/login');
-		},
-		signup() {
-			this.$router.push('/signup');
-		},
-		logout() {
-			localStorage.removeItem('token');
-			this.login();
-		},
-		watchStore() {
-			this.$store.watch(
-				(state, getters) => getters.notifications,
-				(newValue, oldValue) => {
-					this.notifications = newValue;
-					this.unreadCount = newValue.filter((i: Notification) => i.unread).length;
-				},
-			);
-		},
-		readNotification(notification: Notification) {
-			if (notification.unread) {
-				Vue.$axios.post(`/notifications/${notification.id}/mark_as_read`)
-					.then(() => {
-						Vue.$verify(router, true);
-					});
-			}
-		},
-		deleteNotification(notification: Notification) {
-			// Clear from list
-			const newNotifications = this.notifications.filter(
-				(i: Notification) => i.id !== notification.id);
-			this.$store.commit('setNotifications', newNotifications);
+	}
 
-			// Make delete call
-			Vue.$axios.post(`/notifications/${notification.id}/mark_as_deleted`);
-		},
-		deleteAllNotifications() {
-			this.$store.commit('setNotifications', []);
-			Vue.$axios.post(`/notifications/mark_all_as_deleted`);
-		},
-	},
-});
+	private watchStore() {
+		this.$store.watch(
+			(state, getters) => getters.notifications,
+			(newValue, oldValue) => {
+				this.notifications = newValue;
+				this.unreadCount = newValue.filter((i: Notification) => i.unread).length;
+			},
+		);
+		this.$store.subscribe((mutation, state) => {
+			if (mutation.type === 'loggedInMutation') {
+				this.loggedIn = mutation.payload;
+			}
+		});
+	}
+
+	private login() {
+		this.$router.push('/login');
+	}
+
+	private signup() {
+		this.$router.push('/signup');
+	}
+
+	private logout() {
+		this.$store.commit('loggedInMutation', false);
+		localStorage.removeItem('token');
+		this.login();
+	}
+
+	private readNotification(notification: Notification) {
+		if (notification.unread) {
+			Vue.$axios.post(`/notifications/${notification.id}/mark_as_read`)
+				.then(() => {
+					Vue.$verify(router, true);
+				});
+		}
+	}
+
+	private deleteNotification(notification: Notification) {
+		// Clear from list
+		const newNotifications = this.notifications.filter(
+			(i: Notification) => i.id !== notification.id);
+		this.$store.commit('setNotifications', newNotifications);
+
+		// Make delete call
+		Vue.$axios.post(`/notifications/${notification.id}/mark_as_deleted`);
+	}
+
+	private deleteAllNotifications() {
+		this.$store.commit('setNotifications', []);
+		Vue.$axios.post(`/notifications/mark_all_as_deleted`);
+	}
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
