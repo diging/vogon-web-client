@@ -2,9 +2,8 @@
 	v-app
 		Header
 		v-main
-			v-container
-				router-view
-			Footer
+			router-view
+		Footer
 </template>
 
 <script lang="ts">
