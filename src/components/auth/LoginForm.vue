@@ -1,6 +1,6 @@
 <template lang="pug">
-	v-row(align="center" justify="center")
-		v-col(cols="6")
+	v-row
+		v-col.offset-2(cols="8" align="center" justify="center")
 			v-card
 				v-form(ref="loginForm" v-model="valid" v-on:keyup.enter.native="login")
 					v-card-title#title Login
@@ -78,6 +78,16 @@ export default class Login extends Vue {
 .project-item {
 	padding: 0;
 	margin: 10px 0;
+}
+.anchor {
+	width:100vw; /* or whatever width you want. */
+	max-width:100vw; /* or whatever width you want. */
+	height: 91vh;
+	max-height: 91vh;
+	display: inline-block;
+}
+#top-spacing {
+	margin-top: 10vh;
 }
 #title {
 	background: grey;
