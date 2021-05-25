@@ -4,7 +4,7 @@
 		v-main
 			v-container
 				router-view
-			Footer
+		Footer
 </template>
 
 <script lang="ts">
