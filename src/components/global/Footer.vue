@@ -1,5 +1,5 @@
 <template lang="pug">
-	v-footer(padless)
+	v-footer(app bottom fixed padless)
 		v-card.background(class="flex" flat tile)
 			v-card-title.pa-0.px-5
 				h6.white--text VogonWeb #[strong Beta]
