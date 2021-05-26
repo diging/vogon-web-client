@@ -79,16 +79,6 @@ export default class Login extends Vue {
 	padding: 0;
 	margin: 10px 0;
 }
-.anchor {
-	width:100vw; /* or whatever width you want. */
-	max-width:100vw; /* or whatever width you want. */
-	height: 91vh;
-	max-height: 91vh;
-	display: inline-block;
-}
-#top-spacing {
-	margin-top: 10vh;
-}
 #title {
 	background: grey;
 }
