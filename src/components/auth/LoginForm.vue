@@ -1,7 +1,7 @@
 <template lang="pug">
 	v-row
 		v-col.offset-2(cols="8" align="center" justify="center")
-			v-card
+			v-card.mt-5
 				v-form(ref="loginForm" v-model="valid" v-on:keyup.enter.native="login")
 					v-card-title#title Login
 					v-card-text
