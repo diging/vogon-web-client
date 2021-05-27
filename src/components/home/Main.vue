@@ -1,9 +1,9 @@
 <template lang="pug">
 	div(class="home")
 		v-container(fluid grid-list-md)
-			v-layout.my-7(row wrap)
+			v-layout.mt-7(row wrap)
 				v-flex.text-left(xs12 sm12 md6 lg6)
-					h2.mb-2 Let's build the epistemic web, together.
+					h2.mb-2.mt-5 Let's build the epistemic web, together.
 					p This annotation interface allows you to tag words or phrases with the concepts to which you believe they refer, and bring those tags together into relational statements that you believe are supported by the text.
 					v-btn.primary(depressed) Get started
 						v-icon arrow_forward

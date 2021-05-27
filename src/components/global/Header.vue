@@ -1,5 +1,5 @@
 <template lang="pug">
-	v-app-bar.background(app fixed elevate-on-scroll dark)
+	v-app-bar#bar-background(app fixed elevate-on-scroll dark)
 		router-link(to="/")
 			img(height="50px" src="../../assets/images/logos/logo-17.png" class="mr-3")
 		v-btn(v-if="loggedIn" text large to="/project" class="subheading font-weight-medium") Projects
@@ -21,6 +21,7 @@
 			v-menu(
 				offset-y 
 				:close-on-content-click="false"
+				v-if="loggedIn"
 			)
 				template(v-slot:activator="{ on }")
 					v-badge(
@@ -61,7 +62,7 @@
 						v-divider(v-if="i + 1 < notifications.length" )
 					v-btn(style="width: 100%" text small @click="deleteAllNotifications()" :disabled="notifications.length === 0")
 						| Clear all
-			
+				
 </template>
 
 <script lang="ts">
@@ -178,5 +179,8 @@ li a {
 .notification-link {
 	text-decoration: none;
 	color: rgba(0,0,0,.87);
+}
+#bar-background {
+	background: #284259;
 }
 </style>
