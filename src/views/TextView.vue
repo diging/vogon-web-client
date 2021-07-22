@@ -88,6 +88,8 @@ export default class TextView extends Vue {
 
 		Vue.$axios.get(`/annotate/${this.$route.params.id}${this.queryParam}`)
 			.then((response: AxiosResponse) => {
+				console.log("hereeeeeeeeee")
+				console.log(response)
 				this.content = response.data.content;
 				this.project = response.data.project;
 				this.text = response.data.text;

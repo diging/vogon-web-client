@@ -254,7 +254,7 @@ export default class AppellationCreator extends Vue {
 			payload.month = this.month ? this.month.value : null;
 			payload.day = this.day ? parseInt(this.day, 10) : null;
 			if (this.$store.getters.getAnnotatorEditAppellationMode) {
-				// TODO: Implement update date appellation
+				this.updateDateAppellation(payload)
 			} else {
 				this.createDateAppellation(payload);
 			}
@@ -301,6 +301,18 @@ export default class AppellationCreator extends Vue {
 		Vue.$axios.post('/dateappellation', payload)
 			.then((response: AxiosResponse) => {
 				// TODO: Implement post creation logic
+				this.$store.commit('addAnnotatorNewAppellation', appellation);
+				this.$store.commit('setAnnotatorHighlightedText', null);
+				this.$store.commit('setAnnotatorSelectedConcept', null);
+				this.$store.commit('setAnnotatorCreatedAppellation', true);
+			})
+			.catch(() => this.createError = true)
+			.finally(() => this.creating = false);
+	}
+
+	private updateDateAppellation(payload: any, dateappellationId: number) {
+		Vue.$axios.patch(`/dateappellation`, payload)
+			.then((response: AxiosResponse) => {
 				this.$store.commit('setAnnotatorHighlightedText', null);
 				this.$store.commit('setAnnotatorSelectedConcept', null);
 				this.$store.commit('setAnnotatorCreatedAppellation', true);
