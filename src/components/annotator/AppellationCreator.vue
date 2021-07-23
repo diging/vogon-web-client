@@ -63,7 +63,8 @@
 						class="mt-3 ml-auto"
 						@click="createOrUpdate"
 					)
-						| Create Date Appellation
+						template(v-if="$store.getters.getAnnotatorEditAppellationMode") Update Date Appellation
+						template(v-else) Create Date Appellation
 			
 			template(v-else)
 				v-checkbox(
@@ -254,7 +255,8 @@ export default class AppellationCreator extends Vue {
 			payload.month = this.month ? this.month.value : null;
 			payload.day = this.day ? parseInt(this.day, 10) : null;
 			if (this.$store.getters.getAnnotatorEditAppellationMode) {
-				this.updateDateAppellation(payload)
+				this.updateDateAppellation(payload, this.$store.getters.getAnnotatorEditAppellationMode.id);
+				this.$store.commit('setAnnotatorEditAppellationMode', null);
 			} else {
 				this.createDateAppellation(payload);
 			}
@@ -301,6 +303,7 @@ export default class AppellationCreator extends Vue {
 		Vue.$axios.post('/dateappellation', payload)
 			.then((response: AxiosResponse) => {
 				// TODO: Implement post creation logic
+				const appellation: any = response.data;
 				this.$store.commit('addAnnotatorNewAppellation', appellation);
 				this.$store.commit('setAnnotatorHighlightedText', null);
 				this.$store.commit('setAnnotatorSelectedConcept', null);

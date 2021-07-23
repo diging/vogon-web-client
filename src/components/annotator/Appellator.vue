@@ -64,7 +64,8 @@
 							v-bind:position="selectedText"
 							v-on:createddateappellation="createdDateAppellation"
 							v-on:cancelappellation="cancelAppellation"
-							v-on:createdappellation="createdAppellation")
+							v-on:createdappellation="createdAppellation"
+							v-bind:appellations="appellations")
 						appellation-creator(
 							v-if="textIsSelected() && !createDateAppellation"
 							v-bind:user="user"
