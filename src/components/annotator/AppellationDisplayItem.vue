@@ -193,6 +193,25 @@ export default class AppellationDisplayItem extends Vue {
     padding: 0;
     cursor: pointer;
 }
+.date-appellation {
+    border: 1px solid black;
+    background-color: yellow;
+    opacity: 0.2;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+}
+.date-appellation.appellation-focused {
+    border: 2px solid #d68a00;
+    background-color: orange;
+    opacity: 0.6;
+}
+.date-appellation.appellation-selected {
+    border: 2px solid blue;
+    background-color: blue;
+    opacity: 0.3;
+}
 .appellation-tooltip {
 	background-color: black;
 	color: white;

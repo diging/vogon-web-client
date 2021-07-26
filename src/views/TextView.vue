@@ -94,7 +94,7 @@ export default class TextView extends Vue {
 				this.conceptTypes = response.data.concept_types;
 				// console.log(response.data.appellations);
 				// console.log(response.data.dateappellations);
-				// this.appellations.push(...response.data.appellations);
+				this.appellations.push(...response.data.appellations);
 				this.appellations.push(...response.data.dateappellations);
 				this.appellations = this.appellations
 					.filter((item: any) => item.position)
