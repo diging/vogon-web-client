@@ -1,7 +1,10 @@
 <template lang="pug">
 	div(v-if="visible" @mouseover="tooltip = true" @mouseleave="tooltip = false")
-		div(:style="{ ...appellation.positionStyle, zIndex: 5, width: 'auto', height: 30 }" class="appellation-tooltip" v-if="tooltip")
+		
+		div(:style="{ ...appellation.positionStyle, zIndex: auto, width: 'auto', height: 30 }" class="appellation-tooltip" v-if="hasInterpretation() && tooltip" )
 			| {{ appellation.interpretation.label }}
+		div(:style="{ ...appellation.positionStyle, zIndex: 5, width: 'auto', height: 30 }" class="appellation-tooltip" v-if="hasDateRepresentation() && tooltip")
+			| {{ appellation.dateRepresentation }}
 		li(
 			:style="appellation.positionStyle"
 			v-bind:class=`{
@@ -131,6 +134,12 @@ export default class AppellationDisplayItem extends Vue {
 	}
 	private manyLinesAreSelected() {
 		return this.appellation.midLines.length > 0;
+	}
+	private hasDateRepresentation() {
+		return 'dateRepresentation' in this.appellation;
+	}
+	private hasInterpretation() {
+		return 'interpretation' in this.appellation;
 	}
 
 	private onApellationClick() {

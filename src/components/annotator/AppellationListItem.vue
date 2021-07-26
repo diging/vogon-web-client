@@ -2,7 +2,9 @@
 	div(:class="`text-left pa-2 ${focused}`" ref="listItem")
 		v-row
 			v-col(:cols="7" @click="focusAppellation" class="focus-icon")
-				div(class="subtitle-1") {{ appellation.interpretation.label }}
+				
+				div(v-if="hasInterpretation()" class="subtitle-1") {{ appellation.interpretation.label }}
+				div(v-if="hasDateRepresentation()" class="subtitle-1") {{ appellation.dateRepresentation}}
 				div(class="subtitle-2 appellation-subtitle") Created by <strong>{{ creator }}</strong> on {{ date }}
 				
 			v-col(:cols="5" class="text-right")
@@ -18,7 +20,7 @@
 		div(v-if="edit") 
 			| (You are currently editing this appellation ...)
 			br
-			v-alert(dense type="error" class="my-4" v-if="appellation.relationsFrom.length || appellation.relationsTo.length")
+			v-alert(dense type="error" class="my-4" v-if="hasInterpretation() && appellation.relationsFrom.length || appellation.relationsTo.length")
 				| This appellation is part of existing relation(s) !!
 
 		v-dialog(v-model="showDeleteAppellation" max-width="400")
@@ -64,11 +66,24 @@ export default class AppellationListItem extends Vue {
 		return getFormattedDate(this.appellation.created);
 	}
 
+	private hasDateRepresentation() {
+		return 'dateRepresentation' in this.appellation;
+	}
+
+	private hasInterpretation() {
+		return 'interpretation' in this.appellation;
+	}
+
 	get deletable() {
-		return (
-			this.appellation.relationsFrom.length === 0 &&
-			this.appellation.relationsTo.length === 0
-		);
+		if ('interpretation' in this.appellation) {
+			return (
+				this.appellation.relationsFrom.length === 0 &&
+				this.appellation.relationsTo.length === 0
+			);
+		}
+		else {
+			return true;
+		}
 	}
 
 	public created() {

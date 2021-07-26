@@ -194,10 +194,12 @@ export default class AppellationCreator extends Vue {
 		const appellationMap = new Map();
 		// set map items from appellations array
 		appellationsSorted.forEach((item: any) => {
-			if (appellationMap.has(item.interpretation.uri)) {
-				appellationMap.get(item.interpretation.uri).push(item);
-			} else {
-				appellationMap.set(item.interpretation.uri, [item]);
+			if (appellationMap.has(item.interpretation)){
+				if (appellationMap.has(item.interpretation.uri)) {
+					appellationMap.get(item.interpretation.uri).push(item);
+				} else {
+					appellationMap.set(item.interpretation.uri, [item]);
+				}
 			}
 		});
 		const appellationMapEntires = appellationMap.entries();

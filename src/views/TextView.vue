@@ -88,14 +88,15 @@ export default class TextView extends Vue {
 
 		Vue.$axios.get(`/annotate/${this.$route.params.id}${this.queryParam}`)
 			.then((response: AxiosResponse) => {
-				console.log(response)
 				this.content = response.data.content;
 				this.project = response.data.project;
 				this.text = response.data.text;
 				this.conceptTypes = response.data.concept_types;
-				this.appellations = response.data.appellations;
-				this.appellations.push(response.data.dateappellations);
-				this.appellations
+				// console.log(response.data.appellations);
+				// console.log(response.data.dateappellations);
+				// this.appellations.push(...response.data.appellations);
+				this.appellations.push(...response.data.dateappellations);
+				this.appellations = this.appellations
 					.filter((item: any) => item.position)
 					.map((item: any) => ({
 						...item,
@@ -106,6 +107,7 @@ export default class TextView extends Vue {
 							endOffset: parseInt(item.position.position_value.split(',')[1], 10),
 						},
 					}));
+				console.log(this.appellations);
 				this.$store.commit('setAnnotatorAppellations', this.appellations);
 				this.$store.commit('setAnnotatorText', this.text);
 				this.$store.commit('setAnnotatorConceptTypes', this.conceptTypes);
