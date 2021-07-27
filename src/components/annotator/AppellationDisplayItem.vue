@@ -1,7 +1,7 @@
 <template lang="pug">
 	div(v-if="visible" @mouseover="tooltip = true" @mouseleave="tooltip = false")
 		
-		div(:style="{ ...appellation.positionStyle, zIndex: auto, width: 'auto', height: 30 }" class="appellation-tooltip" v-if="hasInterpretation() && tooltip" )
+		div(:style="{ ...appellation.positionStyle, zIndex: 5, width: 'auto', height: 30 }" class="appellation-tooltip" v-if="hasInterpretation() && tooltip" )
 			| {{ appellation.interpretation.label }}
 		div(:style="{ ...appellation.positionStyle, zIndex: 5, width: 'auto', height: 30 }" class="appellation-tooltip" v-if="hasDateRepresentation() && tooltip")
 			| {{ appellation.dateRepresentation }}

@@ -20,10 +20,10 @@
 		div(v-if="edit") 
 			| (You are currently editing this appellation ...)
 			br
-			<template v-if="hasInterpretation()">
-			v-alert(dense type="error" class="my-4" v-if="hasInterpretation() && appellation.relationsFrom.length || appellation.relationsTo.length")
-				| This appellation is part of existing relation(s) !!
-			</template>
+			//- <template v-if="hasInterpretation()">
+			//- v-alert(dense type="error" class="my-4" v-if="hasInterpretation() && appellation.relationsFrom.length || appellation.relationsTo.length")
+			//- 	| This appellation is part of existing relation(s) !!
+			//- </template>
 		v-dialog(v-model="showDeleteAppellation" max-width="400")
 			v-card
 				v-card-title(class="headline") Delete Appellation
