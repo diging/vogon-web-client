@@ -59,6 +59,7 @@ export interface DateAppellation {
 	day?: number;
 	stringRep?: string;
 	dateRepresentation?: string;
+	index: number;
 }
 
 export interface Relation {
@@ -125,6 +126,7 @@ export interface RelationTemplateFormType {
 
 export interface Appellation {
 	id: number;
+	index: number;
 	position: {
 		id: number;
 		position_type: string;

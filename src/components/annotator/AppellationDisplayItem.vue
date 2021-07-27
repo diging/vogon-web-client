@@ -78,7 +78,8 @@ export default class AppellationDisplayItem extends Vue {
 		this.$store.watch(
 			(state, getters) => getters.getAnnotatorFocusedAppellation,
 			(newValue, oldValue) => {
-				if (newValue === this.appellation.id) {
+				console.log(this.appellation.index);
+				if (newValue === this.appellation.index) {
 					this.focused = true;
 				} else {
 					this.focused = false;
@@ -92,14 +93,14 @@ export default class AppellationDisplayItem extends Vue {
 			},
 		);
 		this.$store.subscribe((mutation, state) => {
-			if (mutation.type === 'setAnnotatorShowAppellation' && mutation.payload === this.appellation.id) {
+			if (mutation.type === 'setAnnotatorShowAppellation' && mutation.payload === this.appellation.index) {
 				this.visible = true;
-			} else if (mutation.type === 'setAnnotatorHideAppellation' && mutation.payload === this.appellation.id) {
+			} else if (mutation.type === 'setAnnotatorHideAppellation' && mutation.payload === this.appellation.index) {
 				this.visible = false;
-			} else if (mutation.type === 'setAnnotatorUpdatedAppellation' && mutation.payload === this.appellation.id) {
+			} else if (mutation.type === 'setAnnotatorUpdatedAppellation' && mutation.payload === this.appellation.index) {
 				this.visible = true;
 			} else if (mutation.type === 'setFocusedAppellationsForRelations') {
-				if (mutation.payload[this.appellation.id]) {
+				if (mutation.payload[this.appellation.index]) {
 					this.focused = true;
 				} else {
 					this.focused = false;
@@ -109,7 +110,7 @@ export default class AppellationDisplayItem extends Vue {
 		this.$store.watch(
 			(state, getters) => getters.getAnnotatorEditAppellationMode,
 			(newValue, oldValue) => {
-				if (newValue && newValue.id === this.appellation.id) {
+				if (newValue && newValue.index === this.appellation.index) {
 					this.visible = false;
 				} else if (newValue === null) {
 					this.focused = false;
@@ -163,7 +164,7 @@ export default class AppellationDisplayItem extends Vue {
 		} else {
 			this.$store.commit('setAnnotatorCurrentTab', 'tab-1');
 			const currentFocusedAppellation = this.$store.getters.getAnnotatorFocusedAppellation;
-			let focusedAppellation = this.appellation.id;
+			let focusedAppellation = this.appellation.index;
 			if (currentFocusedAppellation > 0 && currentFocusedAppellation === focusedAppellation) {
 				focusedAppellation = 0;
 			}

@@ -240,6 +240,8 @@ export default class AppellationCreator extends Vue {
 		this.creating = true;
 		this.createError = false;
 		const highlighted = this.$store.getters.getAnnotatorHighlightedText;
+		console.log("inside create or update");
+		console.log(this.isDateAppellation);
 		const payload: any = {
 			position: {
 				occursIn: this.text.id,
@@ -252,6 +254,13 @@ export default class AppellationCreator extends Vue {
 			occursIn: this.text.id,
 			project: this.$store.getters.getAnnotatorMeta.project,
 		};
+		// if (this.$store.getters.getAnnotatorEditAppellationMode) {
+		// 	this.appellation = this.$store.getters.getAnnotatorEditAppellationMode.appellation;
+		// 	if ('dateRepresentation' in this.appellation) {
+		// 		this.isDateAppellation = true;
+		// 	}
+		// }
+		console.log("in editttttttttttttttt");
 		if (this.isDateAppellation) {
 			payload.year = this.year ? parseInt(this.year, 10) : null;
 			payload.month = this.month ? this.month.value : null;
@@ -304,7 +313,6 @@ export default class AppellationCreator extends Vue {
 	private createDateAppellation(payload: any) {
 		Vue.$axios.post('/dateappellation', payload)
 			.then((response: AxiosResponse) => {
-				// TODO: Implement post creation logic
 				const appellation: any = response.data;
 				this.$store.commit('addAnnotatorNewAppellation', appellation);
 				this.$store.commit('setAnnotatorHighlightedText', null);
@@ -316,7 +324,7 @@ export default class AppellationCreator extends Vue {
 	}
 
 	private updateDateAppellation(payload: any, dateappellationId: number) {
-		Vue.$axios.patch(`/dateappellation`, payload)
+		Vue.$axios.patch(`/dateappellation/${dateappellationId}`, payload)
 			.then((response: AxiosResponse) => {
 				this.$store.commit('setAnnotatorHighlightedText', null);
 				this.$store.commit('setAnnotatorSelectedConcept', null);

@@ -20,9 +20,10 @@
 		div(v-if="edit") 
 			| (You are currently editing this appellation ...)
 			br
+			<template v-if="hasInterpretation()">
 			v-alert(dense type="error" class="my-4" v-if="hasInterpretation() && appellation.relationsFrom.length || appellation.relationsTo.length")
 				| This appellation is part of existing relation(s) !!
-
+			</template>
 		v-dialog(v-model="showDeleteAppellation" max-width="400")
 			v-card
 				v-card-title(class="headline") Delete Appellation
@@ -57,6 +58,7 @@ export default class AppellationListItem extends Vue {
 	private snackbar: boolean = false;
 	private snackbarColor: string = 'success';
 	private snackbarMsg: string = '';
+	private deleteUrl: string = '';
 
 	get creator() {
 		return getCreatorName(this.appellation.createdBy);
@@ -94,7 +96,9 @@ export default class AppellationListItem extends Vue {
 		this.$store.watch(
 			(state, getters) => getters.getAnnotatorFocusedAppellation,
 			(newValue, oldValue) => {
-				if (newValue === this.appellation.id) {
+				console.log("herrrrrrrrrrrrrrrrrr");
+				console.log(this.appellation);
+				if (newValue === this.appellation.index) {
 					this.focused = 'focused';
 					VueScrollTo.scrollTo(this.$refs[`listItem`] as Element, {
 						container: '#appellation-list',
@@ -110,7 +114,7 @@ export default class AppellationListItem extends Vue {
 	private focusAppellation() {
 		if (!this.edit) {
 			const currentFocusedAppellation = this.$store.getters.getAnnotatorFocusedAppellation;
-			let focusedAppellation = this.appellation.id;
+			let focusedAppellation = this.appellation.index;
 			if (currentFocusedAppellation > 0 && currentFocusedAppellation === focusedAppellation) {
 				focusedAppellation = 0;
 			}
@@ -120,9 +124,9 @@ export default class AppellationListItem extends Vue {
 
 	private toggleVisibility() {
 		if (this.visible) {
-			this.$store.commit('setAnnotatorHideAppellation', this.appellation.id);
+			this.$store.commit('setAnnotatorHideAppellation', this.appellation.index);
 		} else {
-			this.$store.commit('setAnnotatorShowAppellation', this.appellation.id);
+			this.$store.commit('setAnnotatorShowAppellation', this.appellation.index);
 		}
 		this.visible = !this.visible;
 	}
@@ -131,6 +135,8 @@ export default class AppellationListItem extends Vue {
 		if (!this.focused) {
 			this.focusAppellation();
 			this.edit = true;
+			console.log("in editing the application");
+			console.log(this.appellation);
 			this.$store.commit('setAnnotatorEditAppellationMode', this.appellation);
 		} else {
 			if (!this.edit) {
@@ -144,7 +150,13 @@ export default class AppellationListItem extends Vue {
 	}
 
 	private deleteAppellation() {
-		Vue.$axios.delete(`/appellation/${this.appellation.id}`)
+		if ('interpretation' in this.appellation) {
+			this.deleteUrl = `/appellation/${this.appellation.id}`;
+		}
+		else if ('dateRepresentation' in this.appellation) {
+			this.deleteUrl = `/dateappellation/${this.appellation.id}`;
+		}
+		Vue.$axios.delete(this.deleteUrl)
 			.then((response: AxiosResponse) => {
 				this.snackbar = true;
 				this.snackbarColor = 'success';
