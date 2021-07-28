@@ -45,6 +45,7 @@ import { ConceptType } from '@/interfaces/ConceptTypes';
 import { Project } from '@/interfaces/ProjectTypes';
 import { Appellation, Relation, RelationSet } from '@/interfaces/RelationTypes';
 import { TextDocument } from '@/interfaces/RepositoryTypes';
+import {v4 as uuidv4} from 'uuid';
 
 @Component({
 	name: 'TextView',
@@ -103,7 +104,7 @@ export default class TextView extends Vue {
 				console.log("dataa", this.appellations);
 				for(let i in this.appellations) {
 
-					this.appellations[i]["index"] = Number(i);
+					this.appellations[i]["index"] = uuidv4();
 				}
 				this.appellations = this.appellations
 					.filter((item: any) => item.position)

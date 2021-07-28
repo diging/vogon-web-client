@@ -47,6 +47,13 @@ const initialState: RootState = {
 		updatedAppellationId: 0,
 		focusedAppellationsForRelations: {},
 		focusedRelationId: null,
+		isDateAppellation: false,
+		datePayload: {
+			year: '',
+			month: null,
+			day: '',
+		},
+		
 	},
 	notifications: [],
 };
@@ -159,6 +166,11 @@ const mutations: MutationTree<RootState> = {
 	setAnnotatorSelectedConcept(state, concept) {
 		state.annotator.selectedConcept = concept;
 	},
+	setAnnotatorDateAppellationdata(state, payload) {
+		state.annotator.datePayload.year = payload['year'];
+		state.annotator.datePayload.month = payload['month'];
+		state.annotator.datePayload.day = payload['day'];
+	},
 	setAnnotatorSearchingConcept(state, searching) {
 		state.annotator.searchingConcept = searching;
 	},
@@ -182,6 +194,9 @@ const mutations: MutationTree<RootState> = {
 	},
 	setAnnotatorEditAppellationMode(state, appellation) {
 		state.annotator.editAppellationId = appellation;
+	},
+	setAnnotatorisDateAppellation(state, value) {
+		state.annotator.isDateAppellation = value;
 	},
 	setAnnotatorUpdatedAppellation(state, appellationId) {
 		state.annotator.updatedAppellationId = appellationId;
@@ -242,11 +257,13 @@ export default new Vuex.Store({
 		getAnnotatorHideAppellation: (state) => state.annotator.hideAllAppellations,
 		getAnnotatorHiddenAppellations: (state) => state.annotator.hiddenAppellations,
 		getAnnotatorEditAppellationMode: (state) => state.annotator.editAppellationId,
+		getAnnotatorisDateAppellation: (state) => state.annotator.isDateAppellation,
 		getRelationCreated: (state) => state.annotator.relationCreated,
 		getFocusedAppellationsForRelations: (state) => state.annotator.focusedAppellationsForRelations,
 		getFocusedRelationId: (state) => state.annotator.focusedRelationId,
 		templateOpenConcepts: (state) => state.templateCreator.open_concepts,
 		notifications: (state) => state.notifications,
+		getAnnotatorDateAppellationdata: (state) => state.annotator.datePayload,
 	},
 	actions: {},
 });

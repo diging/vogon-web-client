@@ -138,10 +138,16 @@ export default class AppellationListItem extends Vue {
 			console.log("in editing the application");
 			console.log(this.appellation);
 			this.$store.commit('setAnnotatorEditAppellationMode', this.appellation);
+			if ('dateRepresentation' in this.appellation) {
+				this.$store.commit('setAnnotatorisDateAppellation', true);
+			}
 		} else {
 			if (!this.edit) {
 				this.edit = true;
 				this.$store.commit('setAnnotatorEditAppellationMode', this.appellation);
+				if ('dateRepresentation' in this.appellation) {
+				this.$store.commit('setAnnotatorisDateAppellation', true);
+			}
 			} else {
 				this.edit = false;
 				this.$store.commit('setAnnotatorEditAppellationMode', null);
