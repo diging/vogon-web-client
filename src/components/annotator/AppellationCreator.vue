@@ -337,6 +337,9 @@ export default class AppellationCreator extends Vue {
 				this.$store.commit('setAnnotatorHighlightedText', null);
 				this.$store.commit('setAnnotatorUpdatedAppellation', dateappellationId);
 				this.isDateAppellation = false;
+				this.year = '';
+				this.month = null;
+				this.day = '';
 				this.$store.commit('setAnnotatorisDateAppellation', false);
 			})
 			.catch(() => this.createError = true)
