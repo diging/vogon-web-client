@@ -48,12 +48,6 @@ const initialState: RootState = {
 		focusedAppellationsForRelations: {},
 		focusedRelationId: null,
 		isDateAppellation: false,
-		datePayload: {
-			year: '',
-			month: null,
-			day: '',
-		},
-		
 	},
 	notifications: [],
 };
@@ -166,11 +160,6 @@ const mutations: MutationTree<RootState> = {
 	setAnnotatorSelectedConcept(state, concept) {
 		state.annotator.selectedConcept = concept;
 	},
-	setAnnotatorDateAppellationdata(state, payload) {
-		state.annotator.datePayload.year = payload['year'];
-		state.annotator.datePayload.month = payload['month'];
-		state.annotator.datePayload.day = payload['day'];
-	},
 	setAnnotatorSearchingConcept(state, searching) {
 		state.annotator.searchingConcept = searching;
 	},
@@ -263,7 +252,6 @@ export default new Vuex.Store({
 		getFocusedRelationId: (state) => state.annotator.focusedRelationId,
 		templateOpenConcepts: (state) => state.templateCreator.open_concepts,
 		notifications: (state) => state.notifications,
-		getAnnotatorDateAppellationdata: (state) => state.annotator.datePayload,
 	},
 	actions: {},
 });

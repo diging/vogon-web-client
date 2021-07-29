@@ -68,14 +68,6 @@ export default class AppellationListItem extends Vue {
 		return getFormattedDate(this.appellation.created);
 	}
 
-	private hasDateRepresentation() {
-		return 'dateRepresentation' in this.appellation;
-	}
-
-	private hasInterpretation() {
-		return 'interpretation' in this.appellation;
-	}
-
 	get deletable() {
 		if ('interpretation' in this.appellation) {
 			return (
@@ -83,9 +75,7 @@ export default class AppellationListItem extends Vue {
 				this.appellation.relationsTo.length === 0
 			);
 		}
-		else {
-			return true;
-		}
+		return true;
 	}
 
 	public created() {
@@ -96,8 +86,6 @@ export default class AppellationListItem extends Vue {
 		this.$store.watch(
 			(state, getters) => getters.getAnnotatorFocusedAppellation,
 			(newValue, oldValue) => {
-				console.log("herrrrrrrrrrrrrrrrrr");
-				console.log(this.appellation);
 				if (newValue === this.appellation.index) {
 					this.focused = 'focused';
 					VueScrollTo.scrollTo(this.$refs[`listItem`] as Element, {
@@ -135,8 +123,6 @@ export default class AppellationListItem extends Vue {
 		if (!this.focused) {
 			this.focusAppellation();
 			this.edit = true;
-			console.log("in editing the application");
-			console.log(this.appellation);
 			this.$store.commit('setAnnotatorEditAppellationMode', this.appellation);
 			if ('dateRepresentation' in this.appellation) {
 				this.$store.commit('setAnnotatorisDateAppellation', true);
@@ -153,6 +139,14 @@ export default class AppellationListItem extends Vue {
 				this.$store.commit('setAnnotatorEditAppellationMode', null);
 			}
 		}
+	}
+
+	private hasDateRepresentation() {
+		return 'dateRepresentation' in this.appellation;
+	}
+
+	private hasInterpretation() {
+		return 'interpretation' in this.appellation;
 	}
 
 	private deleteAppellation() {

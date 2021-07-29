@@ -93,18 +93,11 @@ export default class TextView extends Vue {
 				this.project = response.data.project;
 				this.text = response.data.text;
 				this.conceptTypes = response.data.concept_types;
-				console.log(response.data.appellations);
-				console.log(response.data.dateappellations);
 				this.appellations = [];
 				this.appellations.push(...response.data.appellations);
 				this.appellations.push(...response.data.dateappellations);
-				// this.appellations.forEach((item, i) => {
-  				// 	item['index'] = i;
-				// });
-				console.log("dataa", this.appellations);
-				for(let i in this.appellations) {
-
-					this.appellations[i]["index"] = uuidv4();
+				for (const i in this.appellations) {
+					this.appellations[i].index = uuidv4();
 				}
 				this.appellations = this.appellations
 					.filter((item: any) => item.position)

@@ -172,34 +172,17 @@ export default class AppellationCreator extends Vue {
 		this.$store.watch(
 			(state, getters) => getters.getAnnotatorisDateAppellation,
 			(newValue, oldValue) => {
-				if (newValue==true) {
+				if (newValue === true) {
 					this.isDateAppellation = true;
-					let appellation = this.$store.getters.getAnnotatorEditAppellationMode;
-					console.log("payloadaaaaaaaaaaa");
-					console.log(appellation);
+					const appellation = this.$store.getters.getAnnotatorEditAppellationMode;
 					this.year = appellation.year;
 					this.month = appellation.month;
 					this.day = appellation.day;
-					
-					
 				}
 			},
 		);
 	}
-	// private setDate() {
-	// 	let payload: any;
-	// 	if (this.year) {
-	// 		payload["year"] = this.year;
-	// 	}
-	// 	if (this.month) {
-	// 		payload["month"] = this.month;
-	// 	}
-	// 	if (this.day) {
-	// 		payload["day"] = this.day;
-	// 	}
-	// 	console.log(payload);
-	// 	this.$store.commit('setAnnotatorDateAppellationdata', payload);
-	// }
+
 	get concepts() {
 		return this.conceptsFinal.map((item) => ({
 			...item.interpretation,
@@ -223,7 +206,7 @@ export default class AppellationCreator extends Vue {
 		const appellationMap = new Map();
 		// set map items from appellations array
 		appellationsSorted.forEach((item: any) => {
-			if (appellationMap.has(item.interpretation)){
+			if (appellationMap.has(item.interpretation)) {
 				if (appellationMap.has(item.interpretation.uri)) {
 					appellationMap.get(item.interpretation.uri).push(item);
 				} else {
@@ -271,8 +254,6 @@ export default class AppellationCreator extends Vue {
 		this.creating = true;
 		this.createError = false;
 		const highlighted = this.$store.getters.getAnnotatorHighlightedText;
-		console.log("inside create or update");
-		console.log(this.isDateAppellation);
 		const payload: any = {
 			position: {
 				occursIn: this.text.id,
@@ -285,17 +266,7 @@ export default class AppellationCreator extends Vue {
 			occursIn: this.text.id,
 			project: this.$store.getters.getAnnotatorMeta.project,
 		};
-		// if (this.$store.getters.getAnnotatorEditAppellationMode) {
-		// 	this.appellation = this.$store.getters.getAnnotatorEditAppellationMode.appellation;
-		// 	if ('dateRepresentation' in this.appellation) {
-		// 		this.isDateAppellation = true;
-		// 	}
-		// }
-		console.log("in editttttttttttttttt");
 		if (this.isDateAppellation) {
-			console.log(this.year);
-			console.log(this.month);
-			console.log(this.day);
 			payload.year = this.year ? parseInt(this.year, 10) : null;
 			payload.month = this.month ? this.month.value : null;
 			payload.day = this.day ? parseInt(this.day, 10) : null;
@@ -352,7 +323,6 @@ export default class AppellationCreator extends Vue {
 				this.$store.commit('setAnnotatorHighlightedText', null);
 				this.$store.commit('setAnnotatorSelectedConcept', null);
 				this.$store.commit('setAnnotatorCreatedAppellation', true);
-				this.$store.commit('setAnnotatorDateAppellationdata', null);
 			})
 			.catch(() => this.createError = true)
 			.finally(() => this.creating = false);
@@ -368,7 +338,6 @@ export default class AppellationCreator extends Vue {
 				this.$store.commit('setAnnotatorUpdatedAppellation', dateappellationId);
 				this.isDateAppellation = false;
 				this.$store.commit('setAnnotatorisDateAppellation', false);
-				this.$store.commit('setAnnotatorDateAppellationdata', null);
 			})
 			.catch(() => this.createError = true)
 			.finally(() => this.creating = false);

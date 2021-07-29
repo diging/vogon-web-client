@@ -78,7 +78,6 @@ export default class AppellationDisplayItem extends Vue {
 		this.$store.watch(
 			(state, getters) => getters.getAnnotatorFocusedAppellation,
 			(newValue, oldValue) => {
-				console.log(this.appellation.index);
 				if (newValue === this.appellation.index) {
 					this.focused = true;
 				} else {

@@ -51,7 +51,6 @@ export interface RootState {
 		focusedAppellationsForRelations: any;
 		focusedRelationId: any;
 		isDateAppellation: boolean,
-		datePayload: any;
 	};
 	notifications: Notification[];
 }
