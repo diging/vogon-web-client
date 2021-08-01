@@ -2,7 +2,7 @@
 	div(class="template-container")
 		v-menu(bottom left offset-y)
 			template(v-slot:activator="{ on }")
-				v-text-field(hide-details v-model="query" filled rounded single-line label="Search for Relation Templates" dense  class="mb-3" @keyup.enter.native="searchRelationTemplates")
+				v-text-field(hide-details v-model="query" filled rounded single-line label="Search for Relation Templates" dense  class="mb-3" @keyup.enter.native="searchRelationTemplates" v-on="on")
 					template(v-slot:append)
 						v-fade-transition(leave-absolute)
 							v-icon(v-on="on" @click="searchRelationTemplates()") search

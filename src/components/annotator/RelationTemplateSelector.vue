@@ -36,15 +36,6 @@ export default class RelationTemplateSelector extends Vue {
 	private query: string = '';
 	private searching: boolean = false;
 
-	created() {
-		window.addEventListener('keyup', (event) => {
-      if (event.keyCode == 13) { // on enter
-        this.$emit('enterpressed');
-      }
-    });
-  }
-	}
-
 	public search() {
 		this.searching = true;
 		// TODO: Fix axios call
