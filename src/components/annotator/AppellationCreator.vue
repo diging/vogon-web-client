@@ -65,7 +65,47 @@
 					)
 						template(v-if="$store.getters.getAnnotatorEditAppellationMode") Update Date Appellation
 						template(v-else) Create Date Appellation
-			
+			v-switch(
+				v-model="isDateString"
+				label="Date String Appellation"
+				inset
+				flat
+			)
+			template(v-if="isDateString")
+				v-row
+					v-menu(
+					ref="menuCreatedAfter"
+					v-model="menuCreatedAfter"
+					:close-on-content-click="false"
+					:return-value.sync="dateString"
+					transition="scale-transition"
+					offset-y
+					min-width="290px"
+				)
+					template(v-slot:activator="{ on }")
+						v-text-field(
+							v-model="dateString"
+							label="Date"
+							append-icon="event"
+							readonly
+							v-on="on"
+							outlined
+							dense
+							clearable
+						)
+					v-date-picker(v-model="dateString" no-title scrollable)
+					v-spacer
+						v-btn(text color="primary" @click="menuCreatedAfter = false") Cancel
+						v-btn(text color="primary" @click="selectDateString()") OK
+					div(class="relation-btn-container")
+					v-btn(
+						color="success"
+						class="mt-3 ml-auto"
+						@click="createOrUpdate"
+					)
+						template(v-if="$store.getters.getAnnotatorEditAppellationMode") Update Appellation
+						template(v-else) Create Appellation
+					
 			template(v-else)
 				v-checkbox(
 					v-if="!$store.getters.getAnnotatorSelectedConcept"
@@ -136,8 +176,10 @@ export default class AppellationCreator extends Vue {
 	private createNewConcept: boolean = false;
 	private creating: boolean = false;
 	private createError: boolean = false;
+	private menuCreatedAfter: boolean = false;
 
 	private isDateAppellation: boolean = false;
+	private isDateString: boolean = false;
 	private months: any[] = [
 		{ label: 'Jan', value: 1 }, { label: 'Feb', value: 2 }, { label: 'Mar', value: 3 },
 		{ label: 'Apr', value: 4 }, { label: 'May', value: 5 }, { label: 'Jun', value: 6 },
@@ -147,10 +189,15 @@ export default class AppellationCreator extends Vue {
 	private year: string = '';
 	private month: any = null;
 	private day: string = '';
+	private dateString: string = '';
 
 	public created() {
 		this.merge(this.appellations);
 		this.watchStore();
+	}
+
+	private selectDateString() {
+		this.$store.commit('setAnnotatorSelectedDate', this.dateString);
 	}
 
 	@Watch('createNewConcept')
@@ -280,8 +327,13 @@ export default class AppellationCreator extends Vue {
 				this.createDateAppellation(payload);
 			}
 		} else {
+			if (!this.isDateString) {
 			payload.interpretation = this.$store.getters.getAnnotatorSelectedConcept.uri ||
 				this.$store.getters.getAnnotatorSelectedConcept.interpretation.uri;
+			}
+			else {
+				payload.dateString = true; 
+			}
 
 			if (this.$store.getters.getAnnotatorEditAppellationMode) {
 				this.update(payload, this.$store.getters.getAnnotatorEditAppellationMode.id);
