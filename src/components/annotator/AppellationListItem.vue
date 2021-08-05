@@ -3,8 +3,9 @@
 		v-row
 			v-col(:cols="7" @click="focusAppellation" class="focus-icon")
 				
-				div(v-if="hasInterpretation()" class="subtitle-1") {{ appellation.interpretation.label }}
-				div(v-if="hasDateRepresentation()" class="subtitle-1") {{ appellation.dateRepresentation}}
+				div(v-if="hasInterpretation()" class="subtitle-1") {{ appellation.interpretation.label }} : Appellation
+				div(v-if="hasDateRepresentation()" class="subtitle-1") {{ appellation.dateRepresentation }} : Date Appellation
+				div(v-if="isDateString()" class="subtitle-1") {{ appellation.dateStringRep}} : Date string Appellation
 				div(class="subtitle-2 appellation-subtitle") Created by <strong>{{ creator }}</strong> on {{ date }}
 				
 			v-col(:cols="5" class="text-right")
@@ -69,7 +70,7 @@ export default class AppellationListItem extends Vue {
 	}
 
 	get deletable() {
-		if ('interpretation' in this.appellation) {
+		if (this.appellation.type == "concept") {
 			return (
 				this.appellation.relationsFrom.length === 0 &&
 				this.appellation.relationsTo.length === 0
@@ -127,13 +128,19 @@ export default class AppellationListItem extends Vue {
 			if ('dateRepresentation' in this.appellation) {
 				this.$store.commit('setAnnotatorisDateAppellation', true);
 			}
+			if (this.appellation.type == "date") {
+				this.$store.commit('setAnnotatorisDateStringAppellation', true);
+			}
 		} else {
 			if (!this.edit) {
 				this.edit = true;
 				this.$store.commit('setAnnotatorEditAppellationMode', this.appellation);
 				if ('dateRepresentation' in this.appellation) {
 					this.$store.commit('setAnnotatorisDateAppellation', true);
-			}
+			    }
+				if (this.appellation.type == "date") {
+				this.$store.commit('setAnnotatorisDateStringAppellation', true);
+				}
 			} else {
 				this.edit = false;
 				this.$store.commit('setAnnotatorEditAppellationMode', null);
@@ -146,11 +153,17 @@ export default class AppellationListItem extends Vue {
 	}
 
 	private hasInterpretation() {
-		return 'interpretation' in this.appellation;
+		return this.appellation.type=="concept";
+	}
+
+	private isDateString() {
+		if (this.appellation.type=="date") {
+		}
+		return this.appellation.type=="date";
 	}
 
 	private deleteAppellation() {
-		if ('interpretation' in this.appellation) {
+		if ('type' in this.appellation) {
 			this.deleteUrl = `/appellation/${this.appellation.id}`;
 		}
 		else if ('dateRepresentation' in this.appellation) {
