@@ -72,17 +72,6 @@
 				flat
 			)
 			template(v-if="isDateString")
-				
-				v-menu(
-					ref="menuCreatedAfter"
-					v-model="menuCreatedAfter"
-					:close-on-content-click="false"
-					:return-value.sync="dateString"
-					transition="scale-transition"
-					offset-y
-					min-width="290px"
-				)
-					
 				v-text-field(
 					v-model="dateString"
 					label="Date"
@@ -92,9 +81,6 @@
 					clearable
 				)
 				v-date-picker(v-model="dateString" no-title)
-					//- v-spacer
-					//- 	v-btn(text color="primary" @click="menuCreatedAfter = false") Cancel
-					//- 	v-btn(text color="primary" @click="selectDateString()") OK
 				div(class="relation-btn-container")
 					v-btn(
 						color="success"
@@ -174,7 +160,6 @@ export default class AppellationCreator extends Vue {
 	private createNewConcept: boolean = false;
 	private creating: boolean = false;
 	private createError: boolean = false;
-	private menuCreatedAfter: boolean = false;
 
 	private isDateAppellation: boolean = false;
 	private isDateString: boolean = false;
@@ -343,7 +328,6 @@ export default class AppellationCreator extends Vue {
 				this.$store.getters.getAnnotatorSelectedConcept.interpretation.uri;
 			}
 			else {
-				payload.dateString = true; 
 				payload.type = "date";
 				payload.dateStringRep = this.dateString;
 			}

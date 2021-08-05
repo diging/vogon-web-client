@@ -50,7 +50,7 @@
 				'appellation': appellation.type != null,
 				'date-appellation': appellation.dateRepresentation != null,
 				'appellation-selected': appellation.selected,
-				'appellation-focused': focused,
+				'appellation-focused': focused
 			}`
 			@click="onApellationClick()"
 		)
@@ -145,9 +145,6 @@ export default class AppellationDisplayItem extends Vue {
 	}
 	private isDateString() {
 		return this.appellation.type=="date";
-	}
-	private appellationRender() {
-		return this.appellation.type=="concept" || this.appellation.type=="date"
 	}
 	private onApellationClick() {
 		// Check if this is a currently highlighted text
