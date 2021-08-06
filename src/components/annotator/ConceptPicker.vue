@@ -5,7 +5,7 @@
 				v-list-item-content(class="py-0")
 					v-list-item-title
 						| {{ concept.label }}
-						span(v-if="concept.authority.name")
+						span(v-if="concept.authority && concept.authority.name")
 							| &nbsp; ({{ concept.authority.name }})
 					v-list-item-subtitle
 						| {{ concept.description }}
