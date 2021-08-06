@@ -139,7 +139,7 @@ export default class AppellationListItem extends Vue {
 					this.$store.commit('setAnnotatorisDateAppellation', true);
 			    }
 				if (this.appellation.type == "date") {
-				this.$store.commit('setAnnotatorisDateStringAppellation', true);
+					this.$store.commit('setAnnotatorisDateStringAppellation', true);
 				}
 			} else {
 				this.edit = false;
@@ -157,8 +157,6 @@ export default class AppellationListItem extends Vue {
 	}
 
 	private isDateString() {
-		if (this.appellation.type=="date") {
-		}
 		return this.appellation.type=="date";
 	}
 

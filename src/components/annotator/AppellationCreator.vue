@@ -65,6 +65,7 @@
 					)
 						template(v-if="$store.getters.getAnnotatorEditAppellationMode") Update Date Appellation
 						template(v-else) Create Date Appellation
+						
 			v-switch(
 				v-model="isDateString"
 				label="Date String Appellation"
