@@ -30,6 +30,10 @@
 
 					v-card-actions
 						v-spacer
+						v-btn(outlined dense @click="enableConceptPicker()") New Concept
+						div(v-if="pickNewConcept") 
+							ConceptSearch
+						v-btn(outlined dense @click="deleteConcept()") Update Concept
 						v-btn(outlined dense :to="`/concept/${$route.params.id}`") Take me back!
 						v-btn(color="error" dense @click="performAction()" :loading="performingAction" :disabled="performingAction")
 							v-icon(left) mdi-check-circle-outline
@@ -66,6 +70,7 @@ import { AxiosError, AxiosResponse } from 'axios';
 import { Component, Vue } from 'vue-property-decorator';
 
 import ConceptActionItem from '@/components/concepts/ConceptActionItem.vue';
+import ConceptSearch from '@/components/annotator/ConceptSearch.vue';
 import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
@@ -78,6 +83,7 @@ import { Concept, ConceptMatch } from '@/interfaces/ConceptTypes';
 		EmptyView,
 		Loading,
 		ConceptActionItem,
+		ConceptSearch,
 	},
 })
 export default class ConceptAction extends Vue {
@@ -85,12 +91,13 @@ export default class ConceptAction extends Vue {
 	private loading: boolean = true;
 	private error: boolean = false;
 
-	private concept: Concept = { id: 1, uri: '', url: '', relations: [], conceptpower_namespaced: false };
+	private concept: Concept = { id: 1, uri: '', url: '', relations: [], conceptpower_namespaced: false,};
 	private matches: ConceptMatch[] = [];
 	private candidates: ConceptMatch[] = [];
 	private actionError: boolean = false;
 	private actionErrorMsg: string = '';
 	private performingAction: boolean = false;
+	private pickNewConcept: boolean = false;
 
 	public created() {
 		this.action = this.$route.params.action;
@@ -102,6 +109,34 @@ export default class ConceptAction extends Vue {
 			})
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
+	}
+
+	// private watchStore() {
+	// this.$store.watch(
+	// 	(state, getters) => getters.getAnnotatorSelectedConcept,
+	// 	(newValue, oldValue) => {
+	// 	if (newValue) {
+	// 		console.log("value", newValue);
+	// 		this.concept = newValue;
+	// 	}
+	// 	},
+	// );
+    // }
+
+	// private 
+
+	private deleteConcept() {
+		Vue.$axios.delete(`/concept/${this.$route.params.id}`)
+		.then((response: AxiosResponse) => {
+			this.concept = this.$store.getters.getAnnotatorSelectedConcept;
+			console.log("concept id", this.concept);
+			// this.$route.params.id = this.concept.alt_id;
+			console.log(this.$route.params.id);
+			})
+			.catch((error: AxiosError) => {
+			})
+			.finally(() => {
+			});
 	}
 
 	private performAction() {
@@ -117,6 +152,10 @@ export default class ConceptAction extends Vue {
 				}
 			})
 			.finally(() => this.performingAction = false);
+	}
+
+	private enableConceptPicker() {
+		this.pickNewConcept = true;
 	}
 }
 </script>

@@ -24,6 +24,7 @@ export default class ConceptPicker extends Vue {
 	@Prop() private concepts!: Concept[];
 
 	private selectConcept(concept: Concept) {
+		console.log("selected concept", concept);
 		this.$store.commit('setAnnotatorSelectedConcept', concept);
 	}
 }
