@@ -125,9 +125,11 @@ export default class ConceptList extends Vue {
 	private async getConcepts(page: number = 1): Promise<void> {
 		this.loading = true;
 		const params: ConceptFilterParams = this.getFilter(page);
+		console.log("in list", params);
 		Vue.$axios.get(`/concept`, { params })
 			.then((response: AxiosResponse) => {
 				this.concepts = response.data.results;
+				console.log("in concepts",this.concepts)
 				this.conceptsCount = response.data.count;
 			})
 			.catch(() => this.error = true)

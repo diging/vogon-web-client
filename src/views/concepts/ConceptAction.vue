@@ -30,11 +30,11 @@
 
 					v-card-actions
 						v-spacer
-						v-btn(v-if="isAdmin()" outlined dense @click="enableConceptPicker()") New Concept
+						v-btn(outlined dense @click="enableConceptPicker()") New Concept
 						div(v-if="pickNewConcept") 
 							ConceptSearch
 						v-btn(outlined dense @click="deleteConcept()") Update Concept
-						v-btn(outlined dense :to="`/concept/${$route.params.id || this.newConcept}`") Take me back!
+						v-btn(outlined dense :to="`/concept/${$route.params.id}`") Take me back!
 						v-btn(color="error" dense @click="performAction()" :loading="performingAction" :disabled="performingAction")
 							v-icon(left) mdi-check-circle-outline
 							template(v-if="matches.length || candidates.length") I accept the risks: {{ action }} anyway!
@@ -132,8 +132,9 @@ export default class ConceptAction extends Vue {
 		.then((response: AxiosResponse) => {
 			this.concept = this.$store.getters.getAnnotatorSelectedConcept;
 			console.log("concept id", this.concept);
-			this.newConcept = this.concept.alt_id;
-			console.log(this.$route.params.id);
+			// this.newConcept = this.concept.alt_id;
+			// console.log(this.$route.params.id);
+			this.$router.replace(`/concept/${this.concept.alt_id}/approve`);
 			})
 			.catch((error: AxiosError) => {
 			})

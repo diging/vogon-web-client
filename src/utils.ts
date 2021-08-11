@@ -24,23 +24,23 @@ export function getUserId() {
 	return null;
 }
 
-export function getCurrentUser() {
-	const userId = getUserId();
-		Vue.$axios.get(`/users/${userId}`)
-			.then((response: AxiosResponse) => {
-				const user = response.data;
-			})
-			.catch(() => this.error = true)
-			.finally(() => this.loading = false);
-	return user;	
-}
+// export function getCurrentUser() {
+// 	const userId = getUserId();
+// 		Vue.$axios.get(`/users/${userId}`)
+// 			.then((response: AxiosResponse) => {
+// 				const user = response.data;
+// 			})
+// 			.catch(() => this.error = true)
+// 			.finally(() => this.loading = false);
+// 	return user;	
+// }
 
-export function isAdmin() {
-	const user = getCurrentUser();
-	if (user!=null) {
-		return user.is_admin;
-	}
-}
+// export function isAdmin() {
+// 	const user = getCurrentUser();
+// 	if (user!=null) {
+// 		return user.is_admin;
+// 	}
+// }
 
 export default {
 	getConceptStateTheme,
