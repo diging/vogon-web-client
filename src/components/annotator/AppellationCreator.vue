@@ -163,6 +163,7 @@ export default class AppellationCreator extends Vue {
 		this.$store.commit('setAnnotatorHighlightedText', null);
 		this.$store.commit('setAnnotatorSelectedConcept', null);
 		this.$store.commit('setAnnotatorEditAppellationMode', null);
+		this.createNewConcept = false;
 	}
 
 	private createOrUpdate() {
@@ -198,6 +199,7 @@ export default class AppellationCreator extends Vue {
 				this.$store.commit('setAnnotatorHighlightedText', null);
 				this.$store.commit('setAnnotatorSelectedConcept', null);
 				this.$store.commit('setAnnotatorCreatedAppellation', true);
+				this.createNewConcept = false;
 			})
 			.catch(() => this.createError = true)
 			.finally(() => this.creating = false);
@@ -210,6 +212,7 @@ export default class AppellationCreator extends Vue {
 				this.$store.commit('setAnnotatorHighlightedText', null);
 				this.$store.commit('setAnnotatorCreatedAppellation', true);
 				this.$store.commit('setAnnotatorUpdatedAppellation', appellationId);
+				this.createNewConcept = false;
 			})
 			.catch(() => this.createError = true)
 			.finally(() => this.creating = false);
