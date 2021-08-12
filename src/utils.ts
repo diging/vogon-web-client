@@ -1,6 +1,6 @@
 import JwtDecode from 'jwt-decode';
-
 import { TokenDto } from '@/interfaces/GlobalTypes';
+import Vue from 'vue';
 
 export function getConceptStateTheme(state: string): {color: string, icon: string} {
 	const mapping: {[key: string]: {color: string, icon: string}} = {
@@ -22,7 +22,13 @@ export function getUserId() {
 	return null;
 }
 
+export function getCurrentUser() {
+	const userId = getUserId();
+	return Vue.$axios.get(`/users/${userId}`).then(response => response.data)
+}
+
 export default {
 	getConceptStateTheme,
 	getUserId,
+	getCurrentUser,
 };
