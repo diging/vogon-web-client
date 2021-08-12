@@ -122,7 +122,7 @@ export default class ConceptAction extends Vue {
 			.finally(() => this.loading = false);
 	}
 
-	public async mounted() {
+	public async mounted():Promise<void>{
 		const user = await getCurrentUser();
 		console.log("inside admin user",user.is_admin===true);
 		if (user.is_admin==true) {
@@ -150,19 +150,43 @@ export default class ConceptAction extends Vue {
 
 	private deleteConcept() {
 		console.log("route params concept", this.$route.params.id);
-		Vue.$axios.delete(`/concept/${this.$route.params.id}`)
-		.then((response: AxiosResponse) => {
-			this.concept = this.$store.getters.getAnnotatorSelectedConcept;
-			console.log("concept id", this.concept);
-			console.log(this.$route.params.id);
-			// this.newConcept = this.concept.alt_id;
-			// console.log(this.$route.params.id);
-			this.$router.replace(`/concept/${this.concept.alt_id}/approve`);
+		this.concept = this.$store.getters.getAnnotatorSelectedConcept;
+		console.log("data concept", this.concept);
+		let payload = {
+			'old_concept': this.$route.params.id,
+			'new_concept': this.concept
+		}
+		Vue.$axios.post('/appellation/update_concept', payload)
+			.then((response: AxiosResponse) => {
 			})
 			.catch((error: AxiosError) => {
-			})
-			.finally(() => {
-			});
+		})
+		.finally(() => {
+		});
+		// let appellations = this.$store.getters.getAnnotatorAppellations;
+		// Vue.$axios.get('/appellations?concept=${this.concept.id}')
+		// .then((response: AxiosResponse) => {
+		// 	let appellations = response.data;
+		// })
+		// .catch((error: AxiosError) => {
+		// })
+		// .finally(() => {
+		// });
+		// console.log("appellations", appellations);
+		// Vue.$axios.delete(`/concept/${this.$route.params.id}`)
+		// .then((response: AxiosResponse) => {
+		// 	this.concept = this.$store.getters.getAnnotatorSelectedConcept;
+		// 	console.log("concept id", this.concept);
+		// 	console.log(this.$route.params.id);
+		// 	// this.newConcept = this.concept.alt_id;
+		// 	// console.log(this.$route.params.id);
+
+		// 	this.$router.replace(`/concept/${this.concept.alt_id}/approve`);
+		// 	})
+		// 	.catch((error: AxiosError) => {
+		// 	})
+		// 	.finally(() => {
+		// 	});
 	}
 
 	private enableConceptPicker() {
