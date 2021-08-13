@@ -32,17 +32,16 @@
 						v-spacer
 						template(v-if="chooseNewConcept") 
 							v-btn(outlined dense @click="enableConceptPicker()") Choose New Concept!
-
-						v-card(outlined class="pa-3")
-							div(v-if="clickNewConcept") 
-								ConceptSearch
-								v-btn(v-if="this.concept" outlined dense @click="deleteConcept()") Update Concept
-								v-btn(
-									dense 
-									color="error" 
-									small 
-									@click="cancel"
-								) Cancel
+							v-card(v-if="clickNewConcept" outlined class="pa-3")
+								div(v-if="clickNewConcept") 
+									ConceptSearch
+									v-btn(v-if="this.concept" outlined dense @click="deleteConcept()") Update Concept
+									v-btn(
+										dense 
+										color="error" 
+										small 
+										@click="cancel"
+									) Cancel
 						v-btn(outlined dense :to="`/concept/${$route.params.id}`") Take me back!
 						v-btn(color="error" dense @click="performAction()" :loading="performingAction" :disabled="performingAction")
 							v-icon(left) mdi-check-circle-outline
@@ -109,10 +108,16 @@ export default class ConceptAction extends Vue {
 	private performingAction: boolean = false;
 	private chooseNewConcept: boolean = false;
 	private clickNewConcept: boolean = false;
+	private routeParamscurrent: string = '';
 
 	public created() {
 		this.action = this.$route.params.action;
-		Vue.$axios.get(`/concept/${this.$route.params.id}/matches`)
+		this.routeParamscurrent = this.$route.params.id;
+		this.checkMatches();
+	}
+
+	private checkMatches() {
+		Vue.$axios.get(`/concept/${this.routeParamscurrent}/matches`)
 			.then((response: AxiosResponse) => {
 				this.concept = response.data.concept;
 				this.matches = response.data.matches;
@@ -158,35 +163,16 @@ export default class ConceptAction extends Vue {
 		}
 		Vue.$axios.post('/appellation/update_concept', payload)
 			.then((response: AxiosResponse) => {
+				this.clickNewConcept = false;
+				const concept = response.data['concept'];
+				this.routeParamscurrent = concept;
+				this.$router.replace(`/concept/${concept}/approve`);
+				this.checkMatches();
 			})
 			.catch((error: AxiosError) => {
 		})
 		.finally(() => {
 		});
-		// let appellations = this.$store.getters.getAnnotatorAppellations;
-		// Vue.$axios.get('/appellations?concept=${this.concept.id}')
-		// .then((response: AxiosResponse) => {
-		// 	let appellations = response.data;
-		// })
-		// .catch((error: AxiosError) => {
-		// })
-		// .finally(() => {
-		// });
-		// console.log("appellations", appellations);
-		// Vue.$axios.delete(`/concept/${this.$route.params.id}`)
-		// .then((response: AxiosResponse) => {
-		// 	this.concept = this.$store.getters.getAnnotatorSelectedConcept;
-		// 	console.log("concept id", this.concept);
-		// 	console.log(this.$route.params.id);
-		// 	// this.newConcept = this.concept.alt_id;
-		// 	// console.log(this.$route.params.id);
-
-		// 	this.$router.replace(`/concept/${this.concept.alt_id}/approve`);
-		// 	})
-		// 	.catch((error: AxiosError) => {
-		// 	})
-		// 	.finally(() => {
-		// 	});
 	}
 
 	private enableConceptPicker() {
