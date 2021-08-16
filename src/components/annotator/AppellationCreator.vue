@@ -172,7 +172,7 @@ export default class AppellationCreator extends Vue {
 		this.$store.watch(
 			(state, getters) => getters.getAnnotatorisDateAppellation,
 			(newValue, oldValue) => {
-				if (newValue === true) {
+				if (newValue) {
 					this.isDateAppellation = true;
 					const appellation = this.$store.getters.getAnnotatorEditAppellationMode;
 					this.year = appellation.year;
