@@ -129,7 +129,6 @@ export default class ConceptAction extends Vue {
 
 	public async mounted():Promise<void>{
 		const user = await getCurrentUser();
-		console.log("inside admin user",user.is_admin===true);
 		if (user.is_admin==true) {
 			this.chooseNewConcept = true;
 		}
@@ -154,9 +153,7 @@ export default class ConceptAction extends Vue {
 	}
 
 	private deleteConcept() {
-		console.log("route params concept", this.$route.params.id);
 		this.concept = this.$store.getters.getAnnotatorSelectedConcept;
-		console.log("data concept", this.concept);
 		let payload = {
 			'old_concept': this.$route.params.id,
 			'new_concept': this.concept
@@ -181,7 +178,6 @@ export default class ConceptAction extends Vue {
 
 	private cancel() {
 		this.$store.commit('setAnnotatorSelectedConcept', null);
-		// this.chooseNewConcept = false;
 		this.clickNewConcept = false;
 	}
 }
