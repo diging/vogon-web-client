@@ -121,6 +121,7 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import ConceptCreator from './ConceptCreator.vue';
 import ConceptPicker from './ConceptPicker.vue';
 import ConceptSearch from './ConceptSearch.vue';
+import { Appellation, DateAppellation } from '@/interfaces/RelationTypes';
 @Component({
 	name: 'AppellationCreator',
 	components: {
@@ -136,6 +137,7 @@ export default class AppellationCreator extends Vue {
 	private createNewConcept: boolean = false;
 	private creating: boolean = false;
 	private createError: boolean = false;
+	private payload: any;
 
 	private isDateAppellation: boolean = false;
 	private months: any[] = [
@@ -258,7 +260,13 @@ export default class AppellationCreator extends Vue {
 		this.creating = true;
 		this.createError = false;
 		const highlighted = this.$store.getters.getAnnotatorHighlightedText;
-		const payload: any = {
+		if (this.isDateAppellation) {
+			
+		}
+		else {
+			type this.payload = Appellation,
+		}
+		payload = {
 			position: {
 				occursIn: this.text.id,
 				position_type: 'CO',

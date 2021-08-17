@@ -128,7 +128,7 @@ export interface Appellation {
 	id: number;
 	index: number;
 	position: {
-		id: number;
+		id?: number;
 		position_type: string;
 		position_value: string;
 		occursIn: number;
@@ -138,4 +138,7 @@ export interface Appellation {
 	occursIn: TextDocument;
 	interpretation?: Concept;
 	createdBy: User;
+	startPos?: string;
+	endPos?: string;
+	project?: number;
 }
