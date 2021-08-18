@@ -60,7 +60,7 @@ export interface DateAppellation {
 	stringRep?: string;
 	dateRepresentation?: string;
 	index?: number;
-	position: {
+	position?: {
 		id?: number;
 		position_type: string;
 		position_value: string;
