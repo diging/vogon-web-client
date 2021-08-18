@@ -52,14 +52,25 @@ export interface RelationTemplate {
 }
 
 export interface DateAppellation {
-	id: number;
-	created: string;
-	year?: number;
-	month?: number;
-	day?: number;
+	id?: number;
+	created?: string;
+	year?: number | null;
+	month?: number | null;
+	day?: number | null;
 	stringRep?: string;
 	dateRepresentation?: string;
-	index: number;
+	index?: number;
+	position: {
+		id?: number;
+		position_type: string;
+		position_value: string;
+		occursIn: number;
+	};
+	startPos?: string;
+	endPos?: string;
+	occursIn?: TextDocument;
+	project?: number;
+	createdBy?: User;
 }
 
 export interface Relation {
@@ -125,8 +136,8 @@ export interface RelationTemplateFormType {
 }
 
 export interface Appellation {
-	id: number;
-	index: number;
+	id?: number;
+	index?: number;
 	position: {
 		id?: number;
 		position_type: string;
@@ -137,7 +148,7 @@ export interface Appellation {
 	stringRep?: string;
 	occursIn: TextDocument;
 	interpretation?: Concept;
-	createdBy: User;
+	createdBy?: User;
 	startPos?: string;
 	endPos?: string;
 	project?: number;

@@ -137,7 +137,6 @@ export default class AppellationCreator extends Vue {
 	private createNewConcept: boolean = false;
 	private creating: boolean = false;
 	private createError: boolean = false;
-	private payload: any;
 
 	private isDateAppellation: boolean = false;
 	private months: any[] = [
@@ -261,12 +260,7 @@ export default class AppellationCreator extends Vue {
 		this.createError = false;
 		const highlighted = this.$store.getters.getAnnotatorHighlightedText;
 		if (this.isDateAppellation) {
-			
-		}
-		else {
-			type this.payload = Appellation,
-		}
-		payload = {
+			const payload: DateAppellation  = {
 			position: {
 				occursIn: this.text.id,
 				position_type: 'CO',
@@ -278,7 +272,6 @@ export default class AppellationCreator extends Vue {
 			occursIn: this.text.id,
 			project: this.$store.getters.getAnnotatorMeta.project,
 		};
-		if (this.isDateAppellation) {
 			payload.year = this.year ? parseInt(this.year, 10) : null;
 			payload.month = this.month ? this.month.value : null;
 			payload.day = this.day ? parseInt(this.day, 10) : null;
@@ -289,6 +282,18 @@ export default class AppellationCreator extends Vue {
 				this.createDateAppellation(payload);
 			}
 		} else {
+			const payload: Appellation  = {
+			position: {
+				occursIn: this.text.id,
+				position_type: 'CO',
+				position_value: `${highlighted.position.startOffset},${highlighted.position.endOffset}`,
+			},
+			stringRep: highlighted.representation,
+			startPos: highlighted.position.startOffset,
+			endPos: highlighted.position.endOffset,
+			occursIn: this.text.id,
+			project: this.$store.getters.getAnnotatorMeta.project,
+		};
 			payload.interpretation = this.$store.getters.getAnnotatorSelectedConcept.uri ||
 				this.$store.getters.getAnnotatorSelectedConcept.interpretation.uri;
 
