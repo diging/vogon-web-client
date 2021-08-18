@@ -32,7 +32,7 @@
 			required 
 			dense
 			outlined
-			:rules="[() => !!description || 'Concept description Required.',() => description.length > 10 || 'Too small description!']"
+			:rules="[() => !!description || 'Concept description Required.',() => description.length > 10 || 'Not enough characters!']"
 		)
 		v-select(
 			v-model="conceptType"
