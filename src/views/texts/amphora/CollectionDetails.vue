@@ -60,6 +60,7 @@ export default class CollectionDetails extends Vue {
 
 		Vue.$axios.get(`/repository/amphora/${this.$route.params.repoId}/collections/${this.$route.params.colId}?project_id=${projectId}`)
 			.then((response: AxiosResponse) => {
+				console.log(response.data);
 				this.collection = response.data as TextCollection;
 
 				const project = response.data.project;

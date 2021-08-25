@@ -55,7 +55,6 @@
 
 									template(v-slot:item.authors="{ item }")
 										div {{ getAuthors(item) }}
-
 									template(v-slot:top="{ pagination, options, updateOptions }")
 										v-data-footer(
 											:pagination="pagination" 
@@ -122,6 +121,21 @@ export default class CitesphereGroupDetails extends Vue {
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
 	}
+		Vue.$axios.get(`/repository/citesphere/${this.$route.params.repoId}/groups/${this.$route.params.groupId}/items/${this.$route.params.item}`)
+			.then((response: AxiosResponse) => {
+				console.log(response.data);
+				this.item = response.data as TextCollection;
+
+				// const project = response.data.project;
+				// const repo = response.data.repository;
+				// this.navItems[1].text = project.name;
+				// this.navItems[1].to = `/project/${project.id}`;
+				// this.navItems[3].text = repo.name;
+				// this.navItems[3].to = `/repository/amphora/${repo.id}${this.queryParam}`;
+				// this.navItems[5].text = this.collection.name;
+			})
+			.catch(() => this.error = true)
+			.finally(() => this.loading = false);
 
 	private async fetchCollections(collection: CitesphereCollection) {
 		return Vue.$axios.get(
