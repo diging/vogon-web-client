@@ -49,10 +49,25 @@
 									:items-per-page="50"
 									:server-items-length="itemsCount" 
 									:footer-props="{'items-per-page-options':['', 50]}"
+									@click:row="doThis"
 								)
+									//- template(v-slot:items="{ item }")
+									//- 	<tr @click="props.expanded = !props.expanded">
+									//- 		//- <td>{{ props.item }}</td>
+									//- 		//- <td class="text-xs-right pr-5">{{ props.item.scanned }}</td>
+									//- 		//- <td class="text-xs-right pr-5">{{ props.item.incoming }}</td>
+									//- 		//- <td class="text-xs-right pr-5">{{ props.item.outgoing }}</td>
+									//- 		//- <td class="text-xs-right pr-5">{{ props.item.unknown }}</td>
+									//- 	</tr>
+									Loading(v-if="isDisplayComponent")
+										template(v-if="isDisplayComponent")
+											component(v-bind:is="TextItem")
+										//- v-bind:to="`/repository/citesphere/${repoId}/groups/${group.id}/items/${item.id}/${currentElement.key}/${queryParam}`"
+										//- TextItem(v-bind:testName="currentElement.key")
+									
 									template(v-slot:item.itemType="{ item }")
 										div(class="item-type") {{ item.itemType.toLowerCase().split("_").join(" ") }}
-
+									
 									template(v-slot:item.authors="{ item }")
 										div {{ getAuthors(item) }}
 									template(v-slot:top="{ pagination, options, updateOptions }")
@@ -73,6 +88,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
+import TextItem from '@/components/texts/citesphere/TextItem.vue';
 import {
 	CitesphereCollection,
 	CitesphereGroupInfo,
@@ -86,6 +102,7 @@ import {
 		Loading,
 		ErrorIndicator,
 		EmptyView,
+		TextItem,
 	},
 })
 export default class CitesphereGroupDetails extends Vue {
@@ -98,6 +115,8 @@ export default class CitesphereGroupDetails extends Vue {
 
 	private collectionTree: any = [];
 	private selectedCollections: string[] = [];
+	private isDisplayComponent: boolean = false;
+	private currentElement: any = '';
 	private itemHeaders = [
 		{ text: 'Type', value: 'itemType' },
 		{ text: 'Title', value: 'title' },
@@ -121,22 +140,29 @@ export default class CitesphereGroupDetails extends Vue {
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
 	}
-		Vue.$axios.get(`/repository/citesphere/${this.$route.params.repoId}/groups/${this.$route.params.groupId}/items/${this.$route.params.item}`)
-			.then((response: AxiosResponse) => {
-				console.log(response.data);
-				this.item = response.data as TextCollection;
+// 		Vue.$axios.get(`/repository/citesphere/${this.$route.params.repoId}/groups/${this.$route.params.groupId}/items/${this.$route.params.item}`)
+// 			.then((response: AxiosResponse) => {
+// 				console.log(response.data);
+// 				this.item = response.data as TextCollection;
 
-				// const project = response.data.project;
-				// const repo = response.data.repository;
-				// this.navItems[1].text = project.name;
-				// this.navItems[1].to = `/project/${project.id}`;
-				// this.navItems[3].text = repo.name;
-				// this.navItems[3].to = `/repository/amphora/${repo.id}${this.queryParam}`;
-				// this.navItems[5].text = this.collection.name;
-			})
-			.catch(() => this.error = true)
-			.finally(() => this.loading = false);
-
+// 				// const project = response.data.project;
+// 				// const repo = response.data.repository;
+// 				// this.navItems[1].text = project.name;
+// 				// this.navItems[1].to = `/project/${project.id}`;
+// 				// this.navItems[3].text = repo.name;
+// 				// this.navItems[3].to = `/repository/amphora/${repo.id}${this.queryParam}`;
+// 				// this.navItems[5].text = this.collection.name;
+// 			})
+// 			.catch(() => this.error = true)
+// 			.finally(() => this.loading = false);
+// }
+	private doThis(value: any) {
+		// console.log("captured the event", value);
+		this.isDisplayComponent = true;
+		this.currentElement = value.key;
+		console.log("captured the event", this.currentElement);
+		console.log("url", this.isDisplayComponent);
+	}
 	private async fetchCollections(collection: CitesphereCollection) {
 		return Vue.$axios.get(
 			`/repository/citesphere/${this.$route.params.repoId}/groups/${
@@ -147,6 +173,8 @@ export default class CitesphereGroupDetails extends Vue {
 			collection.children.push(...collections);
 		});
 	}
+
+	
 
 	private async getItems(page: number = 1) {
 		this.itemsLoading = true;
