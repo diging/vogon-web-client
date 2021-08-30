@@ -1,27 +1,32 @@
 <template lang="pug">
 	v-card(tile outlined class="col-details")
 		v-card-title Item
-			template(v-if="!item.gilesUploads.length")
+			template(v-if="!item")
 				EmptyView No files found!
-			//- TextResources(v-else v-bind:resources="item" v-bind:repoId="$route.params.repoId" v-bind:queryParam="queryParam")
+			FileDisplay(v-else v-bind:files="item.gilesUploads" v-bind:repoId="repoId" v-bind:queryParam="queryParam")
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import FileDisplay from "./FileDisplay.vue"
 
 // import { CitesphereGroup } from '@/interfaces/CitesphereTypes';
 
 @Component({
 	name: 'TextItem',
+	components: {
+		FileDisplay,
+	},
 })
 export default class TextItem extends Vue {
 	// @Prop() private readonly groups!: CitesphereItem[];
-	// @Prop() private readonly repoId!: string;
-	// @Prop() private readonly queryParam!: string;
-	// @Prop() private readonly item!: any;
-	private page: number = 1;
-	private items: number[] = [5, 10, 15];
-	private perPage: number = 5;
+	@Prop() private readonly repoId!: string;
+	@Prop() private readonly queryParam!: string;
+	@Prop() private readonly item!: any;
+
+	public created() {
+		console.log("entereed inside Textitem", this.item.gilesUploads);
+	}
 }
 </script>
 

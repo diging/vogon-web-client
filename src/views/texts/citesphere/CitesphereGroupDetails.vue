@@ -36,6 +36,9 @@
 										v-chip(small) {{ item.numberOfItems }}
 								
 								div(v-else) No collections!
+					template(v-if="isDisplayComponent")
+						//- TextResources(v-bind:resources="item" v-bind:repoId="this.$route.params.repoId" v-bind:queryParam="queryParam")
+						TextItem(v-bind:item="currentElement" v-bind:repoId="this.$route.params.repoId" v-bind:queryParam="queryParam")
 					v-col(:cols="9")
 						v-card(tile outlined)
 							v-card-title Items
@@ -59,11 +62,9 @@
 									//- 		//- <td class="text-xs-right pr-5">{{ props.item.outgoing }}</td>
 									//- 		//- <td class="text-xs-right pr-5">{{ props.item.unknown }}</td>
 									//- 	</tr>
-									Loading(v-if="isDisplayComponent")
-										template(v-if="isDisplayComponent")
-											component(v-bind:is="TextItem")
-										//- v-bind:to="`/repository/citesphere/${repoId}/groups/${group.id}/items/${item.id}/${currentElement.key}/${queryParam}`"
-										//- TextItem(v-bind:testName="currentElement.key")
+										//- component(v-bind:is="TextItem")
+									//- v-bind:to="`/repository/citesphere/${repoId}/groups/${group.id}/items/${item.id}/${currentElement.key}/${queryParam}`"
+									
 									
 									template(v-slot:item.itemType="{ item }")
 										div(class="item-type") {{ item.itemType.toLowerCase().split("_").join(" ") }}
@@ -89,6 +90,8 @@ import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
 import TextItem from '@/components/texts/citesphere/TextItem.vue';
+import TextResources from '@/components/texts/amphora/TextResources.vue';
+
 import {
 	CitesphereCollection,
 	CitesphereGroupInfo,
@@ -159,7 +162,7 @@ export default class CitesphereGroupDetails extends Vue {
 	private doThis(value: any) {
 		// console.log("captured the event", value);
 		this.isDisplayComponent = true;
-		this.currentElement = value.key;
+		this.currentElement = value;
 		console.log("captured the event", this.currentElement);
 		console.log("url", this.isDisplayComponent);
 	}
