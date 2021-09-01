@@ -3,15 +3,15 @@
 		template(v-for="(resource, index) in files")
 			//- /repository/amphora/${repoId}/text/${resource.id}${queryParam}
 			//- /repository/citesphere/${repoId}/groups/${groupId}/items/${item}/giles/${filesId}
-			v-list-item(:key="resource.id" v-bind:to="`/repository/amphora/${repoId}/text/${resource.id}${queryParam}`")
+			v-list-item(:key="resource.uploadedFile.id" v-bind:to="`/repository/citesphere/${repoId}/groups/${groupId}/items/${item}/giles/${filesId}${queryParam}`")
 				v-list-item-content
-					v-list-item-title(class="font-weight-medium" v-text="resource.title")
-					v-list-item-subtitle(class="text--primary" v-text="resource.uri")
+					v-list-item-title(class="font-weight-medium" v-text="resource.uploadedFile.filename")
+					v-list-item-subtitle(class="text--primary" v-text="resource.uploadedFile.url")
 				v-list-item-action
 						v-list-item-action-text
-							template(v-for="content_type in resource.content_types")
-								v-chip(class="ma-2" color="primary" outlined pill :key="content_type") {{ content_type }}
-			v-divider(v-if="index + 1 < resources.length" :key="index")
+							template(v-for="content_type in resource.uploadedFile.content_type")
+								//- v-chip(class="ma-2" color="primary" outlined pill :key="content_type") {{ content_type }}
+			v-divider(v-if="index + 1 < files.length" :key="index")
 </template>
 
 <script lang="ts">

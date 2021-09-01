@@ -19,7 +19,6 @@ import FileDisplay from "./FileDisplay.vue"
 	},
 })
 export default class TextItem extends Vue {
-	// @Prop() private readonly groups!: CitesphereItem[];
 	@Prop() private readonly repoId!: string;
 	@Prop() private readonly queryParam!: string;
 	@Prop() private readonly item!: any;
