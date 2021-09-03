@@ -95,7 +95,7 @@
 
 <script lang="ts">
 import { AxiosError, AxiosResponse } from 'axios';
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Prop } from 'vue-property-decorator';
 
 import Breadcrumbs from '@/components/global/Breadcrumbs.vue';
 import EmptyView from '@/components/global/EmptyView.vue';
@@ -131,7 +131,7 @@ export default class TextDetails extends Vue {
 	private relations: RelationSet[] = [];
 	private masterId: number | null = null;
 	private submitted: boolean = true;
-
+	// @Prop() private readonly type: string
 	private snackbarText: string = '';
 	private snackbar: boolean = false;
 	private snackbarColor: string = 'error';
@@ -140,6 +140,7 @@ export default class TextDetails extends Vue {
 	private movingProject: boolean = false;
 	private addingText: boolean = false;
 	private removingText: boolean = false;
+	private repository: string = '';
 
 	private navItems = [
 		{ text: 'Projects', to: '/project', link: true, exact: true },
@@ -168,11 +169,18 @@ export default class TextDetails extends Vue {
 	private async getTextDetails(): Promise<void> {
 		this.loading = true;
 		let queryParam = '';
+		let url = ''
 		const projectId = this.$route.query.project_id;
 		if (projectId) {
 			queryParam = `?project_id=${projectId}`;
 		}
-		Vue.$axios.get(`/repository/amphora/${this.$route.params.repoId}/texts/${this.$route.params.textId}${queryParam}`)
+		// if (this.type=='cite') {
+		// 	this.repository = 'citesphere';
+		// } 
+		// else {
+		// 	this.repository = 'amphora'
+		// }
+		Vue.$axios.get(`/repository/${this.$route.params.repoName}/${this.$route.params.repoId}/texts/${this.$route.params.textId}${queryParam}`)
 			.then((response: AxiosResponse) => {
 				this.text = response.data.result as TextResource;
 				if (response.data.part_of_project) {
@@ -198,7 +206,7 @@ export default class TextDetails extends Vue {
 				}
 				const repo = response.data.repository;
 				this.navItems[3].text = repo.name;
-				this.navItems[3].to = `/repository/amphora/${repo.id}${queryParam}`;
+				this.navItems[3].to = `/repository/${this.$route.params.repoName}/${repo.id}${queryParam}`;
 				this.navItems[5].text = this.text.title;
 			})
 			.catch(() => this.error = true)
@@ -258,7 +266,7 @@ export default class TextDetails extends Vue {
 
 		this.movingProject = true;
 		Vue.$axios.post(
-			`/repository/amphora/${this.$route.params.repoId}/texts/${this.$route.params.textId}/transfer_to_project`,
+			`/repository/${this.$route.params.repoName}/${this.$route.params.repoId}/texts/${this.$route.params.textId}/transfer_to_project`,
 			{
 				project_id: this.partOfProject.id,
 				target_project_id: targetProject.id,
@@ -271,7 +279,7 @@ export default class TextDetails extends Vue {
 				this.projectMoveDialog = false;
 				const param = `?project_id=${targetProject.id}`;
 				this.$router.push(
-					`/repository/amphora/${this.$route.params.repoId}/text/${this.$route.params.textId}${param}`,
+					`/repository/${this.$route.params.repoName}/${this.$route.params.repoId}/text/${this.$route.params.textId}${param}`,
 				);
 				this.getTextDetails();
 			})

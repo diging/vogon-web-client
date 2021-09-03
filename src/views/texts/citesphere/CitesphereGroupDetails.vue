@@ -38,7 +38,7 @@
 								div(v-else) No collections!
 					template(v-if="isDisplayComponent")
 						//- TextResources(v-bind:resources="item" v-bind:repoId="this.$route.params.repoId" v-bind:queryParam="queryParam")
-						TextItem(v-bind:item="currentElement" v-bind:repoId="this.$route.params.repoId" v-bind:queryParam="queryParam")
+						TextItem(v-bind:item="currentElement" v-bind:groupId="this.$route.params.groupId" v-bind:repoId="this.$route.params.repoId" v-bind:queryParam="queryParam")
 					v-col(:cols="9")
 						v-card(tile outlined)
 							v-card-title Items

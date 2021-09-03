@@ -3,7 +3,7 @@
 		v-card-title Item
 			template(v-if="!item")
 				EmptyView No files found!
-			FileDisplay(v-else v-bind:files="item.gilesUploads" v-bind:repoId="repoId" v-bind:queryParam="queryParam")
+			FileDisplay(v-else v-bind:files="item.gilesUploads" v-bind:type="cite" v-bind:groupId="groupId" v-bind:item="item.key" v-bind:repoId="repoId" v-bind:queryParam="queryParam")
 </template>
 
 <script lang="ts">
@@ -22,7 +22,7 @@ export default class TextItem extends Vue {
 	@Prop() private readonly repoId!: string;
 	@Prop() private readonly queryParam!: string;
 	@Prop() private readonly item!: any;
-
+	@Prop() private readonly groupId!: string;
 	public created() {
 		console.log("entereed inside Textitem", this.item.gilesUploads);
 	}

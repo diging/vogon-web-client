@@ -95,6 +95,11 @@ export default new Router({
 			component: CitesphereGroupDetails,
 		},
 		{
+			path: '/repository/:repoName/:repoId/groups/:groupId/items/:itemId/giles/:fileId',
+			name: 'amphora-text-details',
+			component: TextDetails,
+		},
+		{
 			path: '/concept',
 			name: 'concept-list',
 			component: ConceptList,
