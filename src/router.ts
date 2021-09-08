@@ -28,6 +28,7 @@ import TextContent from './views/texts/amphora/TextContent.vue';
 import TextDetails from './views/texts/amphora/TextDetails.vue';
 import CitesphereGroupDetails from './views/texts/citesphere/CitesphereGroupDetails.vue';
 import CitesphereRepoDeatils from './views/texts/citesphere/CitesphereRepoDeatils.vue';
+import CitesphereTextDetails from './views/texts/citesphere/CitesphereTextDetails.vue';
 import RepoList from './views/texts/RepoList.vue';
 import TextView from './views/TextView.vue';
 import UserDetail from './views/users/UserDetail.vue';
@@ -80,7 +81,7 @@ export default new Router({
 			component: TextDetails,
 		},
 		{
-			path: '/repository/amphora/:repoId/text/:textId/content/:contentId',
+			path: '/repository/:repoName/:repoId/text/:textId/content/:contentId',
 			name: 'amphora-text-content',
 			component: TextContent,
 		},
@@ -96,8 +97,8 @@ export default new Router({
 		},
 		{
 			path: '/repository/:repoName/:repoId/groups/:groupId/items/:itemId/giles/:fileId',
-			name: 'amphora-text-details',
-			component: TextDetails,
+			name: 'citesphere-text-details',
+			component: CitesphereTextDetails,
 		},
 		{
 			path: '/concept',

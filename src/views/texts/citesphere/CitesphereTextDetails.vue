@@ -61,7 +61,7 @@
 				p(class="body-1")
 					| The following content objects are associated with this resource. 
 					| Select a content object to begin annotating that object in VogonWeb. 
-				TextAdditionalContent(
+				CitesphereAdditionalContent(
 					v-bind:contents="text.content"
 					v-bind:ready="text.state === 'OK'"
 					v-bind:editable="isEditable"
@@ -84,7 +84,7 @@
 									dense outlined
 								) View all
 					v-card-text
-						template(v-if="!relations.length")
+						template(v-if="!relations")
 							EmptyView No annotations found!
 						template(v-else)
 							AnnotationList(v-bind:annotations="relations")
@@ -108,6 +108,7 @@ import ProjectSearch from '@/components/texts/ProjectSearch.vue';
 import { Project } from '@/interfaces/ProjectTypes';
 import { RelationSet } from '@/interfaces/RelationTypes';
 import { TextResource } from '@/interfaces/RepositoryTypes';
+import CitesphereAdditionalContent from '@/components/texts/citesphere/CitesphereAdditionalContent.vue';
 
 @Component({
 	name: 'TextDetails',
@@ -117,7 +118,7 @@ import { TextResource } from '@/interfaces/RepositoryTypes';
 		EmptyView,
 		ErrorIndicator,
 		TextSerialContent,
-		TextAdditionalContent,
+		CitesphereAdditionalContent,
 		AnnotationList,
 		ProjectSearch,
 	},
@@ -181,9 +182,10 @@ export default class TextDetails extends Vue {
 		// else {
 		// 	this.repository = 'amphora'
 		// }
-		Vue.$axios.get(`/repository/amphora/${this.$route.params.repoId}/texts/${this.$route.params.textId}${queryParam}`)
+		Vue.$axios.get(`/repository/${this.$route.params.repoName}/${this.$route.params.repoId}/groups/${this.$route.params.groupId}/items/${this.$route.params.itemId}${queryParam}`)
 			.then((response: AxiosResponse) => {
 				this.text = response.data.result as TextResource;
+                console.log("this text", this.text);
 				if (response.data.part_of_project) {
 					this.partOfProject = response.data.part_of_project;
 				}
@@ -207,7 +209,7 @@ export default class TextDetails extends Vue {
 				}
 				const repo = response.data.repository;
 				this.navItems[3].text = repo.name;
-				this.navItems[3].to = `/repository/amphora/${repo.id}${queryParam}`;
+				this.navItems[3].to = `/repository/${this.$route.params.repoName}/${repo.id}${queryParam}`;
 				this.navItems[5].text = this.text.title;
 			})
 			.catch(() => this.error = true)
@@ -267,7 +269,7 @@ export default class TextDetails extends Vue {
 
 		this.movingProject = true;
 		Vue.$axios.post(
-			`/repository/amphora/${this.$route.params.repoId}/texts/${this.$route.params.textId}/transfer_to_project`,
+			`/repository/${this.$route.params.repoName}/${this.$route.params.repoId}/texts/${this.$route.params.textId}/transfer_to_project`,
 			{
 				project_id: this.partOfProject.id,
 				target_project_id: targetProject.id,
