@@ -62,6 +62,7 @@ export default class CollectionDetails extends Vue {
 			.then((response: AxiosResponse) => {
 				console.log(response.data);
 				this.collection = response.data as TextCollection;
+				console.log("collection resources", this.collection.resources);
 
 				const project = response.data.project;
 				const repo = response.data.repository;

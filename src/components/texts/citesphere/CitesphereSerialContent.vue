@@ -27,17 +27,16 @@ import EmptyView from '@/components/global/EmptyView.vue';
 import { TextAggregatedContent } from '@/interfaces/RepositoryTypes';
 
 @Component({
-	name: 'TextSerialContent',
+	name: 'CitesphereSerialContent',
 	components: { EmptyView },
 })
-export default class TextSerialContent extends Vue {
+export default class CitesphereSerialContent extends Vue {
 	@Prop() private readonly contents!: TextAggregatedContent[];
 	@Prop() private readonly ready!: boolean;
 	@Prop() private readonly editable!: boolean;
 	private queryParam = '';
 
 	public created() {
-		console.log("inside serial content", this.contents);
 		const projectId = this.$route.query.project_id;
 		if (projectId) {
 			this.queryParam = `?project_id=${projectId}`;
