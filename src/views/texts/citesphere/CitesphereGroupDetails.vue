@@ -28,6 +28,7 @@
 									item-text="name"
 									dense
 									class="mt-2"
+									
 								)
 									template(v-slot:prepend="{ item, open }")
 										v-icon

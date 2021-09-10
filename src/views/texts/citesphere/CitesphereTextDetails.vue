@@ -62,7 +62,7 @@
 					| The following content objects are associated with this resource. 
 					| Select a content object to begin annotating that object in VogonWeb. 
 				CitesphereAdditionalContent(
-					v-bind:contents="text.content"
+					v-bind:contents="text.content_types"
 					v-bind:ready="text.state === 'OK'"
 					v-bind:editable="isEditable"
 					class="mb-4"

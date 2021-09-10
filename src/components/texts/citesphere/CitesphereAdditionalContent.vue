@@ -33,16 +33,17 @@ import EmptyView from '@/components/global/EmptyView.vue';
 import { TextContentResource } from '@/interfaces/RepositoryTypes';
 
 @Component({
-	name: 'TextAdditionalContent',
+	name: 'CitesphereAdditionalContent',
 	components: { EmptyView },
 })
-export default class TextAdditionalContent extends Vue {
+export default class CitesphereAdditionalContent extends Vue {
 	@Prop() private readonly contents!: TextContentResource[];
 	@Prop() private readonly ready!: boolean;
 	@Prop() private readonly editable!: boolean;
 	private queryParam = '';
 
 	public created() {
+		console.log("contents", this.contents);
 		const projectId = this.$route.query.project_id;
 		if (projectId) {
 			this.queryParam = `?project_id=${projectId}`;
