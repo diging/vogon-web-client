@@ -40,6 +40,15 @@ export interface TextResource {
 	content?: TextContentResource[];
 }
 
+// export interface CiteSphereText {
+// 	id: number;
+// 	title: string;
+// 	uri?: string;
+// 	content_type=[result.get('content_type')],
+// 	repository_id=repository_pk,
+// 	addedBy=request.user
+// }
+
 export interface TextDocument {
 	id: number;
 	title: string;

@@ -96,7 +96,7 @@ export default new Router({
 			component: CitesphereGroupDetails,
 		},
 		{
-			path: '/repository/:repoName/:repoId/groups/:groupId/items/:itemId/giles/:fileId',
+			path: '/repository/:repoName/:repoId/groups/:groupId/items/:itemId/text/:textId',
 			name: 'citesphere-text-details',
 			component: CitesphereTextDetails,
 		},

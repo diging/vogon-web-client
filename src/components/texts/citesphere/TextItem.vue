@@ -4,22 +4,23 @@
 			template(v-if="!item")
 				EmptyView No files found!
 			v-list(v-else two-line)
-				template(v-for="(resource, index) in item.gilesUploads")
+				template(v-for="(resource, index) in item")
 					//- /repository/amphora/${repoId}/text/${resource.id}${queryParam}
 					//- /repository/citesphere/${repoId}/groups/${groupId}/items/${item}/giles/${filesId}
-					v-list-item(:key="resource.uploadedFile.id" v-bind:to="`/repository/citesphere/${repoId}/groups/${groupId}/items/${item.key}/giles/${resource.uploadedFile.id}${queryParam}`")
+					v-list-item(:key="resource.uploadedFile.id" v-bind:data="data" v-bind:master_text="master_text" v-bind:to="`/repository/citesphere/${repoId}/groups/${groupId}/items/${item.key}/texts/${text.id}${queryParam}`")
 						v-list-item-content
-							v-list-item-title(class="font-weight-medium" v-text="resource.uploadedFile.filename")
-							v-list-item-subtitle(class="text--primary" v-text="resource.uploadedFile.url")
+							v-list-item-title(class="font-weight-medium" v-text="resource.filename")
+							v-list-item-subtitle(class="text--primary" v-text="resource.url")
 						v-list-item-action
 								v-list-item-action-text
 									template(v-for="content_type in [resource.uploadedFile.content_type]")
 										v-chip(class="ma-2" color="primary" outlined pill :key="content_type") {{ content_type }}
-					v-divider(v-if="index + 1 < item.gilesUploads.length" :key="index")
+					v-divider(v-if="index + 1 < item.length" :key="index")
 			//- FileDisplay(v-else v-bind:files="item.gilesUploads"  v-bind:groupId="groupId" v-bind:item="item.key" v-bind:repoId="repoId" v-bind:queryParam="queryParam")
 </template>
 
 <script lang="ts">
+import { AxiosResponse } from 'axios';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 // import FileDisplay from "./FileDisplay.vue"
 
@@ -37,7 +38,14 @@ export default class TextItem extends Vue {
 	@Prop() private readonly item!: any;
 	@Prop() private readonly groupId!: string;
 	public mounted() {
-		console.log("entereed inside Textitem", this.item.gilesUploads);
+		console.log("entereed inside Textitem", this.item);
+		Vue.$axios.get(`/repository/citesphere/${this.repoId}/groups/${this.groupId}/items/${this.item}/${this.queryParam}`)
+			.then((response: AxiosResponse) => {
+				this.data = response.data;
+				this.master_text = response.data.master_text_object;
+			})
+			.catch(() => this.error = true)
+			.finally(() => this.loading = false);
 	}
 }
 </script>

@@ -62,13 +62,13 @@
 					| The following content objects are associated with this resource. 
 					| Select a content object to begin annotating that object in VogonWeb. 
 				CitesphereAdditionalContent(
-					v-bind:contents="text.content_types"
+					v-bind:contents="data"
 					v-bind:ready="text.state === 'OK'"
 					v-bind:editable="isEditable"
 					class="mb-4"
 				)
 				TextSerialContent(
-					v-bind:contents="text.aggregate_content"
+					v-bind:contents="data"
 					v-bind:ready="text.state === 'OK'"
 					v-bind:editable="isEditable"
 				)
@@ -142,6 +142,7 @@ export default class TextDetails extends Vue {
 	private addingText: boolean = false;
 	private removingText: boolean = false;
 	private repository: string = '';
+	private data: any = '';
 
 	private navItems = [
 		{ text: 'Projects', to: '/project', link: true, exact: true },
@@ -184,33 +185,33 @@ export default class TextDetails extends Vue {
 		// }
 		Vue.$axios.get(`/repository/${this.$route.params.repoName}/${this.$route.params.repoId}/groups/${this.$route.params.groupId}/items/${this.$route.params.itemId}${queryParam}`)
 			.then((response: AxiosResponse) => {
-				this.text = response.data.result as TextResource;
+				this.text = response.data.master_text_object;
+				this.data = response.data.result;
                 console.log("this text", this.text);
 				if (response.data.part_of_project) {
 					this.partOfProject = response.data.part_of_project;
 				}
-				this.project = response.data.project_details;
-				this.relations = response.data.relations;
+				// this.project = response.data.project_details;
 				this.masterId = response.data.master_text.id;
 				this.submitted = response.data.submitted;
 
-				if (this.project && !projectId) {
-					const query = this.$route.query;
-					this.$router.replace({
-						query: {
-							...query,
-							project_id: `${this.project.id}`,
-						},
-					});
-				}
-				if (this.project) {
-					this.navItems[1].text = this.project.name;
-					this.navItems[1].to = `/project/${this.project.id}`;
-				}
-				const repo = response.data.repository;
-				this.navItems[3].text = repo.name;
-				this.navItems[3].to = `/repository/${this.$route.params.repoName}/${repo.id}${queryParam}`;
-				this.navItems[5].text = this.text.title;
+				// if (this.project && !projectId) {
+				// 	const query = this.$route.query;
+				// 	this.$router.replace({
+				// 		query: {
+				// 			...query,
+				// 			project_id: `${this.project.id}`,
+				// 		},
+				// 	});
+				// }
+				// if (this.project) {
+				// 	this.navItems[1].text = this.project.name;
+				// 	this.navItems[1].to = `/project/${this.project.id}`;
+				// }
+				// const repo = response.data.repository;
+				// this.navItems[3].text = repo.name;
+				// this.navItems[3].to = `/repository/${this.$route.params.repoName}/${repo.id}${queryParam}`;
+				// this.navItems[5].text = this.text.title;
 			})
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
