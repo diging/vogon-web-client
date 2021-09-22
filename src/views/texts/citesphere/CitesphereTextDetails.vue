@@ -154,6 +154,7 @@ export default class TextDetails extends Vue {
 	];
 
 	public async mounted(): Promise<void> {
+		console.log("entered new component");
 		this.getTextDetails();
 	}
 
@@ -192,8 +193,8 @@ export default class TextDetails extends Vue {
 					this.partOfProject = response.data.part_of_project;
 				}
 				// this.project = response.data.project_details;
-				this.masterId = response.data.master_text.id;
-				this.submitted = response.data.submitted;
+				// this.masterId = response.data.master_text.id;
+				// this.submitted = response.data.submitted;
 
 				// if (this.project && !projectId) {
 				// 	const query = this.$route.query;
