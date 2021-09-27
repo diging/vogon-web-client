@@ -18,7 +18,22 @@
 						v-btn(
 							:disabled="!ready || !editable"
 							depressed color="primary" small
-							:to="`/repository/amphora/${$route.params.repoId}/text/${$route.params.textId}/content/${content.id}${queryParam}`"
+							:to="`/repository/citesphere/${$route.params.repoId}/text/${$route.params.textId}/content/${content.id}${queryParam}`"
+						)
+							v-icon(left small) mdi-tag 
+							| Annotate
+				v-divider(v-if="index + 1 < contents.length" :key="index")
+
+				template(v-for="(content, index) in data")
+				v-list-item(:key="content.content_type")
+					v-list-item-content
+						v-list-item-title(class="font-weight-medium" v-text="content.name")
+						v-list-item-subtitle(v-text="content.content_type")
+					v-list-item-action
+						v-btn(
+							:disabled="!ready || !editable"
+							depressed color="primary" small
+							:to="`/repository/citesphere/${$route.params.repoId}/text/${$route.params.textId}/`"
 						)
 							v-icon(left small) mdi-tag 
 							| Annotate
@@ -40,6 +55,7 @@ export default class CitesphereAdditionalContent extends Vue {
 	@Prop() private readonly contents!: TextContentResource[];
 	@Prop() private readonly ready!: boolean;
 	@Prop() private readonly editable!: boolean;
+	@Prop() private readonly data!: any;
 	private queryParam = '';
 
 	public created() {

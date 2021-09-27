@@ -28,7 +28,7 @@ import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
 import RepoGroups from '@/components/texts/citesphere/RepoGroups.vue';
-import { CitesphereRepository } from '@/interfaces/CitesphereTypes';
+// import { CitesphereRepository } from '@/interfaces/CitesphereTypes';
 
 @Component({
 	name: 'ItemDetails',

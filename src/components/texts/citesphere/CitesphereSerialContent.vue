@@ -6,7 +6,7 @@
 		template(v-if="!contents.length")
 			EmptyView No contents found!
 		v-list(v-else two-line)
-			template(v-for="(content, index) in contents")
+			template(v-for="(content, index) in data")
 				v-list-item(:key="content.content_type")
 					v-list-item-content
 						v-list-item-title(class="font-weight-medium" v-text="content.content_type")
@@ -15,7 +15,7 @@
 								v-btn(
 									:disabled="!ready || !editable"
 									class="ma-2" color="primary" fab :key="resource.id" x-small elevation=0 
-									:to="`/repository/amphora/${$route.params.repoId}/text/${$route.params.textId}/content/${resource.id}${queryParam}?part_of=${$route.params.textId}`"
+									:to="`/repository/citesphere/${$route.params.repoId}/text/${$route.params.textId}/content/${resource.id}${queryParam}?part_of=${$route.params.textId}`"
 								) {{ i+1 }}
 				v-divider(v-if="index + 1 < contents.length" :key="index")
 </template>
@@ -34,6 +34,7 @@ export default class CitesphereSerialContent extends Vue {
 	@Prop() private readonly contents!: TextAggregatedContent[];
 	@Prop() private readonly ready!: boolean;
 	@Prop() private readonly editable!: boolean;
+	@Prop() private readonly data!: boolean;
 	private queryParam = '';
 
 	public created() {
