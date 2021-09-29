@@ -37,9 +37,9 @@
 										v-chip(small) {{ item.numberOfItems }}
 								
 								div(v-else) No collections!
-					template(v-if="isDisplayComponent")
-						//- TextResources(v-bind:resources="item" v-bind:repoId="this.$route.params.repoId" v-bind:queryParam="queryParam")
-						TextItem(v-bind:item="currentElement.key" v-bind:groupId="this.$route.params.groupId" v-bind:repoId="this.$route.params.repoId" v-bind:queryParam="queryParam")
+					//- template(v-if="isDisplayComponent")
+					//- 	//- TextResources(v-bind:resources="item" v-bind:repoId="this.$route.params.repoId" v-bind:queryParam="queryParam")
+					//- 	TextItem(v-bind:item="currentElement.key" v-bind:groupId="this.$route.params.groupId" v-bind:repoId="this.$route.params.repoId" v-bind:queryParam="queryParam")
 					v-col(:cols="9")
 						v-card(tile outlined)
 							v-card-title Items
@@ -162,14 +162,16 @@ export default class CitesphereGroupDetails extends Vue {
 // }
 	private doThis(value: any) {
 		// console.log("captured the event", value);
-		const query = this.$route.query;
-		this.$router.replace(`/repository/citesphere/${this.$route.params.repoId}/groups/${this.$route.params.groupId}/items/${value.key}/item${this.queryParam}`);
-		this.$router.replace({
-						query: {
-							...query,
-							project_id: `${this.$route.query.project_id}`,
-						},
-					});
+		const query = this.$route;
+		console.log("router query", this.$route);
+		// this.$router.replace(`/repository/citesphere/${this.$route.params.repoId}/groups/${this.$route.params.groupId}/items/${value.key}/item${this.queryParam}`);
+		this.$router.replace({ path: `/repository/citesphere/${this.$route.params.repoId}/groups/${this.$route.params.groupId}/items/${value.key}/item${this.queryParam}` })
+		// this.$router.push({
+		// 				query: {
+		// 					...query,
+		// 					project_id: `${this.$route.query.project_id}`,
+		// 				},
+		// 			});
 		// this.isDisplayComponent = true;
 		// this.currentElement = value;
 		// console.log("captured the event", this.currentElement);

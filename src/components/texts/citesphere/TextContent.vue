@@ -29,10 +29,10 @@ import EmptyView from '@/components/global/EmptyView.vue';
 // import { CitesphereGroup } from '@/interfaces/CitesphereTypes';
 
 @Component({
-	name: 'TextItem',
+	name: 'TextContent',
 	components: { EmptyView }
 })
-export default class TextItem extends Vue {
+export default class TextContent extends Vue {
 	@Prop() private readonly repoId!: string;
 	@Prop() private readonly queryParam!: string;
 	@Prop() private readonly item!: any;
@@ -41,13 +41,11 @@ export default class TextItem extends Vue {
 	private error: boolean = false;
 	private data: any;
 	private master_text: any;
-	public mounted()  {
+	public async mounted(): Promise<void>  {
+		console.log("entereed inside Textitem", this.item);
 		Vue.$axios.get(`/repository/citesphere/${this.repoId}/groups/${this.groupId}/items/${this.item}${this.queryParam}`)
 			.then((response: AxiosResponse) => {
 				this.data = response.data;
-				console.log("entereed inside Textitem", this.item);
-
-				console.log("entered in this master text", this.data.master_text_object)
 				this.master_text = response.data.master_text_object;
 				console.log(this.master_text);
 			})
