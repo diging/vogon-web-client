@@ -96,11 +96,11 @@ export default new Router({
 			name: 'citesphere-group-details',
 			component: CitesphereGroupDetails,
 		},
-		// {
-		// 	path: '/repository/:repoName/:repoId/groups/:groupId/items/:itemId/text/:textId',
-		// 	name: 'citesphere-text-details',
-		// 	component: CitesphereTextDetails,
-		// },
+		{
+			path: '/repository/:repoName/:repoId/groups/:groupId/items/:itemId/texts/:textId',
+			name: 'citesphere-text-details',
+			component: CitesphereTextDetails,
+		},
 		{
 			path: '/repository/:repoName/:repoId/groups/:groupId/items/:itemId/item',
 			name: 'citesphere-item-details',

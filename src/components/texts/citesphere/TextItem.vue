@@ -41,11 +41,11 @@ export default class TextItem extends Vue {
 	private error: boolean = false;
 	private data: any;
 	private master_text: any;
-	public mounted()  {
+	public created()  {
 		Vue.$axios.get(`/repository/citesphere/${this.repoId}/groups/${this.groupId}/items/${this.item}${this.queryParam}`)
 			.then((response: AxiosResponse) => {
 				this.data = response.data;
-				console.log("entereed inside Textitem", this.item);
+				console.log("entereed inside Textitem", this.data);
 
 				console.log("entered in this master text", this.data.master_text_object)
 				this.master_text = response.data.master_text_object;

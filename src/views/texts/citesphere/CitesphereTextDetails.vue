@@ -67,8 +67,19 @@
 					v-bind:editable="isEditable"
 					class="mb-4"
 				)
+				CitesphereAdditionalContent(
+					v-bind:contents="filtered_content"
+					v-bind:ready="text.state === 'OK'"
+					v-bind:editable="isEditable"
+					class="mb-4"
+				)
 				TextSerialContent(
 					v-bind:contents="data"
+					v-bind:ready="text.state === 'OK'"
+					v-bind:editable="isEditable"
+				)
+				TextSerialContent(
+					v-bind:contents="filtered_content"
 					v-bind:ready="text.state === 'OK'"
 					v-bind:editable="isEditable"
 				)
@@ -143,6 +154,7 @@ export default class TextDetails extends Vue {
 	private removingText: boolean = false;
 	private repository: string = '';
 	private data: any = '';
+	private chosenText: any = '';
 
 	private navItems = [
 		{ text: 'Projects', to: '/project', link: true, exact: true },
@@ -153,6 +165,9 @@ export default class TextDetails extends Vue {
 		{ text: '', link: false },
 	];
 
+	public created() {
+		console.log("entered a new component created");
+	}
 	public async mounted(): Promise<void> {
 		console.log("entered new component");
 		this.getTextDetails();
@@ -178,15 +193,19 @@ export default class TextDetails extends Vue {
 			queryParam = `?project_id=${projectId}`;
 		}
 		console.log(this.$route.params.repoName);
-		// if (this.type=='cite') {
-		// 	this.repository = 'citesphere';
-		// } 
-		// else {
-		// 	this.repository = 'amphora'
-		// }
+		if (this.type=='cite') {
+			this.repository = 'citesphere';
+		} 
+		else {
+			this.repository = 'amphora'
+		}
 		Vue.$axios.get(`/repository/${this.$route.params.repoName}/${this.$route.params.repoId}/groups/${this.$route.params.groupId}/items/${this.$route.params.itemId}${queryParam}`)
 			.then((response: AxiosResponse) => {
+				this.chosenText = this.$route.params.textId;
+				console.log("this text", this.chosenText);
 				this.text = response.data.master_text_object;
+
+				this.filtered_text = this.text.filter(o -> o.id === this.chosenText);
 				this.data = response.data.result;
                 console.log("this text", this.text);
 				if (response.data.part_of_project) {
