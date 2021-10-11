@@ -2,26 +2,26 @@
 	div(class="main")
 		v-card(tile outlined class="col-details")
 		v-card-title Item
-			template
-				EmptyView {{test}}
-				EmptyView {{test1}}
-				EmptyView {{master_text}}
-			template(v-if="!master_text")
+			//- template
+			//- 	EmptyView {{test}}
+			//- 	EmptyView {{test1}}
+			//- 	EmptyView {{master_text}}
+			Loading(v-if="loading")
+
+			template(v-if="!master_text && !loading")
 				EmptyView No files found!
 			v-list(v-else two-line)
-				loading(v-if="loading")
-				template(v-for="(resource, index) in master_text")
+				//- template(v-for="(resource) in master_text")
 					//- /repository/amphora/${repoId}/text/${resource.id}${queryParam}
 					//- /repository/citesphere/${repoId}/groups/${groupId}/items/${item}/giles/${filesId}
-					v-list-item(:key="resource.id" v-bind:to="`/repository/citesphere/${repoId}/groups/${groupId}/items/${item}/texts/${resource.id}${queryParam}`")
-						v-list-item-content
-							v-list-item-title(class="font-weight-medium" v-text="resource.title")
-							v-list-item-subtitle(class="text--primary" v-text="resource.uri")
-						v-list-item-action
-								v-list-item-action-text
-									//- template(v-for="content_type in [resource.uploadedFile.content_type]")
-									//- 	v-chip(class="ma-2" color="primary" outlined pill :key="content_type") {{ content_type }}
-					v-divider(v-if="index + 1 < item.length" :key="index")
+				v-list-item(:key="master_text.id" v-bind:to="`/repository/citesphere/${repoId}/groups/${groupId}/items/${item}/texts/${master_text.id}${queryParam}`")
+					v-list-item-content
+						v-list-item-title(class="font-weight-medium" v-text="master_text.title")
+						v-list-item-subtitle(class="text--primary" v-text="master_text.uri")
+					v-list-item-action
+							v-list-item-action-text
+							
+				v-divider(v-if="index + 1 < item.length" :key="index")
 
 </template>
 
@@ -52,7 +52,7 @@ export default class ItemDetails extends Vue {
 	private loading: boolean = true;
 	private error: boolean = false;
 	private data: any;
-	private master_text: any;
+	private master_text:  any = null;
 	private test: string = '';
 	private test1: string = '';
 	public created() {
@@ -67,6 +67,10 @@ export default class ItemDetails extends Vue {
 		this.getDetails();
 	}
 
+	public async mounted(): Promise<void> {
+		this.getDetails();
+	}
+
 	public async getDetails(): Promise<void> {
 		Vue.$axios.get(`/repository/citesphere/${this.repoId}/groups/${this.groupId}/items/${this.item}${this.queryParam}`)
 			.then((response: AxiosResponse) => {
@@ -74,7 +78,7 @@ export default class ItemDetails extends Vue {
 				this.test = "new test case";
 
 				this.data = response.data;
-				this.master_text = response.data.master_text_object;
+				this.master_text = response.data.master_text;
 				console.log("master text",this.master_text);
 			})
 			.catch(() => this.error = true)

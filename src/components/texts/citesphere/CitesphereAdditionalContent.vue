@@ -9,11 +9,11 @@
 		template(v-if="!contents.length")
 			EmptyView No contents found!
 		v-list(v-else two-line)
-			template(v-for="(content, index) in contents")
-				v-list-item(:key="content.content_type")
+			template(v-for="content in contents")
+				v-list-item(:key="content.id")
 					v-list-item-content
-						v-list-item-title(class="font-weight-medium" v-text="content.name")
-						v-list-item-subtitle(v-text="content.content_type")
+						v-list-item-title(class="font-weight-medium" v-text="content.filename")
+						v-list-item-subtitle(v-text="content['content-type']")
 					v-list-item-action
 						v-btn(
 							:disabled="!ready || !editable"
@@ -22,22 +22,7 @@
 						)
 							v-icon(left small) mdi-tag 
 							| Annotate
-				v-divider(v-if="index + 1 < contents.length" :key="index")
-
-				template(v-for="(content, index) in data")
-				v-list-item(:key="content.content_type")
-					v-list-item-content
-						v-list-item-title(class="font-weight-medium" v-text="content.name")
-						v-list-item-subtitle(v-text="content.content_type")
-					v-list-item-action
-						v-btn(
-							:disabled="!ready || !editable"
-							depressed color="primary" small
-							:to="`/repository/citesphere/${$route.params.repoId}/text/${$route.params.textId}/`"
-						)
-							v-icon(left small) mdi-tag 
-							| Annotate
-				v-divider(v-if="index + 1 < contents.length" :key="index")
+				v-divider(v-if="content.id + 1 < contents.length" :key="content.id")
 </template>
 
 <script lang="ts">
@@ -52,7 +37,7 @@ import { TextContentResource } from '@/interfaces/RepositoryTypes';
 	components: { EmptyView },
 })
 export default class CitesphereAdditionalContent extends Vue {
-	@Prop() private readonly contents!: TextContentResource[];
+	@Prop() private readonly contents!:any;
 	@Prop() private readonly ready!: boolean;
 	@Prop() private readonly editable!: boolean;
 	@Prop() private readonly data!: any;
