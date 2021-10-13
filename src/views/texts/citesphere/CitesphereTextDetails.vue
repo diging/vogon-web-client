@@ -68,16 +68,12 @@
 					class="mb-4"
 				)
 				
-				TextSerialContent(
-					v-bind:contents="data"
+				CitesphereSerialContent(
+					v-bind:contents="data['pages']"
 					v-bind:ready="data.documentStatus === 'COMPLETE'"
 					v-bind:editable="isEditable"
 				)
-				TextSerialContent(
-					v-bind:contents="filtered_content"
-					v-bind:ready="data.documentStatus === 'COMPLETE'"
-					v-bind:editable="isEditable"
-				)
+				
 				v-card(class="card-annotations mt-4")
 					v-row(class="annotation-title")
 						v-col(md="6")
@@ -109,7 +105,7 @@ import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
 import AnnotationList from '@/components/relations/AnnotationList.vue';
 import TextAdditionalContent from '@/components/texts/amphora/TextAdditionalContent.vue';
-import TextSerialContent from '@/components/texts/amphora/TextSerialContent.vue';
+import CitesphereSerialContent from '@/components/texts/citesphere/CitesphereSerialContent.vue';
 import ProjectSearch from '@/components/texts/ProjectSearch.vue';
 import { Project } from '@/interfaces/ProjectTypes';
 import { RelationSet } from '@/interfaces/RelationTypes';
@@ -123,10 +119,10 @@ import CitesphereAdditionalContent from '@/components/texts/citesphere/Citespher
 		Loading,
 		EmptyView,
 		ErrorIndicator,
-		TextSerialContent,
 		CitesphereAdditionalContent,
 		AnnotationList,
 		ProjectSearch,
+		CitesphereSerialContent
 	},
 })
 export default class TextDetails extends Vue {

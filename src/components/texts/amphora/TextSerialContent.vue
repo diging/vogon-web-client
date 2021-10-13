@@ -37,7 +37,6 @@ export default class TextSerialContent extends Vue {
 	private queryParam = '';
 
 	public created() {
-		console.log("inside serial content", this.contents);
 		const projectId = this.$route.query.project_id;
 		if (projectId) {
 			this.queryParam = `?project_id=${projectId}`;

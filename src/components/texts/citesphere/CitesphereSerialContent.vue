@@ -6,18 +6,19 @@
 		template(v-if="!contents.length")
 			EmptyView No contents found!
 		v-list(v-else two-line)
-			template(v-for="(content, index) in data")
-				v-list-item(:key="content.content_type")
+			template(v-for="content ,index in results")
+				v-list-item(:key="content[0]['value']['id']")
 					v-list-item-content
-						v-list-item-title(class="font-weight-medium" v-text="content.content_type")
+						v-list-item-title(class="font-weight-medium" v-text="index")
+						v-list-item-title(class="font-weight-medium" v-text="content[0]['value']['content-type']")
 						div
-							template(v-for="(resource, i) in content.resources")
+							template(v-for="(item,i) in content")
 								v-btn(
 									:disabled="!ready || !editable"
-									class="ma-2" color="primary" fab :key="resource.id" x-small elevation=0 
-									:to="`/repository/citesphere/${$route.params.repoId}/text/${$route.params.textId}/content/${resource.id}${queryParam}?part_of=${$route.params.textId}`"
+									class="ma-2" color="primary" fab :key="i" x-small elevation=0 
+									:to="`/repository/citesphere/${$route.params.repoId}/text/${$route.params.textId}/content/${item['value']['id']}${queryParam}?part_of=${$route.params.textId}`"
+
 								) {{ i+1 }}
-				v-divider(v-if="index + 1 < contents.length" :key="index")
 </template>
 
 <script lang="ts">
@@ -31,13 +32,36 @@ import { TextAggregatedContent } from '@/interfaces/RepositoryTypes';
 	components: { EmptyView },
 })
 export default class CitesphereSerialContent extends Vue {
-	@Prop() private readonly contents!: TextAggregatedContent[];
+	@Prop() private readonly contents!: any;
 	@Prop() private readonly ready!: boolean;
 	@Prop() private readonly editable!: boolean;
 	@Prop() private readonly data!: boolean;
 	private queryParam = '';
+	private reconstructedData : any = [];
+	private results: any = '';
+	private j : any = 1;
 
 	public created() {
+		console.log("inside serial content", this.contents);
+		let i = 0;
+		for (let content in this.contents) {
+			this.reconstructedData.push({key:'image',value:this.contents[content]['image']});
+			this.reconstructedData.push({key:'text', value:this.contents[content]['text']});
+			this.reconstructedData.push({key:'ocr',value:this.contents[content]['ocr']});
+
+		}
+		console.log(this.reconstructedData);
+		// const groupBy = <T, K extends keyof any>(list: T[], getKey: (item: T) => K) =>
+		// list.reduce((previous, currentItem) => {
+		// 	const group = getKey(currentItem);
+		// 	if (!previous[group]) previous[group] = [];
+		// 	previous[group].push(currentItem);
+		// 	return previous;
+		// }, {} as Record<K, T[]>);
+		// this.results = groupBy(this.reconstructedData, i => i.key);
+		this.results = this.reconstructedData.reduce((r:any, a:any) => { r[a.key] = [...r[a.key] || [], a]; return r;}, {});
+		console.log(this.results);
+
 		const projectId = this.$route.query.project_id;
 		if (projectId) {
 			this.queryParam = `?project_id=${projectId}`;

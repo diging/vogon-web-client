@@ -29,6 +29,7 @@ import TextDetails from './views/texts/amphora/TextDetails.vue';
 import CitesphereGroupDetails from './views/texts/citesphere/CitesphereGroupDetails.vue';
 import CitesphereRepoDeatils from './views/texts/citesphere/CitesphereRepoDeatils.vue';
 import CitesphereTextDetails from './views/texts/citesphere/CitesphereTextDetails.vue';
+import CitesphereTextContent from './views/texts/citesphere/CitesphereTextContent.vue'
 import ItemDetails from './views/texts/citesphere/ItemDetails.vue';
 import RepoList from './views/texts/RepoList.vue';
 import TextView from './views/TextView.vue';
@@ -82,9 +83,15 @@ export default new Router({
 			component: TextDetails,
 		},
 		{
-			path: '/repository/:repoName/:repoId/text/:textId/content/:contentId',
+			path: '/repository/amphora/:repoId/text/:textId/content/:contentId',
 			name: 'amphora-text-content',
 			component: TextContent,
+		},
+		{
+			path: '/repository/citesphere/:repoId/groups/:groupId/file/:contentId',
+			name: 'citesphere-text-content',
+			component: CitesphereTextContent,
+			// /repository/citesphere/${$route.params.repoId}/groups/${$route.params.groupId}/file/${content.id}${queryParam}
 		},
 		{
 			path: '/repository/citesphere/:id',

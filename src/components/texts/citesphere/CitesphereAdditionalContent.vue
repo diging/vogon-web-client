@@ -18,7 +18,7 @@
 						v-btn(
 							:disabled="!ready || !editable"
 							depressed color="primary" small
-							:to="`/repository/citesphere/${$route.params.repoId}/text/${$route.params.textId}/content/${content.id}${queryParam}`"
+							:to="`/repository/citesphere/${$route.params.repoId}/groups/${$route.params.groupId}/file/${content.id}${queryParam}`"
 						)
 							v-icon(left small) mdi-tag 
 							| Annotate
