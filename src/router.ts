@@ -88,7 +88,7 @@ export default new Router({
 			component: TextContent,
 		},
 		{
-			path: '/repository/citesphere/:repoId/groups/:groupId/file/:contentId',
+			path: '/repository/citesphere/:repoId/groups/:groupId/items/:itemId/file/:contentId',
 			name: 'citesphere-text-content',
 			component: CitesphereTextContent,
 			// /repository/citesphere/${$route.params.repoId}/groups/${$route.params.groupId}/file/${content.id}${queryParam}

@@ -30,6 +30,7 @@ export default class TextContent extends Vue {
 		const textId = this.$route.params.textId;
 		const groupId = this.$route.params.groupId;
 		const contentId = this.$route.params.contentId;
+		const itemId = this.$route.params.itemId;
 
 		const projectId = this.$route.query.project_id;
 		const partOf = this.$route.query.part_of;
@@ -40,8 +41,9 @@ export default class TextContent extends Vue {
 		if (partOf) {
 			queryParam += `part_of=${partOf}`;
 		}
+		queryParam += `file_id=${contentId}`;
 
-		Vue.$axios.get(`/repository/citesphere/${repoId}/groups/${groupId}/get_file/${contentId}${queryParam}`)
+		Vue.$axios.get(`/repository/citesphere/${repoId}/groups/${groupId}/items/${itemId}/get_file${queryParam}`)
 			.then((response: AxiosResponse) => {
 				if (response.data.success) {
 					console.log("inside text content");
