@@ -31,6 +31,7 @@ export default class TextContent extends Vue {
 		const groupId = this.$route.params.groupId;
 		const contentId = this.$route.params.contentId;
 		const itemId = this.$route.params.itemId;
+		const contentType = this.$route.query.content_type;
 
 		const projectId = this.$route.query.project_id;
 		const partOf = this.$route.query.part_of;
@@ -41,9 +42,11 @@ export default class TextContent extends Vue {
 		if (partOf) {
 			queryParam += `part_of=${partOf}`;
 		}
-		queryParam += `file_id=${contentId}`;
+		queryParam += `file_url=${contentId}`;
+		queryParam += `&content_type=${contentType}`;
+		// this.$router.push(`/annotate/11`);
 
-		Vue.$axios.get(`/repository/citesphere/${repoId}/groups/${groupId}/items/${itemId}/get_file${queryParam}`)
+		Vue.$axios.get(`/repository/citesphere/${repoId}/groups/${groupId}/items/${itemId}/retrieve_text${queryParam}`)
 			.then((response: AxiosResponse) => {
 				if (response.data.success) {
 					console.log("inside text content");
@@ -67,6 +70,7 @@ export default class TextContent extends Vue {
 				}
 			})
 			.finally(() => this.loading = false);
+		
 	}
 }
 </script>
