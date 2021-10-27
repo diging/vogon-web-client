@@ -52,7 +52,7 @@ export default class TextContent extends Vue {
 					console.log("inside text content");
 					let queryParamRedirect = '';
 					if (response.data.project_id) {
-						queryParamRedirect = `?project_id=${response.data.project_id}`;
+						queryParamRedirect = `?project_id=${response.data.project_id}&group_id=${groupId}&repo_id=${repoId}`;
 					}
 					this.$router.push(`/annotate/${response.data.text_id}${queryParamRedirect}`);
 				} else {
