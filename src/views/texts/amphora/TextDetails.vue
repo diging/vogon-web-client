@@ -131,7 +131,6 @@ export default class TextDetails extends Vue {
 	private relations: RelationSet[] = [];
 	private masterId: number | null = null;
 	private submitted: boolean = true;
-	// @Prop() private readonly type: string
 	private snackbarText: string = '';
 	private snackbar: boolean = false;
 	private snackbarColor: string = 'error';
@@ -173,14 +172,7 @@ export default class TextDetails extends Vue {
 		const projectId = this.$route.query.project_id;
 		if (projectId) {
 			queryParam = `?project_id=${projectId}`;
-		}
-		console.log(this.$route.params.repoName);
-		// if (this.type=='cite') {
-		// 	this.repository = 'citesphere';
-		// } 
-		// else {
-		// 	this.repository = 'amphora'
-		// }
+		}		
 		Vue.$axios.get(`/repository/amphora/${this.$route.params.repoId}/texts/${this.$route.params.textId}${queryParam}`)
 			.then((response: AxiosResponse) => {
 				this.text = response.data.result as TextResource;

@@ -37,9 +37,6 @@
 										v-chip(small) {{ item.numberOfItems }}
 								
 								div(v-else) No collections!
-					//- template(v-if="isDisplayComponent")
-					//- 	//- TextResources(v-bind:resources="item" v-bind:repoId="this.$route.params.repoId" v-bind:queryParam="queryParam")
-					//- 	TextItem(v-bind:item="currentElement.key" v-bind:groupId="this.$route.params.groupId" v-bind:repoId="this.$route.params.repoId" v-bind:queryParam="queryParam")
 					v-col(:cols="9")
 						v-card(tile outlined)
 							v-card-title Items
@@ -55,16 +52,6 @@
 									:footer-props="{'items-per-page-options':['', 50]}"
 									@click:row="doThis"
 								)
-									//- template(v-slot:items="{ item }")
-									//- 	<tr @click="props.expanded = !props.expanded">
-									//- 		//- <td>{{ props.item }}</td>
-									//- 		//- <td class="text-xs-right pr-5">{{ props.item.scanned }}</td>
-									//- 		//- <td class="text-xs-right pr-5">{{ props.item.incoming }}</td>
-									//- 		//- <td class="text-xs-right pr-5">{{ props.item.outgoing }}</td>
-									//- 		//- <td class="text-xs-right pr-5">{{ props.item.unknown }}</td>
-									//- 	</tr>
-										//- component(v-bind:is="TextItem")
-									//- v-bind:to="`/repository/citesphere/${repoId}/groups/${group.id}/items/${item.id}/${currentElement.key}/${queryParam}`"
 									
 									
 									template(v-slot:item.itemType="{ item }")
@@ -144,38 +131,12 @@ export default class CitesphereGroupDetails extends Vue {
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
 	}
-// 		Vue.$axios.get(`/repository/citesphere/${this.$route.params.repoId}/groups/${this.$route.params.groupId}/items/${this.$route.params.item}`)
-// 			.then((response: AxiosResponse) => {
-// 				console.log(response.data);
-// 				this.item = response.data as TextCollection;
 
-// 				// const project = response.data.project;
-// 				// const repo = response.data.repository;
-// 				// this.navItems[1].text = project.name;
-// 				// this.navItems[1].to = `/project/${project.id}`;
-// 				// this.navItems[3].text = repo.name;
-// 				// this.navItems[3].to = `/repository/amphora/${repo.id}${this.queryParam}`;
-// 				// this.navItems[5].text = this.collection.name;
-// 			})
-// 			.catch(() => this.error = true)
-// 			.finally(() => this.loading = false);
-// }
 	private doThis(value: any) {
-		// console.log("captured the event", value);
 		const query = this.$route;
 		console.log("router query", this.$route);
-		// this.$router.replace(`/repository/citesphere/${this.$route.params.repoId}/groups/${this.$route.params.groupId}/items/${value.key}/item${this.queryParam}`);
 		this.$router.replace({ path: `/repository/citesphere/${this.$route.params.repoId}/groups/${this.$route.params.groupId}/items/${value.key}/item${this.queryParam}` })
-		// this.$router.push({
-		// 				query: {
-		// 					...query,
-		// 					project_id: `${this.$route.query.project_id}`,
-		// 				},
-		// 			});
-		// this.isDisplayComponent = true;
-		// this.currentElement = value;
-		// console.log("captured the event", this.currentElement);
-		// console.log("url", this.isDisplayComponent);
+		
 	}
 	private async fetchCollections(collection: CitesphereCollection) {
 		return Vue.$axios.get(

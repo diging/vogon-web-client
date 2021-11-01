@@ -44,15 +44,13 @@ export default class TextContent extends Vue {
 		}
 		queryParam += `file_url=${contentId}`;
 		queryParam += `&content_type=${contentType}`;
-		// this.$router.push(`/annotate/11`);
 
 		Vue.$axios.get(`/repository/citesphere/${repoId}/groups/${groupId}/items/${itemId}/retrieve_text${queryParam}`)
 			.then((response: AxiosResponse) => {
 				if (response.data.success) {
-					console.log("inside text content");
 					let queryParamRedirect = '';
 					if (response.data.project_id) {
-						queryParamRedirect = `?project_id=${response.data.project_id}&group_id=${groupId}&repo_id=${repoId}`;
+						queryParamRedirect = `?project_id=${response.data.project_id}&group_id=${groupId}&repo_id=${repoId}&file_id=${contentId}`;
 					}
 					this.$router.push(`/annotate/${response.data.text_id}${queryParamRedirect}`);
 				} else {

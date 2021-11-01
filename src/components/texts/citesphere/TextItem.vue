@@ -24,9 +24,6 @@ import { AxiosResponse } from 'axios';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import EmptyView from '@/components/global/EmptyView.vue';
 
-// import FileDisplay from "./FileDisplay.vue"
-
-// import { CitesphereGroup } from '@/interfaces/CitesphereTypes';
 
 @Component({
 	name: 'TextItem',
