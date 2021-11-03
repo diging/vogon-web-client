@@ -36,14 +36,14 @@ export default class TextContent extends Vue {
 		const projectId = this.$route.query.project_id;
 		const partOf = this.$route.query.part_of;
 		let queryParam = '?';
+		console.log("entered this component", partOf);
 		if (projectId) {
 			queryParam += `project_id=${projectId}&`;
 		}
 		if (partOf) {
-			queryParam += `part_of=${partOf}`;
+			queryParam += `part_of=${partOf}&`;
 		}
 		queryParam += `file_url=${contentId}`;
-		queryParam += `&content_type=${contentType}`;
 
 		Vue.$axios.get(`/repository/citesphere/${repoId}/groups/${groupId}/items/${itemId}/retrieve_text${queryParam}`)
 			.then((response: AxiosResponse) => {
@@ -68,7 +68,6 @@ export default class TextContent extends Vue {
 				}
 			})
 			.finally(() => this.loading = false);
-		
 	}
 }
 </script>

@@ -16,7 +16,7 @@
 								v-btn(
 									:disabled="!ready || !editable"
 									class="ma-2" color="primary" fab :key="i" x-small elevation=0 
-									:to="`/repository/citesphere/${$route.params.repoId}/text/${$route.params.textId}/content/${item['value']['id']}${queryParam}?part_of=${$route.params.textId}`"
+									:to="`/repository/citesphere/${$route.params.repoId}/groups/${$route.params.groupId}/items/${$route.params.itemId}/file/${item['value']['id']}${queryParam}`"
 
 								) {{ i+1 }}
 </template>
@@ -40,10 +40,12 @@ export default class CitesphereSerialContent extends Vue {
 	private reconstructedData : any = [];
 	private results: any = '';
 	private j : any = 1;
+	// private groupId: string = '';
 
 	public created() {
 		console.log("inside serial content", this.contents);
 		let i = 0;
+		// this.groupId = this.$route.params.groupId;
 		for (let content in this.contents) {
 			this.reconstructedData.push({key:'image',value:this.contents[content]['image']});
 			this.reconstructedData.push({key:'text', value:this.contents[content]['text']});
@@ -51,14 +53,6 @@ export default class CitesphereSerialContent extends Vue {
 
 		}
 		console.log(this.reconstructedData);
-		// const groupBy = <T, K extends keyof any>(list: T[], getKey: (item: T) => K) =>
-		// list.reduce((previous, currentItem) => {
-		// 	const group = getKey(currentItem);
-		// 	if (!previous[group]) previous[group] = [];
-		// 	previous[group].push(currentItem);
-		// 	return previous;
-		// }, {} as Record<K, T[]>);
-		// this.results = groupBy(this.reconstructedData, i => i.key);
 		this.results = this.reconstructedData.reduce((r:any, a:any) => { r[a.key] = [...r[a.key] || [], a]; return r;}, {});
 		console.log(this.results);
 
