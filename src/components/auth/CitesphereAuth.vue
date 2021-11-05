@@ -47,8 +47,6 @@ export default class CitesphereAuth extends Vue {
 		},
 	})
 		.then((result) => {
-		console.log("result token");
-		console.log(result);
 		this.$router.push('/dashboard');
 		})
 		.catch((error) => {

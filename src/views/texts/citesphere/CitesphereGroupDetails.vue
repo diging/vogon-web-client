@@ -134,7 +134,6 @@ export default class CitesphereGroupDetails extends Vue {
 
 	private doThis(value: any) {
 		const query = this.$route;
-		console.log("router query", this.$route);
 		this.$router.replace({ path: `/repository/citesphere/${this.$route.params.repoId}/groups/${this.$route.params.groupId}/items/${value.key}${this.queryParam}` })
 		
 	}

@@ -48,11 +48,8 @@ export default class CitesphereRepoDetails extends Vue {
 		if (projectId) {
 			this.queryParam = `?project_id=${projectId}`;
 		}
-		console.log("in the component");
-
 		Vue.$axios.get(`/repository/citesphere/${this.$route.params.id}`)
 			.then((response: AxiosResponse) => {
-				console.log("response data", response.data);
 				this.repo = response.data as CitesphereRepository;
 			})
 			.catch(() => this.error = true)

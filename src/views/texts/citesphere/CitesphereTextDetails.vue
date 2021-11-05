@@ -157,17 +157,11 @@ export default class TextDetails extends Vue {
 		{ text: '', link: false },
 	];
 
-	public created() {
-		console.log("entered a new component created");
-	}
 	public async mounted(): Promise<void> {
-		console.log("entered new component");
 		this.getTextDetails();
 	}
 
 	get isEditable(): boolean {
-		console.log(this.project);
-		console.log(Vue.$utils.permissions.isProjectCollaborator(this.project));
 		if (this.project) {
 			return Vue.$utils.permissions.isProjectCollaborator(this.project);
 		}
@@ -189,7 +183,6 @@ export default class TextDetails extends Vue {
 		Vue.$axios.get(`/repository/${this.$route.params.repoName}/${this.$route.params.repoId}/groups/${this.$route.params.groupId}/items/${this.$route.params.itemId}${queryParam}`)
 			.then((response: AxiosResponse) => {
 				this.chosenText = this.$route.params.textId;
-				console.log("this text", this.chosenText);
 				this.text = response.data.master_text;
 				this.result = response.data.result;
 				// check about additional files, test by uploading a new file
@@ -198,7 +191,6 @@ export default class TextDetails extends Vue {
 				this.additionalFiles.push(this.result.uploadedFile);
 
 				this.data = response.data.result;
-                console.log("part of project", response.data.part_of_project);
 				if (response.data.part_of_project) {
 					this.partOfProject = response.data.part_of_project;
 				}

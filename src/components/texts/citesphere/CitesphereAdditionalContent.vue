@@ -26,25 +26,18 @@
 </template>
 
 <script lang="ts">
-import { AxiosResponse } from 'axios';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import EmptyView from '@/components/global/EmptyView.vue';
-import { TextContentResource } from '@/interfaces/RepositoryTypes';
 
 @Component({
 	name: 'CitesphereAdditionalContent',
 	components: { EmptyView },
 })
 export default class CitesphereAdditionalContent extends Vue {
-	@Prop() private readonly contents!:any;
-	@Prop() private readonly ready!: boolean;
-	@Prop() private readonly editable!: boolean;
-	@Prop() private readonly data!: any;
 	private queryParam = '';
 
 	public created() {
-		console.log("contents", this.contents);
 		const projectId = this.$route.query.project_id;
 		if (projectId) {
 			this.queryParam = `?project_id=${projectId}`;

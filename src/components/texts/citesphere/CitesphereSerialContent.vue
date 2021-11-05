@@ -39,23 +39,15 @@ export default class CitesphereSerialContent extends Vue {
 	private queryParam = '';
 	private reconstructedData : any = [];
 	private results: any = '';
-	private j : any = 1;
-	// private groupId: string = '';
 
 	public created() {
-		console.log("inside serial content", this.contents);
-		let i = 0;
-		// this.groupId = this.$route.params.groupId;
 		for (let content in this.contents) {
 			this.reconstructedData.push({key:'image',value:this.contents[content]['image']});
 			this.reconstructedData.push({key:'text', value:this.contents[content]['text']});
 			this.reconstructedData.push({key:'ocr',value:this.contents[content]['ocr']});
 
 		}
-		console.log(this.reconstructedData);
 		this.results = this.reconstructedData.reduce((r:any, a:any) => { r[a.key] = [...r[a.key] || [], a]; return r;}, {});
-		console.log(this.results);
-
 		const projectId = this.$route.query.project_id;
 		if (projectId) {
 			this.queryParam = `?project_id=${projectId}`;

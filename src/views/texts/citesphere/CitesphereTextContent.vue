@@ -36,7 +36,6 @@ export default class TextContent extends Vue {
 		const projectId = this.$route.query.project_id;
 		const partOf = this.$route.query.part_of;
 		let queryParam = '?';
-		console.log("entered this component", partOf);
 		if (projectId) {
 			queryParam += `project_id=${projectId}&`;
 		}

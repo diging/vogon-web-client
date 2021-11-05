@@ -22,7 +22,6 @@ export const isProjectOwner = (project: Project): boolean => {
  */
 export const isProjectCollaborator = (project: Project): boolean => {
 	const userId = getUserId();
-	console.log(project);
 	if (project && project.ownedBy) {
 		return project.ownedBy.id === userId ||
 			project.participants.map((i: any) => i.id).indexOf(userId) >= 0;

@@ -2,18 +2,11 @@
 	div(class="main")
 		v-card(tile outlined class="col-details")
 		v-card-title Item
-			//- template
-			//- 	EmptyView {{test}}
-			//- 	EmptyView {{test1}}
-			//- 	EmptyView {{master_text}}
 			Loading(v-if="loading")
 
 			template(v-if="!master_text && !loading")
 				EmptyView No files found!
 			v-list(v-else two-line)
-				//- template(v-for="(resource) in master_text")
-					//- /repository/amphora/${repoId}/text/${resource.id}${queryParam}
-					//- /repository/citesphere/${repoId}/groups/${groupId}/items/${item}/giles/${filesId}
 				v-list-item(:key="master_text.id" v-bind:to="`/repository/citesphere/${repoId}/groups/${groupId}/items/${item}/texts/${master_text.id}${queryParam}`")
 					v-list-item-content
 						v-list-item-title(class="font-weight-medium" v-text="master_text.title")
@@ -33,7 +26,6 @@ import EmptyView from '@/components/global/EmptyView.vue';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
 import RepoGroups from '@/components/texts/citesphere/RepoGroups.vue';
-// import { CitesphereRepository } from '@/interfaces/CitesphereTypes';
 
 @Component({
 	name: 'ItemDetails',
@@ -74,12 +66,8 @@ export default class ItemDetails extends Vue {
 	public async getDetails(): Promise<void> {
 		Vue.$axios.get(`/repository/citesphere/${this.repoId}/groups/${this.groupId}/items/${this.item}${this.queryParam}`)
 			.then((response: AxiosResponse) => {
-				console.log("entereed inside Textitem", this.$route.params);
-				this.test = "new test case";
-
 				this.data = response.data;
 				this.master_text = response.data.master_text;
-				console.log("master text",this.master_text);
 			})
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
