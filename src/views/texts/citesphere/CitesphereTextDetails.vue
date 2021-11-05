@@ -136,7 +136,6 @@ export default class TextDetails extends Vue {
 	private submitted: boolean = true;
 	private additionalFiles: any = '';
 	private result: any = '';
-	// @Prop() private readonly type: string
 	private snackbarText: string = '';
 	private snackbar: boolean = false;
 	private snackbarColor: string = 'error';
@@ -185,28 +184,21 @@ export default class TextDetails extends Vue {
 		let url = ''
 		const projectId = this.$route.query.project_id;
 		if (projectId) {
-			queryParam = `?project_id=${projectId}`;
+			queryParam += `?project_id=${projectId}`;
 		}
-		console.log(this.$route.params.repoName);
-		// if (this.type=='cite') {
-		// 	this.repository = 'citesphere';
-		// } 
-		// else {
-		// 	this.repository = 'amphora'
-		// }
 		Vue.$axios.get(`/repository/${this.$route.params.repoName}/${this.$route.params.repoId}/groups/${this.$route.params.groupId}/items/${this.$route.params.itemId}${queryParam}`)
 			.then((response: AxiosResponse) => {
 				this.chosenText = this.$route.params.textId;
 				console.log("this text", this.chosenText);
 				this.text = response.data.master_text;
 				this.result = response.data.result;
-				// check about additional files test by uploading a new file
+				// check about additional files, test by uploading a new file
 				this.additionalFiles = [];
 				this.additionalFiles.push(this.result.extractedText);
 				this.additionalFiles.push(this.result.uploadedFile);
 
 				this.data = response.data.result;
-                console.log("this text", this.data.documentStatus);
+                console.log("part of project", response.data.part_of_project);
 				if (response.data.part_of_project) {
 					this.partOfProject = response.data.part_of_project;
 				}
@@ -289,10 +281,11 @@ export default class TextDetails extends Vue {
 
 		this.movingProject = true;
 		Vue.$axios.post(
-			`/repository/${this.$route.params.repoName}/${this.$route.params.repoId}/texts/${this.$route.params.textId}/transfer_to_project`,
+			`/repository/${this.$route.params.repoName}/${this.$route.params.repoId}/groups/${this.$route.params.groupId}/items/${this.$route.params.itemId}/transfer_to_project`,
 			{
 				project_id: this.partOfProject.id,
 				target_project_id: targetProject.id,
+				text_id: this.$route.params.textId,
 			},
 		)
 			.then((response: AxiosResponse) => {
@@ -302,7 +295,7 @@ export default class TextDetails extends Vue {
 				this.projectMoveDialog = false;
 				const param = `?project_id=${targetProject.id}`;
 				this.$router.push(
-					`/repository/${this.$route.params.repoName}/${this.$route.params.repoId}/text/${this.$route.params.textId}${param}`,
+					`/repository/${this.$route.params.repoName}/${this.$route.params.repoId}/groups/${this.$route.params.groupId}/items/${this.$route.params.itemId}/texts/${this.$route.params.textId}${param}`,
 				);
 				this.getTextDetails();
 			})

@@ -91,7 +91,6 @@ export default new Router({
 			path: '/repository/citesphere/:repoId/groups/:groupId/items/:itemId/file/:contentId',
 			name: 'citesphere-text-content',
 			component: CitesphereTextContent,
-			// /repository/citesphere/${$route.params.repoId}/groups/${$route.params.groupId}/file/${content.id}${queryParam}
 		},
 		{
 			path: '/repository/citesphere/:id',
@@ -109,7 +108,7 @@ export default new Router({
 			component: CitesphereTextDetails,
 		},
 		{
-			path: '/repository/:repoName/:repoId/groups/:groupId/items/:itemId/item',
+			path: '/repository/:repoName/:repoId/groups/:groupId/items/:itemId',
 			name: 'citesphere-item-details',
 			component: ItemDetails,
 		},
