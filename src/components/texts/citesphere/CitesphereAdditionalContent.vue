@@ -35,6 +35,10 @@ import EmptyView from '@/components/global/EmptyView.vue';
 	components: { EmptyView },
 })
 export default class CitesphereAdditionalContent extends Vue {
+	@Prop() private readonly contents!:any;
+	@Prop() private readonly ready!: boolean;
+	@Prop() private readonly editable!: boolean;
+	@Prop() private readonly data!: any;
 	private queryParam = '';
 
 	public created() {

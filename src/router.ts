@@ -28,8 +28,8 @@ import TextContent from './views/texts/amphora/TextContent.vue';
 import TextDetails from './views/texts/amphora/TextDetails.vue';
 import CitesphereGroupDetails from './views/texts/citesphere/CitesphereGroupDetails.vue';
 import CitesphereRepoDeatils from './views/texts/citesphere/CitesphereRepoDeatils.vue';
+import CitesphereTextContent from './views/texts/citesphere/CitesphereTextContent.vue';
 import CitesphereTextDetails from './views/texts/citesphere/CitesphereTextDetails.vue';
-import CitesphereTextContent from './views/texts/citesphere/CitesphereTextContent.vue'
 import ItemDetails from './views/texts/citesphere/ItemDetails.vue';
 import RepoList from './views/texts/RepoList.vue';
 import TextView from './views/TextView.vue';
