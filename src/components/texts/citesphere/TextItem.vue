@@ -9,10 +9,6 @@
 						v-list-item-content
 							v-list-item-title(class="font-weight-medium" v-text="resource.title")
 							v-list-item-subtitle(class="text--primary" v-text="resource.uri")
-						//- v-list-item-action
-						//- 		v-list-item-action-text
-						//- 			template(v-for="content_type in [resource.uploadedFile.content_type]")
-						//- 				v-chip(class="ma-2" color="primary" outlined pill :key="content_type") {{ content_type }}
 					v-divider(v-if="index + 1 < item.length" :key="index")
 </template>
 

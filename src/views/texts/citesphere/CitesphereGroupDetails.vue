@@ -50,7 +50,7 @@
 									:items-per-page="50"
 									:server-items-length="itemsCount" 
 									:footer-props="{'items-per-page-options':['', 50]}"
-									@click:row="doThis"
+									@click:row="switchPath"
 								)
 									
 									
@@ -132,7 +132,7 @@ export default class CitesphereGroupDetails extends Vue {
 			.finally(() => this.loading = false);
 	}
 
-	private doThis(value: any) {
+	private switchPath(value: any) {
 		const query = this.$route;
 		this.$router.replace({ path: `/repository/citesphere/${this.$route.params.repoId}/groups/${this.$route.params.groupId}/items/${value.key}${this.queryParam}` })
 		
