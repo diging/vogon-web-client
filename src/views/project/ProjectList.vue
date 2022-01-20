@@ -102,6 +102,19 @@ export default class ProjectList extends Vue {
 			.finally(() => (this.loading = false));
 	}
 
+	private getAllProjectsList(page: number = 1) {
+		const params = this.getFilter(page);
+
+		Vue.$axios
+			.get('/project/projectlist', { params })
+			.then((response: AxiosResponse) => {
+				this.projects = response.data.results;
+				this.projectsCount = response.data.count;
+			})
+			.catch(() => (this.error = true))
+			.finally(() => (this.loading = false));
+	}
+
 	private getProjectDetails(project: Project) {
 		if (project.id) {
 			this.$router.push({
@@ -113,6 +126,7 @@ export default class ProjectList extends Vue {
 
 	private onApplyFilter(query: string, field: string, showUserProjects: string) {
 		this.filters.query = query;
+		console.log("check apply filter")
 		this.filters.field = field;
 		if (showUserProjects) {
 			this.filters.collaborator = this.$utils.getUserId();
