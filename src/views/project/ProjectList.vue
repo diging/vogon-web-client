@@ -43,6 +43,7 @@ import ProjectFilter from '@/components/project/ProjectFilter.vue';
 import ProjectItem from '@/components/project/ProjectItem.vue';
 import { PAGE_SIZE } from '@/constants';
 import { Project } from '@/interfaces/ProjectTypes';
+import { getUserId } from '@/utils';
 
 
 @Component({
@@ -60,12 +61,14 @@ export default class ProjectList extends Vue {
 	private projects: Project[] = [];
 	private loading: boolean = true;
 	private error: boolean = false;
+	private isAdmin: boolean = false;
 	private filters: any = {
 		field: '',
 		name: '',
 		collaborator: this.$utils.getUserId(),
 		limit: PAGE_SIZE,
 		offset: 0,
+		owner: this.$utils.getUserId(),
 	};
 	private projectsCount: number = 0;
 
@@ -74,6 +77,7 @@ export default class ProjectList extends Vue {
 
 	public mounted(): void {
 		this.getProjectList();
+		this.isAdminUser();
 	}
 
 	private getFilter(page: number): any {
@@ -85,7 +89,6 @@ export default class ProjectList extends Vue {
 			limit: this.filters.limit,
 			offset: (page - 1) * PAGE_SIZE,
 		};
-
 		return params;
 	}
 
@@ -106,7 +109,7 @@ export default class ProjectList extends Vue {
 		const params = this.getFilter(page);
 
 		Vue.$axios
-			.get('/project/projectlist', { params })
+			.get('/project/list_all_projects', { params })
 			.then((response: AxiosResponse) => {
 				this.projects = response.data.results;
 				this.projectsCount = response.data.count;
@@ -124,17 +127,44 @@ export default class ProjectList extends Vue {
 		}
 	}
 
-	private onApplyFilter(query: string, field: string, showUserProjects: string) {
-		this.filters.query = query;
-		console.log("check apply filter")
-		this.filters.field = field;
-		if (showUserProjects) {
-			this.filters.collaborator = this.$utils.getUserId();
-		} else {
-			this.filters.collaborator = '';
-		}
-		this.getProjectList();
+	private isAdminUser() {
+		const userId = getUserId();
+		Vue.$axios.get(`/users/${userId}`)
+			.then((response: AxiosResponse) => {
+				this.isAdmin = response.data.is_admin;
+			});
+		return this.isAdmin;
 	}
+
+	private onApplyFilter(query: string, field: string, showUserProjects?: string, projects?: string, projectQuery?: string) {
+		this.filters.query = query;
+		this.filters.field = field;
+		if (this.isAdmin){
+			if (projectQuery == 'my projects') {
+				this.filters.owner = this.$utils.getUserId();
+				this.getProjectList();
+			}
+			else if (projectQuery == 'shared projects') {
+				this.filters.collaborator = this.$utils.getUserId();
+				this.getProjectList();
+			}
+			else if (projectQuery == 'all projects'){
+				this.getAllProjectsList();
+			}
+			else {
+				this.getProjectList();
+			}
+		}
+		else {
+			if (showUserProjects) {
+				this.filters.owner = this.$utils.getUserId();
+			} else {
+				this.filters.collaborator = this.$utils.getUserId();
+			}
+			this.getProjectList();
+		}
+	}
+
 }
 </script>
 
