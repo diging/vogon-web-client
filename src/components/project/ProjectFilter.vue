@@ -95,13 +95,11 @@ export default class ProjectFilter extends Vue {
 	}
 
 	private isAdminUser() {
-		console.log("entered in admin user")
 		const userId = getUserId();
 		Vue.$axios.get(`/users/${userId}`)
 			.then((response: AxiosResponse) => {
 				this.isAdmin = response.data.is_admin;
 			});
-		console.log("check admin", this.isAdmin);
 		return this.isAdmin;
 	}
 }
