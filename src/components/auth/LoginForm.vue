@@ -29,6 +29,8 @@ import JwtDecode from 'jwt-decode';
 import { Component, Vue } from 'vue-property-decorator';
 
 import { TokenDto, VForm } from '@/interfaces/GlobalTypes';
+import { getUserId } from '@/utils';
+import Loading from '@/components/global/Loading.vue';
 
 @Component({
 	name: 'LoginForm',
@@ -39,7 +41,8 @@ export default class Login extends Vue {
 	private show: boolean = false;
 	private error: boolean = false;
 	private errorMsg: string = '';
-
+	private user: any = '';
+	private loading: boolean = true;
 	private valid: boolean = false;
 
 	public async login(): Promise<void> {
@@ -55,6 +58,11 @@ export default class Login extends Vue {
 					localStorage.setItem('token', response.data.access);
 					Vue.$axios.defaults.headers.common.Authorization = `Bearer ${response.data.access}`;
 					const decoded = JwtDecode<TokenDto>(response.data.access);
+					const userId = this.$utils.getUserId;
+					this.getCurrentUser(userId);
+					if (this.user.is_password_reset_required) {
+						this.$router.push('reset-password');
+					}
 					if (decoded.github_token) {
 						this.$router.push('dashboard');
 					} else {
@@ -70,6 +78,15 @@ export default class Login extends Vue {
 					}
 				});
 		}
+	}
+
+	private getCurrentUser(UserId: any) {
+		Vue.$axios.get(`/users/${this.$route.params.id}`)
+			.then((response: AxiosResponse) => {
+				this.user = response.data;
+			})
+			.catch(() => this.error = true)
+			.finally(() => this.loading = false);
 	}
 }
 </script>
