@@ -106,10 +106,8 @@ export default class ProjectList extends Vue {
 	}
 
 	private getAllProjectsList(page: number = 1) {
-		const params = this.getFilter(page);
-
 		Vue.$axios
-			.get('/project/list_all_projects', { params })
+			.get('/project/list_all_projects')
 			.then((response: AxiosResponse) => {
 				this.projects = response.data.results;
 				this.projectsCount = response.data.count;
