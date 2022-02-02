@@ -53,16 +53,33 @@ export default class Login extends Vue {
 				password: this.password,
 			};
 			Vue.$axios.post('token/', payload)
-				.then((response: AxiosResponse) => {
+				.then( (response: AxiosResponse) => {
 					this.$root.$data.loggedIn = true;
 					localStorage.setItem('token', response.data.access);
 					Vue.$axios.defaults.headers.common.Authorization = `Bearer ${response.data.access}`;
 					const decoded = JwtDecode<TokenDto>(response.data.access);
-					const userId = this.$utils.getUserId;
-					this.getCurrentUser(userId);
-					if (this.user.is_password_reset_required) {
-						this.$router.push('reset-password');
+					const userId = this.$utils.getUserId();
+					console.log("userid", userId);
+					Vue.$axios.get(`/users/${userId}`)
+					.then( (response: AxiosResponse) => {
+						this.user = response.data;
+						console.log("this user", this.user);
+						console.log("print user id ", this.user);
+					if (this.user.is_reset_password_required) {
+						console.log("entered here in reset password");
+						this.$router.push({
+							name: 'reset-password',
+							params: { token: response.data.access}
+							});
+						// this.$router.push('reset-password');
 					}
+					})
+					.catch((error) => {
+					// TODO: deal with errors
+					this.error = true;
+					});
+					// const user:any =  this.getCurrentUser(userId).then(res =>console.log(res));
+					
 					if (decoded.github_token) {
 						this.$router.push('dashboard');
 					} else {
@@ -80,10 +97,13 @@ export default class Login extends Vue {
 		}
 	}
 
-	private getCurrentUser(UserId: any) {
-		Vue.$axios.get(`/users/${this.$route.params.id}`)
-			.then((response: AxiosResponse) => {
-				this.user = response.data;
+	private async getCurrentUser(UserId: any): Promise<void> {
+		Vue.$axios.get(`/users/${UserId}`)
+			.then(async (response: AxiosResponse) => {
+				debugger;
+				// console.log("print entered here", response.data)
+				//this.user = response.data;
+				return await response.data;
 			})
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
