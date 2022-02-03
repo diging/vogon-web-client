@@ -66,10 +66,11 @@ export default class Login extends Vue {
 						console.log("this user", this.user);
 						console.log("print user id ", this.user);
 					if (this.user.is_reset_password_required) {
-						console.log("entered here in reset password");
+						const token: any = localStorage.getItem('token');
+						console.log("token", token);
 						this.$router.push({
 							name: 'reset-password',
-							params: { token: response.data.access}
+							params: { token: token}
 							});
 						// this.$router.push('reset-password');
 					}
