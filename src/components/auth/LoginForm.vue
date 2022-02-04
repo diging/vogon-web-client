@@ -60,7 +60,6 @@ export default class Login extends Vue {
 					const decoded = JwtDecode<TokenDto>(response.data.access);
 					const userId = this.$utils.getUserId();
 					const token: any = localStorage.getItem('token');
-					console.log("userid", userId);
 					const payload = {
 						username: this.username,
 						token: token,
