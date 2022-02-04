@@ -59,27 +59,23 @@ export default class Login extends Vue {
 					Vue.$axios.defaults.headers.common.Authorization = `Bearer ${response.data.access}`;
 					const decoded = JwtDecode<TokenDto>(response.data.access);
 					const userId = this.$utils.getUserId();
+					const token: any = localStorage.getItem('token');
 					console.log("userid", userId);
-					Vue.$axios.get(`/users/${userId}`)
-					.then( (response: AxiosResponse) => {
-						this.user = response.data;
-						console.log("this user", this.user);
-						console.log("print user id ", this.user);
-					if (this.user.is_reset_password_required) {
-						const token: any = localStorage.getItem('token');
-						console.log("token", token);
-						this.$router.push({
-							name: 'reset-password',
-							params: { token: token}
-							});
-						// this.$router.push('reset-password');
-					}
-					})
-					.catch((error) => {
-					// TODO: deal with errors
-					this.error = true;
-					});
-					// const user:any =  this.getCurrentUser(userId).then(res =>console.log(res));
+					const payload = {
+						username: this.username,
+						token: token,
+					};
+					Vue.$axios.post('/check-reset-token/', payload)
+						.then((response: AxiosResponse) => {
+							this.$router.push({
+										name: 'reset-password',
+										params: { token: token}
+										});
+						})
+						.catch((error: AxiosError) => {
+							this.error = true;
+						})
+						.finally(() => this.loading = false);
 					
 					if (decoded.github_token) {
 						this.$router.push('dashboard');
@@ -96,18 +92,6 @@ export default class Login extends Vue {
 					}
 				});
 		}
-	}
-
-	private async getCurrentUser(UserId: any): Promise<void> {
-		Vue.$axios.get(`/users/${UserId}`)
-			.then(async (response: AxiosResponse) => {
-				debugger;
-				// console.log("print entered here", response.data)
-				//this.user = response.data;
-				return await response.data;
-			})
-			.catch(() => this.error = true)
-			.finally(() => this.loading = false);
 	}
 }
 </script>
