@@ -17,42 +17,92 @@
 			span(class="grey--text text--darken-2")
 				| {{ $store.getters.getAnnotatorHighlightedText.representation }}
 
-			v-checkbox(
-				v-if="!$store.getters.getAnnotatorSelectedConcept"
-				v-model="createNewConcept"
-				label="I've tried so hard, but I can't find what I'm looking for!"
-				dense
-				class="mt-2 pt-0"
-				color="red"
+			v-switch(
+				v-model="isDateAppellation"
+				label="Date Appellation"
+				inset
+				flat
 			)
 
-			div(v-if="$store.getters.getAnnotatorSelectedConcept" class="my-3")
-				v-banner(elevation="1" class="selected-concept")
-					v-list-item
-						v-list-item-content
-							v-list-item-title
-								| {{ $store.getters.getAnnotatorSelectedConcept.label }}
-								span(v-if="$store.getters.getAnnotatorSelectedConcept.authority && $store.getters.getAnnotatorSelectedConcept.authority.name")
-									| &nbsp; ({{ $store.getters.getAnnotatorSelectedConcept.authority.name }})
-							v-list-item-subtitle
-								| {{ $store.getters.getAnnotatorSelectedConcept.description }}
-					v-btn(small class="my-2" @click="$store.commit('setAnnotatorSelectedConcept', null)") Choose new concept
+			template(v-if="isDateAppellation")
+				v-alert(icon="mdi-information" prominent type="primary" text)
+					| Create a date appellation by entering the specific date
+					| to which the selected text refers. Specify only the
+					| precision warranted by the evidence: for example, you
+					| need not enter a month and day if only the year is
+					| known.
 
+				v-row
+					v-col(:cols="4")
+						v-text-field(
+							v-model="year"
+							label="Year"
+							placeholder="YYYY"
+							type="number"
+						)
+					v-col(:cols="4")
+						v-select(
+							v-model="month"
+							:items="months"
+							label="Month"
+							return-object
+							item-text="label"
+							item-value="value"
+							clearable
+						)
+					v-col(:cols="4")
+						v-text-field(
+							v-model="day"
+							label="Day"
+							placeholder="DD"
+							type="number"
+						)
 				div(class="relation-btn-container")
-					v-btn(color="success" class="mt-3 ml-auto" @click="createOrUpdate" :disabled="creating" :loading="creating")
-						v-icon(left) mdi-marker
-						template(v-if="$store.getters.getAnnotatorEditAppellationMode") Update appellation
-						template(v-else) Create appellation
-
-				v-alert(v-if="createError" type="error" dense dismissible class="my-4")
-					| Error while creating appellation!
-
-			template(v-else-if="$store.getters.getAnnotatorCreateNewConcept")
-				ConceptCreator
-
+					v-btn(
+						color="success"
+						class="mt-3 ml-auto"
+						@click="createOrUpdate"
+					)
+						template(v-if="$store.getters.getAnnotatorEditAppellationMode") Update Date Appellation
+						template(v-else) Create Date Appellation
+			
 			template(v-else)
-				ConceptSearch
-				ConceptPicker(:concepts="concepts")
+				v-checkbox(
+					v-if="!$store.getters.getAnnotatorSelectedConcept"
+					v-model="createNewConcept"
+					label="I've tried so hard, but I can't find what I'm looking for!"
+					dense
+					class="mt-2 pt-0"
+					color="red"
+				)
+
+				div(v-if="$store.getters.getAnnotatorSelectedConcept" class="my-3")
+					v-banner(elevation="1" class="selected-concept")
+						v-list-item
+							v-list-item-content
+								v-list-item-title
+									| {{ $store.getters.getAnnotatorSelectedConcept.label }}
+									span(v-if="$store.getters.getAnnotatorSelectedConcept.authority && $store.getters.getAnnotatorSelectedConcept.authority.name")
+										| &nbsp; ({{ $store.getters.getAnnotatorSelectedConcept.authority.name }})
+								v-list-item-subtitle
+									| {{ $store.getters.getAnnotatorSelectedConcept.description }}
+						v-btn(small class="my-2" @click="$store.commit('setAnnotatorSelectedConcept', null)") Choose new concept
+
+					div(class="relation-btn-container")
+						v-btn(color="success" class="mt-3 ml-auto" @click="createOrUpdate" :disabled="creating" :loading="creating")
+							v-icon(left) mdi-marker
+							template(v-if="$store.getters.getAnnotatorEditAppellationMode") Update appellation
+							template(v-else) Create appellation
+
+					v-alert(v-if="createError" type="error" dense dismissible class="my-4")
+						| Error while creating appellation!
+
+				template(v-else-if="$store.getters.getAnnotatorCreateNewConcept")
+					ConceptCreator
+
+				template(v-else)
+					ConceptSearch
+					ConceptPicker(:concepts="concepts")
 
 			v-btn(
 				dense 
@@ -71,6 +121,7 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import ConceptCreator from './ConceptCreator.vue';
 import ConceptPicker from './ConceptPicker.vue';
 import ConceptSearch from './ConceptSearch.vue';
+import { Appellation, DateAppellation } from '@/interfaces/RelationTypes';
 @Component({
 	name: 'AppellationCreator',
 	components: {
@@ -86,14 +137,28 @@ export default class AppellationCreator extends Vue {
 	private createNewConcept: boolean = false;
 	private creating: boolean = false;
 	private createError: boolean = false;
+
+	private isDateAppellation: boolean = false;
+	private months: any[] = [
+		{ label: 'Jan', value: 1 }, { label: 'Feb', value: 2 }, { label: 'Mar', value: 3 },
+		{ label: 'Apr', value: 4 }, { label: 'May', value: 5 }, { label: 'Jun', value: 6 },
+		{ label: 'Jul', value: 7 }, { label: 'Aug', value: 8 }, { label: 'Sep', value: 9 },
+		{ label: 'Oct', value: 10 }, { label: 'Nov', value: 11 }, { label: 'Dec', value: 12 },
+	];
+	private year: string = '';
+	private month: any = null;
+	private day: string = '';
+
 	public created() {
 		this.merge(this.appellations);
 		this.watchStore();
 	}
+
 	@Watch('createNewConcept')
 	public onCreateNewConceptChange(val: boolean) {
 		this.$store.commit('setAnnotatorCreateNewConcept', val);
 	}
+
 	private watchStore() {
 		this.$store.watch(
 			(state, getters) => getters.getAnnotatorSearchingConcept,
@@ -105,7 +170,20 @@ export default class AppellationCreator extends Vue {
 				}
 			},
 		);
+		this.$store.watch(
+			(state, getters) => getters.getAnnotatorisDateAppellation,
+			(newValue, oldValue) => {
+				if (newValue) {
+					this.isDateAppellation = true;
+					const appellation = this.$store.getters.getAnnotatorEditAppellationMode;
+					this.year = appellation.year;
+					this.month = appellation.month;
+					this.day = appellation.day;
+				}
+			},
+		);
 	}
+
 	get concepts() {
 		return this.conceptsFinal.map((item) => ({
 			...item.interpretation,
@@ -114,9 +192,11 @@ export default class AppellationCreator extends Vue {
 			},
 		}));
 	}
+
 	set concepts(newValue) {
 		this.conceptsFinal = newValue;
 	}
+
 	private merge(appellations: any) {
 		this.conceptsFinal = [];
 		// Sort by date
@@ -127,10 +207,12 @@ export default class AppellationCreator extends Vue {
 		const appellationMap = new Map();
 		// set map items from appellations array
 		appellationsSorted.forEach((item: any) => {
-			if (appellationMap.has(item.interpretation.uri)) {
-				appellationMap.get(item.interpretation.uri).push(item);
-			} else {
-				appellationMap.set(item.interpretation.uri, [item]);
+			if (appellationMap.has(item.interpretation)) {
+				if (appellationMap.has(item.interpretation.uri)) {
+					appellationMap.get(item.interpretation.uri).push(item);
+				} else {
+					appellationMap.set(item.interpretation.uri, [item]);
+				}
 			}
 		});
 		const appellationMapEntires = appellationMap.entries();
@@ -146,6 +228,7 @@ export default class AppellationCreator extends Vue {
 		// add non-duplicate objects to `concepts` sorted by most occuring
 		this.addConcepts(sortedMapItems);
 	}
+
 	private addConcepts(appellationMapEntires: any) {
 		let count = 0;
 		while (count <= 3) {
@@ -159,10 +242,16 @@ export default class AppellationCreator extends Vue {
 			}
 		}
 	}
+
 	private cancel() {
 		this.$store.commit('setAnnotatorHighlightedText', null);
 		this.$store.commit('setAnnotatorSelectedConcept', null);
 		this.$store.commit('setAnnotatorEditAppellationMode', null);
+		this.isDateAppellation = false;
+		this.year = '';
+		this.month = null;
+		this.day = '';
+		this.$store.commit('setAnnotatorisDateAppellation', false);
 		this.createNewConcept = false;
 	}
 
@@ -170,7 +259,8 @@ export default class AppellationCreator extends Vue {
 		this.creating = true;
 		this.createError = false;
 		const highlighted = this.$store.getters.getAnnotatorHighlightedText;
-		const payload = {
+		if (this.isDateAppellation) {
+			const payload: DateAppellation  = {
 			position: {
 				occursIn: this.text.id,
 				position_type: 'CO',
@@ -181,16 +271,41 @@ export default class AppellationCreator extends Vue {
 			endPos: highlighted.position.endOffset,
 			occursIn: this.text.id,
 			project: this.$store.getters.getAnnotatorMeta.project,
-			interpretation: this.$store.getters.getAnnotatorSelectedConcept.uri
-				|| this.$store.getters.getAnnotatorSelectedConcept.interpretation.uri,
 		};
-		if (this.$store.getters.getAnnotatorEditAppellationMode) {
-			this.update(payload, this.$store.getters.getAnnotatorEditAppellationMode.id);
-			this.$store.commit('setAnnotatorEditAppellationMode', null);
+			payload.year = this.year ? parseInt(this.year, 10) : null;
+			payload.month = this.month ? this.month.value : null;
+			payload.day = this.day ? parseInt(this.day, 10) : null;
+			if (this.$store.getters.getAnnotatorEditAppellationMode) {
+				this.updateDateAppellation(payload, this.$store.getters.getAnnotatorEditAppellationMode.id);
+				this.$store.commit('setAnnotatorEditAppellationMode', null);
+			} else {
+				this.createDateAppellation(payload);
+			}
 		} else {
-			this.create(payload);
+			const payload: Appellation  = {
+			position: {
+				occursIn: this.text.id,
+				position_type: 'CO',
+				position_value: `${highlighted.position.startOffset},${highlighted.position.endOffset}`,
+			},
+			stringRep: highlighted.representation,
+			startPos: highlighted.position.startOffset,
+			endPos: highlighted.position.endOffset,
+			occursIn: this.text.id,
+			project: this.$store.getters.getAnnotatorMeta.project,
+		};
+			payload.interpretation = this.$store.getters.getAnnotatorSelectedConcept.uri ||
+				this.$store.getters.getAnnotatorSelectedConcept.interpretation.uri;
+
+			if (this.$store.getters.getAnnotatorEditAppellationMode) {
+				this.update(payload, this.$store.getters.getAnnotatorEditAppellationMode.id);
+				this.$store.commit('setAnnotatorEditAppellationMode', null);
+			} else {
+				this.create(payload);
+			}
 		}
 	}
+
 	private create(payload: any) {
 		Vue.$axios.post('/appellation', payload)
 			.then((response: AxiosResponse) => {
@@ -204,6 +319,7 @@ export default class AppellationCreator extends Vue {
 			.catch(() => this.createError = true)
 			.finally(() => this.creating = false);
 	}
+
 	private update(payload: any, appellationId: number) {
 		Vue.$axios.patch(`/appellation/${appellationId}`, payload)
 			.then((response: AxiosResponse) => {
@@ -213,6 +329,37 @@ export default class AppellationCreator extends Vue {
 				this.$store.commit('setAnnotatorCreatedAppellation', true);
 				this.$store.commit('setAnnotatorUpdatedAppellation', appellationId);
 				this.createNewConcept = false;
+			})
+			.catch(() => this.createError = true)
+			.finally(() => this.creating = false);
+	}
+
+	private createDateAppellation(payload: any) {
+		Vue.$axios.post('/dateappellation', payload)
+			.then((response: AxiosResponse) => {
+				const appellation: any = response.data;
+				this.$store.commit('addAnnotatorNewAppellation', appellation);
+				this.$store.commit('setAnnotatorHighlightedText', null);
+				this.$store.commit('setAnnotatorSelectedConcept', null);
+				this.$store.commit('setAnnotatorCreatedAppellation', true);
+			})
+			.catch(() => this.createError = true)
+			.finally(() => this.creating = false);
+	}
+
+	private updateDateAppellation(payload: any, dateappellationId: number) {
+		Vue.$axios.patch(`/dateappellation/${dateappellationId}`, payload)
+			.then((response: AxiosResponse) => {
+				this.$store.commit('setAnnotatorCreatedAppellation', true);
+				this.$store.commit('setAnnotatorEditAppellationMode', null);
+				this.$store.commit('setAnnotatorSelectedConcept', null);
+				this.$store.commit('setAnnotatorHighlightedText', null);
+				this.$store.commit('setAnnotatorUpdatedAppellation', dateappellationId);
+				this.isDateAppellation = false;
+				this.year = '';
+				this.month = null;
+				this.day = '';
+				this.$store.commit('setAnnotatorisDateAppellation', false);
 			})
 			.catch(() => this.createError = true)
 			.finally(() => this.creating = false);

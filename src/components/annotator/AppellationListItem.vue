@@ -2,7 +2,9 @@
 	div(:class="`text-left pa-2 ${focused}`" ref="listItem")
 		v-row
 			v-col(:cols="7" @click="focusAppellation" class="focus-icon")
-				div(class="subtitle-1") {{ appellation.interpretation.label }}
+				
+				div(v-if="hasInterpretation()" class="subtitle-1") {{ appellation.interpretation.label }}
+				div(v-if="hasDateRepresentation()" class="subtitle-1") {{ appellation.dateRepresentation}}
 				div(class="subtitle-2 appellation-subtitle") Created by <strong>{{ creator }}</strong> on {{ date }}
 				
 			v-col(:cols="5" class="text-right")
@@ -18,9 +20,10 @@
 		div(v-if="edit") 
 			| (You are currently editing this appellation ...)
 			br
-			v-alert(dense type="error" class="my-4" v-if="appellation.relationsFrom.length || appellation.relationsTo.length")
+			<template v-if="hasInterpretation()">
+			v-alert(dense type="error" class="my-4" v-if="hasInterpretation() && appellation.relationsFrom.length || appellation.relationsTo.length")
 				| This appellation is part of existing relation(s) !!
-
+			</template>
 		v-dialog(v-model="showDeleteAppellation" max-width="400")
 			v-card
 				v-card-title(class="headline") Delete Appellation
@@ -55,6 +58,7 @@ export default class AppellationListItem extends Vue {
 	private snackbar: boolean = false;
 	private snackbarColor: string = 'success';
 	private snackbarMsg: string = '';
+	private deleteUrl: string = '';
 
 	get creator() {
 		return getCreatorName(this.appellation.createdBy);
@@ -65,10 +69,13 @@ export default class AppellationListItem extends Vue {
 	}
 
 	get deletable() {
-		return (
-			this.appellation.relationsFrom.length === 0 &&
-			this.appellation.relationsTo.length === 0
-		);
+		if ('interpretation' in this.appellation) {
+			return (
+				this.appellation.relationsFrom.length === 0 &&
+				this.appellation.relationsTo.length === 0
+			);
+		}
+		return true;
 	}
 
 	public created() {
@@ -79,7 +86,7 @@ export default class AppellationListItem extends Vue {
 		this.$store.watch(
 			(state, getters) => getters.getAnnotatorFocusedAppellation,
 			(newValue, oldValue) => {
-				if (newValue === this.appellation.id) {
+				if (newValue === this.appellation.index) {
 					this.focused = 'focused';
 					VueScrollTo.scrollTo(this.$refs[`listItem`] as Element, {
 						container: '#appellation-list',
@@ -95,7 +102,7 @@ export default class AppellationListItem extends Vue {
 	private focusAppellation() {
 		if (!this.edit) {
 			const currentFocusedAppellation = this.$store.getters.getAnnotatorFocusedAppellation;
-			let focusedAppellation = this.appellation.id;
+			let focusedAppellation = this.appellation.index;
 			if (currentFocusedAppellation > 0 && currentFocusedAppellation === focusedAppellation) {
 				focusedAppellation = 0;
 			}
@@ -105,9 +112,9 @@ export default class AppellationListItem extends Vue {
 
 	private toggleVisibility() {
 		if (this.visible) {
-			this.$store.commit('setAnnotatorHideAppellation', this.appellation.id);
+			this.$store.commit('setAnnotatorHideAppellation', this.appellation.index);
 		} else {
-			this.$store.commit('setAnnotatorShowAppellation', this.appellation.id);
+			this.$store.commit('setAnnotatorShowAppellation', this.appellation.index);
 		}
 		this.visible = !this.visible;
 	}
@@ -117,10 +124,16 @@ export default class AppellationListItem extends Vue {
 			this.focusAppellation();
 			this.edit = true;
 			this.$store.commit('setAnnotatorEditAppellationMode', this.appellation);
+			if ('dateRepresentation' in this.appellation) {
+				this.$store.commit('setAnnotatorisDateAppellation', true);
+			}
 		} else {
 			if (!this.edit) {
 				this.edit = true;
 				this.$store.commit('setAnnotatorEditAppellationMode', this.appellation);
+				if ('dateRepresentation' in this.appellation) {
+					this.$store.commit('setAnnotatorisDateAppellation', true);
+			}
 			} else {
 				this.edit = false;
 				this.$store.commit('setAnnotatorEditAppellationMode', null);
@@ -128,8 +141,22 @@ export default class AppellationListItem extends Vue {
 		}
 	}
 
+	private hasDateRepresentation() {
+		return 'dateRepresentation' in this.appellation;
+	}
+
+	private hasInterpretation() {
+		return 'interpretation' in this.appellation;
+	}
+
 	private deleteAppellation() {
-		Vue.$axios.delete(`/appellation/${this.appellation.id}`)
+		if ('interpretation' in this.appellation) {
+			this.deleteUrl = `/appellation/${this.appellation.id}`;
+		}
+		else if ('dateRepresentation' in this.appellation) {
+			this.deleteUrl = `/dateappellation/${this.appellation.id}`;
+		}
+		Vue.$axios.delete(this.deleteUrl)
 			.then((response: AxiosResponse) => {
 				this.snackbar = true;
 				this.snackbarColor = 'success';

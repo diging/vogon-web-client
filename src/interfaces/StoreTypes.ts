@@ -50,6 +50,7 @@ export interface RootState {
 		updatedAppellationId: number,
 		focusedAppellationsForRelations: any;
 		focusedRelationId: any;
+		isDateAppellation: boolean,
 	};
 	notifications: Notification[];
 }

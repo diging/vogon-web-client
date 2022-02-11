@@ -10,7 +10,7 @@
 					| Hide all
 		v-list(three-line dense class="appellation-list" id="appellation-list")
 			template(v-for="(appellation, i) in appellations")
-				AppellationListItem(:key="appellation.id" :appellation="appellation")
+				AppellationListItem(:key="appellation.index" :appellation="appellation")
 				v-divider(v-if="i + 1 < appellations.length")
 </template>
 

@@ -45,6 +45,7 @@ import { ConceptType } from '@/interfaces/ConceptTypes';
 import { Project } from '@/interfaces/ProjectTypes';
 import { Appellation, Relation, RelationSet } from '@/interfaces/RelationTypes';
 import { TextDocument } from '@/interfaces/RepositoryTypes';
+import {v4 as uuidv4} from 'uuid';
 
 @Component({
 	name: 'TextView',
@@ -92,7 +93,13 @@ export default class TextView extends Vue {
 				this.project = response.data.project;
 				this.text = response.data.text;
 				this.conceptTypes = response.data.concept_types;
-				this.appellations = response.data.appellations
+				this.appellations = [];
+				this.appellations.push(...response.data.appellations);
+				this.appellations.push(...response.data.dateappellations);
+				for (const i in this.appellations) {
+					this.appellations[i].index = uuidv4();
+				}
+				this.appellations = this.appellations
 					.filter((item: any) => item.position)
 					.map((item: any) => ({
 						...item,

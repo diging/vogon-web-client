@@ -1,7 +1,10 @@
 <template lang="pug">
 	div(v-if="visible" @mouseover="tooltip = true" @mouseleave="tooltip = false")
-		div(:style="{ ...appellation.positionStyle, zIndex: 5, width: 'auto', height: 30 }" class="appellation-tooltip" v-if="tooltip")
+		
+		div(:style="{ ...appellation.positionStyle, zIndex: 5, width: 'auto', height: 30 }" class="appellation-tooltip" v-if="hasInterpretation() && tooltip" )
 			| {{ appellation.interpretation.label }}
+		div(:style="{ ...appellation.positionStyle, zIndex: 5, width: 'auto', height: 30 }" class="appellation-tooltip" v-if="hasDateRepresentation() && tooltip")
+			| {{ appellation.dateRepresentation }}
 		li(
 			:style="appellation.positionStyle"
 			v-bind:class=`{
@@ -75,7 +78,7 @@ export default class AppellationDisplayItem extends Vue {
 		this.$store.watch(
 			(state, getters) => getters.getAnnotatorFocusedAppellation,
 			(newValue, oldValue) => {
-				if (newValue === this.appellation.id) {
+				if (newValue === this.appellation.index) {
 					this.focused = true;
 				} else {
 					this.focused = false;
@@ -89,14 +92,14 @@ export default class AppellationDisplayItem extends Vue {
 			},
 		);
 		this.$store.subscribe((mutation, state) => {
-			if (mutation.type === 'setAnnotatorShowAppellation' && mutation.payload === this.appellation.id) {
+			if (mutation.type === 'setAnnotatorShowAppellation' && mutation.payload === this.appellation.index) {
 				this.visible = true;
-			} else if (mutation.type === 'setAnnotatorHideAppellation' && mutation.payload === this.appellation.id) {
+			} else if (mutation.type === 'setAnnotatorHideAppellation' && mutation.payload === this.appellation.index) {
 				this.visible = false;
-			} else if (mutation.type === 'setAnnotatorUpdatedAppellation' && mutation.payload === this.appellation.id) {
+			} else if (mutation.type === 'setAnnotatorUpdatedAppellation' && mutation.payload === this.appellation.index) {
 				this.visible = true;
 			} else if (mutation.type === 'setFocusedAppellationsForRelations') {
-				if (mutation.payload[this.appellation.id]) {
+				if (mutation.payload[this.appellation.index]) {
 					this.focused = true;
 				} else {
 					this.focused = false;
@@ -106,7 +109,7 @@ export default class AppellationDisplayItem extends Vue {
 		this.$store.watch(
 			(state, getters) => getters.getAnnotatorEditAppellationMode,
 			(newValue, oldValue) => {
-				if (newValue && newValue.id === this.appellation.id) {
+				if (newValue && newValue.index === this.appellation.index) {
 					this.visible = false;
 				} else if (newValue === null) {
 					this.focused = false;
@@ -132,6 +135,12 @@ export default class AppellationDisplayItem extends Vue {
 	private manyLinesAreSelected() {
 		return this.appellation.midLines.length > 0;
 	}
+	private hasDateRepresentation() {
+		return 'dateRepresentation' in this.appellation;
+	}
+	private hasInterpretation() {
+		return 'interpretation' in this.appellation;
+	}
 
 	private onApellationClick() {
 		// Check if this is a currently highlighted text
@@ -154,7 +163,7 @@ export default class AppellationDisplayItem extends Vue {
 		} else {
 			this.$store.commit('setAnnotatorCurrentTab', 'tab-1');
 			const currentFocusedAppellation = this.$store.getters.getAnnotatorFocusedAppellation;
-			let focusedAppellation = this.appellation.id;
+			let focusedAppellation = this.appellation.index;
 			if (currentFocusedAppellation > 0 && currentFocusedAppellation === focusedAppellation) {
 				focusedAppellation = 0;
 			}
@@ -183,6 +192,25 @@ export default class AppellationDisplayItem extends Vue {
     margin: 0;
     padding: 0;
     cursor: pointer;
+}
+.date-appellation {
+    border: 1px solid black;
+    background-color: yellow;
+    opacity: 0.2;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+}
+.date-appellation.appellation-focused {
+    border: 2px solid #d68a00;
+    background-color: orange;
+    opacity: 0.6;
+}
+.date-appellation.appellation-selected {
+    border: 2px solid blue;
+    background-color: blue;
+    opacity: 0.3;
 }
 .appellation-tooltip {
 	background-color: black;
