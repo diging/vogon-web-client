@@ -2,6 +2,12 @@
 	div(class="main")
 		h2(class="display-1" v-if="$route.params.id") Edit relation template
 		h2(class="display-1" v-else) Create new relation template
+		v-btn(
+			color="primary"
+			large
+			class="mt-4"
+			@click="generateJSON()" 
+		) Submit to Quadriga
 		v-alert(class="mt-2" prominent type="info" icon="mdi-information" outlined)
 			p(class="mt-2")
 				| The data structures that Vogon produces (known as Quadruples) can
@@ -11,6 +17,8 @@
 			p(class="mt-2")
 				| Use the form below to build a template. See the helpful details
 				| below the form for more information.
+
+			
 
 		ErrorIndicator(v-if="error") Error while loading data!
 		template(v-else)
@@ -108,6 +116,12 @@ export default class TemplateCreateOrUpdate extends Vue {
 			.then((response: AxiosResponse) => {
 				this.template = response.data;
 			});
+	}
+
+	private generateJSON() {
+		console.log(this.template);
+		let data = {}
+		
 	}
 }
 </script>

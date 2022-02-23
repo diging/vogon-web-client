@@ -24,6 +24,7 @@
 				rows="3"
 				outlined
 			)
+			
 			span(class="body-2") 
 				| This should be a full-sentence structure that expresses the content of the
 				| relation. Indicate the position of nodes (concepts) in the template using
@@ -34,6 +35,22 @@
 				| for the object of the second part, or 
 				code {2p}
 				| for the predicate of the third part.
+
+			v-textarea(
+				v-model="mappingExpression"
+				label="Default Mapping"
+				placeholder="Enter the default mapping pattern for this relation. See hint below."
+				rows="3"
+				outlined
+			)
+
+			v-text-field(
+				v-model="staticUri"
+				label="Static URI"
+				placeholder="Enter uri when type of node in default mappings is a URI"
+				class="mt-8"
+				outlined
+			)
 
 			v-text-field(
 				v-model="terminalNodes"
@@ -135,6 +152,8 @@ export default class TemplateCreateForm extends Vue {
 	private description: string = '';
 	private expression: string = '';
 	private terminalNodes: string = '';
+	private mappingExpression: string = '';
+	private staticUri: string = '';
 	private defaultValues: RelationTemplateFormType = {
 		source: {
 			type: { key: '', label: '' }, concept: null, label: '', description: '',
@@ -259,6 +278,8 @@ export default class TemplateCreateForm extends Vue {
 			name: this.name,
 			description: this.description,
 			expression: this.expression,
+			default_mappings: this.mappingExpression,
+			static_uri: this.staticUri,
 			terminal_nodes: this.terminalNodes,
 			parts,
 		};
