@@ -118,9 +118,41 @@ export default class TemplateCreateOrUpdate extends Vue {
 			});
 	}
 
+	private parseMapping(data: any) {
+		const mapping = {"s": "subject", "p": "predicate", "o": "object"};
+		const availableStrings: any = ["o", "p", "s"]
+		const matches = data.match(/\{.+?\}/g);
+		const parsed = [];
+		const abbrevatedVar = [];
+		for (let match in matches) {
+			match = match.slice(1,-1)
+			parsed.push(match);
+			if (match.length == 2) {
+				abbrevatedVar.push(match[1])
+			}
+		}
+		let remainingString = availableStrings.filter( ( el ) => !abbrevatedVar.includes( el ) );
+		let convertedData= {}
+		console.log(matches);
+		for (let match in matches) {
+			match = match.slice(1,-1)
+			if (match.length !=2 ){
+				let splitValue = match.split(':')
+
+
+			}
+		}
+
+
+	}
+
 	private generateJSON() {
 		console.log(this.template);
-		let data = {}
+		if (this.template) {
+			var defaultMapping: any = this.template.default_mappings;
+			console.log(defaultMapping);
+			let data = {}
+		}
 		
 	}
 }

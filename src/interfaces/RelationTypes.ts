@@ -49,6 +49,7 @@ export interface RelationTemplate {
 	terminal_nodes: string;
 	template_parts: RelationTemplateFieldRaw[];
 	fields: RelationTemplateField[];
+	default_mappings: string;
 }
 
 export interface DateAppellation {

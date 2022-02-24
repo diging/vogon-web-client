@@ -45,14 +45,6 @@
 			)
 
 			v-text-field(
-				v-model="staticUri"
-				label="Static URI"
-				placeholder="Enter uri when type of node in default mappings is a URI"
-				class="mt-8"
-				outlined
-			)
-
-			v-text-field(
 				v-model="terminalNodes"
 				label="Terminal Nodes"
 				placeholder="Enter comma-separated node identifiers. E.g. ``0s,1o``"
@@ -203,6 +195,7 @@ export default class TemplateCreateForm extends Vue {
 		this.description = this.template.description;
 		this.expression = this.template.expression;
 		this.terminalNodes = this.template.terminal_nodes;
+		this.mappingExpression = this.template.default_mappings;
 
 		if (this.template.template_parts) {
 			this.templateParts = this.template.template_parts.map((part: RelationTemplateFieldRaw) => ({
@@ -279,10 +272,10 @@ export default class TemplateCreateForm extends Vue {
 			description: this.description,
 			expression: this.expression,
 			default_mappings: this.mappingExpression,
-			static_uri: this.staticUri,
 			terminal_nodes: this.terminalNodes,
 			parts,
 		};
+		console.log("payload", payload);
 		if (this.id !== -1) {
 			payload.id = this.id;
 		}
@@ -298,6 +291,7 @@ export default class TemplateCreateForm extends Vue {
 		request
 			.then((response: AxiosResponse) => {
 				if (response.data.success) {
+					console.log("this.edit", this.edit);
 					if (this.edit) {
 						location.reload();
 					} else {
