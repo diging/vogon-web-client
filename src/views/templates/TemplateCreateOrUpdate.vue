@@ -119,40 +119,62 @@ export default class TemplateCreateOrUpdate extends Vue {
 	}
 
 	private parseMapping(data: any) {
-		const mapping = {"s": "subject", "p": "predicate", "o": "object"};
-		const availableStrings: any = ["o", "p", "s"]
+		let modifiedData:any = {};
+		const mapping:any = {"s": "subject", "p": "predicate", "o": "object"};
+		const availableStrings = ["o", "p", "s"];
 		const matches = data.match(/\{.+?\}/g);
-		const parsed = [];
-		const abbrevatedVar = [];
-		for (let match in matches) {
-			match = match.slice(1,-1)
-			parsed.push(match);
-			if (match.length == 2) {
-				abbrevatedVar.push(match[1])
+		let parsed = [];
+		let abbrevatedVar:any = [];
+		console.log("matches",matches);
+		for (let match of matches) {
+			console.log("match", match);
+			let slicedMatch = match.slice(1,-1)
+			parsed.push(slicedMatch);
+			console.log("inside match", slicedMatch);
+			if (slicedMatch.length == 2) {
+				abbrevatedVar.push(slicedMatch[1])
 			}
 		}
+		console.log("abbrevated var", abbrevatedVar);
+		console.log("parsed complete data",parsed);
 		let remainingString = availableStrings.filter( ( el ) => !abbrevatedVar.includes( el ) );
 		let convertedData= {}
-		console.log(matches);
-		for (let match in matches) {
-			match = match.slice(1,-1)
+		console.log("remaining string", remainingString);
+		for (let match of parsed) {
+			console.log("parsed", match);
 			if (match.length !=2 ){
 				let splitValue = match.split(':')
-
-
+				modifiedData[mapping[remainingString[0]]] = {
+					"type": "URI",
+                    "uri": splitValue[1],
+                    "label": splitValue[0]
+				}
+			}
+			else {
+				modifiedData[mapping[match[1]]] = {
+					"type": "REF",
+	                "reference": match[0]
+				}
 			}
 		}
-
-
+	console.log("modified data", modifiedData);
+	return modifiedData
 	}
 
 	private generateJSON() {
+		var metaData:any = {};
+		var Mapping: any = {};
 		console.log(this.template);
 		if (this.template) {
-			var defaultMapping: any = this.template.default_mappings;
-			console.log(defaultMapping);
-			let data = {}
+			Mapping = this.template.default_mappings;
+			console.log("if 2nd statement", Mapping);
+			if (Mapping) {
+				console.log("parrrrrrrrrrrrrrrrrrr", this.parseMapping(Mapping));
+				metaData['defaultMapping'] = this.parseMapping(Mapping);
+				console.log(metaData);
+			}
 		}
+		console.log("metadata", metaData);
 		
 	}
 }
