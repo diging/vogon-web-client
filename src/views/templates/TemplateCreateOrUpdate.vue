@@ -70,7 +70,7 @@
 <script lang="ts">
 import { AxiosResponse } from 'axios';
 import { Component, Vue, Watch } from 'vue-property-decorator';
-
+import { getUserId } from '@/utils';
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
 import Loading from '@/components/global/Loading.vue';
 import TemplateCreateForm from '@/components/templates/TemplateCreateForm.vue';
@@ -90,8 +90,10 @@ export default class TemplateCreateOrUpdate extends Vue {
 	private loading: boolean = true;
 	private error: boolean = false;
 	private template: RelationTemplate | null = null;
+	private user: any;
 
 	public created() {
+		this.getUser();
 		this.getOpenConceptsData()
 			.then(() => {
 				if (this.$route.params.id) {
@@ -160,6 +162,21 @@ export default class TemplateCreateOrUpdate extends Vue {
 	console.log("modified data", modifiedData);
 	return modifiedData
 	}
+	
+	// private createNodes(data: any) {
+	// 	data.sort((a: any, b: any) => (a.id > b.id) ? 1 : -1)
+	// 	let nodeValues = {}
+	// 	for (const template_part of data) {
+	// 		var result:any = Object.entries(template_part).reduce((r, [k, v]) => {
+	// 		var key:any = k.replace(/_.*$/, '') ;
+	// 		(r[key] = r[key] || {})[k] = v;
+	// 		return r;
+    // }, {});
+
+	// 		console.log("result")
+	// 	}
+	
+	// }
 
 	private generateJSON() {
 		var metaData:any = {};
@@ -167,15 +184,28 @@ export default class TemplateCreateOrUpdate extends Vue {
 		console.log(this.template);
 		if (this.template) {
 			Mapping = this.template.default_mappings;
-			console.log("if 2nd statement", Mapping);
+			const context: any = {
+                     "creator": this.user.full_name,
+                     "creationTime": this.template.created,
+                     "creationPlace": "Tempe",
+                     "sourceUri": "http://www.digitalhps.org/concepts/CON417cf23b-5260-45b1-9a13-3945f2ed35d5"
+                 };
 			if (Mapping) {
-				console.log("parrrrrrrrrrrrrrrrrrr", this.parseMapping(Mapping));
 				metaData['defaultMapping'] = this.parseMapping(Mapping);
-				console.log(metaData);
+				console.log("context data uuuuu", context);
 			}
+			// this.createNodes(this.template?.template_parts);
 		}
 		console.log("metadata", metaData);
-		
+	}
+
+	private getUser() {
+		const userId = getUserId();
+		Vue.$axios.get(`/users/${userId}`)
+			.then((response: AxiosResponse) => {
+				this.user = response.data;
+				// console.log("user", response.data, this.user);
+			});
 	}
 }
 </script>
