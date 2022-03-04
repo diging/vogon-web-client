@@ -89,6 +89,15 @@
 						v-data-table(:headers="textHeaders" :items="project.texts")
 							template(v-slot:item.title="{ item }")
 								router-link(:to="`/repository/amphora/${item.repository_id}/text/${item.repository_source_id}?project_id=${project.id}`") {{ item.title }}
+				br
+				v-card(class="card-project-downloadcsv")
+					v-card-title Download csv
+					template(v-if="!project.texts.length")
+						EmptyView No texts found! Perhaps, add one?
+					template(v-else)
+						v-data-table(:headers="textHeaders" :items="project.texts")
+							template(v-slot:item.title="{ item }")
+								router-link(:to="`/repository/amphora/${item.repository_id}/text/${item.repository_source_id}?project_id=${project.id}`") {{ item.title }}
 		
 		v-snackbar(v-model="snackbar" top :color="snackColor" :timeout="3000") {{ snackbarMsg }}
 	
@@ -179,6 +188,17 @@ export default class ProjectDetails extends Vue {
 
 	private getProjectDetails() {
 		this.loading = true;
+		return Vue.$axios.get(`/project/${this.$route.params.id}`)
+			.then((response: AxiosResponse) => {
+				this.project = response.data as Project;
+				this.navItems[1].text = this.project.name;
+				this.navItems[1].to = `/project/${this.project.id}`;
+			})
+			.catch(() => this.error = true)
+			.finally(() => this.loading = false);
+	}
+
+	private getCSVFiles() {
 		return Vue.$axios.get(`/project/${this.$route.params.id}`)
 			.then((response: AxiosResponse) => {
 				this.project = response.data as Project;
