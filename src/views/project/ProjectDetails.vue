@@ -57,6 +57,19 @@
 									v-icon(left) mdi-plus
 									span Add text
 
+								v-btn(tile depressed color="teal" class="ma-2" dark :to="`/repository?project_id=${this.$route.params.id}`")
+									v-icon(left) mdi-plus
+									span Download CSV
+
+								v-checkbox(
+					v-if="!$store.getters.getAnnotatorSelectedConcept"
+					v-model="createNewConcept"
+					label="I've tried so hard, but I can't find what I'm looking for!"
+					dense
+					class="mt-2 pt-0"
+					color="red"
+				)
+
 					div(class="d-flex mt-4")
 						v-btn(small outlined @click="exportAffiliations" class="mr-2") 
 							| Export affiliation relations
@@ -170,6 +183,8 @@ export default class ProjectDetails extends Vue {
 	private snackbar: boolean = false;
 	private snackbarMsg: string = '';
 	private snackColor: string = 'success';
+	private errorMsg: string = '';
+	private texts: any = {};
 
 	private setAsDefaultDialog: boolean = false;
 	private settingAsDefault: boolean = false;
@@ -199,7 +214,23 @@ export default class ProjectDetails extends Vue {
 	}
 
 	private getCSVFiles() {
-		return Vue.$axios.get(`/project/${this.$route.params.id}`)
+		const payload = {"texts": this.texts}
+		return Vue.$axios.post('export/', payload)
+				.then((response: AxiosResponse) => {
+					
+				})
+				.catch((error: AxiosError) => {
+					this.error = true;
+					if (error.response && error.response.data && error.response.data.detail) {
+						this.errorMsg = error.response.data.detail;
+					} else {
+						this.errorMsg = error.message;
+					}
+				});
+	}
+
+	private exportApellations() {
+		return Vue.$axios.get(`/export/${this.$route.params.id}`)
 			.then((response: AxiosResponse) => {
 				this.project = response.data as Project;
 				this.navItems[1].text = this.project.name;
@@ -207,6 +238,7 @@ export default class ProjectDetails extends Vue {
 			})
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
+
 	}
 
 	private changeOwner(targetUser: User) {
