@@ -57,19 +57,6 @@
 									v-icon(left) mdi-plus
 									span Add text
 
-								v-btn(tile depressed color="teal" class="ma-2" dark :to="`/repository?project_id=${this.$route.params.id}`")
-									v-icon(left) mdi-plus
-									span Download CSV
-
-								v-checkbox(
-					v-if="!$store.getters.getAnnotatorSelectedConcept"
-					v-model="createNewConcept"
-					label="I've tried so hard, but I can't find what I'm looking for!"
-					dense
-					class="mt-2 pt-0"
-					color="red"
-				)
-
 					div(class="d-flex mt-4")
 						v-btn(small outlined @click="exportAffiliations" class="mr-2") 
 							| Export affiliation relations
@@ -103,14 +90,35 @@
 							template(v-slot:item.title="{ item }")
 								router-link(:to="`/repository/amphora/${item.repository_id}/text/${item.repository_source_id}?project_id=${project.id}`") {{ item.title }}
 				br
-				v-card(class="card-project-downloadcsv")
-					v-card-title Download csv
+				v-card(class="card-project-exportappellations")
+					v-card-title Export Apellations
 					template(v-if="!project.texts.length")
 						EmptyView No texts found! Perhaps, add one?
 					template(v-else)
-						v-data-table(:headers="textHeaders" :items="project.texts")
-							template(v-slot:item.title="{ item }")
-								router-link(:to="`/repository/amphora/${item.repository_id}/text/${item.repository_source_id}?project_id=${project.id}`") {{ item.title }}
+						v-data-table(
+							:headers="textHeaders" 
+							:items="project.texts"
+							v-model="selected"
+							item-key="id"
+							show-select
+							)
+						v-btn(tile depressed color="teal" @click="exportApellations" class="ma-3" dark)
+									span Export Apellations
+
+				br
+				v-card(class="card-project-downloadcsv")
+					v-card-title Download csv
+					template(v-if="!csvFiles.length")
+						EmptyView No Files found! Perhaps, export texts?
+					template(v-else)
+						v-data-table(
+							:headers="textHeaders" 
+							:items="project.texts"
+							v-model="selected"
+							item-key="id"
+							show-select
+							)
+						
 		
 		v-snackbar(v-model="snackbar" top :color="snackColor" :timeout="3000") {{ snackbarMsg }}
 	
@@ -185,6 +193,9 @@ export default class ProjectDetails extends Vue {
 	private snackColor: string = 'success';
 	private errorMsg: string = '';
 	private texts: any = {};
+	private selected: any = [];
+	private enableCSVDownload : boolean = false;
+	private csvFiles : any = {};
 
 	private setAsDefaultDialog: boolean = false;
 	private settingAsDefault: boolean = false;
@@ -213,11 +224,17 @@ export default class ProjectDetails extends Vue {
 			.finally(() => this.loading = false);
 	}
 
-	private getCSVFiles() {
-		const payload = {"texts": this.texts}
-		return Vue.$axios.post('export/', payload)
+	private exportApellations() {
+		let text_ids = [];
+		for(const select of this.selected) {
+			text_ids.push(select.id)
+		}
+		console.log("selected files", text_ids);
+		const payload = {"texts": text_ids};
+		Vue.$axios.post('export/', payload)
 				.then((response: AxiosResponse) => {
-					
+					this.enableCSVDownload = true;
+					this.getCSVFiles()
 				})
 				.catch((error: AxiosError) => {
 					this.error = true;
@@ -229,12 +246,11 @@ export default class ProjectDetails extends Vue {
 				});
 	}
 
-	private exportApellations() {
-		return Vue.$axios.get(`/export/${this.$route.params.id}`)
+	private getCSVFiles() {
+		console.log("print entered hereeeeeee in this loop")
+		Vue.$axios.get(`/download/`)
 			.then((response: AxiosResponse) => {
-				this.project = response.data as Project;
-				this.navItems[1].text = this.project.name;
-				this.navItems[1].to = `/project/${this.project.id}`;
+				this.csvFiles = response.data;
 			})
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
