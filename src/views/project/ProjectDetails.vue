@@ -112,14 +112,14 @@
 						EmptyView No Files found! Perhaps, export texts?
 					template(v-else)
 						v-data-table(
-							:headers="textHeaders" 
-							:items="project.texts"
-							v-model="selected"
+							:headers="fileHeaders" 
+							:items="csvFiles"
 							item-key="id"
-							show-select
 							)
+							<template v-slot:[`item.action`]="{ item }">
+								<v-icon color="teal" small @click="downloadFile(item.id)">mdi-download</v-icon>
+							</template>
 						
-		
 		v-snackbar(v-model="snackbar" top :color="snackColor" :timeout="3000") {{ snackbarMsg }}
 	
 		v-dialog(
@@ -161,6 +161,7 @@ import CreateUpdateProject from '@/components/project/CreateUpdateProject.vue';
 import ProjectCollaborators from '@/components/project/ProjectCollaborators.vue';
 import { User } from '@/interfaces/GlobalTypes';
 import { Project } from '@/interfaces/ProjectTypes';
+import moment from 'moment'
 
 @Component({
 	name: 'ProjectDetails',
@@ -181,6 +182,7 @@ export default class ProjectDetails extends Vue {
 	private exporting: boolean = false;
 	private exportError: boolean = false;
 	private textHeaders = [{text: 'Title', value: 'title'}, {text: 'Added', value: 'added'}];
+	private fileHeaders = [{text: 'Id', value: 'id'},{text: 'Created', value: 'created'}, {text: 'Filedownload', value: 'file_field'}, {text: 'Action', value: 'action'}];
 	private navItems = [
 		{ text: 'Projects', to: '/project', link: true, exact: true },
 		{ text: '', to: '', link: true, exact: true },
@@ -202,6 +204,7 @@ export default class ProjectDetails extends Vue {
 
 	public async mounted(): Promise<void> {
 		this.getProjectDetails();
+		this.getCSVFiles();
 	}
 
 	get isEditable(): boolean {
@@ -231,6 +234,8 @@ export default class ProjectDetails extends Vue {
 		}
 		console.log("selected files", text_ids);
 		const payload = {"texts": text_ids};
+		console.log("selected files", payload);
+
 		Vue.$axios.post('export/', payload)
 				.then((response: AxiosResponse) => {
 					this.enableCSVDownload = true;
@@ -255,6 +260,17 @@ export default class ProjectDetails extends Vue {
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
 
+	}
+
+	private downloadFile(file: any) {
+		console.log("entered here in download files");
+		Vue.$axios.get(`/download/previous/${file}/`)
+			.then((response: AxiosResponse) => {
+				console.log("response dataaaaaaaaa", response)
+				// this.csvFiles = response.data;
+			})
+			.catch(() => this.error = true)
+			.finally(() => this.loading = false);
 	}
 
 	private changeOwner(targetUser: User) {
@@ -321,6 +337,12 @@ export default class ProjectDetails extends Vue {
 			})
 			.catch(() => this.exportError = true)
 			.finally(() => this.exporting = false);
+	}
+
+	private formatDate(value: any) {
+		if (value) {
+    		return moment(String(value)).format('MM/DD/YYYY hh:mm')
+  		}
 	}
 }
 </script>
