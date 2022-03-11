@@ -265,13 +265,16 @@ export default class ProjectDetails extends Vue {
 	private downloadFile(file: any) {
 		console.log("entered here in download files");
 		Vue.$axios.get(`/download/previous/${file}/`)
-			.then((response: AxiosResponse) => {
-				console.log("response dataaaaaaaaa", response)
-				// this.csvFiles = response.data;
-			})
-			.catch(() => this.error = true)
-			.finally(() => this.loading = false);
-	}
+			.then((response: AxiosResponse) =>{
+        const blob = new Blob([response.data], { type: 'text/csv' })
+        const link = document.createElement('a')
+        link.href = URL.createObjectURL(blob)
+        link.download = file 
+        link.click()
+        URL.revokeObjectURL(link.href)
+      }).catch(console.error)
+  }
+	
 
 	private changeOwner(targetUser: User) {
 		this.changingOwner = true;
