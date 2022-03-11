@@ -164,7 +164,6 @@ import CreateUpdateProject from '@/components/project/CreateUpdateProject.vue';
 import ProjectCollaborators from '@/components/project/ProjectCollaborators.vue';
 import { User } from '@/interfaces/GlobalTypes';
 import { Project } from '@/interfaces/ProjectTypes';
-import moment from 'moment'
 
 @Component({
 	name: 'ProjectDetails',
@@ -235,10 +234,7 @@ export default class ProjectDetails extends Vue {
 		for(const select of this.selected) {
 			text_ids.push(select.id)
 		}
-		console.log("selected files", text_ids);
 		const payload = {"texts": text_ids};
-		console.log("selected files", payload);
-
 		Vue.$axios.post('export/', payload)
 				.then((response: AxiosResponse) => {
 					this.enableCSVDownload = true;
@@ -255,7 +251,6 @@ export default class ProjectDetails extends Vue {
 	}
 
 	private getCSVFiles() {
-		console.log("print entered hereeeeeee in this loop")
 		Vue.$axios.get(`/download/`)
 			.then((response: AxiosResponse) => {
 				this.csvFiles = response.data;
@@ -266,7 +261,6 @@ export default class ProjectDetails extends Vue {
 	}
 
 	private downloadFile(file: any) {
-		console.log("entered here in download files");
 		Vue.$axios.get(`/download/previous/${file}/`)
 			.then((response: AxiosResponse) =>{
         const blob = new Blob([response.data], { type: 'text/csv' })
@@ -343,12 +337,6 @@ export default class ProjectDetails extends Vue {
 			})
 			.catch(() => this.exportError = true)
 			.finally(() => this.exporting = false);
-	}
-
-	private formatDate(value: any) {
-		if (value) {
-    		return moment(String(value)).format('MM/DD/YYYY hh:mm')
-  		}
 	}
 }
 </script>
