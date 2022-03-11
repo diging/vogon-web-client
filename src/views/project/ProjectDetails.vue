@@ -116,6 +116,9 @@
 							:items="csvFiles"
 							item-key="id"
 							)
+							<template v-slot:item.created="{ item }">
+								<span>{{ new Date(item.created).toISOString() }}</span>
+							</template>
 							<template v-slot:[`item.action`]="{ item }">
 								<v-icon color="teal" small @click="downloadFile(item.id)">mdi-download</v-icon>
 							</template>
