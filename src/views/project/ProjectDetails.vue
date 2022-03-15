@@ -236,18 +236,18 @@ export default class ProjectDetails extends Vue {
 		}
 		const payload = {"texts": text_ids};
 		Vue.$axios.post('export/', payload)
-				.then((response: AxiosResponse) => {
-					this.enableCSVDownload = true;
-					this.getCSVFiles()
-				})
-				.catch((error: AxiosError) => {
-					this.error = true;
-					if (error.response && error.response.data && error.response.data.detail) {
-						this.errorMsg = error.response.data.detail;
-					} else {
-						this.errorMsg = error.message;
-					}
-				});
+			.then((response: AxiosResponse) => {
+				this.enableCSVDownload = true;
+				this.getCSVFiles()
+			})
+			.catch((error: AxiosError) => {
+				this.error = true;
+				if (error.response && error.response.data && error.response.data.detail) {
+					this.errorMsg = error.response.data.detail;
+				} else {
+					this.errorMsg = error.message;
+				}
+			});
 	}
 
 	private getCSVFiles() {
@@ -262,17 +262,18 @@ export default class ProjectDetails extends Vue {
 
 	private downloadFile(file: any) {
 		Vue.$axios.get(`/download/previous/${file}/`)
-			.then((response: AxiosResponse) =>{
-        const blob = new Blob([response.data], { type: 'text/csv' })
-        const link = document.createElement('a')
-        link.href = URL.createObjectURL(blob)
-        link.download = file 
-        link.click()
-        URL.revokeObjectURL(link.href)
-      }).catch(console.error)
-  }
+			.then((response: AxiosResponse) => {
+				const blob = new Blob([response.data], { type: 'text/csv' })
+				const link = document.createElement('a')
+				link.href = URL.createObjectURL(blob)
+				link.download = file 
+				link.click()
+				URL.revokeObjectURL(link.href)
+			})
+			.catch(() => this.exportError = true)
+			.finally(() => this.exporting = false);
+  	}
 	
-
 	private changeOwner(targetUser: User) {
 		this.changingOwner = true;
 		Vue.$axios.post(`/project/${this.project.id}/change_ownership`, {
