@@ -5,10 +5,12 @@
 			| {{ appellation.interpretation.label }}
 		div(:style="{ ...appellation.positionStyle, zIndex: 5, width: 'auto', height: 30 }" class="appellation-tooltip" v-if="hasDateRepresentation() && tooltip")
 			| {{ appellation.dateRepresentation }}
+		div(:style="{ ...appellation.positionStyle, zIndex: 5, width: 'auto', height: 30 }" class="appellation-tooltip" v-if="isDateString() && tooltip")
+			| {{ appellation.dateStringRep }}
 		li(
 			:style="appellation.positionStyle"
 			v-bind:class=`{
-				'appellation': appellation.interpretation != null,
+				'appellation': appellation.type != null,
 				'date-appellation': appellation.dateRepresentation != null,
 				'appellation-selected': appellation.selected,
 				'appellation-focused': focused
@@ -19,7 +21,7 @@
 		li(v-if="manyLinesAreSelected()"
 			v-for="line in appellation.midLines"
 			v-bind:class=`{
-				'appellation': appellation.interpretation != null,
+				'appellation': appellation.type != null,
 				'date-appellation': appellation.dateRepresentation != null,
 				'appellation-selected': appellation.selected,
 				'appellation-focused': focused
@@ -45,7 +47,7 @@
 				'z-index': 2
 			}`
 			v-bind:class=`{
-				'appellation': appellation.interpretation != null,
+				'appellation': appellation.type != null,
 				'date-appellation': appellation.dateRepresentation != null,
 				'appellation-selected': appellation.selected,
 				'appellation-focused': focused
@@ -139,9 +141,11 @@ export default class AppellationDisplayItem extends Vue {
 		return 'dateRepresentation' in this.appellation;
 	}
 	private hasInterpretation() {
-		return 'interpretation' in this.appellation;
+		return this.appellation.type=="concept";
 	}
-
+	private isDateString() {
+		return this.appellation.type=="date";
+	}
 	private onApellationClick() {
 		// Check if this is a currently highlighted text
 		if (this.appellation.selected) {

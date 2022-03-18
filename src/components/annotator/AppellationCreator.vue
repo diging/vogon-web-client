@@ -65,7 +65,32 @@
 					)
 						template(v-if="$store.getters.getAnnotatorEditAppellationMode") Update Date Appellation
 						template(v-else) Create Date Appellation
-			
+						
+			v-switch(
+				v-model="isDateString"
+				label="Date String Appellation"
+				inset
+				flat
+			)
+			template(v-if="isDateString")
+				v-text-field(
+					v-model="dateString"
+					label="Date"
+					append-icon="event"
+					outlined
+					dense
+					clearable
+				)
+				v-date-picker(v-model="dateString" no-title)
+				div(class="relation-btn-container")
+					v-btn(
+						color="success"
+						class="mt-3 ml-auto"
+						@click="createOrUpdate"
+					)
+						template(v-if="$store.getters.getAnnotatorEditAppellationMode") Update Appellation
+						template(v-else) Create Appellation
+					
 			template(v-else)
 				v-checkbox(
 					v-if="!$store.getters.getAnnotatorSelectedConcept"
@@ -139,6 +164,7 @@ export default class AppellationCreator extends Vue {
 	private createError: boolean = false;
 
 	private isDateAppellation: boolean = false;
+	private isDateString: boolean = false;
 	private months: any[] = [
 		{ label: 'Jan', value: 1 }, { label: 'Feb', value: 2 }, { label: 'Mar', value: 3 },
 		{ label: 'Apr', value: 4 }, { label: 'May', value: 5 }, { label: 'Jun', value: 6 },
@@ -148,10 +174,15 @@ export default class AppellationCreator extends Vue {
 	private year: string = '';
 	private month: any = null;
 	private day: string = '';
+	private dateString: string = '';
 
 	public created() {
 		this.merge(this.appellations);
 		this.watchStore();
+	}
+
+	private selectDateString() {
+		this.$store.commit('setAnnotatorSelectedDate', this.dateString);
 	}
 
 	@Watch('createNewConcept')
@@ -179,6 +210,16 @@ export default class AppellationCreator extends Vue {
 					this.year = appellation.year;
 					this.month = appellation.month;
 					this.day = appellation.day;
+				}
+			},
+		);
+		this.$store.watch(
+			(state, getters) => getters.getAnnotatorisDateStringAppellation,
+			(newValue, oldValue) => {
+				if (newValue === true) {
+					this.isDateString = true;
+					const appellation = this.$store.getters.getAnnotatorEditAppellationMode;
+					this.dateString = appellation.dateStringRep;
 				}
 			},
 		);
@@ -247,10 +288,13 @@ export default class AppellationCreator extends Vue {
 		this.$store.commit('setAnnotatorHighlightedText', null);
 		this.$store.commit('setAnnotatorSelectedConcept', null);
 		this.$store.commit('setAnnotatorEditAppellationMode', null);
+		this.$store.commit('setAnnotatorisDateStringAppellation', false);
 		this.isDateAppellation = false;
+		this.isDateString = false;
 		this.year = '';
 		this.month = null;
 		this.day = '';
+		this.dateString = '';
 		this.$store.commit('setAnnotatorisDateAppellation', false);
 		this.createNewConcept = false;
 	}
@@ -293,9 +337,15 @@ export default class AppellationCreator extends Vue {
 			endPos: highlighted.position.endOffset,
 			occursIn: this.text.id,
 			project: this.$store.getters.getAnnotatorMeta.project,
-		};
+		    };
+			if (!this.isDateString) {
 			payload.interpretation = this.$store.getters.getAnnotatorSelectedConcept.uri ||
 				this.$store.getters.getAnnotatorSelectedConcept.interpretation.uri;
+			}
+			else {
+				payload.type = "date";
+				payload.dateStringRep = this.dateString;
+			}
 
 			if (this.$store.getters.getAnnotatorEditAppellationMode) {
 				this.update(payload, this.$store.getters.getAnnotatorEditAppellationMode.id);
@@ -314,6 +364,8 @@ export default class AppellationCreator extends Vue {
 				this.$store.commit('setAnnotatorHighlightedText', null);
 				this.$store.commit('setAnnotatorSelectedConcept', null);
 				this.$store.commit('setAnnotatorCreatedAppellation', true);
+				this.$store.commit('setAnnotatorisDateStringAppellation', false);
+				this.isDateString = false;
 				this.createNewConcept = false;
 			})
 			.catch(() => this.createError = true)
@@ -328,6 +380,9 @@ export default class AppellationCreator extends Vue {
 				this.$store.commit('setAnnotatorHighlightedText', null);
 				this.$store.commit('setAnnotatorCreatedAppellation', true);
 				this.$store.commit('setAnnotatorUpdatedAppellation', appellationId);
+				this.$store.commit('setAnnotatorisDateStringAppellation', false);
+				this.isDateString = false;
+				this.dateString = '';
 				this.createNewConcept = false;
 			})
 			.catch(() => this.createError = true)
@@ -342,6 +397,12 @@ export default class AppellationCreator extends Vue {
 				this.$store.commit('setAnnotatorHighlightedText', null);
 				this.$store.commit('setAnnotatorSelectedConcept', null);
 				this.$store.commit('setAnnotatorCreatedAppellation', true);
+				this.isDateAppellation = false;
+				this.year = '';
+				this.month = null;
+				this.day = '';
+				this.$store.commit('setAnnotatorisDateAppellation', false);
+
 			})
 			.catch(() => this.createError = true)
 			.finally(() => this.creating = false);
