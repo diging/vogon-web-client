@@ -47,6 +47,8 @@ const initialState: RootState = {
 		updatedAppellationId: 0,
 		focusedAppellationsForRelations: {},
 		focusedRelationId: null,
+		isDateAppellation: false,
+		isDateStringAppellation: false,
 	},
 	notifications: [],
 };
@@ -183,6 +185,9 @@ const mutations: MutationTree<RootState> = {
 	setAnnotatorEditAppellationMode(state, appellation) {
 		state.annotator.editAppellationId = appellation;
 	},
+	setAnnotatorisDateAppellation(state, value) {
+		state.annotator.isDateAppellation = value;
+	},
 	setAnnotatorUpdatedAppellation(state, appellationId) {
 		state.annotator.updatedAppellationId = appellationId;
 	},
@@ -204,6 +209,9 @@ const mutations: MutationTree<RootState> = {
 	},
 	setNotifications(state, notifications) {
 		state.notifications = notifications;
+	},
+	setAnnotatorisDateStringAppellation(state, value) {
+		state.annotator.isDateStringAppellation = value;
 	},
 };
 
@@ -242,11 +250,13 @@ export default new Vuex.Store({
 		getAnnotatorHideAppellation: (state) => state.annotator.hideAllAppellations,
 		getAnnotatorHiddenAppellations: (state) => state.annotator.hiddenAppellations,
 		getAnnotatorEditAppellationMode: (state) => state.annotator.editAppellationId,
+		getAnnotatorisDateAppellation: (state) => state.annotator.isDateAppellation,
 		getRelationCreated: (state) => state.annotator.relationCreated,
 		getFocusedAppellationsForRelations: (state) => state.annotator.focusedAppellationsForRelations,
 		getFocusedRelationId: (state) => state.annotator.focusedRelationId,
 		templateOpenConcepts: (state) => state.templateCreator.open_concepts,
 		notifications: (state) => state.notifications,
+		getAnnotatorisDateStringAppellation: (state) => state.annotator.isDateStringAppellation,
 	},
 	actions: {},
 });
