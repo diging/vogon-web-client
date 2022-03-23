@@ -18,6 +18,7 @@ export interface RootState {
 	validator: number;
 	text_content_styles: any;
 	templateCreator: { open_concepts: any[] };
+	user: any;
 	annotator: {
 		currentTab: string;
 		template: RelationTemplate | null;

@@ -20,6 +20,7 @@ const initialState: RootState = {
 	assignment_failed: false,
 	validator: 0,
 	text_content_styles: {},
+	user: {},
 	annotator: {
 		currentTab: 'tab-4',
 		template: null,
@@ -213,6 +214,9 @@ const mutations: MutationTree<RootState> = {
 	setAnnotatorisDateStringAppellation(state, value) {
 		state.annotator.isDateStringAppellation = value;
 	},
+	setUser(state, value) {
+		state.user = value;
+	}
 };
 
 export default new Vuex.Store({
@@ -220,6 +224,7 @@ export default new Vuex.Store({
 	mutations,
 	getters: {
 		loggedIn: (state) => state.loggedIn,
+		getUser: (state) => state.user,
 		getShowSideBar: (state) => state.showSideBar,
 		getShowLists: (state) => state.showLists,
 		showConcepts: (state) => state.show_concepts,

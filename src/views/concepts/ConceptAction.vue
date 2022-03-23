@@ -99,6 +99,7 @@ export default class ConceptAction extends Vue {
 	private action: string = '';
 	private loading: boolean = true;
 	private error: boolean = false;
+	private user: any = {};
 
 	private concept: Concept = { id: 1, uri: '', url: '', relations: [], conceptpower_namespaced: false };
 	private matches: ConceptMatch[] = [];
@@ -111,9 +112,11 @@ export default class ConceptAction extends Vue {
 	private routeParamscurrent: string = '';
 
 	public created() {
+		console.log("entered herrrrrrrrrrrrrrrrrrrr");
 		this.action = this.$route.params.action;
 		this.routeParamscurrent = this.$route.params.id;
 		this.checkMatches();
+		this.concept_finder();
 	}
 
 	private checkMatches() {
@@ -127,14 +130,31 @@ export default class ConceptAction extends Vue {
 			.finally(() => this.loading = false);
 	}
 
-	public async mounted():Promise<void>{
-		const user = await getCurrentUser();
-		if (user.is_admin==true) {
+	public mounted(){
+		console.log("entered herrrrrrrrrrrrrrrrrrrr");
+	
+       this.user = this.$store.getters.getUser;
+	   console.log("user", this.user);
+
+	   if (this.user.is_admin==true) {
 			this.chooseNewConcept = true;
 		}
 		else {
 			this.chooseNewConcept = false;
 		}
+     
+		
+	}
+
+	public  concept_finder() {
+		const user =  getCurrentUser();
+		console.log("user", user);
+		// if (user.is_admin==true) {
+		// 	this.chooseNewConcept = true;
+		// }
+		// else {
+		// 	this.chooseNewConcept = false;
+		// }
 	}
 	
 	private performAction() {

@@ -24,7 +24,7 @@ export function getUserId() {
 
 export function getCurrentUser() {
 	const userId = getUserId();
-	return Vue.$axios.get(`/users/${userId}`).then(response => response.data);
+	return Vue.$axios.get(`/users/${userId}`);
 }
 
 export default {
