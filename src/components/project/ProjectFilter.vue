@@ -11,7 +11,7 @@
 				)
 			v-col(md="3")
 				v-select(
-					label="Field"
+					label="User-types"
 					v-model="field"
 					:items="fieldChoices"
 					outlined
