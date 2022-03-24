@@ -142,8 +142,6 @@ export default class ConceptAction extends Vue {
 		else {
 			this.chooseNewConcept = false;
 		}
-     
-		
 	}
 
 	public  concept_finder() {
