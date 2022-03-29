@@ -3,7 +3,7 @@
 		router-link(to="/")
 			img(height="50px" src="../../assets/images/logos/logo-17.png" class="mr-3")
 		v-btn(v-if="loggedIn" text large to="/project" class="subheading font-weight-medium") Projects
-		v-btn(v-if="loggedIn && isAdminUser()" text large to="/relationtemplate" class="subheading font-weight-medium") Templates
+		v-btn(v-if="loggedIn && is_admin" text large to="/relationtemplate" class="subheading font-weight-medium") Templates
 		v-btn(text large to="/about" class="subheading font-weight-medium") About
 		v-menu(v-if="loggedIn" class="ml-3" offset-y open-on-hover style="display: block")
 			template(v-slot:activator="{ on }")
@@ -82,7 +82,7 @@ import { AxiosResponse } from 'axios';
 })
 export default class Header extends Vue {
 	private activeIndex: string = '1';
-	private is_admin: boolean = false;
+	private is_admin: any = '';
 	private dataItems: object[] = [
 		{ title: 'Concepts', link: '/concept' },
 		{ title: 'Concept Types', link: '/types' },
@@ -95,6 +95,7 @@ export default class Header extends Vue {
 
 	public created() {
 		this.watchStore();
+		this.is_admin = localStorage.getItem('is_admin');
 	}
 
 	private watchStore() {
@@ -148,15 +149,6 @@ export default class Header extends Vue {
 	private deleteAllNotifications() {
 		this.$store.commit('setNotifications', []);
 		Vue.$axios.post(`/notifications/mark_all_as_deleted`);
-	}
-
-	private isAdminUser() {
-		const userId = getUserId();
-		Vue.$axios.get(`/users/${userId}`)
-			.then((response: AxiosResponse) => {
-				this.is_admin = response.data.is_admin;
-			});
-		return this.is_admin;
 	}
 }
 </script>
