@@ -53,6 +53,7 @@ export default class Login extends Vue {
 				.then((response: AxiosResponse) => {
 					this.$root.$data.loggedIn = true;
 					localStorage.setItem('token', response.data.access);
+					localStorage.setItem('is_admin', response.data.is_admin)
 					Vue.$axios.defaults.headers.common.Authorization = `Bearer ${response.data.access}`;
 					const decoded = JwtDecode<TokenDto>(response.data.access);
 					if (decoded.github_token) {
