@@ -121,7 +121,6 @@ export default class UserDetail extends Vue {
 		Vue.$axios.get(`/users/${this.$route.params.id}`)
 			.then((response: AxiosResponse) => {
 				this.user = response.data;
-				this.$store.commit('setUser', this.user);
 
 				if (response.data.appellation_count > 0) {
 					// Set X-axis with week labels
