@@ -27,10 +27,11 @@
 							v-col(:cols="6" class="px-3 py-0")
 								strong Type:
 								| &nbsp;{{ concept.typed_label }}
+					//- v-if="chooseNewConcept
 					//- v-btn(outlined dense @click="enableConceptPicker()") Choose New Concept!
 					v-card-actions
 						v-spacer
-						template(v-if="chooseNewConcept") 
+						template() 
 							v-btn(outlined dense @click="enableConceptPicker()") Choose New Concept!
 							v-card(v-if="clickNewConcept" outlined class="pa-3")
 								div(v-if="clickNewConcept") 
