@@ -100,8 +100,8 @@ export default class ConceptCreator extends Vue {
 		Vue.$axios.post('/concept', payload)
 			.then((response: AxiosResponse) => {
 				const concept: Concept = response.data;
-				this.$store.commit('setAnnotatorSelectedConcept', concept);
-				this.$store.commit('setAnnotatorCreateNewConcept', false);
+				// this.$store.commit('setAnnotatorSelectedConcept', concept);
+				// this.$store.commit('setAnnotatorCreateNewConcept', false);
 			})
 			.catch(() => this.createError = true)
 			.finally(() => this.creating = false);
