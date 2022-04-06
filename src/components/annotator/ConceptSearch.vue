@@ -67,17 +67,7 @@ export default class ConceptSearch extends Vue {
 
   private search() {
 	this.searching = true;
-	console.log("values", this.query);
 	this.$store.commit('setAnnotatorSearchingConcept', true);
-	// const params: any = {
-	// 	q: this.query,
-	// };
-	// if (this.pos !== '') {
-	// 	params.pos = this.pos;
-	// }
-	// if (this.force) {
-	// 	params.force = 'force';
-	// }
 	const params: any = {
 		q: this.query,
 	};
@@ -87,7 +77,6 @@ export default class ConceptSearch extends Vue {
 	if (this.force) {
 		params.force = 'force';
 	}
-
 	Vue.$axios
 		.get(`/concept/search`, {
 		params,

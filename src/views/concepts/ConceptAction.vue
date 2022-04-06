@@ -31,7 +31,7 @@
 					//- v-btn(outlined dense @click="enableConceptPicker()") Choose New Concept!
 					v-card-actions
 						v-spacer
-						template() 
+						template(v-if="chooseNewConcept") 
 							v-btn(outlined dense @click="enableConceptPicker()") Choose New Concept!
 							v-card(v-if="clickNewConcept" outlined class="pa-3")
 								div(v-if="clickNewConcept") 
@@ -117,6 +117,14 @@ export default class ConceptAction extends Vue {
 		this.action = this.$route.params.action;
 		this.routeParamscurrent = this.$route.params.id;
 		this.checkMatches();
+		this.is_admin = localStorage.getItem('is_admin');
+		console.log("admin", this.is_admin);
+		if (this.is_admin) {
+				this.chooseNewConcept = true;
+		}
+		else {
+			this.chooseNewConcept = false;
+		}
 	}
 
 	private checkMatches() {
@@ -132,6 +140,7 @@ export default class ConceptAction extends Vue {
 
 	public mounted(){	
        this.is_admin = localStorage.getItem('is_admin');
+	   console.log("admin", this.is_admin);
 	   if (this.is_admin==true) {
 			this.chooseNewConcept = true;
 		}
