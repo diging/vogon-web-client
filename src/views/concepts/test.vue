@@ -142,14 +142,14 @@ export default class ConceptAction extends Vue {
 	}
 
 	public mounted(){	
-    //    this.is_admin = localStorage.getItem('is_admin');
-	//    console.log("admin", this.is_admin);
-	//    if (this.is_admin==true) {
-	// 		this.chooseNewConcept = true;
-	// 	}
-	// 	else {
-	// 		this.chooseNewConcept = false;
-	// 	}
+       this.is_admin = localStorage.getItem('is_admin');
+	   console.log("admin", this.is_admin);
+	   if (this.is_admin==true) {
+			this.chooseNewConcept = true;
+		}
+		else {
+			this.chooseNewConcept = false;
+		}
 	}
 	
 	private performAction() {
