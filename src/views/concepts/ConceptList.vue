@@ -14,6 +14,7 @@
 			:items-per-page="PAGE_SIZE"
 			:footer-props="{'items-per-page-options':['', PAGE_SIZE]}"
 		)
+			
 			template(v-slot:top)
 				ConceptFilter(:filter="filters" :onApply="() => { page = 1; getConcepts()}")
 
@@ -55,6 +56,10 @@
 				template(v-else-if="item.concept_state === CONCEPT_STATES.APPROVED")
 					v-btn(v-if="item.typed" depressed small color="success" :to="`/concept/${item.id}/add`") Add
 					v-btn(v-else depressed small color="primary" :to="`/concept/${item.id}/edit`") Set Type
+			template(v-slot:item.actions="{ item }")
+					v-icon(left small
+						class="mr-2"
+						@click="editItem(item)") mdi-pencil
 </template>
 
 <script lang="ts">
@@ -132,6 +137,10 @@ export default class ConceptList extends Vue {
 			})
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
+	}
+
+	private editItem(item: any) {
+		this.$router.push(`/concept/${item.id}/change`);
 	}
 }
 </script>
