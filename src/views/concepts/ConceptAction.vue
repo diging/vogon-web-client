@@ -27,13 +27,12 @@
 							v-col(:cols="6" class="px-3 py-0")
 								strong Type:
 								| &nbsp;{{ concept.typed_label }}
-					//- v-if="chooseNewConcept
-					//- v-btn(outlined dense @click="enableConceptPicker()") Choose New Concept!
+					
 					v-card-actions
 						v-spacer
-							template(v-if="chooseNewConcept") 
+							template(v-if="is_admin") 
 								v-btn(outlined dense @click="enableConceptPicker()") Choose New Concept!
-								v-card(v-if="clickNewConcept" outlined class="pa-3")
+								v-card(v-if="clickNewConcept" outlined class="mx-2")
 									div(v-if="clickNewConcept") 
 										ConceptSearch
 										v-btn(v-if="this.concept" outlined dense @click="deleteConcept()") Update Concept
@@ -115,20 +114,11 @@ export default class ConceptAction extends Vue {
 
 	public created() {
 		this.action = this.$route.params.action;
+		console.log("action value", this.action);
 		this.routeParamscurrent = this.$route.params.id;
+		this.is_admin = localStorage.getItem('is_admin');
 		this.checkMatches();
-		// this.is_admin = localStorage.getItem('is_admin');
-		// console.log("admin", this.is_admin);
-		// if (this.is_admin) {
-		// 		this.chooseNewConcept = true;
-		// }
-		// else {
-		// 	this.chooseNewConcept = false;
-		// }
-		// console.log("here", this.chooseNewConcept);
 	}
-
-	
 
 	private checkMatches() {
 		Vue.$axios.get(`/concept/${this.routeParamscurrent}/matches`)
@@ -140,21 +130,10 @@ export default class ConceptAction extends Vue {
 			.catch(() => this.error = true)
 			.finally(() => this.loading = false);
 	}
-
-	public mounted(){	
-    //    this.is_admin = localStorage.getItem('is_admin');
-	//    console.log("admin", this.is_admin);
-	//    if (this.is_admin==true) {
-	// 		this.chooseNewConcept = true;
-	// 	}
-	// 	else {
-	// 		this.chooseNewConcept = false;
-	// 	}
-	}
 	
 	private performAction() {
 		this.performingAction = true;
-		Vue.$axios.post(`/concept/${this.$route.params.id}/${this.action}`)
+		Vue.$axios.post(`/concept/${this.$route.params.id}/${this.$route.params.action}`)
 			.then((response: AxiosResponse) => {
 				this.$router.push(`/concept/${this.$route.params.id}`);
 			})
