@@ -114,7 +114,6 @@ export default class ConceptAction extends Vue {
 
 	public created() {
 		this.action = this.$route.params.action;
-		console.log("action value", this.action);
 		this.routeParamscurrent = this.$route.params.id;
 		this.is_admin = localStorage.getItem('is_admin');
 		this.checkMatches();

@@ -22,13 +22,7 @@ export function getUserId() {
 	return null;
 }
 
-export function getCurrentUser() {
-	const userId = getUserId();
-	return Vue.$axios.get(`/users/${userId}`);
-}
-
 export default {
 	getConceptStateTheme,
 	getUserId,
-	getCurrentUser,
 };
