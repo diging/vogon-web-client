@@ -275,6 +275,22 @@ export default class TemplateCreateForm extends Vue {
 			terminal_nodes: this.terminalNodes,
 			parts,
 		};
+		const nodes: any = {
+			name: this.name,
+			description: this.description,
+			expression: this.expression,
+			default_mappings: this.mappingExpression,
+			terminal_nodes: this.terminalNodes,
+			parts,
+		};
+		const nodeParts: any = {
+			name: this.name,
+			description: this.description,
+			expression: this.expression,
+			default_mappings: this.mappingExpression,
+			terminal_nodes: this.terminalNodes,
+			parts,
+		};
 		console.log("payload", payload);
 		if (this.id !== -1) {
 			payload.id = this.id;
