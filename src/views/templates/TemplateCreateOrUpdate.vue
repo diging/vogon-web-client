@@ -93,7 +93,6 @@ export default class TemplateCreateOrUpdate extends Vue {
 	private user: any;
 
 	public created() {
-		this.getUser();
 		this.getOpenConceptsData()
 			.then(() => {
 				if (this.$route.params.id) {
@@ -185,7 +184,7 @@ export default class TemplateCreateOrUpdate extends Vue {
 		if (this.template) {
 			Mapping = this.template.default_mappings;
 			const context: any = {
-                     "creator": this.user.full_name,
+                     "creator": "",
                      "creationTime": this.template.created,
                      "creationPlace": "Tempe",
                      "sourceUri": "http://www.digitalhps.org/concepts/CON417cf23b-5260-45b1-9a13-3945f2ed35d5"
@@ -193,19 +192,24 @@ export default class TemplateCreateOrUpdate extends Vue {
 			if (Mapping) {
 				metaData['defaultMapping'] = this.parseMapping(Mapping);
 				console.log("context data uuuuu", context);
+				metaData['context'] = context;
+				metaData['template'] = this.template.id;
 			}
 			// this.createNodes(this.template?.template_parts);
 		}
 		console.log("metadata", metaData);
-	}
-
-	private getUser() {
-		const userId = getUserId();
-		Vue.$axios.get(`/users/${userId}`)
+		// Vue.$axios.post('/submit-relations/', metaData);
+		Vue.$axios.post(`/submit-relations/`, metaData)
 			.then((response: AxiosResponse) => {
-				this.user = response.data;
-				// console.log("user", response.data, this.user);
-			});
+				this.$router.push(`/concept/${this.$route.params.id}`);
+			}
+			)
+			.catch((error) => {
+				if (error.response && error.response.data && error.response.data.error) {
+					"pass";
+				}
+			})
+			.finally(() => "this.performingAction = false");
 	}
 }
 </script>
