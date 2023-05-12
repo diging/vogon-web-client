@@ -1,22 +1,22 @@
 <template lang="pug">
-	div
-		div(class="text-right")
-			v-btn(text tile class="mr-2" @click="$store.commit('toggleAnnotatorHideAppellation')")
-				template(v-if="$store.getters.getAnnotatorHideAppellation")
-					v-icon(left) mdi-eye-off
-					| Show all
-				template(v-else)
-					v-icon(left) mdi-eye
-					| Hide all
-		v-list(three-line dense class="appellation-list" id="appellation-list")
-			template(v-for="(appellation, i) in appellations")
-				AppellationListItem(:key="appellation.index" :appellation="appellation")
-				v-divider(v-if="i + 1 < appellations.length")
+div
+	div(class="text-right")
+		v-btn(text tile class="mr-2" @click="$store.commit('toggleAnnotatorHideAppellation')")
+			template(v-if="$store.getters.getAnnotatorHideAppellation")
+				v-icon(left) mdi-eye-off
+				| Show all
+			template(v-else)
+				v-icon(left) mdi-eye
+				| Hide all
+	v-list(three-line dense class="appellation-list" id="appellation-list")
+		template(v-for="(appellation, i) in appellations")
+			AppellationListItem(:key="appellation.index" :appellation="appellation")
+			v-divider(v-if="i + 1 < appellations.length")
 </template>
 
 <script lang="ts">
-import JwtDecode from 'jwt-decode';
-import moment from 'moment';
+import JwtDecode from 'jwt-decode'
+import moment from 'moment'
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import { TokenDto } from '@/interfaces/GlobalTypes';

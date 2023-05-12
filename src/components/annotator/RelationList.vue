@@ -1,14 +1,14 @@
 <template lang="pug">
-	v-list(three-line dense class="relationset-list")
-		template(v-for="(relation, i) in relations")
-			RelationListItem(:key="relation.id" :relation="relation")
-			v-divider(v-if="i + 1 < relations.length")
+v-list(three-line dense class="relationset-list")
+	template(v-for="(relation, i) in relations")
+		RelationListItem(:key="relation.id" :relation="relation")
+		v-divider(v-if="i + 1 < relations.length")
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator'
 
-import RelationListItem from '@/components/annotator/RelationListItem.vue';
+import RelationListItem from '@/components/annotator/RelationListItem.vue'
 
 @Component({
 	name: 'RelationList',
@@ -17,8 +17,7 @@ import RelationListItem from '@/components/annotator/RelationListItem.vue';
 	},
 })
 export default class RelationList extends Vue {
-	@Prop()
-	private relations: any[] = [];
+	@Prop() private relations: any[] = []
 }
 </script>
 

@@ -1,11 +1,11 @@
 <template lang="pug">
-	ul(v-if="appellations.length")
-		appellation-display-item(
-			v-for="(appellation, i) in appellations"
-			:appellation="appellation"
-			:key="appellation.index"
-			:index="i"
-		)
+ul(v-if="appellations.length")
+	appellation-display-item(
+		v-for="(appellation, i) in appellations"
+		:appellation="appellation"
+		:key="appellation.index"
+		:index="i"
+	)
 </template>
 
 <script lang="ts">

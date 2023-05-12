@@ -1,36 +1,36 @@
 <template lang="pug">
-	v-navigation-drawer(v-model="show" absolute class="side-drawer")
-		v-list-item
-			v-list-item-content
-				v-list-item-title(class="title") 
-					| Stats
-					v-btn(class="float-right" small icon @click="close()")
-						v-icon mdi-close
+v-navigation-drawer(v-model="show" absolute class="side-drawer")
+	v-list-item
+		v-list-item-content
+			v-list-item-title(class="title") 
+				| Stats
+				v-btn(class="float-right" small icon @click="close()")
+					v-icon mdi-close
 
-		v-divider
-		v-list()
-			v-list-item.text-left(two-line link)
-				v-list-item-content
-					v-list-item-title Project:
-					v-list-item-subtitle.text-capitalize #[router-link(:to="`/project/${project.id}`") {{ project.name }}]
-			v-list-item.text-left(two-line link)
-				v-list-item-content
-					v-list-item-title Added On:
-					v-list-item-subtitle {{ formattedDate }}
-			v-list-item.text-left(two-line link)
-				v-list-item-content
-					v-list-item-title Repository:
-					v-list-item-subtitle #[router-link(:to="`/repository/amphora/${text.repository.id}`") {{ text.repository.name }}]
-			v-list-item.text-left(two-line link)
-				v-list-item-content
-					v-list-item-title Part Of:
-					v-list-item-subtitle.text-capitalize
-						router-link(:to="`/repository/amphora/${text.repository.id}/text/${text.part_of.repository_source_id}?project_id=${project.id}`")
-							| {{ text.part_of.title }}
-			v-list-item.text-left(two-line link)
-				v-list-item-content
-					v-list-item-title URI:
-					v-list-item-subtitle.no-wrap {{ text.uri }}
+	v-divider
+	v-list()
+		v-list-item.text-left(two-line link)
+			v-list-item-content
+				v-list-item-title Project:
+				v-list-item-subtitle.text-capitalize #[router-link(:to="`/project/${project.id}`") {{ project.name }}]
+		v-list-item.text-left(two-line link)
+			v-list-item-content
+				v-list-item-title Added On:
+				v-list-item-subtitle {{ formattedDate }}
+		v-list-item.text-left(two-line link)
+			v-list-item-content
+				v-list-item-title Repository:
+				v-list-item-subtitle #[router-link(:to="`/repository/amphora/${text.repository.id}`") {{ text.repository.name }}]
+		v-list-item.text-left(two-line link)
+			v-list-item-content
+				v-list-item-title Part Of:
+				v-list-item-subtitle.text-capitalize
+					router-link(:to="`/repository/amphora/${text.repository.id}/text/${text.part_of.repository_source_id}?project_id=${project.id}`")
+						| {{ text.part_of.title }}
+		v-list-item.text-left(two-line link)
+			v-list-item-content
+				v-list-item-title URI:
+				v-list-item-subtitle.no-wrap {{ text.uri }}
 </template>
 
 <script lang="ts">

@@ -1,55 +1,55 @@
 <template lang="pug">
-    div
-        p(class="body-2 font-weight-medium mb-0") {{ field.label }}
-            span(
-                v-if="field.description"
-                class="caption font-weight-regular grey--text text--darken-2"
-            ) &nbsp; - {{ field.description }}
-        v-autocomplete(
-            v-if="field.type === 'TP'"
-            v-model="value"
-            placeholder="Select field..."
-            dense
-            outlined
-            filled
-            clearable
-            :items="appellations"
-            item-text="interpretation.label"
-            return-object
-        )
-            template(v-slot:append-outer)
-                v-btn(v-if="value" icon)
-                    v-icon(color="success") mdi-check
-                v-tooltip(v-else bottom)
-                    template(v-slot:activator="{ on }")
-                        v-btn(outlined fab x-small v-on="on" :color="active ? `success` : `grey`" @click="toggleActive()")
-                            v-icon mdi-eyedropper-variant
-                    span Pick annotations from the text
-        
-        v-text-field(
-            v-else-if="field.type === 'CO'"
-            v-model="rawText"
-            placeholder="Select from text..."
-            dense
-            outlined
-            filled
-            clearable
-            class="field-text"
-        )
-            template(v-slot:append-outer)
-                v-btn(v-if="value" icon)
-                    v-icon(color="success") mdi-check
-                v-tooltip(v-else bottom)
-                    template(v-slot:activator="{ on }")
-                        v-btn(outlined fab x-small v-on="on" :color="active ? `success` : `grey`" @click="toggleActive()")
-                            v-icon mdi-cursor-text
-                    span Select from text
+div
+	p(class="body-2 font-weight-medium mb-0") {{ field.label }}
+		span(
+			v-if="field.description"
+			class="caption font-weight-regular grey--text text--darken-2"
+		) &nbsp; - {{ field.description }}
+	v-autocomplete(
+		v-if="field.type === 'TP'"
+		v-model="value"
+		placeholder="Select field..."
+		dense
+		outlined
+		filled
+		clearable
+		:items="appellations"
+		item-text="interpretation.label"
+		return-object
+	)
+		template(v-slot:append-outer)
+			v-btn(v-if="value" icon)
+				v-icon(color="success") mdi-check
+			v-tooltip(v-else bottom)
+				template(v-slot:activator="{ on }")
+					v-btn(outlined fab x-small v-on="on" :color="active ? `success` : `grey`" @click="toggleActive()")
+						v-icon mdi-eyedropper-variant
+				span Pick annotations from the text
+	
+	v-text-field(
+		v-else-if="field.type === 'CO'"
+		v-model="rawText"
+		placeholder="Select from text..."
+		dense
+		outlined
+		filled
+		clearable
+		class="field-text"
+	)
+		template(v-slot:append-outer)
+			v-btn(v-if="value" icon)
+				v-icon(color="success") mdi-check
+			v-tooltip(v-else bottom)
+				template(v-slot:activator="{ on }")
+					v-btn(outlined fab x-small v-on="on" :color="active ? `success` : `grey`" @click="toggleActive()")
+						v-icon mdi-cursor-text
+				span Select from text
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 
-import { RelationTemplateField } from '@/interfaces/RelationTypes';
+import { RelationTemplateField } from '@/interfaces/RelationTypes'
 
 @Component({
 	name: 'RelationFieldItem',
@@ -70,20 +70,20 @@ export default class RelationFieldItem extends Vue {
 		this.$store.watch(
 			(state, getters) => getters.getCurrentFieldIndex,
 			(newValue, oldValue) => {
-				this.active = newValue === this.pos;
+				this.active = newValue === this.pos
 			},
-		);
+		)
 		this.$store.subscribe((mutation: any, state: any) => {
 			if (mutation.type === 'setSelectedFieldAnnotationsAt') {
-				const value = state.annotator.selectedFieldAnnotations;
+				const value = state.annotator.selectedFieldAnnotations
 				if (mutation.payload.pos === this.pos) {
-					this.value = mutation.payload.annotation;
+					this.value = mutation.payload.annotation
 					if (this.field.type === 'CO' && mutation.payload.annotation) {
-						this.rawText = mutation.payload.annotation.data.stringRep;
+						this.rawText = mutation.payload.annotation.data.stringRep
 					}
 				}
 			}
-		});
+		})
 	}
 
 	@Watch('value')

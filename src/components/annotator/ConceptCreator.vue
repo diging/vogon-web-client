@@ -1,64 +1,64 @@
 <template lang="pug">
-	v-form(ref="conceptCreateForm" v-model="valid")
-		v-checkbox(
-			v-model="oath" 
-			:rules="[() => !!oath || 'Please take this oath!']"
-			label="I swear that I've searched exhaustively for this concept."
-			dense
-			class="my-2 pt-0"
-			color="red"
-		)
+v-form(ref="conceptCreateForm" v-model="valid")
+	v-checkbox(
+		v-model="oath" 
+		:rules="[() => !!oath || 'Please take this oath!']"
+		label="I swear that I've searched exhaustively for this concept."
+		dense
+		class="my-2 pt-0"
+		color="red"
+	)
 
-		v-alert(text dense outlined color="deep-orange" icon="mdi-fire" class="my-4")
-			| Duplicate concepts really muck up the system, so this is a very important step. If you're
-			| not sure, search again!
+	v-alert(text dense outlined color="deep-orange" icon="mdi-fire" class="my-4")
+		| Duplicate concepts really muck up the system, so this is a very important step. If you're
+		| not sure, search again!
 
-		v-text-field(
-			v-model="name" 
-			class="mt-5"
-			label="Name"
-			placeholder="This is how other users will find this concept."
-			required 
-			outlined
-			dense
-			:rules="[() => !!name || 'Concept name Required.']"
-		)
-		v-textarea(
-			v-model="description"
-			class="mt-0"
-			label="Description"
-			placeholder="Make it easy for other users to identify this concept."
-			auto-grow
-			required 
-			dense
-			outlined
-			:rules="[() => !!description || 'Concept description Required.',() => description.length > 10 || 'Not enough characters!']"
-		)
-		v-select(
-			v-model="conceptType"
-			:items="$store.getters.getAnnotatorConceptTypes"
-			item-text="uri"
-			item-value="id"
-			label="Type"
-			outlined
-			dense
-			clearable
-		)
-		v-select(
-			v-model="pos"
-			:items="posChoices"
-			label="Part of Speech"
-			outlined
-			dense
-		)
+	v-text-field(
+		v-model="name"
+		class="mt-5"
+		label="Name"
+		placeholder="This is how other users will find this concept."
+		required
+		outlined
+		dense
+		:rules="[() => !!name || 'Concept name Required.']"
+	)
+	v-textarea(
+		v-model="description"
+		class="mt-0"
+		label="Description"
+		placeholder="Make it easy for other users to identify this concept."
+		auto-grow
+		required
+		dense
+		outlined
+		:rules="[() => !!description || 'Concept description Required.',() => description.length > 10 || 'Not enough characters!']"
+	)
+	v-select(
+		v-model="conceptType"
+		:items="$store.getters.getAnnotatorConceptTypes"
+		item-text="uri"
+		item-value="id"
+		label="Type"
+		outlined
+		dense
+		clearable
+	)
+	v-select(
+		v-model="pos"
+		:items="posChoices"
+		label="Part of Speech"
+		outlined
+		dense
+	)
 
-		div(class="concept-btn-container")
-			v-btn(color="success" class="mt-2 ml-auto" @click="create" :disabled="creating || !valid" :loading="creating")
-				v-icon(left) mdi-grain
-				| Create concept
+	div(class="concept-btn-container")
+		v-btn(color="success" class="mt-2 ml-auto" @click="create" :disabled="creating || !valid" :loading="creating")
+			v-icon(left) mdi-grain
+			| Create concept
 
-		v-alert(v-if="createError" type="error" dense dismissible class="my-4")
-			| Error while creating concept!
+	v-alert(v-if="createError" type="error" dense dismissible class="my-4")
+		| Error while creating concept!
 </template>
 
 <script lang="ts">

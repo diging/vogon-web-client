@@ -1,11 +1,11 @@
 <template lang="pug">
-	div(class="text-container")
-		pre(
-			id="text-content" 
-			ref="textContent" 
-			v-on:mouseup="handleMouseUp"
-		) {{ content }}
-		AppellationDisplay
+div(class="text-container")
+	pre(
+		id="text-content" 
+		ref="textContent" 
+		v-on:mouseup="handleMouseUp"
+	) {{ content }}
+	AppellationDisplay
 </template>
 
 <script lang="ts">
