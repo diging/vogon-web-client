@@ -67,7 +67,7 @@ export default class Login extends Vue {
 	public async signUp(): Promise<void> {
 		this.error = false;
 		if ((this.$refs.signUpForm as VForm).validate()) {
-			Vue.$axios.post('/users', {
+			Vue.$axios.post('/create-user/', {
 				username: this.username,
 				password: this.password,
 				full_name: this.fullName,
