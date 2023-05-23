@@ -61,6 +61,7 @@ export default class Login extends Vue {
 					} else {
 						this.$router.push('github');
 					}
+					window.location.reload()
 				})
 				.catch((error: AxiosError) => {
 					this.error = true;
