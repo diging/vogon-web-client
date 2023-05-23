@@ -3,7 +3,7 @@
 		router-link(to="/")
 			img(height="50px" src="../../assets/images/logos/logo-17.png" class="mr-3")
 		v-btn(v-if="loggedIn" text large to="/project" class="subheading font-weight-medium") Projects
-		v-btn(v-if="loggedIn" text large to="/relationtemplate" class="subheading font-weight-medium") Templates
+		v-btn(v-if="loggedIn && is_admin == 'true'" text large to="/relationtemplate" class="subheading font-weight-medium") Templates
 		v-btn(text large to="/about" class="subheading font-weight-medium") About
 		v-menu(v-if="loggedIn" class="ml-3" offset-y open-on-hover style="display: block")
 			template(v-slot:activator="{ on }")
@@ -71,6 +71,8 @@ import { Component, Vue } from 'vue-property-decorator';
 import EmptyView from '@/components/global/EmptyView.vue';
 import { Notification } from '@/interfaces/GlobalTypes';
 import router from '@/router';
+import { getUserId } from '@/utils';
+import { AxiosResponse } from 'axios';
 
 @Component({
 	name: 'Header',
@@ -80,6 +82,7 @@ import router from '@/router';
 })
 export default class Header extends Vue {
 	private activeIndex: string = '1';
+	private is_admin: any = '';
 	private dataItems: object[] = [
 		{ title: 'Concepts', link: '/concept' },
 		{ title: 'Concept Types', link: '/types' },
@@ -92,6 +95,7 @@ export default class Header extends Vue {
 
 	public created() {
 		this.watchStore();
+		this.is_admin = localStorage.getItem('is_admin');
 	}
 
 	private watchStore() {
