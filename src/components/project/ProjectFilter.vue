@@ -11,7 +11,7 @@
 				)
 			v-col(md="3")
 				v-select(
-					label="User-types"
+					label="Search by:"
 					v-model="field"
 					:items="fieldChoices"
 					outlined
@@ -28,16 +28,17 @@
 					dense
 				)
 				v-switch(
-					v-else 
+					v-else
 					v-model="showUserProjects"
-					label="Show only my projects"
+					@click = "applyFilter"
+					label="Show Only My Projects"
 					class="show-project-switch"
 					inset
 					hide-details="auto"
 					dense
 					flat
 				)
-		v-btn(depressed color="primary" @click="applyFilter") Apply
+		v-btn(depressed color="primary" @click="applyFilter()") Search
 </template>
 
 <script lang="ts">
@@ -50,16 +51,15 @@ export default class ProjectFilter extends Vue {
 	@Prop() private onApply!: (query: string, field: string, showUserProjects?: boolean, projects?: string, projectQuery?: string) => void;
 	private query: string = '';
 	private field: string = 'name';
-	private showUserProjects: boolean = true;
+	private showUserProjects: boolean = false;
 	private isAdmin: boolean = false;
 	private projects: string = 'name';
 	private projectQuery = '';
 	private fieldChoices: any[] = [
-		{ text: 'Title', value: 'name' },
+		{ text: 'Project Name', value: 'name' },
 		{ text: 'Owner', value: 'owner' },
 	];
 	private dataItems: any[] = [
-		{ text: 'Title', value: 'name' },
 		{ text: 'My projects', value: 'my projects' },
 		{ text: 'Shared projects', value: 'shared projects' },
 		{ text: 'All projects', value: 'all projects' },
