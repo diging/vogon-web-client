@@ -1,65 +1,67 @@
 <template lang="pug">
-	div(:class="`text-left pa-2 ${focused}`" ref="listItem")
-		v-row
-			v-col(:cols="7" @click="focusAppellation" class="focus-icon")
-				
-				div(v-if="hasInterpretation()" class="subtitle-1") {{ appellation.interpretation.label }} : Appellation
-				div(v-if="hasDateRepresentation()" class="subtitle-1") {{ appellation.dateRepresentation }} : Date Appellation
-				div(v-if="isDateString()" class="subtitle-1") {{ appellation.dateStringRep}} : Date string Appellation
-				div(class="subtitle-2 appellation-subtitle") Created by <strong>{{ creator }}</strong> on {{ date }}
-				
-			v-col(:cols="5" class="text-right")
-				v-btn(v-if="edit" color="error" class="mr-2" small dense @click="editAppellation") Cancel
-				v-btn(v-if="!appellation.submitted" @click="editAppellation" small icon class="d-inline-block mr-1")
-					v-icon(left :color="edit ? `green` : `default`") mdi-pencil
-				v-btn(@click="toggleVisibility" small icon class="d-inline-block mr-1" :disabled="$store.getters.getAnnotatorHideAppellation")
-					v-icon(v-if="visible" left) mdi-eye
-					v-icon(v-else left) mdi-eye-off	
-				v-btn(@click="showDeleteAppellation = true;" small icon class="d-inline-block mr-1" :disabled="!deletable")
-					v-icon mdi-delete
+div(:class="`text-left pa-2 ${focused}`" ref="listItem")
+	v-row
+		v-col(:cols="7" @click="focusAppellation" class="focus-icon")
+			div(v-if="hasInterpretation()" class="subtitle-1")
+				| {{ appellation.interpretation.label }} : Appellation
+			div(v-if="hasDateRepresentation()" class="subtitle-1")
+				| {{ appellation.dateRepresentation }} : Date Appellation
+			div(v-if="isDateString()" class="subtitle-1")
+				| {{ appellation.dateStringRep}} : Date string Appellation
+			div(class="subtitle-2 appellation-subtitle") Created by <strong>{{ creator }}</strong> on {{ date }}
+			
+		v-col(:cols="5" class="text-right")
+			v-btn(v-if="edit" color="error" class="mr-2" small dense @click="editAppellation") Cancel
+			v-btn(v-if="!appellation.submitted" @click="editAppellation" small icon class="d-inline-block mr-1")
+				v-icon(left :color="edit ? `green` : `default`") mdi-pencil
+			v-btn(@click="toggleVisibility" small icon class="d-inline-block mr-1" :disabled="$store.getters.getAnnotatorHideAppellation")
+				v-icon(v-if="visible" left) mdi-eye
+				v-icon(v-else left) mdi-eye-off
+			v-btn(@click="showDeleteAppellation = true;" small icon class="d-inline-block mr-1" :disabled="!deletable")
+				v-icon mdi-delete
 
-		div(v-if="edit") 
-			| (You are currently editing this appellation ...)
-			br
-			<template v-if="hasInterpretation()">
-			v-alert(dense type="error" class="my-4" v-if="hasInterpretation() && appellation.relationsFrom.length || appellation.relationsTo.length")
-				| This appellation is part of existing relation(s) !!
-			</template>
-		v-dialog(v-model="showDeleteAppellation" max-width="400")
-			v-card
-				v-card-title(class="headline") Delete Appellation
-				v-card-text(class="text-left")
-					strong Are you sure you want to delete the appellation?
-				v-card-actions
-					v-spacer
-					v-btn(text color="darken-1" @click="showDeleteAppellation = false") Cancel
-					v-btn(text color="red darken-1" @click="deleteAppellation" :disabled="deletingAppellation" :loading="deletingAppellation") Delete
+	div(v-if="edit") 
+		| (You are currently editing this appellation ...)
+		br
+		<template v-if="hasInterpretation()">
+		v-alert(dense type="error" class="my-4" v-if="hasInterpretation() && appellation.relationsFrom.length || appellation.relationsTo.length")
+			| This appellation is part of existing relation(s) !!
+		</template>
+	v-dialog(v-model="showDeleteAppellation" max-width="400")
+		v-card
+			v-card-title(class="headline") Delete Appellation
+			v-card-text(class="text-left")
+				strong Are you sure you want to delete the appellation?
+			v-card-actions
+				v-spacer
+				v-btn(text color="darken-1" @click="showDeleteAppellation = false") Cancel
+				v-btn(text color="red darken-1" @click="deleteAppellation" :disabled="deletingAppellation" :loading="deletingAppellation") Delete
 
-		v-snackbar(v-model="snackbar" top :color="snackbarColor" :timeout="3000") {{ snackbarMsg }}
+	v-snackbar(v-model="snackbar" top :color="snackbarColor" :timeout="3000") {{ snackbarMsg }}
 </template>
 
 <script lang="ts">
-import { AxiosError, AxiosResponse } from 'axios';
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import VueScrollTo from 'vue-scrollto';
+import { AxiosError, AxiosResponse } from 'axios'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import VueScrollTo from 'vue-scrollto'
 
-import { getCreatorName, getFormattedDate } from '@/utils/annotations';
+import { getCreatorName, getFormattedDate } from '@/utils/annotations'
 
 @Component({
 	name: 'AppellationListItem',
 })
 export default class AppellationListItem extends Vue {
-	@Prop() private appellation!: any;
-	private focused: string = '';
-	private visible: boolean = true;
-	private edit: boolean = false;
-	private showDeleteAppellation: boolean = false;
-	private deletingAppellation: boolean = false;
+	@Prop() private appellation!: any
+	private focused: string = ''
+	private visible: boolean = true
+	private edit: boolean = false
+	private showDeleteAppellation: boolean = false
+	private deletingAppellation: boolean = false
 
-	private snackbar: boolean = false;
-	private snackbarColor: string = 'success';
-	private snackbarMsg: string = '';
-	private deleteUrl: string = '';
+	private snackbar: boolean = false
+	private snackbarColor: string = 'success'
+	private snackbarMsg: string = ''
+	private deleteUrl: string = ''
 
 	get creator() {
 		return getCreatorName(this.appellation.createdBy);
@@ -113,8 +115,12 @@ export default class AppellationListItem extends Vue {
 
 	private toggleVisibility() {
 		if (this.visible) {
+			console.log("HIDE APPELLATION")
+			console.log("APPELLATION: ", this.appellation)
+			console.log("APPELLATION INDEX: ", this.appellation.index)
 			this.$store.commit('setAnnotatorHideAppellation', this.appellation.index);
 		} else {
+			console.log("SHOW APPELLATION")
 			this.$store.commit('setAnnotatorShowAppellation', this.appellation.index);
 		}
 		this.visible = !this.visible;
@@ -153,7 +159,7 @@ export default class AppellationListItem extends Vue {
 	}
 
 	private hasInterpretation() {
-		return this.appellation.type=="concept";
+		return this.appellation.type=="concept"
 	}
 
 	private isDateString() {
@@ -169,6 +175,7 @@ export default class AppellationListItem extends Vue {
 		}
 		Vue.$axios.delete(this.deleteUrl)
 			.then((response: AxiosResponse) => {
+				console.log("RESPONSE")
 				this.snackbar = true;
 				this.snackbarColor = 'success';
 				this.snackbarMsg = 'Successfully deleted appellation!';

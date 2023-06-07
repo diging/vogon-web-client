@@ -1,23 +1,22 @@
 <template lang="pug">
-	div(:class="`text-left pa-2 relation-container ${focused}`" @click="focusAppellations")
-		div(class="subtitle-1") {{ representation }}
-		div(class="subtitle-2 relation-subtitle") 
-			| Created by <strong>{{ creator }}</strong> on {{ date }}
+div(:class="`text-left pa-2 relation-container ${focused}`" @click="focusAppellations")
+	div(class="subtitle-1") {{ representation }}
+	div(class="subtitle-2 relation-subtitle")
+		| Created by <strong>{{ creator }}</strong> on {{ date }}
 </template>
 
 <script lang="ts">
-import _ from 'lodash';
-import moment from 'moment';
-import { Component, Prop, Vue } from 'vue-property-decorator';
-
-import { getCreatorName, getFormattedDate } from '@/utils/annotations';
+import _ from 'lodash'
+import moment from 'moment'
+import { Component, Prop, Vue } from 'vue-property-decorator'
+import { getCreatorName, getFormattedDate } from '@/utils/annotations'
 
 @Component({
 	name: 'RelationListItem',
 })
 export default class RelationListItem extends Vue {
-	@Prop() private relation!: any;
-	private focused: string = '';
+	@Prop() private relation!: any
+	private focused: string = ''
 
 	public created() {
 		this.watchStore();
@@ -32,6 +31,8 @@ export default class RelationListItem extends Vue {
 	}
 
 	get representation() {
+		console.log("RELATION: ", this.relation)
+		console.log("RESPRESENTATION: ", this.relation.representation)
 		if (this.relation.representation) {
 			return this.relation.representation;
 		} else {

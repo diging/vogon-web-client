@@ -29,6 +29,8 @@ import JwtDecode from 'jwt-decode';
 import { Component, Vue } from 'vue-property-decorator';
 
 import { TokenDto, VForm } from '@/interfaces/GlobalTypes';
+import { getUserId } from '@/utils';
+import Loading from '@/components/global/Loading.vue';
 
 @Component({
 	name: 'LoginForm',
@@ -39,7 +41,8 @@ export default class Login extends Vue {
 	private show: boolean = false;
 	private error: boolean = false;
 	private errorMsg: string = '';
-
+	private user: any = '';
+	private loading: boolean = true;
 	private valid: boolean = false;
 
 	public async login(): Promise<void> {
@@ -50,17 +53,36 @@ export default class Login extends Vue {
 				password: this.password,
 			};
 			Vue.$axios.post('token/', payload)
-				.then((response: AxiosResponse) => {
+				.then( (response: AxiosResponse) => {
 					this.$root.$data.loggedIn = true;
 					localStorage.setItem('token', response.data.access);
 					localStorage.setItem('is_admin', response.data.is_admin)
 					Vue.$axios.defaults.headers.common.Authorization = `Bearer ${response.data.access}`;
 					const decoded = JwtDecode<TokenDto>(response.data.access);
+					const userId = this.$utils.getUserId();
+					const token: any = localStorage.getItem('token');
+					const payload = {
+						username: this.username,
+						token: token,
+					};
+					Vue.$axios.post('/check-reset-token/', payload)
+						.then((response: AxiosResponse) => {
+							this.$router.push({
+										name: 'reset-password',
+										params: { token: token}
+										});
+						})
+						.catch((error: AxiosError) => {
+							this.error = true;
+						})
+						.finally(() => this.loading = false);
+					
 					if (decoded.github_token) {
 						this.$router.push('dashboard');
 					} else {
 						this.$router.push('github');
 					}
+					window.location.reload()
 				})
 				.catch((error: AxiosError) => {
 					this.error = true;

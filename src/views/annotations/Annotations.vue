@@ -1,27 +1,27 @@
 <template lang="pug">
-	div(class="main")
-		h2(class="display-1") Annotations
-		br
-		v-card(class="card-annotations")
-			AnnotationFilter(
-				:filter="filters"
-				:onApply="() => { page = 1; getAnnotations()}"
-				:projects="projects"
-				:users="users"
-			)
-			ErrorIndicator(v-if="error") Error while loading annotations!
-			div(v-else)
-				Loading(v-if="loading")
+div(class="main")
+	h2(class="display-1") Annotations
+	br
+	v-card(class="card-annotations")
+		AnnotationFilter(
+			:filter="filters"
+			:onApply="() => { page = 1; getAnnotations()}"
+			:projects="projects"
+			:users="users"
+		)
+		ErrorIndicator(v-if="error") Error while loading annotations!
+		div(v-else)
+			Loading(v-if="loading")
+			template(v-else)
+				template(v-if="!annotations.length")
+					EmptyView No annotations found!
 				template(v-else)
-					template(v-if="!annotations.length")
-						EmptyView No annotations found!
-					template(v-else)
-						AnnotationList(v-bind:annotations="annotations")
-						v-pagination(
-							v-model="page"
-							:length="Math.ceil(annotationsCount / PAGE_SIZE)"
-							v-on:input="getAnnotations"
-						)
+					AnnotationList(v-bind:annotations="annotations")
+					v-pagination(
+						v-model="page"
+						:length="Math.ceil(annotationsCount / PAGE_SIZE)"
+						v-on:input="getAnnotations"
+					)
 </template>
 
 <script lang="ts">
