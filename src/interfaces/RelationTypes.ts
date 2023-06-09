@@ -148,6 +148,8 @@ export interface Appellation {
 	stringRep?: string;
 	occursIn: TextDocument;
 	interpretation?: Concept;
+	type?: string;
+	dateStringRep?: string;
 	createdBy?: User;
 	startPos?: string;
 	endPos?: string;

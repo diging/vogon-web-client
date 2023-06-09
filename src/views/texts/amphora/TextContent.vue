@@ -1,9 +1,9 @@
 <template lang="pug">
-	div(class="main")
-		br
-		ErrorIndicator(v-if="error") {{ errorMsg }}
-		div(v-else)
-			Loading(v-if="loading")
+div(class="main")
+	br
+	ErrorIndicator(v-if="error") {{ errorMsg }}
+	div(v-else)
+		Loading(v-if="loading")
 </template>
 
 <script lang="ts">

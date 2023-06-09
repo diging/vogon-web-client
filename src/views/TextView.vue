@@ -1,31 +1,31 @@
 
 <template lang="pug">
-	div(class="text-container")
-		ErrorIndicator(v-if="error") Error while loading text details!
-		template(v-else)
-			Loading(v-if="loading")
-			div(v-else)
-				SideDrawer(:text="text" :project="project")
-				v-card(outlined)
-					div(class="annotation-toolbar")
-						ToolBar(:text="text" :relationsets="pendingRelationsets")
-					v-row(no-gutters)
-						v-col(
-							cols="6"
-							class="annotation-fixed-content pb-10"
-							style="border-right: 1px solid #ccc;"
+div(class="text-container")
+	ErrorIndicator(v-if="error") Error while loading text details!
+	template(v-else)
+		Loading(v-if="loading")
+		div(v-else)
+			SideDrawer(:text="text" :project="project")
+			v-card(outlined)
+				div(class="annotation-toolbar")
+					ToolBar(:text="text" :relationsets="pendingRelationsets")
+				v-row(no-gutters)
+					v-col(
+						cols="6"
+						class="annotation-fixed-content pb-10"
+						style="border-right: 1px solid #ccc;"
+					)
+						TextDisplay(:content="content" :appellations="appellations")
+					v-col(
+						cols="6"
+						class="annotation-fixed-content"
+					)
+						ListsSideDrawer(
+							:relations='relations' 
+							:appellations="appellations"
+							:relationsets="relationsets"
+							:network="network"
 						)
-							TextDisplay(:content="content" :appellations="appellations")
-						v-col(
-							cols="6"
-							class="annotation-fixed-content"
-						)
-							ListsSideDrawer(
-								:relations='relations' 
-								:appellations="appellations"
-								:relationsets="relationsets"
-								:network="network"
-							)
 </template>
 
 <script lang="ts">

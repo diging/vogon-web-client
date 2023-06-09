@@ -63,7 +63,6 @@ export default class ResetPasswordView extends Vue {
 			password2: this.passwordConfirmation,
 			token: this.$route.params.token,
 		};
-
 		Vue.$axios.post('/reset-password/', payload)
 			.then((response: AxiosResponse) => {
 				this.msg = 'Successfully reset the password! Kindly login again...';

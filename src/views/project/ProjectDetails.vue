@@ -36,36 +36,35 @@
 											class="ml-2"
 										) mdi-star
 									span This is your default project
+						h4(class="subtitle-1") {{ project.description }}
+						span(class="body-2 blue-grey--text text--darken-1") Owned by 
+							strong "{{ project.ownedBy.username }}",
+							| &nbsp;created on 
+							| &nbsp;{{moment(project.created).format('lll')}} by 
+							strong "{{ project.createdBy.username }}"
+						div(class="body-2 mt-2") {{ project.num_texts }} text(s), {{ project.num_relations }} relation(s)
 
-							h4(class="subtitle-1") {{ project.description }}
-							span(class="body-2 blue-grey--text text--darken-1") Owned by 
-								strong "{{ project.ownedBy.username }}",
-								| &nbsp;created on 
-								| &nbsp;{{moment(project.created).format('lll')}} by 
-								strong "{{ project.createdBy.username }}"
-							div(class="body-2 mt-2") {{ project.num_texts }} text(s), {{ project.num_relations }} relation(s)
+					v-col(md="6")
+						div(class="float-right" v-if="isEditable")
+							CreateUpdateProject(
+								v-if="isOwner"
+								update
+								:project="Object.assign({}, project)" 
+								v-bind:getProjectDetails="getProjectDetails"
+							)
+							v-btn(tile depressed color="teal" class="ma-2" dark :to="`/repository?project_id=${this.$route.params.id}`")
+								v-icon(left) mdi-plus
+								span Add text
 
-						v-col(md="6")
-							div(class="float-right" v-if="isEditable")
-								CreateUpdateProject(
-									v-if="isOwner"
-									update
-									:project="Object.assign({}, project)" 
-									v-bind:getProjectDetails="getProjectDetails"
-								)
-								v-btn(tile depressed color="teal" class="ma-2" dark :to="`/repository?project_id=${this.$route.params.id}`")
-									v-icon(left) mdi-plus
-									span Add text
+				div(class="d-flex mt-4")
+					v-btn(small outlined @click="exportAffiliations" class="mr-2") 
+						| Export affiliation relations
 
-					div(class="d-flex mt-4")
-						v-btn(small outlined @click="exportAffiliations" class="mr-2") 
-							| Export affiliation relations
-
-						v-dialog(v-if="isOwner" v-model="changeOwnerDialog" scrollable max-width="500px")
-							template(v-slot:activator="{ on }")
-								v-btn(small v-on="on" color="error" depressed) 
-									v-icon(left) mdi-account-switch
-									span Transfer Ownership
+					v-dialog(v-if="isOwner" v-model="changeOwnerDialog" scrollable max-width="500px")
+						template(v-slot:activator="{ on }")
+							v-btn(small v-on="on" color="error" depressed) 
+								v-icon(left) mdi-account-switch
+								span Transfer Ownership
 
 							UserSearch(
 								:choosingUser="changingOwner"

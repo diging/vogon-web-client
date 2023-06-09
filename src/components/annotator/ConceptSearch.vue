@@ -77,7 +77,6 @@ export default class ConceptSearch extends Vue {
 	if (this.force) {
 		params.force = 'force';
 	}
-
 	Vue.$axios
 		.get(`/concept/search`, {
 		params,

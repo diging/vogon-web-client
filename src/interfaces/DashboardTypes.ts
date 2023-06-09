@@ -4,8 +4,8 @@ import { RelationSet } from './RelationTypes';
 
 export interface UserDashboard {
 	user?: User;
-	project?: Project[];
-	project_contributed?: Project[];
+	projects?: Project[];
+	projects_contributed?: Project[];
 	recent_texts?: Text[];
 	added_texts?: Text[];
 	appellation_count?: number;

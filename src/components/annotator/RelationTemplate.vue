@@ -2,11 +2,11 @@
 	div(class="template-container")
 		v-menu(bottom left offset-y)
 			template(v-slot:activator="{ on }")
-				v-text-field(hide-details v-model="query" filled rounded single-line label="Search for Relation Templates" dense  class="mb-3")
+				v-text-field(hide-details v-model="query" filled rounded single-line label="Search for Relation Templates" dense  class="mb-3" v-on="on" @keyup.enter.native="searchRelationTemplates" @click="emptyTemplates()")
 					template(v-slot:append)
 						v-fade-transition(leave-absolute)
 							v-icon(v-on="on" @click="searchRelationTemplates()") search
-			
+							
 			div(class="template-list")
 				v-list(two-line)
 					template(v-for="(template, i) in templates" )
@@ -102,6 +102,10 @@ export default class RelationTemplateRender extends Vue {
 	private reset(): void {
 		this.$store.commit('setAnnotatorTemplate', null);
 		this.$store.commit('setCurrentFieldIndex', -1);
+	}
+
+	private emptyTemplates() {
+		this.templates = []
 	}
 
 	private createRelation(): void {

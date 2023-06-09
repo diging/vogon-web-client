@@ -1,28 +1,28 @@
 <template lang="pug">
-	v-card(tile outlined)
-		div(class="text-details")
-			h3(class="headline") Additional Content
-			| The following content represent the resource as a whole. This
-			| may include complex objects like PDF documents, whole-text 
-			| OCR documents, or other files.
-			br
-		template(v-if="!contents.length")
-			EmptyView No contents found!
-		v-list(v-else two-line)
-			template(v-for="(content, index) in contents")
-				v-list-item(:key="content.content_type")
-					v-list-item-content
-						v-list-item-title(class="font-weight-medium" v-text="content.name")
-						v-list-item-subtitle(v-text="content.content_type")
-					v-list-item-action
-						v-btn(
-							:disabled="!ready || !editable"
-							depressed color="primary" small
-							:to="`/repository/amphora/${$route.params.repoId}/text/${$route.params.textId}/content/${content.id}${queryParam}`"
-						)
-							v-icon(left small) mdi-tag 
-							| Annotate
-				v-divider(v-if="index + 1 < contents.length" :key="index")
+v-card(tile outlined)
+	div(class="text-details")
+		h3(class="headline") Additional Content
+		| The following content represent the resource as a whole. This
+		| may include complex objects like PDF documents, whole-text 
+		| OCR documents, or other files.
+		br
+	template(v-if="!contents.length")
+		EmptyView No contents found!
+	v-list(v-else two-line)
+		template(v-for="(content, index) in contents")
+			v-list-item(:key="content.content_type")
+				v-list-item-content
+					v-list-item-title(class="font-weight-medium" v-text="content.name")
+					v-list-item-subtitle(v-text="content.content_type")
+				v-list-item-action
+					v-btn(
+						:disabled="!ready || !editable"
+						depressed color="primary" small
+						:to="`/repository/amphora/${$route.params.repoId}/text/${$route.params.textId}/content/${content.id}${queryParam}`"
+					)
+						v-icon(left small) mdi-tag 
+						| Annotate
+			v-divider(v-if="index + 1 < contents.length" :key="index")
 </template>
 
 <script lang="ts">

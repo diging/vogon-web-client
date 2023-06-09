@@ -1,151 +1,152 @@
+//DEAD COMPONENT
 <template lang="pug">
-	v-container
-		v-row
-			div(v-bind:class="{'col-sm-6': true}" id="shadow-swimlane"style="padding: 3px;")
-				text-display(
-					v-bind:appellations=appellations
-					v-bind:dateappellations=dateappellations
-					v-on:selectappellation="selectAppellation"
-					v-on:selectdateappellation="selectDateAppellation"
-					v-on:selecttext="selectText")
-			div(v-bind:class=`{
-					'col-sm-offset-6': true,
-					'col-sm-6': true,
-					'action-column': true,
-					'affix': true,
-					'container-fluid': true
-				}`
-				v-bind:style=`{
-					top: swimmerTop,
-					left: swimmerLeft,
-				}`
-				id="sticky-swimlane")
-				v-row
-					div(v-bind:class=`{
-								'col-xs-10': !sidebarIsShown(),
-								'col-xs-7': sidebarIsShown(),
+v-container
+	v-row
+		div(v-bind:class="{'col-sm-6': true}" id="shadow-swimlane" style="padding: 3px;")
+			text-display(
+				:appellations=appellations
+				:dateappellations=dateappellations
+				@selectappellation="selectAppellation"
+				@selectdateappellation="selectDateAppellation"
+				@selecttext="selectText")
+		div(:class=`{
+				'col-sm-offset-6': true,
+				'col-sm-6': true,
+				'action-column': true,
+				'affix': true,
+				'container-fluid': true
+			}`
+			:style=`{
+				top: swimmerTop,
+				left: swimmerLeft,
+			}`
+			id="sticky-swimlane")
+			v-row
+				div(:class=`{
+							'col-xs-10': !sidebarIsShown(),
+							'col-xs-7': sidebarIsShown(),
+						}`
+						style="padding-right: 5px;")
+					relation-template-selector(v-if="template == null && creatingRelation" @selectedtemplate="selectedTemplate")
+					relation-creator(
+						v-if="template != null && creatingRelation"
+						@fieldislisteningfortext="fieldIsListeningForText"
+						@fieldisdonelisteningfortext="fieldIsDoneListeningForText"
+						@createdrelation="createdRelation"
+						@cancelrelation="cancelRelation"
+						:user="user"
+						:text="text"
+						:template="template"
+						:project="project")
+					div(class="appellation-type-selector text-right" v-if="textIsSelected()")
+						a(:class=`{
+								btn: true,
+								'btn-sm': true,
+								'btn-success': !createDateAppellation,
+								'btn-default': createDateAppellation
 							}`
-							style="padding-right: 5px;")
-						relation-template-selector(v-if="template == null && creatingRelation"v-on:selectedtemplate="selectedTemplate")
-						relation-creator(
-							v-if="template != null && creatingRelation"
-							v-on:fieldislisteningfortext="fieldIsListeningForText"
-							v-on:fieldisdonelisteningfortext="fieldIsDoneListeningForText"
-							v-on:createdrelation="createdRelation"
-							v-on:cancelrelation="cancelRelation"
-							v-bind:user="user"
-							v-bind:text="text"
-							v-bind:template="template"
-							v-bind:project="project")
-						div(class="appellation-type-selector text-right" v-if="textIsSelected()")
-							a(v-bind:class=`{
-									btn: true,
-									'btn-sm': true,
-									'btn-success': !createDateAppellation,
-									'btn-default': createDateAppellation
-								}`
-								v-tooltip="'Concept'"
-								v-on:click="toggleDateAppellation")
-								span(class="glyphicon glyphicon-grain")
-							a(v-bind:class=`{
-									btn: true,
-									'btn-sm': true,
-									'btn-success': createDateAppellation,
-									'btn-default': !createDateAppellation
-								}`
-								v-tooltip="'Date'"
-								v-on:click="toggleDateAppellation")
-								span(class="glyphicon glyphicon-calendar")
-						date-appellation-creator(
-							v-if="textIsSelected() && createDateAppellation"
-							v-bind:user=user
-							v-bind:text=text
-							v-bind:project=project
-							v-bind:position="selectedText"
-							v-on:createddateappellation="createdDateAppellation"
-							v-on:cancelappellation="cancelAppellation"
-							v-on:createdappellation="createdAppellation"
-							v-bind:appellations="appellations")
-						appellation-creator(
-							v-if="textIsSelected() && !createDateAppellation"
-							v-bind:user="user"
-							v-bind:text="text"
-							v-bind:project="project"
-							v-bind:position="selectedText"
-							v-on:cancelappellation="cancelAppellation"
-							v-on:createdappellation="createdAppellation"
-							v-bind:appellations="appellations")
-					div(v-bind:class="{'col-xs-2': !sidebarIsShown(), 'col-xs-5': sidebarIsShown()}" style="padding-right: 15px;")
-						a(v-if="sidebarIsShown()" class="btn" v-on:click="hideSidebar"  style="padding: 2px;")
-							span(class="glyphicon glyphicon-chevron-right")
-						a(v-else class="btn" v-on:click="showSidebar" style="padding: 2px;")
-							span(class="glyphicon glyphicon-chevron-left")
-						div(v-if="sidebarIsShown()" style="padding: 0px;")
-							div(class="clearfix sidebar-buttons")
-								div
-									a(v-if="submitAppellationClicked == false" v-tooltip="'Submit All Appellations'"
-											v-bind:class="{btn: true, 'btn-primary':'btn-primary'}"
-											v-on:click="showSubmitAllAppellationsSidebar")
-										span(class="glyphicon glyphicon-cloud-upload")
-									a(v-if="submitAppellationClicked" v-tooltip="'Submit All Appellations'"
-											v-bind:class="{btn: true, 'btn-primary':'btn-primary'}"
-											v-on:click="showSubmitAllAppellationsSidebar(); createRelationsFromText();")
-										span Submit
-									h6(v-if="massAssignmentFailed" style="color: red;") Assignment Failed!
-									div(class="pull-right btn-group")
-										a(id="appellation-submit"v-tooltip="'Appellations'"
-											v-bind:class=`{
-													btn: true,
-													'btn-success': sidebar == 'appellations',
-													'btn-default': sidebar != 'appellations'
-												}`
-											v-on:click="showAppellationsSidebar")
-											span(class="glyphicon glyphicon-tag")
-										a(v-tooltip="'Date Appellations'"
-											v-bind:class=`{
-													btn: true,
-													'btn-success': sidebar == 'dateappellations',
-													'btn-default': sidebar != 'dateappellations'
-												}`
-											v-on:click="showDateAppellationsSidebar")
-											span(class="glyphicon glyphicon-calendar")
-										a(v-tooltip="'Relations'"
-											v-bind:class=`{
-													btn: true,
-													'btn-success': sidebar == 'relations',
-													'btn-default': sidebar != 'relations'
-												}`
-											v-on:click="showRelationsSidebar")
-											span(class="glyphicon glyphicon-th-list")
+							v-tooltip="'Concept'"
+							@click="toggleDateAppellation")
+							span(class="glyphicon glyphicon-grain")
+						a(:class=`{
+								btn: true,
+								'btn-sm': true,
+								'btn-success': createDateAppellation,
+								'btn-default': !createDateAppellation
+							}`
+							v-tooltip="'Date'"
+							@click="toggleDateAppellation")
+							span(class="glyphicon glyphicon-calendar")
+					date-appellation-creator(
+						v-if="textIsSelected() && createDateAppellation"
+						:user=user
+						:text=text
+						:project=project
+						:position="selectedText"
+						@createddateappellation="createdDateAppellation"
+						@cancelappellation="cancelAppellation"
+						@createdappellation="createdAppellation"
+						:appellations="appellations")
+					appellation-creator(
+						v-if="textIsSelected() && !createDateAppellation"
+						:user="user"
+						:text="text"
+						:project="project"
+						:position="selectedText"
+						@cancelappellation="cancelAppellation"
+						@createdappellation="createdAppellation"
+						:appellations="appellations")
+				div(v-bind:class="{'col-xs-2': !sidebarIsShown(), 'col-xs-5': sidebarIsShown()}" style="padding-right: 15px;")
+					a(v-if="sidebarIsShown()" class="btn" @click="hideSidebar"  style="padding: 2px;")
+						span(class="glyphicon glyphicon-chevron-right")
+					a(v-else class="btn" @click="showSidebar" style="padding: 2px;")
+						span(class="glyphicon glyphicon-chevron-left")
+					div(v-if="sidebarIsShown()" style="padding: 0px;")
+						div(class="clearfix sidebar-buttons")
+							div
+								a(v-if="submitAppellationClicked == false" v-tooltip="'Submit All Appellations'"
+										:class="{btn: true, 'btn-primary':'btn-primary'}"
+										@click="showSubmitAllAppellationsSidebar")
+									span(class="glyphicon glyphicon-cloud-upload")
+								a(v-if="submitAppellationClicked" v-tooltip="'Submit All Appellations'"
+										:class="{btn: true, 'btn-primary':'btn-primary'}"
+										@click="showSubmitAllAppellationsSidebar(); createRelationsFromText();")
+									span Submit
+								h6(v-if="massAssignmentFailed" style="color: red;") Assignment Failed!
+								div(class="pull-right btn-group")
+									a(id="appellation-submit" v-tooltip="'Appellations'"
+										:class=`{
+												btn: true,
+												'btn-success': sidebar == 'appellations',
+												'btn-default': sidebar != 'appellations'
+											}`
+										@click="showAppellationsSidebar")
+										span(class="glyphicon glyphicon-tag")
+									a(v-tooltip="'Date Appellations'"
+										:class=`{
+												btn: true,
+												'btn-success': sidebar == 'dateappellations',
+												'btn-default': sidebar != 'dateappellations'
+											}`
+										@click="showDateAppellationsSidebar")
+										span(class="glyphicon glyphicon-calendar")
+									a(v-tooltip="'Relations'"
+										:class=`{
+												btn: true,
+												'btn-success': sidebar == 'relations',
+												'btn-default': sidebar != 'relations'
+											}`
+										@click="showRelationsSidebar")
+										span(class="glyphicon glyphicon-th-list")
 
-							relation-list(v-if="sidebar == 'relations'" v-bind:relations=relations v-on:selectrelation="selectRelation")
-							appellation-list(
-								v-if="sidebar == 'submitAllAppellations'"
-								v-bind:appellations=appellations
-								v-bind:sidebar="sidebar"
-								v-on:hideallappellations="hideAllAppellations"
-								v-on:showallappellations="showAllAppellations"
-								v-on:showappellation="showAppellation"
-								v-on:hideappellation="hideAppellation"
-								v-on:selectappellation="selectAppellation"
-								v-on:selectConcept="selectConcept($event)"
-								v-on:currentAppellations="setCurrentAppellations($event)")
-							appellation-list(
-								v-if="sidebar == 'appellations'"
-								v-bind:appellations=appellations
-								v-on:hideallappellations="hideAllAppellations"
-								v-on:showallappellations="showAllAppellations"
-								v-on:showappellation="showAppellation"
-								v-on:hideappellation="hideAppellation"
-								v-on:selectappellation="selectAppellation")
-							appellation-list(
-								v-if="sidebar == 'dateappellations'"
-								v-bind:appellations=dateappellations
-								v-on:hideallappellations="hideAllDateAppellations"
-								v-on:showallappellations="showAllDateAppellations"
-								v-on:showappellation="showDateAppellation"
-								v-on:hideappellation="hideDateAppellation"
-								v-on:selectappellation="selectDateAppellation")
+						relation-list(v-if="sidebar == 'relations'" :relations=relations @selectrelation="selectRelation")
+						appellation-list(
+							v-if="sidebar == 'submitAllAppellations'"
+							:appellations=appellations
+							:sidebar="sidebar"
+							@hideallappellations="hideAllAppellations"
+							@showallappellations="showAllAppellations"
+							@showappellation="showAppellation"
+							@hideappellation="hideAppellation"
+							@selectappellation="selectAppellation"
+							@selectConcept="selectConcept($event)"
+							@currentAppellations="setCurrentAppellations($event)")
+						appellation-list(
+							v-if="sidebar == 'appellations'"
+							:appellations=appellations
+							@hideallappellations="hideAllAppellations"
+							@showallappellations="showAllAppellations"
+							@showappellation="showAppellation"
+							@hideappellation="hideAppellation"
+							@selectappellation="selectAppellation")
+						appellation-list(
+							v-if="sidebar == 'dateappellations'"
+							:appellations=dateappellations
+							@hideallappellations="hideAllDateAppellations"
+							@showallappellations="showAllDateAppellations"
+							@showappellation="showDateAppellation"
+							@hideappellation="hideDateAppellation"
+							@selectappellation="selectDateAppellation")
 </template>
 
 <script lang="ts">
@@ -568,15 +569,15 @@ export default class Appellator extends Vue {
   }
 
   public createdAppellation(appellation: any) {
-	const offsets = appellation.position.position_value.split(',');
-	appellation.position.startOffset = offsets[0];
-	appellation.position.endOffset = offsets[1];
-	appellation.visible = true;
-	appellation.selected = false;
-	this.appellations.push(appellation);
-	this.selectAppellation(appellation);
-	this.selectedText = null;
-	this.updateAppellations(); // call update appellations when a new appelation is created to update list
+	const offsets = appellation.position.position_value.split(',')
+	appellation.position.startOffset = offsets[0]
+	appellation.position.endOffset = offsets[1]
+	appellation.visible = true
+	appellation.selected = false
+	this.appellations.push(appellation)
+	this.selectAppellation(appellation)
+	this.selectedText = null
+	this.updateAppellations() // call update appellations when a new appellation is created to update list
   }
 
   public createdDateAppellation(appellation: any) {

@@ -1,49 +1,49 @@
 <template lang="pug">
-	div(class="tools-container")
-		v-tabs(v-model="tab" show-arrows)
-			v-tab(href="#tab-1") Annotations
-			v-tab(href="#tab-2") Relations
-			v-tab(href="#tab-3") Template
-			v-tab(href="#tab-4") Search
-			v-tab(href="#tab-5") Network Graph
-		v-tabs-items(v-model="tab")
-			v-tab-item(value="tab-1" eager)
-				AppellationList(:appellations="appellations")
-			v-tab-item(value="tab-2" eager)
-				RelationList(:relations="relationsets")
-			v-tab-item(value="tab-3" eager)
-				RelationTemplateRender(v-bind:template="template" v-bind:appellations="appellations")
-			v-tab-item(value="tab-4" eager)
-				AppellationCreator(
-					:appellations="appellations"
-					:text="$store.getters.getAnnotatorText"
-				)
-			v-tab-item(value="tab-5")
-				v-dialog(
-					v-model="graphDialog"
-					persistent
-					max-width="1000px"
-				)
-					v-card
-						v-card-title
-							div(class="netowrk-graph-title")
-								div Network graph
-								v-spacer
-								v-btn(icon @click="graphDialog = false")
-									v-icon mdi-close
-						v-card-text
-							NetworkGraph(:network="network")
-				div(style="display: flex;" class="px-1")
-					v-spacer
-					v-btn(icon @click="graphDialog = true")
-						v-icon mdi-fullscreen
-				NetworkGraph(v-if="network" :network="network")
-	
-		v-snackbar(
-			v-model="relationCreated"
-			top
-			:timeout="timeout"
-		) Successfully created relation!
+div(class="tools-container")
+	v-tabs(v-model="tab" show-arrows)
+		v-tab(href="#tab-1") Annotations
+		v-tab(href="#tab-2") Relations
+		v-tab(href="#tab-3") Template
+		v-tab(href="#tab-4") Search
+		v-tab(href="#tab-5") Network Graph
+	v-tabs-items(v-model="tab")
+		v-tab-item(value="tab-1" eager)
+			AppellationList(:appellations="appellations")
+		v-tab-item(value="tab-2" eager)
+			RelationList(:relations="relationsets")
+		v-tab-item(value="tab-3" eager)
+			RelationTemplateRender(:template="template" :appellations="appellations")
+		v-tab-item(value="tab-4" eager)
+			AppellationCreator(
+				:appellations="appellations"
+				:text="$store.getters.getAnnotatorText"
+			)
+		v-tab-item(value="tab-5")
+			v-dialog(
+				v-model="graphDialog"
+				persistent
+				max-width="1000px"
+			)
+				v-card
+					v-card-title
+						div(class="netowrk-graph-title")
+							div Network graph
+							v-spacer
+							v-btn(icon @click="graphDialog = false")
+								v-icon mdi-close
+					v-card-text
+						NetworkGraph(:network="network")
+			div(style="display: flex;" class="px-1")
+				v-spacer
+				v-btn(icon @click="graphDialog = true")
+					v-icon mdi-fullscreen
+			NetworkGraph(v-if="network" :network="network")
+
+	v-snackbar(
+		v-model="relationCreated"
+		top
+		:timeout="timeout"
+	) Successfully created relation!
 
 </template>
 

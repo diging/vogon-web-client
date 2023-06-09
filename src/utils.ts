@@ -1,6 +1,6 @@
-import JwtDecode from 'jwt-decode';
-
 import { TokenDto } from '@/interfaces/GlobalTypes';
+import JwtDecode from 'jwt-decode';
+import Vue from 'vue';
 
 export function getConceptStateTheme(state: string): {color: string, icon: string} {
 	const mapping: {[key: string]: {color: string, icon: string}} = {
