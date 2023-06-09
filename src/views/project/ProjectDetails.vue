@@ -1,42 +1,41 @@
 <template lang="pug">
-div(class="main")
-	h2(class="display-1") Project Details
-	br
-	ErrorIndicator(v-if="error") Error while loading project details!
-	div(v-else)
-		Loading(v-if="loading")
-		template(v-else)
-			Breadcrumbs(:items="navItems")
-			v-card(tile outlined class="project-details")
-				v-row
-					v-col(md="6")
-						div(class="d-flex justify-start")
-							h3(class="headline") {{ project.name }}
-							v-tooltip(
-								v-if="isOwner && !project.is_default"
-								top
-							)
-								template(v-slot:activator="{ on, attrs }")
-									v-icon(
-										v-bind="attrs"
-										v-on="on"
-										class="ml-2"
-										@click="setAsDefaultDialog = true;"
-									) mdi-star-outline
-								span Set this as your default project
-					
-							v-tooltip(
-								v-if="project.is_default"
-								top
-							)
-								template(v-slot:activator="{ on, attrs }")
-									v-icon(
-										v-bind="attrs"
-										v-on="on"
-										class="ml-2"
-									) mdi-star
-								span This is your default project
-
+	div(class="main")
+		h2(class="display-1") Project Details
+		br
+		ErrorIndicator(v-if="error") Error while loading project details!
+		div(v-else)
+			Loading(v-if="loading")
+			template(v-else)
+				Breadcrumbs(:items="navItems")
+				v-card(tile outlined class="project-details")
+					v-row
+						v-col(md="6")
+							div(class="d-flex justify-start")
+								h3(class="headline") {{ project.name }}
+								v-tooltip(
+									v-if="isOwner && !project.is_default"
+									top
+								)
+									template(v-slot:activator="{ on, attrs }")
+										v-icon(
+											v-bind="attrs"
+											v-on="on"
+											class="ml-2"
+											@click="setAsDefaultDialog = true"
+										) mdi-star-outline
+									span Set this as your default project
+						
+								v-tooltip(
+									v-if="project.is_default"
+									top
+								)
+									template(v-slot:activator="{ on, attrs }")
+										v-icon(
+											v-bind="attrs"
+											v-on="on"
+											class="ml-2"
+										) mdi-star
+									span This is your default project
 						h4(class="subtitle-1") {{ project.description }}
 						span(class="body-2 blue-grey--text text--darken-1") Owned by 
 							strong "{{ project.ownedBy.username }}",
@@ -67,70 +66,101 @@ div(class="main")
 								v-icon(left) mdi-account-switch
 								span Transfer Ownership
 
-						UserSearch(
-							:choosingUser="changingOwner"
-							:onUserChoose="changeOwner"
-							:onClose="() => { changeOwnerDialog = false; }"
-							okText="Transfer Ownership"
-							cancelText="Cancel"
-						)
-				
-				ProjectCollaborators(
-					:project="project"
-					:isOwner="isOwner"
-					:onAdd="getProjectDetails"
-				)
-			br
-			v-card(class="card-project-text")
-				v-card-title Texts
-				template(v-if="!project.texts.length")
-					EmptyView No texts found! Perhaps, add one?
-				template(v-else)
-					v-data-table(:headers="textHeaders" :items="project.texts")
-						template(v-slot:item.title="{ item }")
-							router-link(:to="`/repository/amphora/${item.repository_id}/text/${item.repository_source_id}?project_id=${project.id}`") {{ item.title }}
-	
-	v-snackbar(v-model="snackbar" top :color="snackColor" :timeout="3000") {{ snackbarMsg }}
+							UserSearch(
+								:choosingUser="changingOwner"
+								:onUserChoose="changeOwner"
+								:onClose="() => { changeOwnerDialog = false }"
+								okText="Transfer Ownership"
+								cancelText="Cancel"
+							)
+					
+					ProjectCollaborators(
+						:project="project"
+						:isOwner="isOwner"
+						:onAdd="getProjectDetails"
+					)
+				br
+				v-card(class="card-project-text")
+					v-card-title Texts
+					template(v-if="!project.texts.length")
+						EmptyView No texts found! Perhaps, add one?
+					template(v-else)
+						v-data-table(:headers="textHeaders" :items="project.texts")
+							template(v-slot:item.title="{ item }")
+								router-link(:to="`/repository/amphora/${item.repository_id}/text/${item.repository_source_id}?project_id=${project.id}`") {{ item.title }}
+				br
+				v-card(class="card-project-exportappellations")
+					v-card-title Export Apellations
+					template(v-if="!project.texts.length")
+						EmptyView No texts found! Perhaps, add one?
+					template(v-else)
+						v-data-table(
+							:headers="textHeaders" 
+							:items="project.texts"
+							v-model="selected"
+							item-key="id"
+							show-select
+							)
+						v-btn(tile depressed color="teal" @click="exportApellations" class="ma-3" dark)
+							span Export Apellations
 
-	v-dialog(
-		v-model="setAsDefaultDialog"
-		width="500"
-		:persistent="settingAsDefault"
-	)
-		v-card(class="pa-2")
-			v-card-title(class="headline") Set as default project
-			v-card-text(class="text-left") Are you sure you want to set this project as default?
-			v-card-actions
-				v-spacer
-				v-btn(
-					text 
-					color="green darken-1" 
-					@click="setAsDefaultDialog = false"
-					:disabled="settingAsDefault"
-				) Cancel
-				v-btn(
-					text 
-					color="red darken-1" 
-					@click="setAsDefault();"
-					:disabled="settingAsDefault"
-					:loading="settingAsDefault"
-				) Yes
+				br
+				v-card(class="card-project-downloadcsv")
+					v-card-title Download csv
+					template(v-if="!csvFiles.length")
+						EmptyView No Files found! Perhaps, export texts?
+					template(v-else)
+						v-data-table(
+							:headers="fileHeaders" 
+							:items="csvFiles"
+							item-key="id"
+							)
+							template(v-slot:item.created="{ item }")
+								span {{ new Date(item.created).toISOString() }}
+							template(v-slot:item.action="{ item }")
+								v-icon(color="teal" small @click="downloadFile(item.id)") mdi-download
+						
+		v-snackbar(v-model="snackbar" top :color="snackColor" :timeout="3000") {{ snackbarMsg }}
+	
+		v-dialog(
+			v-model="setAsDefaultDialog"
+			width="500"
+			:persistent="settingAsDefault"
+		)
+			v-card(class="pa-2")
+				v-card-title(class="headline") Set as default project
+				v-card-text(class="text-left") Are you sure you want to set this project as default?
+				v-card-actions
+					v-spacer
+					v-btn(
+						text
+						color="green darken-1"
+						@click="setAsDefaultDialog = false"
+						:disabled="settingAsDefault"
+					) Cancel
+					v-btn(
+						text 
+						color="red darken-1" 
+						@click="setAsDefault()"
+						:disabled="settingAsDefault"
+						:loading="settingAsDefault"
+					) Yes
 				
 </template>
 
 <script lang="ts">
-import { AxiosError, AxiosResponse } from 'axios';
-import { Component, Vue } from 'vue-property-decorator';
+import { AxiosError, AxiosResponse } from 'axios'
+import { Component, Vue } from 'vue-property-decorator'
 
-import Breadcrumbs from '@/components/global/Breadcrumbs.vue';
-import EmptyView from '@/components/global/EmptyView.vue';
-import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
-import Loading from '@/components/global/Loading.vue';
-import UserSearch from '@/components/global/UserSearch.vue';
-import CreateUpdateProject from '@/components/project/CreateUpdateProject.vue';
-import ProjectCollaborators from '@/components/project/ProjectCollaborators.vue';
-import { User } from '@/interfaces/GlobalTypes';
-import { Project } from '@/interfaces/ProjectTypes';
+import Breadcrumbs from '@/components/global/Breadcrumbs.vue'
+import EmptyView from '@/components/global/EmptyView.vue'
+import ErrorIndicator from '@/components/global/ErrorIndicator.vue'
+import Loading from '@/components/global/Loading.vue'
+import UserSearch from '@/components/global/UserSearch.vue'
+import CreateUpdateProject from '@/components/project/CreateUpdateProject.vue'
+import ProjectCollaborators from '@/components/project/ProjectCollaborators.vue'
+import { User } from '@/interfaces/GlobalTypes'
+import { Project } from '@/interfaces/ProjectTypes'
 
 @Component({
 	name: 'ProjectDetails',
@@ -145,28 +175,35 @@ import { Project } from '@/interfaces/ProjectTypes';
 	},
 })
 export default class ProjectDetails extends Vue {
-	private project: Project = { name: '', participants: [], texts: []};
-	private loading: boolean = true;
-	private error: boolean = false;
-	private exporting: boolean = false;
-	private exportError: boolean = false;
-	private textHeaders = [{text: 'Title', value: 'title'}, {text: 'Added', value: 'added'}];
+	private project: Project = { name: '', participants: [], texts: []}
+	private loading: boolean = true
+	private error: boolean = false
+	private exporting: boolean = false
+	private exportError: boolean = false
+	private textHeaders = [{text: 'Title', value: 'title'}, {text: 'Added', value: 'added'}]
+	private fileHeaders = [{text: 'Id', value: 'id'},{text: 'Created', value: 'created'}, {text: 'Filedownload', value: 'file_field'}, {text: 'Action', value: 'action'}]
 	private navItems = [
 		{ text: 'Projects', to: '/project', link: true, exact: true },
 		{ text: '', to: '', link: true, exact: true },
 	];
 
-	private changeOwnerDialog: boolean = false;
-	private changingOwner: boolean = false;
-	private snackbar: boolean = false;
-	private snackbarMsg: string = '';
-	private snackColor: string = 'success';
+	private changeOwnerDialog: boolean = false
+	private changingOwner: boolean = false
+	private snackbar: boolean = false
+	private snackbarMsg: string = ''
+	private snackColor: string = 'success'
+	private errorMsg: string = ''
+	private texts: any = {}
+	private selected: any = []
+	private enableCSVDownload : boolean = false
+	private csvFiles : any = {}
 
-	private setAsDefaultDialog: boolean = false;
-	private settingAsDefault: boolean = false;
+	private setAsDefaultDialog: boolean = false
+	private settingAsDefault: boolean = false
 
 	public async mounted(): Promise<void> {
-		this.getProjectDetails();
+		this.getProjectDetails()
+		this.getCSVFiles()
 	}
 
 	get isEditable(): boolean {
@@ -178,7 +215,7 @@ export default class ProjectDetails extends Vue {
 	}
 
 	private getProjectDetails() {
-		this.loading = true;
+		this.loading = true
 		return Vue.$axios.get(`/project/${this.$route.params.id}`)
 			.then((response: AxiosResponse) => {
 				this.project = response.data as Project
@@ -189,28 +226,73 @@ export default class ProjectDetails extends Vue {
 			.finally(() => this.loading = false)
 	}
 
+	private exportApellations() {
+		let text_ids = [];
+		for(const select of this.selected) {
+			text_ids.push(select.id)
+		}
+		const payload = {"texts": text_ids}
+		Vue.$axios.post('export/', payload)
+			.then((response: AxiosResponse) => {
+				this.enableCSVDownload = true
+				this.getCSVFiles()
+			})
+			.catch((error: AxiosError) => {
+				this.error = true
+				if (error.response && error.response.data && error.response.data.detail) {
+					this.errorMsg = error.response.data.detail
+				} else {
+					this.errorMsg = error.message
+				}
+			});
+	}
+
+	private getCSVFiles() {
+		Vue.$axios.get(`/download/`)
+			.then((response: AxiosResponse) => {
+				this.csvFiles = response.data
+			})
+			.catch(() => this.error = true)
+			.finally(() => this.loading = false)
+
+	}
+
+	private downloadFile(file: any) {
+		Vue.$axios.get(`/download/previous/${file}/`)
+			.then((response: AxiosResponse) => {
+				const blob = new Blob([response.data], { type: 'text/csv' })
+				const link = document.createElement('a')
+				link.href = URL.createObjectURL(blob)
+				link.download = file 
+				link.click()
+				URL.revokeObjectURL(link.href)
+			})
+			.catch(() => this.exportError = true)
+			.finally(() => this.exporting = false)
+  	}
+	
 	private changeOwner(targetUser: User) {
-		this.changingOwner = true;
+		this.changingOwner = true
 		Vue.$axios.post(`/project/${this.project.id}/change_ownership`, {
 			target_user_id: targetUser.id,
 		})
 			.then((response: AxiosResponse) => {
-				this.snackbarMsg = response.data.message;
-				this.snackColor = 'success';
-				this.snackbar = true;
-				this.getProjectDetails();
+				this.snackbarMsg = response.data.message
+				this.snackColor = 'success'
+				this.snackbar = true
+				this.getProjectDetails()
 			})
 			.catch((error: AxiosError) => {
 				if (error.response && error.response.data && error.response.data.message) {
-					this.snackbarMsg = error.response.data.message;
+					this.snackbarMsg = error.response.data.message
 				} else {
-					this.snackbarMsg = error.message;
+					this.snackbarMsg = error.message
 				}
-				this.snackColor = 'error';
-				this.snackbar = true;
+				this.snackColor = 'error'
+				this.snackbar = true
 			})
 			.finally(() => {
-				this.changingOwner = false;
+				this.changingOwner = false
 			});
 	}
 
@@ -218,41 +300,41 @@ export default class ProjectDetails extends Vue {
 		this.settingAsDefault = true;
 		this.$axios.post(`/project/${this.project.id}/set_as_default`)
 			.then((response: AxiosResponse) => {
-				this.snackbarMsg = response.data.message;
-				this.snackColor = 'success';
-				this.snackbar = true;
-				this.getProjectDetails();
+				this.snackbarMsg = response.data.message
+				this.snackColor = 'success'
+				this.snackbar = true
+				this.getProjectDetails()
 			})
 			.catch((error: AxiosError) => {
 				if (error.response && error.response.data && error.response.data.message) {
-					this.snackbarMsg = error.response.data.message;
+					this.snackbarMsg = error.response.data.message
 				} else {
-					this.snackbarMsg = error.message;
+					this.snackbarMsg = error.message
 				}
-				this.snackColor = 'error';
-				this.snackbar = true;
+				this.snackColor = 'error'
+				this.snackbar = true
 			})
 			.finally(() => {
-				this.settingAsDefault = false;
-				this.setAsDefaultDialog = false;
+				this.settingAsDefault = false
+				this.setAsDefaultDialog = false
 			});
 	}
 
 	private exportAffiliations() {
-		this.exporting = true;
+		this.exporting = true
 		Vue.$axios.get(`/project/${this.$route.params.id}/export_affiliations`,
 			{ responseType: 'blob' },
 		)
 			.then((response) => {
-				const url = window.URL.createObjectURL(new Blob([response.data]));
-				const link = document.createElement('a');
-				link.href = url;
-				link.setAttribute('download', 'affiliations_export.csv');
-				document.body.appendChild(link);
-				link.click();
+				const url = window.URL.createObjectURL(new Blob([response.data]))
+				const link = document.createElement('a')
+				link.href = url
+				link.setAttribute('download', 'affiliations_export.csv')
+				document.body.appendChild(link)
+				link.click()
 			})
 			.catch(() => this.exportError = true)
-			.finally(() => this.exporting = false);
+			.finally(() => this.exporting = false)
 	}
 }
 </script>
