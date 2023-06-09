@@ -26,26 +26,26 @@
 </template>
 
 <script lang="ts">
-import { AxiosResponse } from 'axios';
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { AxiosResponse } from 'axios'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 
-import EmptyView from '@/components/global/EmptyView.vue';
-import { TextContentResource } from '@/interfaces/RepositoryTypes';
+import EmptyView from '@/components/global/EmptyView.vue'
+import { TextContentResource } from '@/interfaces/RepositoryTypes'
 
 @Component({
 	name: 'TextAdditionalContent',
 	components: { EmptyView },
 })
 export default class TextAdditionalContent extends Vue {
-	@Prop() private readonly contents!: TextContentResource[];
-	@Prop() private readonly ready!: boolean;
-	@Prop() private readonly editable!: boolean;
-	private queryParam = '';
+	@Prop() private readonly contents!: TextContentResource[]
+	@Prop() private readonly ready!: boolean
+	@Prop() private readonly editable!: boolean
+	private queryParam = ''
 
 	public created() {
-		const projectId = this.$route.query.project_id;
+		const projectId = this.$route.query.project_id
 		if (projectId) {
-			this.queryParam = `?project_id=${projectId}`;
+			this.queryParam = `?project_id=${projectId}`
 		}
 	}
 }

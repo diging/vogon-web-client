@@ -21,7 +21,7 @@
 											v-bind="attrs"
 											v-on="on"
 											class="ml-2"
-											@click="setAsDefaultDialog = true;"
+											@click="setAsDefaultDialog = true"
 										) mdi-star-outline
 									span Set this as your default project
 						
@@ -70,7 +70,7 @@
 							UserSearch(
 								:choosingUser="changingOwner"
 								:onUserChoose="changeOwner"
-								:onClose="() => { changeOwnerDialog = false; }"
+								:onClose="() => { changeOwnerDialog = false }"
 								okText="Transfer Ownership"
 								cancelText="Cancel"
 							)
@@ -103,7 +103,7 @@
 							show-select
 							)
 						v-btn(tile depressed color="teal" @click="exportApellations" class="ma-3" dark)
-									span Export Apellations
+							span Export Apellations
 
 				br
 				v-card(class="card-project-downloadcsv")
@@ -116,12 +116,10 @@
 							:items="csvFiles"
 							item-key="id"
 							)
-							<template v-slot:item.created="{ item }">
-								<span>{{ new Date(item.created).toISOString() }}</span>
-							</template>
-							<template v-slot:[`item.action`]="{ item }">
-								<v-icon color="teal" small @click="downloadFile(item.id)">mdi-download</v-icon>
-							</template>
+							template(v-slot:item.created="{ item }")
+								span {{ new Date(item.created).toISOString() }}
+							template(v-slot:item.action="{ item }")
+								v-icon(color="teal" small @click="downloadFile(item.id)") mdi-download
 						
 		v-snackbar(v-model="snackbar" top :color="snackColor" :timeout="3000") {{ snackbarMsg }}
 	
@@ -136,15 +134,15 @@
 				v-card-actions
 					v-spacer
 					v-btn(
-						text 
-						color="green darken-1" 
+						text
+						color="green darken-1"
 						@click="setAsDefaultDialog = false"
 						:disabled="settingAsDefault"
 					) Cancel
 					v-btn(
 						text 
 						color="red darken-1" 
-						@click="setAsDefault();"
+						@click="setAsDefault()"
 						:disabled="settingAsDefault"
 						:loading="settingAsDefault"
 					) Yes
@@ -152,18 +150,18 @@
 </template>
 
 <script lang="ts">
-import { AxiosError, AxiosResponse } from 'axios';
-import { Component, Vue } from 'vue-property-decorator';
+import { AxiosError, AxiosResponse } from 'axios'
+import { Component, Vue } from 'vue-property-decorator'
 
-import Breadcrumbs from '@/components/global/Breadcrumbs.vue';
-import EmptyView from '@/components/global/EmptyView.vue';
-import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
-import Loading from '@/components/global/Loading.vue';
-import UserSearch from '@/components/global/UserSearch.vue';
-import CreateUpdateProject from '@/components/project/CreateUpdateProject.vue';
-import ProjectCollaborators from '@/components/project/ProjectCollaborators.vue';
-import { User } from '@/interfaces/GlobalTypes';
-import { Project } from '@/interfaces/ProjectTypes';
+import Breadcrumbs from '@/components/global/Breadcrumbs.vue'
+import EmptyView from '@/components/global/EmptyView.vue'
+import ErrorIndicator from '@/components/global/ErrorIndicator.vue'
+import Loading from '@/components/global/Loading.vue'
+import UserSearch from '@/components/global/UserSearch.vue'
+import CreateUpdateProject from '@/components/project/CreateUpdateProject.vue'
+import ProjectCollaborators from '@/components/project/ProjectCollaborators.vue'
+import { User } from '@/interfaces/GlobalTypes'
+import { Project } from '@/interfaces/ProjectTypes'
 
 @Component({
 	name: 'ProjectDetails',
@@ -178,55 +176,55 @@ import { Project } from '@/interfaces/ProjectTypes';
 	},
 })
 export default class ProjectDetails extends Vue {
-	private project: Project = { name: '', participants: [], texts: []};
-	private loading: boolean = true;
-	private error: boolean = false;
-	private exporting: boolean = false;
-	private exportError: boolean = false;
-	private textHeaders = [{text: 'Title', value: 'title'}, {text: 'Added', value: 'added'}];
-	private fileHeaders = [{text: 'Id', value: 'id'},{text: 'Created', value: 'created'}, {text: 'Filedownload', value: 'file_field'}, {text: 'Action', value: 'action'}];
+	private project: Project = { name: '', participants: [], texts: []}
+	private loading: boolean = true
+	private error: boolean = false
+	private exporting: boolean = false
+	private exportError: boolean = false
+	private textHeaders = [{text: 'Title', value: 'title'}, {text: 'Added', value: 'added'}]
+	private fileHeaders = [{text: 'Id', value: 'id'},{text: 'Created', value: 'created'}, {text: 'Filedownload', value: 'file_field'}, {text: 'Action', value: 'action'}]
 	private navItems = [
 		{ text: 'Projects', to: '/project', link: true, exact: true },
 		{ text: '', to: '', link: true, exact: true },
 	];
 
-	private changeOwnerDialog: boolean = false;
-	private changingOwner: boolean = false;
-	private snackbar: boolean = false;
-	private snackbarMsg: string = '';
-	private snackColor: string = 'success';
-	private errorMsg: string = '';
-	private texts: any = {};
-	private selected: any = [];
-	private enableCSVDownload : boolean = false;
-	private csvFiles : any = {};
+	private changeOwnerDialog: boolean = false
+	private changingOwner: boolean = false
+	private snackbar: boolean = false
+	private snackbarMsg: string = ''
+	private snackColor: string = 'success'
+	private errorMsg: string = ''
+	private texts: any = {}
+	private selected: any = []
+	private enableCSVDownload : boolean = false
+	private csvFiles : any = {}
 
-	private setAsDefaultDialog: boolean = false;
-	private settingAsDefault: boolean = false;
+	private setAsDefaultDialog: boolean = false
+	private settingAsDefault: boolean = false
 
 	public async mounted(): Promise<void> {
-		this.getProjectDetails();
-		this.getCSVFiles();
+		this.getProjectDetails()
+		this.getCSVFiles()
 	}
 
 	get isEditable(): boolean {
-		return Vue.$utils.permissions.isProjectCollaborator(this.project);
+		return Vue.$utils.permissions.isProjectCollaborator(this.project)
 	}
 
 	get isOwner(): boolean {
-		return Vue.$utils.permissions.isProjectOwner(this.project);
+		return Vue.$utils.permissions.isProjectOwner(this.project)
 	}
 
 	private getProjectDetails() {
-		this.loading = true;
+		this.loading = true
 		return Vue.$axios.get(`/project/${this.$route.params.id}`)
 			.then((response: AxiosResponse) => {
-				this.project = response.data as Project;
-				this.navItems[1].text = this.project.name;
-				this.navItems[1].to = `/project/${this.project.id}`;
+				this.project = response.data as Project
+				this.navItems[1].text = this.project.name
+				this.navItems[1].to = `/project/${this.project.id}`
 			})
 			.catch(() => this.error = true)
-			.finally(() => this.loading = false);
+			.finally(() => this.loading = false)
 	}
 
 	private exportApellations() {
@@ -234,18 +232,18 @@ export default class ProjectDetails extends Vue {
 		for(const select of this.selected) {
 			text_ids.push(select.id)
 		}
-		const payload = {"texts": text_ids};
+		const payload = {"texts": text_ids}
 		Vue.$axios.post('export/', payload)
 			.then((response: AxiosResponse) => {
-				this.enableCSVDownload = true;
+				this.enableCSVDownload = true
 				this.getCSVFiles()
 			})
 			.catch((error: AxiosError) => {
-				this.error = true;
+				this.error = true
 				if (error.response && error.response.data && error.response.data.detail) {
-					this.errorMsg = error.response.data.detail;
+					this.errorMsg = error.response.data.detail
 				} else {
-					this.errorMsg = error.message;
+					this.errorMsg = error.message
 				}
 			});
 	}
@@ -253,10 +251,10 @@ export default class ProjectDetails extends Vue {
 	private getCSVFiles() {
 		Vue.$axios.get(`/download/`)
 			.then((response: AxiosResponse) => {
-				this.csvFiles = response.data;
+				this.csvFiles = response.data
 			})
 			.catch(() => this.error = true)
-			.finally(() => this.loading = false);
+			.finally(() => this.loading = false)
 
 	}
 
@@ -271,31 +269,31 @@ export default class ProjectDetails extends Vue {
 				URL.revokeObjectURL(link.href)
 			})
 			.catch(() => this.exportError = true)
-			.finally(() => this.exporting = false);
+			.finally(() => this.exporting = false)
   	}
 	
 	private changeOwner(targetUser: User) {
-		this.changingOwner = true;
+		this.changingOwner = true
 		Vue.$axios.post(`/project/${this.project.id}/change_ownership`, {
 			target_user_id: targetUser.id,
 		})
 			.then((response: AxiosResponse) => {
-				this.snackbarMsg = response.data.message;
-				this.snackColor = 'success';
-				this.snackbar = true;
-				this.getProjectDetails();
+				this.snackbarMsg = response.data.message
+				this.snackColor = 'success'
+				this.snackbar = true
+				this.getProjectDetails()
 			})
 			.catch((error: AxiosError) => {
 				if (error.response && error.response.data && error.response.data.message) {
-					this.snackbarMsg = error.response.data.message;
+					this.snackbarMsg = error.response.data.message
 				} else {
-					this.snackbarMsg = error.message;
+					this.snackbarMsg = error.message
 				}
-				this.snackColor = 'error';
-				this.snackbar = true;
+				this.snackColor = 'error'
+				this.snackbar = true
 			})
 			.finally(() => {
-				this.changingOwner = false;
+				this.changingOwner = false
 			});
 	}
 
@@ -303,41 +301,41 @@ export default class ProjectDetails extends Vue {
 		this.settingAsDefault = true;
 		this.$axios.post(`/project/${this.project.id}/set_as_default`)
 			.then((response: AxiosResponse) => {
-				this.snackbarMsg = response.data.message;
-				this.snackColor = 'success';
-				this.snackbar = true;
-				this.getProjectDetails();
+				this.snackbarMsg = response.data.message
+				this.snackColor = 'success'
+				this.snackbar = true
+				this.getProjectDetails()
 			})
 			.catch((error: AxiosError) => {
 				if (error.response && error.response.data && error.response.data.message) {
-					this.snackbarMsg = error.response.data.message;
+					this.snackbarMsg = error.response.data.message
 				} else {
-					this.snackbarMsg = error.message;
+					this.snackbarMsg = error.message
 				}
-				this.snackColor = 'error';
-				this.snackbar = true;
+				this.snackColor = 'error'
+				this.snackbar = true
 			})
 			.finally(() => {
-				this.settingAsDefault = false;
-				this.setAsDefaultDialog = false;
+				this.settingAsDefault = false
+				this.setAsDefaultDialog = false
 			});
 	}
 
 	private exportAffiliations() {
-		this.exporting = true;
+		this.exporting = true
 		Vue.$axios.get(`/project/${this.$route.params.id}/export_affiliations`,
 			{ responseType: 'blob' },
 		)
 			.then((response) => {
-				const url = window.URL.createObjectURL(new Blob([response.data]));
-				const link = document.createElement('a');
-				link.href = url;
-				link.setAttribute('download', 'affiliations_export.csv');
-				document.body.appendChild(link);
-				link.click();
+				const url = window.URL.createObjectURL(new Blob([response.data]))
+				const link = document.createElement('a')
+				link.href = url
+				link.setAttribute('download', 'affiliations_export.csv')
+				document.body.appendChild(link)
+				link.click()
 			})
 			.catch(() => this.exportError = true)
-			.finally(() => this.exporting = false);
+			.finally(() => this.exporting = false)
 	}
 }
 </script>

@@ -28,7 +28,7 @@
 										:currentProject="partOfProject"
 										:choosingProject="movingProject"
 										:onProjectChoose="moveProject"
-										:onClose="() => { projectMoveDialog = false; }"
+										:onClose="() => { projectMoveDialog = false }"
 									)
 
 						v-col(cols="6")
@@ -123,23 +123,23 @@ import { TextResource } from '@/interfaces/RepositoryTypes';
 	},
 })
 export default class TextDetails extends Vue {
-	private loading: boolean = true;
-	private error: boolean = false;
-	private project: Project | null = null;
-	private partOfProject: Project | null = null;
-	private text: TextResource = {id: 1, title: ''};
-	private relations: RelationSet[] = [];
-	private masterId: number | null = null;
-	private submitted: boolean = true;
+	private loading: boolean = true
+	private error: boolean = false
+	private project: Project | null = null
+	private partOfProject: Project | null = null
+	private text: TextResource = {id: 1, title: ''}
+	private relations: RelationSet[] = []
+	private masterId: number | null = null
+	private submitted: boolean = true
 
-	private snackbarText: string = '';
-	private snackbar: boolean = false;
-	private snackbarColor: string = 'error';
+	private snackbarText: string = ''
+	private snackbar: boolean = false
+	private snackbarColor: string = 'error'
 
-	private projectMoveDialog: boolean = false;
-	private movingProject: boolean = false;
-	private addingText: boolean = false;
-	private removingText: boolean = false;
+	private projectMoveDialog: boolean = false
+	private movingProject: boolean = false
+	private addingText: boolean = false
+	private removingText: boolean = false
 
 	private navItems = [
 		{ text: 'Projects', to: '/project', link: true, exact: true },
@@ -151,40 +151,40 @@ export default class TextDetails extends Vue {
 	];
 
 	public async mounted(): Promise<void> {
-		this.getTextDetails();
+		this.getTextDetails()
 	}
 
 	get isEditable(): boolean {
 		if (this.project) {
-			return Vue.$utils.permissions.isProjectCollaborator(this.project);
+			return Vue.$utils.permissions.isProjectCollaborator(this.project)
 		}
-		return false;
+		return false
 	}
 
 	get isOwner(): boolean {
-		return Vue.$utils.permissions.isProjectOwner(this.project);
+		return Vue.$utils.permissions.isProjectOwner(this.project)
 	}
 
 	private async getTextDetails(): Promise<void> {
-		this.loading = true;
-		let queryParam = '';
-		const projectId = this.$route.query.project_id;
+		this.loading = true
+		let queryParam = ''
+		const projectId = this.$route.query.project_id
 		if (projectId) {
-			queryParam = `?project_id=${projectId}`;
+			queryParam = `?project_id=${projectId}`
 		}
 		Vue.$axios.get(`/repository/amphora/${this.$route.params.repoId}/texts/${this.$route.params.textId}${queryParam}`)
 			.then((response: AxiosResponse) => {
-				this.text = response.data.result as TextResource;
+				this.text = response.data.result as TextResource
 				if (response.data.part_of_project) {
-					this.partOfProject = response.data.part_of_project;
+					this.partOfProject = response.data.part_of_project
 				}
-				this.project = response.data.project_details;
-				this.relations = response.data.relations;
-				this.masterId = response.data.master_text.id;
-				this.submitted = response.data.submitted;
+				this.project = response.data.project_details
+				this.relations = response.data.relations
+				this.masterId = response.data.master_text.id
+				this.submitted = response.data.submitted
 
 				if (this.project && !projectId) {
-					const query = this.$route.query;
+					const query = this.$route.query
 					this.$router.replace({
 						query: {
 							...query,
@@ -193,16 +193,16 @@ export default class TextDetails extends Vue {
 					});
 				}
 				if (this.project) {
-					this.navItems[1].text = this.project.name;
-					this.navItems[1].to = `/project/${this.project.id}`;
+					this.navItems[1].text = this.project.name
+					this.navItems[1].to = `/project/${this.project.id}`
 				}
-				const repo = response.data.repository;
-				this.navItems[3].text = repo.name;
-				this.navItems[3].to = `/repository/amphora/${repo.id}${queryParam}`;
-				this.navItems[5].text = this.text.title;
+				const repo = response.data.repository
+				this.navItems[3].text = repo.name
+				this.navItems[3].to = `/repository/amphora/${repo.id}${queryParam}`
+				this.navItems[5].text = this.text.title
 			})
 			.catch(() => this.error = true)
-			.finally(() => this.loading = false);
+			.finally(() => this.loading = false)
 	}
 
 	private async addText(): Promise<void> {
@@ -211,42 +211,42 @@ export default class TextDetails extends Vue {
 				{ text_id: this.text.id, repository_id: this.$route.params.repoId },
 			)
 			.then((response: AxiosResponse) => {
-				this.addingText = false;
-				this.snackbar = true;
-				this.snackbarText = 'Successfully added text to the project';
-				this.snackbarColor = 'success';
-				this.getTextDetails();
+				this.addingText = false
+				this.snackbar = true
+				this.snackbarText = 'Successfully added text to the project'
+				this.snackbarColor = 'success'
+				this.getTextDetails()
 			})
 			.catch(() => {
-				this.addingText = false;
-				this.snackbar = true;
-				this.snackbarText = 'Error while adding text to the project';
-				this.snackbarColor = 'error';
-			});
+				this.addingText = false
+				this.snackbar = true
+				this.snackbarText = 'Error while adding text to the project'
+				this.snackbarColor = 'error'
+			})
 	}
 
 	private async removeText(): Promise<void> {
-		this.removingText = true;
+		this.removingText = true
 		Vue.$axios.delete(`/project/${this.$route.query.project_id}`, {
 				data: { text_id: this.masterId },
 			})
 			.then(() => {
-				this.removingText = false;
-				this.snackbar = true;
-				this.snackbarText = 'Successfully removed text from the project';
-				this.snackbarColor = 'success';
-				this.project = null;
-				this.partOfProject = null;
-				this.getTextDetails();
+				this.removingText = false
+				this.snackbar = true
+				this.snackbarText = 'Successfully removed text from the project'
+				this.snackbarColor = 'success'
+				this.project = null
+				this.partOfProject = null
+				this.getTextDetails()
 			})
 			.catch((error) => {
-				this.removingText = false;
-				this.snackbar = true;
-				this.snackbarColor = 'error';
+				this.removingText = false
+				this.snackbar = true
+				this.snackbarColor = 'error'
 				if (error.response.status === 412) {
-					this.snackbarText = 'Text cannot be removed after annotations have been submitted to Quadriga';
+					this.snackbarText = 'Text cannot be removed after annotations have been submitted to Quadriga'
 				} else {
-					this.snackbarText = 'Error while removing text from the project';
+					this.snackbarText = 'Error while removing text from the project'
 				}
 			});
 	}
@@ -265,27 +265,27 @@ export default class TextDetails extends Vue {
 			},
 		)
 			.then((response: AxiosResponse) => {
-				this.snackbarText = response.data.message;
-				this.snackbarColor = 'success';
-				this.snackbar = true;
-				this.projectMoveDialog = false;
-				const param = `?project_id=${targetProject.id}`;
+				this.snackbarText = response.data.message
+				this.snackbarColor = 'success'
+				this.snackbar = true
+				this.projectMoveDialog = false
+				const param = `?project_id=${targetProject.id}`
 				this.$router.push(
 					`/repository/amphora/${this.$route.params.repoId}/text/${this.$route.params.textId}${param}`,
 				);
-				this.getTextDetails();
+				this.getTextDetails()
 			})
 			.catch((error: AxiosError) => {
 				if (error.response && error.response.data && error.response.data.message) {
-					this.snackbarText = error.response.data.message;
+					this.snackbarText = error.response.data.message
 				} else {
-					this.snackbarText = error.message;
+					this.snackbarText = error.message
 				}
-				this.snackbarColor = 'error';
-				this.snackbar = true;
+				this.snackbarColor = 'error'
+				this.snackbar = true
 			})
 			.finally(() => {
-				this.movingProject = false;
+				this.movingProject = false
 			});
 	}
 }
