@@ -1,41 +1,41 @@
 <template lang="pug">
-	div(class="main")
-		h2(class="display-1") Project Details
-		br
-		ErrorIndicator(v-if="error") Error while loading project details!
-		div(v-else)
-			Loading(v-if="loading")
-			template(v-else)
-				Breadcrumbs(:items="navItems")
-				v-card(tile outlined class="project-details")
-					v-row
-						v-col(md="6")
-							div(class="d-flex justify-start")
-								h3(class="headline") {{ project.name }}
-								v-tooltip(
-									v-if="isOwner && !project.is_default"
-									top
-								)
-									template(v-slot:activator="{ on, attrs }")
-										v-icon(
-											v-bind="attrs"
-											v-on="on"
-											class="ml-2"
-											@click="setAsDefaultDialog = true"
-										) mdi-star-outline
-									span Set this as your default project
-						
-								v-tooltip(
-									v-if="project.is_default"
-									top
-								)
-									template(v-slot:activator="{ on, attrs }")
-										v-icon(
-											v-bind="attrs"
-											v-on="on"
-											class="ml-2"
-										) mdi-star
-									span This is your default project
+div(class="main")
+	h2(class="display-1") Project Details
+	br
+	ErrorIndicator(v-if="error") Error while loading project details!
+	div(v-else)
+		Loading(v-if="loading")
+		template(v-else)
+			Breadcrumbs(:items="navItems")
+			v-card(tile outlined class="project-details")
+				v-row
+					v-col(md="6")
+						div(class="d-flex justify-start")
+							h3(class="headline") {{ project.name }}
+							v-tooltip(
+								v-if="isOwner && !project.is_default"
+								top
+							)
+								template(v-slot:activator="{ on, attrs }")
+									v-icon(
+										v-bind="attrs"
+										v-on="on"
+										class="ml-2"
+										@click="setAsDefaultDialog = true"
+									) mdi-star-outline
+								span Set this as your default project
+					
+							v-tooltip(
+								v-if="project.is_default"
+								top
+							)
+								template(v-slot:activator="{ on, attrs }")
+									v-icon(
+										v-bind="attrs"
+										v-on="on"
+										class="ml-2"
+									) mdi-star
+								span This is your default project
 						h4(class="subtitle-1") {{ project.description }}
 						span(class="body-2 blue-grey--text text--darken-1") Owned by 
 							strong "{{ project.ownedBy.username }}",
@@ -66,86 +66,86 @@
 								v-icon(left) mdi-account-switch
 								span Transfer Ownership
 
-							UserSearch(
-								:choosingUser="changingOwner"
-								:onUserChoose="changeOwner"
-								:onClose="() => { changeOwnerDialog = false }"
-								okText="Transfer Ownership"
-								cancelText="Cancel"
-							)
-					
-					ProjectCollaborators(
-						:project="project"
-						:isOwner="isOwner"
-						:onAdd="getProjectDetails"
-					)
-				br
-				v-card(class="card-project-text")
-					v-card-title Texts
-					template(v-if="!project.texts.length")
-						EmptyView No texts found! Perhaps, add one?
-					template(v-else)
-						v-data-table(:headers="textHeaders" :items="project.texts")
-							template(v-slot:item.title="{ item }")
-								router-link(:to="`/repository/amphora/${item.repository_id}/text/${item.repository_source_id}?project_id=${project.id}`") {{ item.title }}
-				br
-				v-card(class="card-project-exportappellations")
-					v-card-title Export Apellations
-					template(v-if="!project.texts.length")
-						EmptyView No texts found! Perhaps, add one?
-					template(v-else)
-						v-data-table(
-							:headers="textHeaders" 
-							:items="project.texts"
-							v-model="selected"
-							item-key="id"
-							show-select
-							)
-						v-btn(tile depressed color="teal" @click="exportApellations" class="ma-3" dark)
-							span Export Apellations
-
-				br
-				v-card(class="card-project-downloadcsv")
-					v-card-title Download csv
-					template(v-if="!csvFiles.length")
-						EmptyView No Files found! Perhaps, export texts?
-					template(v-else)
-						v-data-table(
-							:headers="fileHeaders" 
-							:items="csvFiles"
-							item-key="id"
-							)
-							template(v-slot:item.created="{ item }")
-								span {{ new Date(item.created).toISOString() }}
-							template(v-slot:item.action="{ item }")
-								v-icon(color="teal" small @click="downloadFile(item.id)") mdi-download
-						
-		v-snackbar(v-model="snackbar" top :color="snackColor" :timeout="3000") {{ snackbarMsg }}
-	
-		v-dialog(
-			v-model="setAsDefaultDialog"
-			width="500"
-			:persistent="settingAsDefault"
-		)
-			v-card(class="pa-2")
-				v-card-title(class="headline") Set as default project
-				v-card-text(class="text-left") Are you sure you want to set this project as default?
-				v-card-actions
-					v-spacer
-					v-btn(
-						text
-						color="green darken-1"
-						@click="setAsDefaultDialog = false"
-						:disabled="settingAsDefault"
-					) Cancel
-					v-btn(
-						text 
-						color="red darken-1" 
-						@click="setAsDefault()"
-						:disabled="settingAsDefault"
-						:loading="settingAsDefault"
-					) Yes
+						UserSearch(
+							:choosingUser="changingOwner"
+							:onUserChoose="changeOwner"
+							:onClose="() => { changeOwnerDialog = false }"
+							okText="Transfer Ownership"
+							cancelText="Cancel"
+						)
 				
+				ProjectCollaborators(
+					:project="project"
+					:isOwner="isOwner"
+					:onAdd="getProjectDetails"
+				)
+			br
+			v-card(class="card-project-text")
+				v-card-title Texts
+				template(v-if="!project.texts.length")
+					EmptyView No texts found! Perhaps, add one?
+				template(v-else)
+					v-data-table(:headers="textHeaders" :items="project.texts")
+						template(v-slot:item.title="{ item }")
+							router-link(:to="`/repository/amphora/${item.repository_id}/text/${item.repository_source_id}?project_id=${project.id}`") {{ item.title }}
+			br
+			v-card(class="card-project-exportappellations")
+				v-card-title Export Apellations
+				template(v-if="!project.texts.length")
+					EmptyView No texts found! Perhaps, add one?
+				template(v-else)
+					v-data-table(
+						:headers="textHeaders" 
+						:items="project.texts"
+						v-model="selected"
+						item-key="id"
+						show-select
+						)
+					v-btn(tile depressed color="teal" @click="exportApellations" class="ma-3" dark)
+						span Export Apellations
+
+			br
+			v-card(class="card-project-downloadcsv")
+				v-card-title Download csv
+				template(v-if="!csvFiles.length")
+					EmptyView No Files found! Perhaps, export texts?
+				template(v-else)
+					v-data-table(
+						:headers="fileHeaders" 
+						:items="csvFiles"
+						item-key="id"
+						)
+						template(v-slot:item.created="{ item }")
+							span {{ new Date(item.created).toISOString() }}
+						template(v-slot:item.action="{ item }")
+							v-icon(color="teal" small @click="downloadFile(item.id)") mdi-download
+					
+	v-snackbar(v-model="snackbar" top :color="snackColor" :timeout="3000") {{ snackbarMsg }}
+
+	v-dialog(
+		v-model="setAsDefaultDialog"
+		width="500"
+		:persistent="settingAsDefault"
+	)
+		v-card(class="pa-2")
+			v-card-title(class="headline") Set as default project
+			v-card-text(class="text-left") Are you sure you want to set this project as default?
+			v-card-actions
+				v-spacer
+				v-btn(
+					text
+					color="green darken-1"
+					@click="setAsDefaultDialog = false"
+					:disabled="settingAsDefault"
+				) Cancel
+				v-btn(
+					text 
+					color="red darken-1" 
+					@click="setAsDefault()"
+					:disabled="settingAsDefault"
+					:loading="settingAsDefault"
+				) Yes
+			
 </template>
 
 <script lang="ts">

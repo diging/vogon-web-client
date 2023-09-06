@@ -73,7 +73,7 @@ export default class ListsSideDrawer extends Vue {
 	@Prop() private relationsets!: object[];
 	@Prop() private network!: object[];
 
-	private tab: string = 'tab-4';
+	@Prop() private tab: string = 'tab-4';
 	private listToggle: string = '';
 	private graphDialog: boolean = false;
 
@@ -93,12 +93,6 @@ export default class ListsSideDrawer extends Vue {
 			}
 		});
 		this.$store.watch(
-			(state, getters) => getters.getAnnotatorCurrentTab,
-			(newValue, oldValue) => {
-				this.tab = newValue;
-			},
-		);
-		this.$store.watch(
 			(state, getters) => getters.getAnnotatorTemplate,
 			(newValue, oldValue) => {
 				this.template = newValue;
@@ -117,14 +111,7 @@ export default class ListsSideDrawer extends Vue {
 		if (val !== oldVal) {
 			this.$store.commit('setRelationCreated', val);
 		}
-  }
-
-  @Watch('tab')
-  public changeTab() {
-		if (this.tab !== this.$store.getters.getAnnotatorCurrentTab) {
-		this.$store.commit('setAnnotatorCurrentTab', this.tab);
-	}
-  }
+  	}
 }
 </script>
 

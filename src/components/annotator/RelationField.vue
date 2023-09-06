@@ -56,17 +56,23 @@ import { RelationTemplateField } from '@/interfaces/RelationTypes'
 })
 export default class RelationFieldItem extends Vue {
 	@Prop()
-	private field!: RelationTemplateField;
+	private field!: RelationTemplateField
 	@Prop()
-	private appellations!: any;
+	private appellations!: any
 	@Prop()
-	private pos!: number;
+	private pos!: number
+	@Prop()
+	private fieldValue!: string
 
-	private value: any = null;
-	private active: boolean = false;
-	private rawText: any = null;
+	private value: any = null
+	private active: boolean = false
+	private rawText: any = null
 
 	public created() {
+		this.value = null
+		if (this.fieldValue) {
+			this.value = this.fieldValue
+		}
 		this.$store.watch(
 			(state, getters) => getters.getCurrentFieldIndex,
 			(newValue, oldValue) => {
@@ -96,7 +102,7 @@ export default class RelationFieldItem extends Vue {
 
 	@Watch('rawText')
 	public onRawTextChange(val: any, oldVal: any) {
-		const annotation = this.$store.getters.getSelectedFieldAnnotations[this.pos];
+		const annotation = this.$store.getters.getSelectedFieldAnnotations[this.pos]
 		if (annotation && !val) {
 			this.$store.commit('setSelectedFieldAnnotationsAt', {
 				pos: this.pos,
@@ -106,12 +112,12 @@ export default class RelationFieldItem extends Vue {
 	}
 
 	private toggleActive(): void {
-		let activeIndex = -1;
+		let activeIndex = -1
 		if (!this.active) {
-			activeIndex = this.pos;
+			activeIndex = this.pos
 		}
-		this.$store.commit('setCurrentFieldIndex', activeIndex);
-		this.$store.commit('setCurrentFieldType', this.field.type);
+		this.$store.commit('setCurrentFieldIndex', activeIndex)
+		this.$store.commit('setCurrentFieldType', this.field.type)
 	}
 }
 </script>

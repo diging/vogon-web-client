@@ -21,7 +21,7 @@ div(class="text-container")
 						class="annotation-fixed-content"
 					)
 						ListsSideDrawer(
-							:relations='relations' 
+							:relations='relations'
 							:appellations="appellations"
 							:relationsets="relationsets"
 							:network="network"

@@ -19,17 +19,17 @@ div(class="main")
 								:to="`/project/${partOfProject.id}`"
 							) {{ partOfProject.name }}
 
-							template(v-if="partOfProject && isOwner && !submitted")
-								v-dialog(v-model="projectMoveDialog" scrollable max-width="500px")
-									template(v-slot:activator="{ on }")
-										v-btn(small v-on="on" color="error" depressed) Move to another Project
-									
-									ProjectSearch(
-										:currentProject="partOfProject"
-										:choosingProject="movingProject"
-										:onProjectChoose="moveProject"
-										:onClose="() => { projectMoveDialog = false }"
-									)
+						template(v-if="partOfProject && isOwner && !submitted")
+							v-dialog(v-model="projectMoveDialog" scrollable max-width="500px")
+								template(v-slot:activator="{ on }")
+									v-btn(small v-on="on" color="error" depressed) Move to another Project
+								
+								ProjectSearch(
+									:currentProject="partOfProject"
+									:choosingProject="movingProject"
+									:onProjectChoose="moveProject"
+									:onClose="() => { projectMoveDialog = false }"
+								)
 
 					v-col(cols="6")
 						div(v-if="partOfProject && isEditable && !submitted" class="float-right")
@@ -180,6 +180,7 @@ export default class TextDetails extends Vue {
 				}
 				this.project = response.data.project_details
 				this.relations = response.data.relations
+				console.log("TextDetails RELATIONS: ", this.relations)
 				this.masterId = response.data.master_text.id
 				this.submitted = response.data.submitted
 

@@ -17,6 +17,7 @@ export interface RootState {
 	assignment_failed: boolean;
 	validator: number;
 	text_content_styles: any;
+	editRelationQuery: string;
 	templateCreator: { open_concepts: any[] };
 	annotator: {
 		currentTab: string;
