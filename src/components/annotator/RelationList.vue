@@ -9,6 +9,7 @@ v-list(three-line dense class="relationset-list")
 import { Component, Prop, Vue } from 'vue-property-decorator'
 
 import RelationListItem from '@/components/annotator/RelationListItem.vue'
+import { createDecorator } from 'vue-class-component'
 
 @Component({
 	name: 'RelationList',
@@ -19,6 +20,7 @@ import RelationListItem from '@/components/annotator/RelationListItem.vue'
 export default class RelationList extends Vue {
 	@Prop() private relations: any[] = []
 }
+
 </script>
 
 <style scoped>

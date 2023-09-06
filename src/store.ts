@@ -20,6 +20,7 @@ const initialState: RootState = {
 	assignment_failed: false,
 	validator: 0,
 	text_content_styles: {},
+	editRelationQuery: '',
 	annotator: {
 		currentTab: 'tab-4',
 		template: null,
@@ -213,6 +214,9 @@ const mutations: MutationTree<RootState> = {
 	setAnnotatorisDateStringAppellation(state, value) {
 		state.annotator.isDateStringAppellation = value;
 	},
+	setEditRelationQuery(state, query) {
+		state.editRelationQuery = query
+	}
 };
 
 export default new Vuex.Store({
@@ -257,6 +261,7 @@ export default new Vuex.Store({
 		templateOpenConcepts: (state) => state.templateCreator.open_concepts,
 		notifications: (state) => state.notifications,
 		getAnnotatorisDateStringAppellation: (state) => state.annotator.isDateStringAppellation,
+		getEditRelationQuery: (state) => state.editRelationQuery
 	},
 	actions: {},
 });
