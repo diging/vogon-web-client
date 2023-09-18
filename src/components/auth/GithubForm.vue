@@ -17,16 +17,16 @@ import { Component, Vue } from 'vue-property-decorator';
   name: 'GithubForm',
 })
 export default class GithubForm extends Vue {
-  private password: string = '';
-  private username: string = '';
-  private error: boolean = false;
-  private valid: boolean = false;
+	private password: string = '';
+	private username: string = '';
+	private error: boolean = false;
+	private valid: boolean = false;
 
 	public created() {
 		if (this.$route.query.code) {
 			this.getAccessToken(this.$route.query.code);
 		}
-  }
+	}
 
   /**
    * get access code from github after getting auth code from github
@@ -35,12 +35,12 @@ export default class GithubForm extends Vue {
   public getAccessToken(code: string | Array<string | null>) {
 	Vue.$axios
 		.get('github-token/', {
-		params: {
-			code,
-		},
+			params: {
+				code,
+			},
 		})
 		.then((result) => {
-			this.$router.push('dashboard');
+			this.$router.push('/dashboard');
 		})
 		.catch((error) => {
 		// TODO: deal with errors

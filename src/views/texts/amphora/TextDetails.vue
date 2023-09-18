@@ -95,7 +95,7 @@ div(class="main")
 
 <script lang="ts">
 import { AxiosError, AxiosResponse } from 'axios';
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Prop } from 'vue-property-decorator';
 
 import Breadcrumbs from '@/components/global/Breadcrumbs.vue';
 import EmptyView from '@/components/global/EmptyView.vue';
@@ -131,7 +131,6 @@ export default class TextDetails extends Vue {
 	private relations: RelationSet[] = []
 	private masterId: number | null = null
 	private submitted: boolean = true
-
 	private snackbarText: string = ''
 	private snackbar: boolean = false
 	private snackbarColor: string = 'error'
@@ -140,6 +139,7 @@ export default class TextDetails extends Vue {
 	private movingProject: boolean = false
 	private addingText: boolean = false
 	private removingText: boolean = false
+	private repository: string = ''
 
 	private navItems = [
 		{ text: 'Projects', to: '/project', link: true, exact: true },
@@ -168,6 +168,7 @@ export default class TextDetails extends Vue {
 	private async getTextDetails(): Promise<void> {
 		this.loading = true
 		let queryParam = ''
+		let url = ''
 		const projectId = this.$route.query.project_id
 		if (projectId) {
 			queryParam = `?project_id=${projectId}`
@@ -180,7 +181,6 @@ export default class TextDetails extends Vue {
 				}
 				this.project = response.data.project_details
 				this.relations = response.data.relations
-				console.log("TextDetails RELATIONS: ", this.relations)
 				this.masterId = response.data.master_text.id
 				this.submitted = response.data.submitted
 
@@ -272,8 +272,8 @@ export default class TextDetails extends Vue {
 				this.projectMoveDialog = false
 				const param = `?project_id=${targetProject.id}`
 				this.$router.push(
-					`/repository/amphora/${this.$route.params.repoId}/text/${this.$route.params.textId}${param}`,
-				);
+					`/repository/${this.$route.params.repoName}/${this.$route.params.repoId}/text/${this.$route.params.textId}${param}`,
+				)
 				this.getTextDetails()
 			})
 			.catch((error: AxiosError) => {

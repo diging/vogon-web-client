@@ -1,19 +1,19 @@
 <template lang="pug">
-	div(class="main")
-		h2(class="display-1") Collection details
-		br
-		ErrorIndicator(v-if="error") Error while loading collection details!
+div(class="main")
+	h2(class="display-1") Collection details
+	br
+	ErrorIndicator(v-if="error") Error while loading collection details!
+	div(v-else)
+		Loading(v-if="loading")
 		div(v-else)
-			Loading(v-if="loading")
-			div(v-else)
-				Breadcrumbs(:items="navItems" class="mt-2")
-				h3(class="title font-weight-regular") Browsing colleciton "{{ collection.name }}"
-				br
-				v-card(tile outlined class="col-details")
-					v-card-title Text resources
-					template(v-if="!collection.resources.length")
-						EmptyView No text resources found!
-					TextResources(v-else v-bind:resources="collection.resources" v-bind:repoId="$route.params.repoId" v-bind:queryParam="queryParam")
+			Breadcrumbs(:items="navItems" class="mt-2")
+			h3(class="title font-weight-regular") Browsing colleciton "{{ collection.name }}"
+			br
+			v-card(tile outlined class="col-details")
+				v-card-title Text resources
+				template(v-if="!collection.resources.length")
+					EmptyView No text resources found!
+				TextResources(v-else v-bind:resources="collection.resources" v-bind:repoId="$route.params.repoId" v-bind:queryParam="queryParam")
 </template>
 
 <script lang="ts">
@@ -61,7 +61,6 @@ export default class CollectionDetails extends Vue {
 		Vue.$axios.get(`/repository/amphora/${this.$route.params.repoId}/collections/${this.$route.params.colId}?project_id=${projectId}`)
 			.then((response: AxiosResponse) => {
 				this.collection = response.data as TextCollection;
-
 				const project = response.data.project;
 				const repo = response.data.repository;
 				this.navItems[1].text = project.name;

@@ -27,7 +27,10 @@ import RepoDetails from './views/texts/amphora/RepoDetails.vue';
 import TextContent from './views/texts/amphora/TextContent.vue';
 import TextDetails from './views/texts/amphora/TextDetails.vue';
 import CitesphereGroupDetails from './views/texts/citesphere/CitesphereGroupDetails.vue';
-import CitesphereRepoDeatils from './views/texts/citesphere/CitesphereRepoDeatils.vue';
+import CitesphereRepoDetails from './views/texts/citesphere/CitesphereRepoDetails.vue';
+import CitesphereTextContent from './views/texts/citesphere/CitesphereTextContent.vue';
+import CitesphereTextDetails from './views/texts/citesphere/CitesphereTextDetails.vue';
+import ItemDetails from './views/texts/citesphere/ItemDetails.vue';
 import RepoList from './views/texts/RepoList.vue';
 import TextView from './views/TextView.vue';
 import UserDetail from './views/users/UserDetail.vue';
@@ -85,14 +88,29 @@ export default new Router({
 			component: TextContent,
 		},
 		{
+			path: '/repository/citesphere/:repoId/groups/:groupId/items/:itemId/file/:contentId',
+			name: 'citesphere-text-content',
+			component: CitesphereTextContent,
+		},
+		{
 			path: '/repository/citesphere/:id',
 			name: 'citesphere-repo-details',
-			component: CitesphereRepoDeatils,
+			component: CitesphereRepoDetails,
 		},
 		{
 			path: '/repository/citesphere/:repoId/groups/:groupId',
 			name: 'citesphere-group-details',
 			component: CitesphereGroupDetails,
+		},
+		{
+			path: '/repository/:repoName/:repoId/groups/:groupId/items/:itemId/texts/:textId',
+			name: 'citesphere-text-details',
+			component: CitesphereTextDetails,
+		},
+		{
+			path: '/repository/:repoName/:repoId/groups/:groupId/items/:itemId',
+			name: 'citesphere-item-details',
+			component: ItemDetails,
 		},
 		{
 			path: '/concept',

@@ -1,20 +1,20 @@
 <template lang="pug">
-	div(class="main")
-		h2(class="display-1") Repository Details
-		br
-		ErrorIndicator(v-if="error") Error while loading repository details!
+div(class="main")
+	h2(class="display-1") Repository Details
+	br
+	ErrorIndicator(v-if="error") Error while loading repository details!
+	div(v-else)
+		Loading(v-if="loading")
 		div(v-else)
-			Loading(v-if="loading")
-			div(v-else)
-				v-card(tile outlined class="repo-details")
-					h3(class="headline") {{ repo.name }}
-					h4(class="subtitle-1") {{ repo.description }}
-				br
-				v-card(class="card-project-text")
-					v-card-title Groups
-					template(v-if="!repo.groups.length")
-						EmptyView No groups found!
-					RepoGroups(v-else v-bind:groups="repo.groups" v-bind:repoId="$route.params.id" v-bind:queryParam="queryParam")
+			v-card(tile outlined class="repo-details")
+				h3(class="headline") {{ repo.name }}
+				h4(class="subtitle-1") {{ repo.description }}
+			br
+			v-card(class="card-project-text")
+				v-card-title Groups
+				template(v-if="!repo.groups.length")
+					EmptyView No groups found!
+				RepoGroups(v-else v-bind:groups="repo.groups" v-bind:repoId="$route.params.id" v-bind:queryParam="queryParam")
 
 </template>
 

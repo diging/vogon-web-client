@@ -50,7 +50,7 @@ div(class="main")
 								v-if="isOwner"
 								update
 								:project="Object.assign({}, project)" 
-								v-bind:getProjectDetails="getProjectDetails"
+								:getProjectDetails="getProjectDetails"
 							)
 							v-btn(tile depressed color="teal" class="ma-2" dark :to="`/repository?project_id=${this.$route.params.id}`")
 								v-icon(left) mdi-plus
@@ -62,7 +62,7 @@ div(class="main")
 
 					v-dialog(v-if="isOwner" v-model="changeOwnerDialog" scrollable max-width="500px")
 						template(v-slot:activator="{ on }")
-							v-btn(small v-on="on" color="error" depressed) 
+							v-btn(small v-on="on" color="error" depressed)
 								v-icon(left) mdi-account-switch
 								span Transfer Ownership
 
@@ -95,7 +95,7 @@ div(class="main")
 					EmptyView No texts found! Perhaps, add one?
 				template(v-else)
 					v-data-table(
-						:headers="textHeaders" 
+						:headers="textHeaders"
 						:items="project.texts"
 						v-model="selected"
 						item-key="id"
@@ -111,7 +111,7 @@ div(class="main")
 					EmptyView No Files found! Perhaps, export texts?
 				template(v-else)
 					v-data-table(
-						:headers="fileHeaders" 
+						:headers="fileHeaders"
 						:items="csvFiles"
 						item-key="id"
 						)
