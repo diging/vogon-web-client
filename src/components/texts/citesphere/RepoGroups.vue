@@ -1,6 +1,6 @@
 <template lang="pug">
 v-list(two-line)
-	v-div
+	div
 		template(v-for="(group, index) in groups")
 			div(v-if="(index >= perPage*(page - 1)) && (index <= (perPage*page) - 1)")
 				v-list-item(:key="group.id" v-bind:to="`/repository/citesphere/${repoId}/groups/${group.id}${queryParam}`")

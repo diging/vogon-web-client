@@ -6,17 +6,12 @@ v-row
 				v-card-title#title Login
 				v-card-text
 					v-text-field(class="mt-4" label="Username" required outlined v-model="username" :rules="[() => !!username || 'Username Required.']")
-					v-text-field(label="Password" required outlined password :type="show ? 'text' : 'password'" :append-icon="show ? 'visibility' : 'visibility_off'" @click:append="show = !show" v-model="password" :rules="[() => !!password || 'Password Required.']")
 				v-alert(v-if="error" v-model="error" type="error" dense dismissible class="mx-4")
 					| Error while logging in: {{ errorMsg }}
 
 				v-card-actions()
 					div(class="flex-grow-1")    
 					v-btn(class="mr-4" color="teal" :disabled="!valid" large depressed @click="login") Login
-
-				div.px-2.text-center
-					| Forgot password?
-					router-link(to="/forgot-password" class="mx-2") Click here
 
 				div.mt-2.pb-4.px-2.text-center Don't have an account?
 					router-link(to="/signup" class="mx-2") Signup
@@ -36,7 +31,7 @@ import Loading from '@/components/global/Loading.vue';
 	name: 'LoginForm',
 })
 export default class Login extends Vue {
-	private password: string = '';
+	//private password: string = '';
 	private username: string = '';
 	private show: boolean = false;
 	private error: boolean = false;
@@ -50,45 +45,39 @@ export default class Login extends Vue {
 		if ((this.$refs.loginForm as VForm).validate()) {
 			const payload = {
 				username: this.username,
-				password: this.password,
 			};
 			Vue.$axios.post('token/', payload)
 				.then( (response: AxiosResponse) => {
-					this.$root.$data.loggedIn = true;
-					localStorage.setItem('token', response.data.access);
+					this.$root.$data.loggedIn = true
+					localStorage.setItem('token', response.data.access)
 					localStorage.setItem('is_admin', response.data.is_admin)
-					Vue.$axios.defaults.headers.common.Authorization = `Bearer ${response.data.access}`;
-					const decoded = JwtDecode<TokenDto>(response.data.access);
-					const userId = this.$utils.getUserId();
+					Vue.$axios.defaults.headers.common.Authorization = `Bearer ${response.data.access}`
+					const decoded = JwtDecode<TokenDto>(response.data.access)
+					const userId = this.$utils.getUserId()
 					const token: any = localStorage.getItem('token');
 					const payload = {
 						username: this.username,
 						token: token,
 					};
-					Vue.$axios.post('/check-reset-token/', payload)
-						.then((response: AxiosResponse) => {
-							this.$router.push({
-								name: 'reset-password',
-								params: { token: token}
-							});
-						})
-						.catch((error: AxiosError) => {
-							this.error = true;
-						})
-						.finally(() => this.loading = false);
-					if (decoded.github_token) {
-						this.$router.push('dashboard');
+					if (decoded.citesphere_token) {
+						this.$router.push({name: 'dashboard'})
 					} else {
-						this.$router.push('github');
+						this.$router.push({name: 'citesphere-auth'})
 					}
 					window.location.reload()
 				})
 				.catch((error: AxiosError) => {
-					this.error = true;
+					this.error = true
 					if (error.response && error.response.data && error.response.data.detail) {
-						this.errorMsg = error.response.data.detail;
+						console.log("HERE1")
+						console.log('ERROR DATA: ', error.response.data)
+						this.errorMsg = error.response.data.detail
 					} else {
-						this.errorMsg = error.message;
+						console.log("HERE2")
+						if (error.response) {
+							console.log('ERROR DATA: ', error.response.data)
+						}
+						this.errorMsg = error.message
 					}
 				});
 		}

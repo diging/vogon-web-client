@@ -30,6 +30,7 @@ export interface TokenDto {
 	jti: string;
 	user_id: number;
 	github_token: boolean;
+	citesphere_token: boolean;
 }
 
 export interface PaginatedFilter {

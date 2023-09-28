@@ -2,7 +2,7 @@
 div(class="main")
 	h2(class="display-1") Group Details
 	br
-	ErrorIndicator(v-if="error") Error while loading group details!
+	ErrorIndicator(v-if="error") {{errorMsg}}
 	div(v-else)
 		Loading(v-if="loading")
 		div(v-else)
@@ -71,7 +71,7 @@ div(class="main")
 </template>
 
 <script lang="ts">
-import { AxiosResponse } from 'axios'
+import { AxiosError, AxiosResponse } from 'axios'
 import { Component, Vue } from 'vue-property-decorator'
 
 import EmptyView from '@/components/global/EmptyView.vue'
@@ -101,6 +101,7 @@ export default class CitesphereGroupDetails extends Vue {
 	private itemsCount: number = 0
 	private loading: boolean = true
 	private error: boolean = false
+	private errorMsg: string = ""
 	private queryParam: string = ''
 	private page: number = 1
 
@@ -128,7 +129,14 @@ export default class CitesphereGroupDetails extends Vue {
 				this.groupDetails = response.data as CitesphereGroupInfo
 				this.itemsCount = this.groupDetails.group.numItems
 			})
-			.catch(() => this.error = true)
+			.catch((error: AxiosError) => {
+				this.error = true
+				if (error.response) {
+					if (error.response.status == 404) {
+						this.errorMsg = error.response.data.message
+					}
+				}
+			})
 			.finally(() => this.loading = false)
 	}
 

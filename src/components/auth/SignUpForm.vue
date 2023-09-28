@@ -6,25 +6,6 @@ v-row(align="center" justify="center")
 				v-card-title#title Sign Up
 				v-card-text
 					v-text-field(class="mt-4" label="Username" required outlined v-model="username" :rules="[() => !!username || 'Username Required.']")
-					v-text-field(
-						label="Password"
-						required 
-						outlined 
-						password 
-						:type="show1 ? 'text' : 'password'" 
-						v-model="password" 
-						:rules="[() => !!password || 'Password Required.']"
-						:append-icon="show1 ? 'visibility' : 'visibility_off'" 
-						@click:append="show1 = !show1"
-					)
-					v-text-field(
-						label="Password Confirmation" 
-						required outlined password :type="show2 ? 'text' : 'password'" 
-						v-model="passwordConfirmation" 
-						:rules="[() => !!passwordConfirmation || 'Password Confirmation Required.',() => passwordConfirmation == password || 'Passwords should match']" 
-						:append-icon="show2 ? 'visibility' : 'visibility_off'" 
-						@click:append="show2 = !show2"
-					)
 					v-text-field(class="mt-4" label="Full Name" required outlined v-model="fullName" :rules="[() => !!fullName || 'Full Name Required.']")
 					v-text-field(class="mt-4" label="Email" required outlined v-model="email" :rules="[() => !!email || 'Email Required.',v => /.+@.+\..+/.test(v) || 'E-mail must be valid']")
 					v-text-field(class="mt-4" label="Affiliation" required outlined v-model="affiliation" :rules="[() => !!affiliation|| 'Affiliation Required.']")
@@ -69,7 +50,6 @@ export default class Login extends Vue {
 		if ((this.$refs.signUpForm as VForm).validate()) {
 			Vue.$axios.post('/create-user/', {
 				username: this.username,
-				password: this.password,
 				full_name: this.fullName,
 				email: this.email,
 				affiliation: this.affiliation,
@@ -78,21 +58,19 @@ export default class Login extends Vue {
 				const { access } = response.data;
 				localStorage.setItem('token', access);
 				Vue.$axios.defaults.headers.common.Authorization = `Bearer ${access}`;
-				this.$router.push('/github');
-				//this.$router.push('/auth/citesphere');
+				this.$router.push({name: 'citesphere-auth'});
 			})
 			.catch((error: AxiosError) => {
 				this.error = true;
 				if (error && error.response && error.response.status === 412) {
-					this.errorMsg = String(error.response.data[0]).slice(0, -1);
+					this.errorMsg = String(error.response.data[0])
 					for (let i = 1; i < error.response.data.length; i++) {
-						this.errorMsg = this.errorMsg.concat(
-							', ' + String(error.response.data[i]).slice(0, -1),
-						);
+						this.errorMsg = this.errorMsg.concat(String(error.response.data[i]))
 					}
 				} else {
-					if (error.response)
-					this.errorMsg = 'User could not be created';
+					if (error.response) {
+						this.errorMsg = 'User could not be created';
+					}
 				}
 			});
 		}
