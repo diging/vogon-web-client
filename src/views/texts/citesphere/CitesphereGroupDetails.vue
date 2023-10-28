@@ -78,7 +78,6 @@ import EmptyView from '@/components/global/EmptyView.vue'
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue'
 import Loading from '@/components/global/Loading.vue'
 import TextItem from '@/components/texts/citesphere/TextItem.vue'
-import TextResources from '@/components/texts/amphora/TextResources.vue'
 
 import {
 	CitesphereCollection,

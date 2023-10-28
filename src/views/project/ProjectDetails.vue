@@ -87,7 +87,7 @@ div(class="main")
 				template(v-else)
 					v-data-table(:headers="textHeaders" :items="project.texts")
 						template(v-slot:item.title="{ item }")
-							router-link(:to="`/repository/amphora/${item.repository_id}/text/${item.repository_source_id}?project_id=${project.id}`") {{ item.title }}
+							router-link(:to="`/repository/citesphere/${item.repository_id}/text/${item.repository_source_id}?project_id=${project.id}`") {{ item.title }}
 			br
 			v-card(class="card-project-exportappellations")
 				v-card-title Export Apellations

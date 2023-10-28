@@ -62,15 +62,15 @@ div(class="main")
 				| The following content objects are associated with this resource. 
 				| Select a content object to begin annotating that object in VogonWeb. 
 			TextAdditionalContent(
-				v-bind:contents="text.content"
-				v-bind:ready="text.state === 'OK'"
-				v-bind:editable="isEditable"
+				:contents="text.content"
+				:ready="text.state === 'OK'"
+				:editable="isEditable"
 				class="mb-4"
 			)
 			TextSerialContent(
-				v-bind:contents="text.aggregate_content"
-				v-bind:ready="text.state === 'OK'"
-				v-bind:editable="isEditable"
+				:contents="text.aggregate_content"
+				:ready="text.state === 'OK'"
+				:editable="isEditable"
 			)
 			v-card(class="card-annotations mt-4")
 				v-row(class="annotation-title")
@@ -80,34 +80,34 @@ div(class="main")
 						div(class="float-right")
 							v-btn(
 								class="view-annotations" 
-								v-bind:to="`/relations?occursIn=${text.uri}`" 
+								:to="`/relations?occursIn=${text.uri}`" 
 								dense outlined
 							) View all
 				v-card-text
 					template(v-if="!relations.length")
 						EmptyView No annotations found!
 					template(v-else)
-						AnnotationList(v-bind:annotations="relations")
+						AnnotationList(:annotations="relations")
 
 	v-snackbar(v-model="snackbar" top :color="snackbarColor" :timeout="3000")
 		| {{ snackbarText }}
 </template>
 
 <script lang="ts">
-import { AxiosError, AxiosResponse } from 'axios';
-import { Component, Vue, Prop } from 'vue-property-decorator';
+import { AxiosError, AxiosResponse } from 'axios'
+import { Component, Vue, Prop } from 'vue-property-decorator'
 
-import Breadcrumbs from '@/components/global/Breadcrumbs.vue';
-import EmptyView from '@/components/global/EmptyView.vue';
-import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
-import Loading from '@/components/global/Loading.vue';
-import AnnotationList from '@/components/relations/AnnotationList.vue';
-import TextAdditionalContent from '@/components/texts/amphora/TextAdditionalContent.vue';
-import TextSerialContent from '@/components/texts/amphora/TextSerialContent.vue';
-import ProjectSearch from '@/components/texts/ProjectSearch.vue';
-import { Project } from '@/interfaces/ProjectTypes';
-import { RelationSet } from '@/interfaces/RelationTypes';
-import { TextResource } from '@/interfaces/RepositoryTypes';
+import Breadcrumbs from '@/components/global/Breadcrumbs.vue'
+import EmptyView from '@/components/global/EmptyView.vue'
+import ErrorIndicator from '@/components/global/ErrorIndicator.vue'
+import Loading from '@/components/global/Loading.vue'
+import AnnotationList from '@/components/relations/AnnotationList.vue'
+import TextAdditionalContent from '@/components/texts/amphora/TextAdditionalContent.vue'
+import TextSerialContent from '@/components/texts/amphora/TextSerialContent.vue'
+import ProjectSearch from '@/components/texts/ProjectSearch.vue'
+import { Project } from '@/interfaces/ProjectTypes'
+import { RelationSet } from '@/interfaces/RelationTypes'
+import { TextResource } from '@/interfaces/RepositoryTypes'
 
 @Component({
 	name: 'TextDetails',
@@ -116,8 +116,8 @@ import { TextResource } from '@/interfaces/RepositoryTypes';
 		Loading,
 		EmptyView,
 		ErrorIndicator,
-		TextSerialContent,
 		TextAdditionalContent,
+		TextSerialContent,
 		AnnotationList,
 		ProjectSearch,
 	},
@@ -148,7 +148,7 @@ export default class TextDetails extends Vue {
 		{ text: '', to: '', link: true, exact: true },
 		{ text: 'Text', link: false },
 		{ text: '', link: false },
-	];
+	]
 
 	public async mounted(): Promise<void> {
 		this.getTextDetails()
@@ -168,7 +168,6 @@ export default class TextDetails extends Vue {
 	private async getTextDetails(): Promise<void> {
 		this.loading = true
 		let queryParam = ''
-		let url = ''
 		const projectId = this.$route.query.project_id
 		if (projectId) {
 			queryParam = `?project_id=${projectId}`
@@ -259,7 +258,7 @@ export default class TextDetails extends Vue {
 
 		this.movingProject = true;
 		Vue.$axios.post(
-			`/repository/amphora/${this.$route.params.repoId}/texts/${this.$route.params.textId}/transfer_to_project`,
+			`/repository/citesphere/${this.$route.params.repoId}/texts/${this.$route.params.textId}/transfer_to_project`,
 			{
 				project_id: this.partOfProject.id,
 				target_project_id: targetProject.id,
