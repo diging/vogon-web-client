@@ -63,7 +63,7 @@ export default class Login extends Vue {
 					} else {
 						this.$router.push({name: 'citesphere-auth'})
 					}
-					//window.location.reload()
+					window.location.reload()
 				})
 				.catch((error: AxiosError) => {
 					this.error = true
