@@ -32,7 +32,6 @@ export default class TextContent extends Vue {
 		const contentId = this.$route.params.contentId
 		const itemId = this.$route.params.itemId
 		const contentType = this.$route.query.content_type
-
 		const projectId = this.$route.query.project_id
 		const partOf = this.$route.query.part_of
 		let queryParam = '?'
@@ -49,7 +48,7 @@ export default class TextContent extends Vue {
 				if (response.data.success) {
 					let queryParamRedirect = ''
 					if (response.data.project_id) {
-						queryParamRedirect = `?project_id=${response.data.project_id}&group_id=${groupId}&repo_id=${repoId}&file_id=${contentId}`
+						queryParamRedirect = `?project_id=${response.data.project_id}&file_id=${contentId}`
 					}
 					this.$router.push(`/annotate/${response.data.text_id}${queryParamRedirect}`)
 				} else {

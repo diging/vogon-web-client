@@ -131,9 +131,9 @@ export default class CitesphereGroupDetails extends Vue {
 			.catch((error: AxiosError) => {
 				this.error = true
 				if (error.response) {
-					if (error.response.status == 404) {
-						this.errorMsg = error.response.data.message
-					}
+					console.log("ERROR STATUS: ", error.response.status)
+					console.log("MESSAGE: ", error.response)
+					this.errorMsg = error.response.data.message
 				}
 			})
 			.finally(() => this.loading = false)
