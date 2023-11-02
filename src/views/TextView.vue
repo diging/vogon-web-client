@@ -87,7 +87,7 @@ export default class TextView extends Vue {
 		const repoId = this.$route.query.repo_id
 		const fileId = this.$route.query.file_id
 		if (projectId) {
-			this.queryParam = `?project_id=${projectId}&group_id=${groupId}&repo_id=${repoId}&file_id=${fileId}`
+			this.queryParam = `?project_id=${projectId}&file_id=${fileId}`
 		}
 
 		Vue.$axios.get(`/annotate/${this.$route.params.id}${this.queryParam}`)
