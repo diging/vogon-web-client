@@ -35,16 +35,16 @@ import EmptyView from '@/components/global/EmptyView.vue';
 	components: { EmptyView },
 })
 export default class CitesphereAdditionalContent extends Vue {
-	@Prop() private readonly contents!:any;
-	@Prop() private readonly ready!: boolean;
-	@Prop() private readonly editable!: boolean;
-	@Prop() private readonly data!: any;
-	private queryParam = '';
+	@Prop() private readonly contents!:any
+	@Prop() private readonly ready!: boolean
+	@Prop() private readonly editable!: boolean
+	@Prop() private readonly data!: any
+	private queryParam = ''
 
 	public created() {
-		const projectId = this.$route.query.project_id;
+		const projectId = this.$route.query.project_id
 		if (projectId) {
-			this.queryParam = `?project_id=${projectId}`;
+			this.queryParam = `?project_id=${projectId}`
 		}
 	}
 }

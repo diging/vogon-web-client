@@ -45,10 +45,7 @@ export default class ItemDetails extends Vue {
 	private error: boolean = false
 	private data: any
 	private master_text: any = null
-	private test: string = ''
-	private test1: string = ''
 	public created() {
-		this.test1 = "created"
 		this.repoId = this.$route.params.repoId
         let queryParam = this.$route.query.project_id
         this.item = this.$route.params.itemId

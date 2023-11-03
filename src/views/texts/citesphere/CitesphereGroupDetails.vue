@@ -84,7 +84,7 @@ import {
 	CitesphereGroupInfo,
 	CitesphereItem,
 	CitesphereItemAuthor,
-} from '@/interfaces/CitesphereTypes';
+} from '@/interfaces/CitesphereTypes'
 
 @Component({
 	name: 'CitesphereGroupDetails',

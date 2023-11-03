@@ -48,7 +48,7 @@ export default class TextContent extends Vue {
 				if (response.data.success) {
 					let queryParamRedirect = ''
 					if (response.data.project_id) {
-						queryParamRedirect = `?project_id=${response.data.project_id}&file_id=${contentId}`
+						queryParamRedirect = `?project_id=${response.data.project_id}&group_id=${groupId}&repo_id=${repoId}&file_id=${contentId}`
 					}
 					this.$router.push(`/annotate/${response.data.text_id}${queryParamRedirect}`)
 				} else {

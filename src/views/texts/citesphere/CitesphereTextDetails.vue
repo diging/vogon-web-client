@@ -97,7 +97,7 @@ div(class="main")
 
 <script lang="ts">
 import { AxiosError, AxiosResponse } from 'axios'
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 
 import Breadcrumbs from '@/components/global/Breadcrumbs.vue'
 import EmptyView from '@/components/global/EmptyView.vue'

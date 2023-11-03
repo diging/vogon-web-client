@@ -13,32 +13,33 @@ v-card(tile outlined class="col-details")
 </template>
 
 <script lang="ts">
-import { AxiosResponse } from 'axios';
-import { Component, Prop, Vue } from 'vue-property-decorator';
-import EmptyView from '@/components/global/EmptyView.vue';
+import { AxiosResponse } from 'axios'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 
+import EmptyView from '@/components/global/EmptyView.vue'
 
 @Component({
 	name: 'TextItem',
 	components: { EmptyView }
 })
 export default class TextItem extends Vue {
-	@Prop() private readonly repoId!: string;
-	@Prop() private readonly queryParam!: string;
-	@Prop() private readonly item!: any;
-	@Prop() private readonly groupId!: string;
-	private loading: boolean = false;
-	private error: boolean = false;
-	private data: any;
-	private master_text: any;
+	@Prop() private readonly repoId!: string
+	@Prop() private readonly queryParam!: string
+	@Prop() private readonly item!: any
+	@Prop() private readonly groupId!: string
+	private loading: boolean = false
+	private error: boolean = false
+	private data: any
+	private master_text: any
+
 	public created()  {
 		Vue.$axios.get(`/repository/citesphere/${this.repoId}/groups/${this.groupId}/items/${this.item}${this.queryParam}`)
 			.then((response: AxiosResponse) => {
-				this.data = response.data;
-				this.master_text = response.data.master_text_object;
+				this.data = response.data
+				this.master_text = response.data.master_text_object
 			})
 			.catch(() => this.error = true)
-			.finally(() => this.loading = false);
+			.finally(() => this.loading = false)
 	}
 }
 </script>

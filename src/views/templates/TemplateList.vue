@@ -96,6 +96,7 @@ export default class TemplateList extends Vue {
 	}
 
 	private getTemplates(): void {
+		console.log('HERE')
 		this.loading = true;
 		let all = '';
 		if (this.all) {
@@ -103,9 +104,13 @@ export default class TemplateList extends Vue {
 		}
 		Vue.$axios.get(`/relationtemplate${all}`)
 			.then((response: AxiosResponse) => {
+				console.log('HERE2')
 				this.templates = response.data;
 			})
-			.catch(() => this.error = true)
+			.catch((error: AxiosError) => {
+				this.error = true
+				console.log('ERROR: ', error.response)
+			})
 			.finally(() => this.loading = false);
 	}
 

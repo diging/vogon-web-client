@@ -29,7 +29,7 @@ div(class="text-container")
 </template>
 
 <script lang="ts">
-import { AxiosResponse } from 'axios'
+import { AxiosResponse, AxiosError } from 'axios'
 import { Component, Vue } from 'vue-property-decorator'
 
 import AppellationList from '@/components/annotator/AppellationList.vue'
@@ -87,11 +87,12 @@ export default class TextView extends Vue {
 		const repoId = this.$route.query.repo_id
 		const fileId = this.$route.query.file_id
 		if (projectId) {
-			this.queryParam = `?project_id=${projectId}&file_id=${fileId}`
+			this.queryParam = `?project_id=${projectId}&group_id=${groupId}&repo_id=${repoId}&file_id=${fileId}`
 		}
 
 		Vue.$axios.get(`/annotate/${this.$route.params.id}${this.queryParam}`)
 			.then((response: AxiosResponse) => {
+				console.log("HERE")
 				this.content = response.data.content
 				this.project = response.data.project
 				this.text = response.data.text
@@ -125,7 +126,10 @@ export default class TextView extends Vue {
 				this.pendingRelationsets = response.data.pending_relationsets
 				this.relationsets = response.data.relationsets
 			})
-			.catch(() => this.error = true)
+			.catch((error: AxiosError) => {
+				this.error = true
+				console.log(error.response)
+			})
 			.finally(() => this.loading = false)
 
 		Vue.$axios.get(`/annotate/${this.$route.params.id}/network${this.queryParam}`)

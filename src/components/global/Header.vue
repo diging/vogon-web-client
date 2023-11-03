@@ -3,7 +3,7 @@
 		router-link(to="/")
 			img(height="50px" src="../../assets/images/logos/logo-17.png" class="mr-3")
 		v-btn(v-if="loggedIn" text large to="/project" class="subheading font-weight-medium") Projects
-		v-btn(v-if="loggedIn && is_admin == 'true'" text large to="/relationtemplate" class="subheading font-weight-medium") Templates
+		v-btn(v-if="loggedIn && is_admin == 'True'" text large to="/relationtemplate" class="subheading font-weight-medium") Templates
 		v-btn(text large to="/about" class="subheading font-weight-medium") About
 		v-menu(v-if="loggedIn" class="ml-3" offset-y open-on-hover style="display: block")
 			template(v-slot:activator="{ on }")
@@ -66,13 +66,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator'
 
-import EmptyView from '@/components/global/EmptyView.vue';
-import { Notification } from '@/interfaces/GlobalTypes';
-import router from '@/router';
-import { getUserId } from '@/utils';
-import { AxiosResponse } from 'axios';
+import EmptyView from '@/components/global/EmptyView.vue'
+import { Notification } from '@/interfaces/GlobalTypes'
+import router from '@/router'
+import { getUserId } from '@/utils'
+import { AxiosResponse } from 'axios'
 
 @Component({
 	name: 'Header',
@@ -81,57 +81,57 @@ import { AxiosResponse } from 'axios';
 	},
 })
 export default class Header extends Vue {
-	private activeIndex: string = '1';
-	private is_admin: any = '';
+	private activeIndex: string = '1'
+	private is_admin: string | null = ''
 	private dataItems: object[] = [
 		{ title: 'Concepts', link: '/concept' },
 		{ title: 'Concept Types', link: '/types' },
 		{ title: 'Annotations', link: '/relations' },
 		{ title: 'Contributors', link: '/users' },
-	];
-	private loggedIn: boolean = this.$store.getters.loggedIn;
-	private notifications: any[] = [];
-	private unreadCount: number = 0;
+	]
+	private loggedIn: boolean = this.$store.getters.loggedIn
+	private notifications: any[] = []
+	private unreadCount: number = 0
 
 	public created() {
-		this.watchStore();
-		this.is_admin = localStorage.getItem('is_admin');
+		this.watchStore()
+		this.is_admin = localStorage.getItem('is_admin')
 	}
 
 	private watchStore() {
 		this.$store.watch(
 			(state, getters) => getters.notifications,
 			(newValue, oldValue) => {
-				this.notifications = newValue;
-				this.unreadCount = newValue.filter((i: Notification) => i.unread).length;
+				this.notifications = newValue
+				this.unreadCount = newValue.filter((i: Notification) => i.unread).length
 			},
-		);
+		)
 		this.$store.subscribe((mutation, state) => {
 			if (mutation.type === 'loggedInMutation') {
-				this.loggedIn = mutation.payload;
+				this.loggedIn = mutation.payload
 			}
-		});
+		})
 	}
 
 	private login() {
-		this.$router.push('/login');
+		this.$router.push('/login')
 	}
 
 	private signup() {
-		this.$router.push('/signup');
+		this.$router.push('/signup')
 	}
 
 	private logout() {
-		this.$store.commit('loggedInMutation', false);
-		localStorage.removeItem('token');
-		this.login();
+		this.$store.commit('loggedInMutation', false)
+		localStorage.removeItem('token')
+		this.login()
 	}
 
 	private readNotification(notification: Notification) {
 		if (notification.unread) {
 			Vue.$axios.post(`/notifications/${notification.id}/mark_as_read`)
 				.then(() => {
-					Vue.$verify(router, true);
+					Vue.$verify(router, true)
 				});
 		}
 	}
@@ -139,16 +139,16 @@ export default class Header extends Vue {
 	private deleteNotification(notification: Notification) {
 		// Clear from list
 		const newNotifications = this.notifications.filter(
-			(i: Notification) => i.id !== notification.id);
-		this.$store.commit('setNotifications', newNotifications);
+			(i: Notification) => i.id !== notification.id)
+		this.$store.commit('setNotifications', newNotifications)
 
 		// Make delete call
-		Vue.$axios.post(`/notifications/${notification.id}/mark_as_deleted`);
+		Vue.$axios.post(`/notifications/${notification.id}/mark_as_deleted`)
 	}
 
 	private deleteAllNotifications() {
-		this.$store.commit('setNotifications', []);
-		Vue.$axios.post(`/notifications/mark_all_as_deleted`);
+		this.$store.commit('setNotifications', [])
+		Vue.$axios.post(`/notifications/mark_all_as_deleted`)
 	}
 }
 </script>
