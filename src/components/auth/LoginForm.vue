@@ -57,7 +57,7 @@ export default class Login extends Vue {
 					const payload = {
 						username: this.username,
 						token: token,
-					};
+					}
 					if (decoded.citesphere_token) {
 						this.$router.push({name: 'dashboard'})
 					} else {
