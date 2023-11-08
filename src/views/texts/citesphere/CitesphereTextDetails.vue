@@ -62,16 +62,16 @@ div(class="main")
                 | The following content objects are associated with this resource. 
                 | Select a content object to begin annotating that object in VogonWeb. 
             CitesphereAdditionalContent(
-                v-bind:contents="additionalFiles"
-                v-bind:ready="data.documentStatus === 'COMPLETE'"
-                v-bind:editable="isEditable"
+                :contents="additionalFiles"
+                :ready="data.documentStatus === 'COMPLETE'"
+                :editable="isEditable"
                 class="mb-4"
             )
             
             CitesphereSerialContent(
-                v-bind:contents="data['pages']"
-                v-bind:ready="data.documentStatus === 'COMPLETE'"
-                v-bind:editable="isEditable"
+                :contents="data['pages']"
+                :ready="data.documentStatus === 'COMPLETE'"
+                :editable="isEditable"
             )
             
             v-card(class="card-annotations mt-4")
@@ -82,35 +82,34 @@ div(class="main")
                         div(class="float-right")
                             v-btn(
                                 class="view-annotations" 
-                                v-bind:to="`/relations?occursIn=${text.uri}`" 
+                                :to="`/relations?occursIn=${text.uri}`" 
                                 dense outlined
                             ) View all
                 v-card-text
                     template(v-if="!relations")
                         EmptyView No annotations found!
                     template(v-else)
-                        AnnotationList(v-bind:annotations="relations")
+                        AnnotationList(:annotations="relations")
 
     v-snackbar(v-model="snackbar" top :color="snackbarColor" :timeout="3000")
         | {{ snackbarText }}
 </template>
 
 <script lang="ts">
-import { AxiosError, AxiosResponse } from 'axios';
-import { Component, Vue, Prop } from 'vue-property-decorator';
+import { AxiosError, AxiosResponse } from 'axios'
+import { Component, Vue } from 'vue-property-decorator'
 
-import Breadcrumbs from '@/components/global/Breadcrumbs.vue';
-import EmptyView from '@/components/global/EmptyView.vue';
-import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
-import Loading from '@/components/global/Loading.vue';
-import AnnotationList from '@/components/relations/AnnotationList.vue';
-import TextAdditionalContent from '@/components/texts/amphora/TextAdditionalContent.vue';
-import CitesphereSerialContent from '@/components/texts/citesphere/CitesphereSerialContent.vue';
-import ProjectSearch from '@/components/texts/ProjectSearch.vue';
-import { Project } from '@/interfaces/ProjectTypes';
-import { RelationSet } from '@/interfaces/RelationTypes';
-import { TextResource } from '@/interfaces/RepositoryTypes';
-import CitesphereAdditionalContent from '@/components/texts/citesphere/CitesphereAdditionalContent.vue';
+import Breadcrumbs from '@/components/global/Breadcrumbs.vue'
+import EmptyView from '@/components/global/EmptyView.vue'
+import ErrorIndicator from '@/components/global/ErrorIndicator.vue'
+import Loading from '@/components/global/Loading.vue'
+import AnnotationList from '@/components/relations/AnnotationList.vue'
+import CitesphereAdditionalContent from '@/components/texts/citesphere/CitesphereAdditionalContent.vue'
+import CitesphereSerialContent from '@/components/texts/citesphere/CitesphereSerialContent.vue'
+import ProjectSearch from '@/components/texts/ProjectSearch.vue'
+import { Project } from '@/interfaces/ProjectTypes'
+import { RelationSet } from '@/interfaces/RelationTypes'
+import { TextResource } from '@/interfaces/RepositoryTypes'
 
 @Component({
 	name: 'TextDetails',
@@ -125,28 +124,28 @@ import CitesphereAdditionalContent from '@/components/texts/citesphere/Citespher
 		CitesphereSerialContent
 	},
 })
-export default class TextDetails extends Vue {
-	private loading: boolean = true;
-	private error: boolean = false;
-	private project: Project | null = null;
-	private partOfProject: Project | null = null;
-	private text: TextResource = {id: 1, title: ''};
-	private relations: RelationSet[] = [];
-	private masterId: number | null = null;
-	private submitted: boolean = true;
-	private additionalFiles: any = '';
-	private result: any = '';
-	private snackbarText: string = '';
-	private snackbar: boolean = false;
-	private snackbarColor: string = 'error';
+export default class CitesphereTextDetails extends Vue {
+	private loading: boolean = true
+	private error: boolean = false
+	private project: Project | null = null
+	private partOfProject: Project | null = null
+	private text: TextResource = {id: 1, title: ''}
+	private relations: RelationSet[] = []
+	private masterId: number | null = null
+	private submitted: boolean = true
+	private additionalFiles: any = ''
+	private result: any = ''
+	private snackbarText: string = ''
+	private snackbar: boolean = false
+	private snackbarColor: string = 'error'
 
-	private projectMoveDialog: boolean = false;
-	private movingProject: boolean = false;
-	private addingText: boolean = false;
-	private removingText: boolean = false;
-	private repository: string = '';
-	private data: any = '';
-	private chosenText: any = '';
+	private projectMoveDialog: boolean = false
+	private movingProject: boolean = false
+	private addingText: boolean = false
+	private removingText: boolean = false
+	private repository: string = ''
+	private data: any = ''
+	private chosenText: any = ''
 
 	private navItems = [
 		{ text: 'Projects', to: '/project', link: true, exact: true },
@@ -155,123 +154,123 @@ export default class TextDetails extends Vue {
 		{ text: '', to: '', link: true, exact: true },
 		{ text: 'Text', link: false },
 		{ text: '', link: false },
-	];
+	]
 
 	public async mounted(): Promise<void> {
-		this.getTextDetails();
+		this.getTextDetails()
 	}
 
 	get isEditable(): boolean {
 		if (this.project) {
-			return Vue.$utils.permissions.isProjectCollaborator(this.project);
+			return Vue.$utils.permissions.isProjectCollaborator(this.project)
 		}
-		return false;
+		return false
 	}
 
 	get isOwner(): boolean {
-		return Vue.$utils.permissions.isProjectOwner(this.project);
+		return Vue.$utils.permissions.isProjectOwner(this.project)
 	}
 
 	private async getTextDetails(): Promise<void> {
-		this.loading = true;
-		let queryParam = '';
+		this.loading = true
+		let queryParam = ''
 		let url = ''
-		const projectId = this.$route.query.project_id;
+		const projectId = this.$route.query.project_id
 		if (projectId) {
-			queryParam += `?project_id=${projectId}`;
+			queryParam += `?project_id=${projectId}`
 		}
 		Vue.$axios.get(`/repository/${this.$route.params.repoName}/${this.$route.params.repoId}/groups/${this.$route.params.groupId}/items/${this.$route.params.itemId}${queryParam}`)
 			.then((response: AxiosResponse) => {
-				this.chosenText = this.$route.params.textId;
-				this.text = response.data.master_text;
-				this.result = response.data.result;
+				this.chosenText = this.$route.params.textId
+				this.text = response.data.master_text
+				this.result = response.data.result
 				// check about additional files, test by uploading a new file
-				this.additionalFiles = [];
-				this.additionalFiles.push(this.result.extractedText);
-				this.additionalFiles.push(this.result.uploadedFile);
+				this.additionalFiles = []
+				this.additionalFiles.push(this.result.extractedText)
+				this.additionalFiles.push(this.result.uploadedFile)
 
-				this.data = response.data.result;
+				this.data = response.data.result
 				if (response.data.part_of_project) {
-					this.partOfProject = response.data.part_of_project;
+					this.partOfProject = response.data.part_of_project
 				}
-				this.project = response.data.project_details;
-				this.masterId = response.data.master_text.id;
-				this.submitted = response.data.submitted;
+				this.project = response.data.project_details
+				this.masterId = response.data.master_text.id
+				this.submitted = response.data.submitted
 
 				if (this.project && !projectId) {
-					const query = this.$route.query;
+					const query = this.$route.query
 					this.$router.replace({
 						query: {
 							...query,
 							project_id: `${this.project.id}`,
 						},
-					});
+					})
 				}
 				if (this.project) {
-					this.navItems[1].text = this.project.name;
-					this.navItems[1].to = `/project/${this.project.id}`;
+					this.navItems[1].text = this.project.name
+					this.navItems[1].to = `/project/${this.project.id}`
 				}
-				const repo = response.data.repository;
-				this.navItems[3].text = repo.name;
-				this.navItems[3].to = `/repository/${this.$route.params.repoName}/${repo.id}${queryParam}`;
-				this.navItems[5].text = this.text.title;
+				const repo = response.data.repository
+				this.navItems[3].text = repo.name
+				this.navItems[3].to = `/repository/${this.$route.params.repoName}/${repo.id}${queryParam}`
+				this.navItems[5].text = this.text.title
 			})
 			.catch(() => this.error = true)
-			.finally(() => this.loading = false);
+			.finally(() => this.loading = false)
 	}
 
 	private async addText(): Promise<void> {
-		this.addingText = true;
+		this.addingText = true
 		Vue.$axios.post(`/project/${this.$route.query.project_id}/add_text`,
 				{ text_id: this.text.id, repository_id: this.$route.params.repoId },
 			)
 			.then((response: AxiosResponse) => {
-				this.addingText = false;
-				this.snackbar = true;
-				this.snackbarText = 'Successfully added text to the project';
-				this.snackbarColor = 'success';
-				this.getTextDetails();
+				this.addingText = false
+				this.snackbar = true
+				this.snackbarText = 'Successfully added text to the project'
+				this.snackbarColor = 'success'
+				this.getTextDetails()
 			})
 			.catch(() => {
-				this.addingText = false;
-				this.snackbar = true;
-				this.snackbarText = 'Error while adding text to the project';
-				this.snackbarColor = 'error';
-			});
+				this.addingText = false
+				this.snackbar = true
+				this.snackbarText = 'Error while adding text to the project'
+				this.snackbarColor = 'error'
+			})
 	}
 
 	private async removeText(): Promise<void> {
-		this.removingText = true;
+		this.removingText = true
 		Vue.$axios.delete(`/project/${this.$route.query.project_id}`, {
 				data: { text_id: this.masterId },
 			})
 			.then(() => {
-				this.removingText = false;
-				this.snackbar = true;
-				this.snackbarText = 'Successfully removed text from the project';
-				this.snackbarColor = 'success';
-				this.project = null;
-				this.partOfProject = null;
-				this.getTextDetails();
+				this.removingText = false
+				this.snackbar = true
+				this.snackbarText = 'Successfully removed text from the project'
+				this.snackbarColor = 'success'
+				this.project = null
+				this.partOfProject = null
+				this.getTextDetails()
 			})
 			.catch((error) => {
-				this.removingText = false;
-				this.snackbar = true;
-				this.snackbarColor = 'error';
+				this.removingText = false
+				this.snackbar = true
+				this.snackbarColor = 'error'
 				if (error.response.status === 412) {
-					this.snackbarText = 'Text cannot be removed after annotations have been submitted to Quadriga';
+					this.snackbarText = 'Text cannot be removed after annotations have been submitted to Quadriga'
 				} else {
-					this.snackbarText = 'Error while removing text from the project';
+					this.snackbarText = 'Error while removing text from the project'
 				}
-			});
+			})
 	}
 
 	private async moveProject(targetProject: Project): Promise<void> {
 		if (!this.partOfProject) {
-			return;
+			return
 		}
 
-		this.movingProject = true;
+		this.movingProject = true
 		Vue.$axios.post(
 			`/repository/${this.$route.params.repoName}/${this.$route.params.repoId}/groups/${this.$route.params.groupId}/items/${this.$route.params.itemId}/transfer_to_project`,
 			{
@@ -281,28 +280,28 @@ export default class TextDetails extends Vue {
 			},
 		)
 			.then((response: AxiosResponse) => {
-				this.snackbarText = response.data.message;
-				this.snackbarColor = 'success';
-				this.snackbar = true;
-				this.projectMoveDialog = false;
-				const param = `?project_id=${targetProject.id}`;
+				this.snackbarText = response.data.message
+				this.snackbarColor = 'success'
+				this.snackbar = true
+				this.projectMoveDialog = false
+				const param = `?project_id=${targetProject.id}`
 				this.$router.push(
 					`/repository/${this.$route.params.repoName}/${this.$route.params.repoId}/groups/${this.$route.params.groupId}/items/${this.$route.params.itemId}/texts/${this.$route.params.textId}${param}`,
-				);
-				this.getTextDetails();
+				)
+				this.getTextDetails()
 			})
 			.catch((error: AxiosError) => {
 				if (error.response && error.response.data && error.response.data.message) {
-					this.snackbarText = error.response.data.message;
+					this.snackbarText = error.response.data.message
 				} else {
-					this.snackbarText = error.message;
+					this.snackbarText = error.message
 				}
-				this.snackbarColor = 'error';
-				this.snackbar = true;
+				this.snackbarColor = 'error'
+				this.snackbar = true
 			})
 			.finally(() => {
-				this.movingProject = false;
-			});
+				this.movingProject = false
+			})
 	}
 }
 </script>

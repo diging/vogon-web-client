@@ -17,15 +17,15 @@ div(class="main")
 </template>
 
 <script lang="ts">
-import { AxiosResponse } from 'axios';
-import { Component, Vue } from 'vue-property-decorator';
+import { AxiosResponse } from 'axios'
+import { Component, Vue } from 'vue-property-decorator'
 
-import Breadcrumbs from '@/components/global/Breadcrumbs.vue';
-import EmptyView from '@/components/global/EmptyView.vue';
-import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
-import Loading from '@/components/global/Loading.vue';
-import TextResources from '@/components/texts/amphora/TextResources.vue';
-import { TextCollection } from '@/interfaces/RepositoryTypes';
+import Breadcrumbs from '@/components/global/Breadcrumbs.vue'
+import EmptyView from '@/components/global/EmptyView.vue'
+import ErrorIndicator from '@/components/global/ErrorIndicator.vue'
+import Loading from '@/components/global/Loading.vue'
+import TextResources from '@/components/texts/amphora/TextResources.vue'
+import { TextCollection } from '@/interfaces/RepositoryTypes'
 
 @Component({
 	name: 'CollectionDetails',
@@ -38,10 +38,10 @@ import { TextCollection } from '@/interfaces/RepositoryTypes';
 	},
 })
 export default class CollectionDetails extends Vue {
-	private loading: boolean = true;
-	private error: boolean = false;
-	private collection: TextCollection = {id: 1, name: ''};
-	private queryParam: string = '';
+	private loading: boolean = true
+	private error: boolean = false
+	private collection: TextCollection = {id: 1, name: ''}
+	private queryParam: string = ''
 	private navItems = [
 		{ text: 'Projects', to: '/project', link: true, exact: true },
 		{ text: '', to: '', link: true, exact: true },
@@ -49,28 +49,28 @@ export default class CollectionDetails extends Vue {
 		{ text: '', to: '', link: true, exact: true },
 		{ text: 'Collections', link: false },
 		{ text: '', link: false },
-	];
+	]
 
 	public async mounted(): Promise<void> {
-		const projectId = this.$route.query.project_id;
+		const projectId = this.$route.query.project_id
 		if (projectId) {
-			this.queryParam = `?project_id=${projectId}`;
-			this.navItems[2].to = `${this.navItems[2].to}${this.queryParam}`;
+			this.queryParam = `?project_id=${projectId}`
+			this.navItems[2].to = `${this.navItems[2].to}${this.queryParam}`
 		}
 
 		Vue.$axios.get(`/repository/amphora/${this.$route.params.repoId}/collections/${this.$route.params.colId}?project_id=${projectId}`)
 			.then((response: AxiosResponse) => {
-				this.collection = response.data as TextCollection;
-				const project = response.data.project;
-				const repo = response.data.repository;
-				this.navItems[1].text = project.name;
-				this.navItems[1].to = `/project/${project.id}`;
-				this.navItems[3].text = repo.name;
-				this.navItems[3].to = `/repository/amphora/${repo.id}${this.queryParam}`;
-				this.navItems[5].text = this.collection.name;
+				this.collection = response.data as TextCollection
+				const project = response.data.project
+				const repo = response.data.repository
+				this.navItems[1].text = project.name
+				this.navItems[1].to = `/project/${project.id}`
+				this.navItems[3].text = repo.name
+				this.navItems[3].to = `/repository/amphora/${repo.id}${this.queryParam}`
+				this.navItems[5].text = this.collection.name
 			})
 			.catch(() => this.error = true)
-			.finally(() => this.loading = false);
+			.finally(() => this.loading = false)
 	}
 }
 </script>

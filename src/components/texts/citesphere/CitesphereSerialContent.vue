@@ -22,35 +22,34 @@ v-card(tile outlined class="container")
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator'
 
-import EmptyView from '@/components/global/EmptyView.vue';
-import { TextAggregatedContent } from '@/interfaces/RepositoryTypes';
+import EmptyView from '@/components/global/EmptyView.vue'
 
 @Component({
 	name: 'CitesphereSerialContent',
 	components: { EmptyView },
 })
 export default class CitesphereSerialContent extends Vue {
-	@Prop() private readonly contents!: any;
-	@Prop() private readonly ready!: boolean;
-	@Prop() private readonly editable!: boolean;
-	@Prop() private readonly data!: boolean;
-	private queryParam = '';
-	private reconstructedData : any = [];
-	private results: any = '';
+	@Prop() private readonly contents!: any
+	@Prop() private readonly ready!: boolean
+	@Prop() private readonly editable!: boolean
+	@Prop() private readonly data!: boolean
+	private queryParam = ''
+	private reconstructedData : any = []
+	private results: any = ''
 
 	public created() {
 		for (let content in this.contents) {
-			this.reconstructedData.push({key:'image',value:this.contents[content]['image']});
-			this.reconstructedData.push({key:'text', value:this.contents[content]['text']});
-			this.reconstructedData.push({key:'ocr',value:this.contents[content]['ocr']});
+			this.reconstructedData.push({key:'image',value:this.contents[content]['image']})
+			this.reconstructedData.push({key:'text', value:this.contents[content]['text']})
+			this.reconstructedData.push({key:'ocr',value:this.contents[content]['ocr']})
 
 		}
-		this.results = this.reconstructedData.reduce((r:any, a:any) => { r[a.key] = [...r[a.key] || [], a]; return r;}, {});
-		const projectId = this.$route.query.project_id;
+		this.results = this.reconstructedData.reduce((r:any, a:any) => { r[a.key] = [...r[a.key] || [], a]; return r;}, {})
+		const projectId = this.$route.query.project_id
 		if (projectId) {
-			this.queryParam = `?project_id=${projectId}`;
+			this.queryParam = `?project_id=${projectId}`
 		}
 	}
 }

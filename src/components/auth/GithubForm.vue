@@ -40,7 +40,7 @@ export default class GithubForm extends Vue {
 			},
 		})
 		.then((result) => {
-			this.$router.push('/dashboard');
+			this.$router.push('/dashboard')
 		})
 		.catch((error) => {
 		// TODO: deal with errors
