@@ -9,13 +9,13 @@ div(class="text-container")
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 
-import AppellationDisplay from '@/components/annotator/AppellationDisplay.vue';
-import store from '@/store';
+import AppellationDisplay from '@/components/annotator/AppellationDisplay.vue'
+import store from '@/store'
 import {
 	clearMouseTextSelection, getAnnotationRectPositions,
-} from '@/utils/annotations';
+} from '@/utils/annotations'
 
 @Component({
 	name: 'TextDisplay',
@@ -25,68 +25,68 @@ import {
 })
 export default class TextDisplay extends Vue {
 	@Prop()
-	private content!: string;
+	private content!: string
 
 	@Prop()
-	private appellations!: any[];
+	private appellations!: any[]
 
-	private currentAppellations: any[] = [];
-	private selectedPosition: any = null;
-	private selected: boolean = false;
+	private currentAppellations: any[] = []
+	private selectedPosition: any = null
+	private selected: boolean = false
 
 	public async mounted() {
-		this.calculatePositions();
-		window.addEventListener('resize', this.calculatePositions);
+		this.calculatePositions()
+		window.addEventListener('resize', this.calculatePositions)
 	}
 
 	public created() {
-		this.currentAppellations = this.appellations;
+		this.currentAppellations = this.appellations
 	}
 
 	@Watch('appellations')
 	private onAppellationChange(val: any) {
-		this.currentAppellations = val;
-		this.calculatePositions();
-		this.selected = false;
+		this.currentAppellations = val
+		this.calculatePositions()
+		this.selected = false
 	}
 
 	private calculatePositions() {
-		const container = this.$refs.textContent as Element;
+		const container = this.$refs.textContent as Element
 		const positions = this.currentAppellations.map(
 			(appellation, i) => ({
 				...getAnnotationRectPositions(appellation, container),
 				...appellation,
 			}),
-		);
-		store.commit('setTextContentStyle', { positions } );
+		)
+		store.commit('setTextContentStyle', { positions } )
 	}
 
 	private handleMouseUp(event: Event) {
-		const textContent = this.$refs.textContent as HTMLElement;
+		const textContent = this.$refs.textContent as HTMLElement
 		if (event.target !== null) {
-			const target = event.target as HTMLElement;
+			const target = event.target as HTMLElement
 			if (target.id !== textContent.id) {
-				return;
+				return
 			}
 
-			event.stopPropagation();
+			event.stopPropagation()
 
 			// Get the start and end position of the selection. The selection
 			// may have been left-to-right or right-to-left.
-			const selection: any = window.getSelection();
+			const selection: any = window.getSelection()
 			if (selection !== null) {
-				const startOffset = Math.min(selection.anchorOffset, selection.focusOffset);
-				const endOffset = Math.max(selection.anchorOffset, selection.focusOffset);
+				const startOffset = Math.min(selection.anchorOffset, selection.focusOffset)
+				const endOffset = Math.max(selection.anchorOffset, selection.focusOffset)
 				const isTemplateFieldSelectMode = this.$store.getters.getCurrentFieldIndex >= 0 &&
-					this.$store.getters.getCurrentFieldType === 'CO';
+					this.$store.getters.getCurrentFieldType === 'CO'
 
 				if (!isTemplateFieldSelectMode) {
-					this.$store.commit('setAnnotatorCurrentTab', 'tab-4');
-					this.$store.commit('setAnnotatorSearchingConcept', false);
-					const selectedAppellation = this.$store.getters.getAnnotatorEditAppellationMode;
+					this.$store.commit('setAnnotatorCurrentTab', 'tab-4')
+					this.$store.commit('setAnnotatorSearchingConcept', false)
+					const selectedAppellation = this.$store.getters.getAnnotatorEditAppellationMode
 					if (selectedAppellation) {
-						const concept = selectedAppellation.interpretation;
-						this.$store.commit('setAnnotatorSelectedConcept', concept);
+						const concept = selectedAppellation.interpretation
+						this.$store.commit('setAnnotatorSelectedConcept', concept)
 					}
 				}
 
@@ -95,30 +95,30 @@ export default class TextDisplay extends Vue {
 						selection.anchorOffset === selection.extentOffset &&
 						selection.toString() === ''
 				) {
-					this.$store.commit('setAnnotatorHighlightedText', null);
-					this.$store.commit('setAnnotatorSelectedConcept', null);
-					this.$store.commit('setAnnotatorEditAppellationMode', null);
+					this.$store.commit('setAnnotatorHighlightedText', null)
+					this.$store.commit('setAnnotatorSelectedConcept', null)
+					this.$store.commit('setAnnotatorEditAppellationMode', null)
 					if (this.currentAppellations.length > 0 && this.currentAppellations[this.currentAppellations.length - 1].current) {
-						this.currentAppellations = this.currentAppellations.slice(0, this.currentAppellations.length - 1);
+						this.currentAppellations = this.currentAppellations.slice(0, this.currentAppellations.length - 1)
 					}
-					this.calculatePositions();
-					this.selected = false;
+					this.calculatePositions()
+					this.selected = false
 				}
 
 				// If the user double-clicks (e.g. to select a whole word), the
 				// first mouse-up will get as far as here, even though no text has
 				// actually been selected.
 				if (endOffset === startOffset) {
-					return;
+					return
 				}
 
 				// If there was a selection already, replace the existing selection
 				// with current selection
 				if (this.selected) {
-					this.currentAppellations = this.currentAppellations.slice(0, this.currentAppellations.length - 1);
+					this.currentAppellations = this.currentAppellations.slice(0, this.currentAppellations.length - 1)
 				}
 
-				const raw = selection.toString();
+				const raw = selection.toString()
 				const selectedText = {
 					position: {
 						startOffset,
@@ -129,19 +129,19 @@ export default class TextDisplay extends Vue {
 					representation: raw,
 					selected: true,
 					current: true,
-				};
-				this.selected = true;
-				this.$store.commit('setAnnotatorHighlightedText', selectedText);
+				}
+				this.selected = true
+				this.$store.commit('setAnnotatorHighlightedText', selectedText)
 
 				// append the selected text to original list
 				this.currentAppellations = [
 					...this.currentAppellations,
 					selectedText,
-				];
+				]
 
 				// Recalculate the highlight-box positions with new list
-				this.calculatePositions();
-				clearMouseTextSelection();
+				this.calculatePositions()
+				clearMouseTextSelection()
 
 				// If in select mode, fill it in the template part field
 				if (isTemplateFieldSelectMode) {
@@ -155,9 +155,9 @@ export default class TextDisplay extends Vue {
 								position_value: `${startOffset},${endOffset}`,
 							},
 						},
-					});
-					this.$store.commit('setCurrentFieldIndex', -1);
-					this.$store.commit('setCurrentFieldType', null);
+					})
+					this.$store.commit('setCurrentFieldIndex', -1)
+					this.$store.commit('setCurrentFieldType', null)
 				}
 			}
 		}

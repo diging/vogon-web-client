@@ -64,11 +64,11 @@ export default class AppellationListItem extends Vue {
 	private deleteUrl: string = ''
 
 	get creator() {
-		return getCreatorName(this.appellation.createdBy);
+		return getCreatorName(this.appellation.createdBy)
 	}
 
 	get date() {
-		return getFormattedDate(this.appellation.created);
+		return getFormattedDate(this.appellation.created)
 	}
 
 	get deletable() {
@@ -76,13 +76,13 @@ export default class AppellationListItem extends Vue {
 			return (
 				this.appellation.relationsFrom.length === 0 &&
 				this.appellation.relationsTo.length === 0
-			);
+			)
 		}
-		return true;
+		return true
 	}
 
 	public created() {
-		this.watchStore();
+		this.watchStore()
 	}
 
 	private watchStore() {
@@ -90,72 +90,68 @@ export default class AppellationListItem extends Vue {
 			(state, getters) => getters.getAnnotatorFocusedAppellation,
 			(newValue, oldValue) => {
 				if (newValue === this.appellation.index) {
-					this.focused = 'focused';
+					this.focused = 'focused'
 					VueScrollTo.scrollTo(this.$refs[`listItem`] as Element, {
 						container: '#appellation-list',
-					});
+					})
 				} else {
-					this.focused = '';
-					this.edit = false;
+					this.focused = ''
+					this.edit = false
 				}
 			},
-		);
+		)
 	}
 
 	private focusAppellation() {
 		if (!this.edit) {
-			const currentFocusedAppellation = this.$store.getters.getAnnotatorFocusedAppellation;
-			let focusedAppellation = this.appellation.index;
+			const currentFocusedAppellation = this.$store.getters.getAnnotatorFocusedAppellation
+			let focusedAppellation = this.appellation.index
 			if (currentFocusedAppellation > 0 && currentFocusedAppellation === focusedAppellation) {
-				focusedAppellation = 0;
+				focusedAppellation = 0
 			}
-			this.$store.commit('setAnnotatorFocusedAppellation', focusedAppellation);
+			this.$store.commit('setAnnotatorFocusedAppellation', focusedAppellation)
 		}
 	}
 
 	private toggleVisibility() {
 		if (this.visible) {
-			console.log("HIDE APPELLATION")
-			console.log("APPELLATION: ", this.appellation)
-			console.log("APPELLATION INDEX: ", this.appellation.index)
-			this.$store.commit('setAnnotatorHideAppellation', this.appellation.index);
+			this.$store.commit('setAnnotatorHideAppellation', this.appellation.index)
 		} else {
-			console.log("SHOW APPELLATION")
-			this.$store.commit('setAnnotatorShowAppellation', this.appellation.index);
+			this.$store.commit('setAnnotatorShowAppellation', this.appellation.index)
 		}
-		this.visible = !this.visible;
+		this.visible = !this.visible
 	}
 
 	private editAppellation() {
 		if (!this.focused) {
-			this.focusAppellation();
-			this.edit = true;
-			this.$store.commit('setAnnotatorEditAppellationMode', this.appellation);
+			this.focusAppellation()
+			this.edit = true
+			this.$store.commit('setAnnotatorEditAppellationMode', this.appellation)
 			if ('dateRepresentation' in this.appellation) {
-				this.$store.commit('setAnnotatorisDateAppellation', true);
+				this.$store.commit('setAnnotatorisDateAppellation', true)
 			}
 			if (this.appellation.type == "date") {
-				this.$store.commit('setAnnotatorisDateStringAppellation', true);
+				this.$store.commit('setAnnotatorisDateStringAppellation', true)
 			}
 		} else {
 			if (!this.edit) {
-				this.edit = true;
-				this.$store.commit('setAnnotatorEditAppellationMode', this.appellation);
+				this.edit = true
+				this.$store.commit('setAnnotatorEditAppellationMode', this.appellation)
 				if ('dateRepresentation' in this.appellation) {
-					this.$store.commit('setAnnotatorisDateAppellation', true);
+					this.$store.commit('setAnnotatorisDateAppellation', true)
 			    }
 				if (this.appellation.type == "date") {
-					this.$store.commit('setAnnotatorisDateStringAppellation', true);
+					this.$store.commit('setAnnotatorisDateStringAppellation', true)
 				}
 			} else {
-				this.edit = false;
-				this.$store.commit('setAnnotatorEditAppellationMode', null);
+				this.edit = false
+				this.$store.commit('setAnnotatorEditAppellationMode', null)
 			}
 		}
 	}
 
 	private hasDateRepresentation() {
-		return 'dateRepresentation' in this.appellation;
+		return 'dateRepresentation' in this.appellation
 	}
 
 	private hasInterpretation() {
@@ -163,37 +159,36 @@ export default class AppellationListItem extends Vue {
 	}
 
 	private isDateString() {
-		return this.appellation.type=="date";
+		return this.appellation.type=="date"
 	}
 
 	private deleteAppellation() {
 		if ('type' in this.appellation) {
-			this.deleteUrl = `/appellation/${this.appellation.id}`;
+			this.deleteUrl = `/appellation/${this.appellation.id}`
 		}
 		else if ('dateRepresentation' in this.appellation) {
-			this.deleteUrl = `/dateappellation/${this.appellation.id}`;
+			this.deleteUrl = `/dateappellation/${this.appellation.id}`
 		}
 		Vue.$axios.delete(this.deleteUrl)
 			.then((response: AxiosResponse) => {
-				console.log("RESPONSE")
-				this.snackbar = true;
-				this.snackbarColor = 'success';
-				this.snackbarMsg = 'Successfully deleted appellation!';
-				this.$store.commit('setAppellationDeleted', true);
+				this.snackbar = true
+				this.snackbarColor = 'success'
+				this.snackbarMsg = 'Successfully deleted appellation!'
+				this.$store.commit('setAppellationDeleted', true)
 			})
 			.catch((error: AxiosError) => {
 				if (error.response && error.response.data && error.response.data.message) {
-					this.snackbarMsg = error.response.data.message;
+					this.snackbarMsg = error.response.data.message
 				} else {
-					this.snackbarMsg = `Error while deleting appellation: ${error.message}`;
+					this.snackbarMsg = `Error while deleting appellation: ${error.message}`
 				}
-				this.snackbar = true;
-				this.snackbarColor = 'error';
+				this.snackbar = true
+				this.snackbarColor = 'error'
 			})
 			.finally(() => {
-				this.deletingAppellation = false;
-				this.showDeleteAppellation = false;
-			});
+				this.deletingAppellation = false
+				this.showDeleteAppellation = false
+			})
 	}
 }
 </script>

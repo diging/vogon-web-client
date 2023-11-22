@@ -13,10 +13,8 @@ v-row
 
 <script lang="ts">
 import _ from 'lodash'
-import moment from 'moment'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { getCreatorName, getFormattedDate } from '@/utils/annotations'
-import { RelationTemplate, RelationTemplateField } from '@/interfaces/RelationTypes'
 
 @Component({
 	name: 'RelationListItem',
@@ -26,10 +24,6 @@ export default class RelationListItem extends Vue {
 	private focused: string = ''
 	private edit: boolean = false
 	private editRelationTab: string = "tab-3"
-
-	public created() {
-		this.watchStore()
-	}
 
 	get creator() {
 		return getCreatorName(this.relation.createdBy)
@@ -67,16 +61,6 @@ export default class RelationListItem extends Vue {
 			}
 		}
 		this.$store.commit('setSelectedFieldAnnotations', fields)
-	}
-
-	private watchStore() {
-		this.$store.subscribe((mutation, state) => {
-			if (mutation.type === 'setFocusedRelationId') {
-				if (mutation.payload !== this.relation.id) {
-					this.focused = ''
-				}
-			}
-		});
 	}
 
 	private focusAppellations() {
