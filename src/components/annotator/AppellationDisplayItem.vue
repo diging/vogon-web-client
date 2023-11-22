@@ -9,7 +9,7 @@ div(v-if="visible" @mouseover="tooltip = true" @mouseleave="tooltip = false")
 		| {{ appellation.dateStringRep }}
 	li(
 		:style="appellation.positionStyle"
-		v-bind:class=`{
+		:class=`{
 			'appellation': appellation.type != null,
 			'date-appellation': appellation.dateRepresentation != null,
 			'appellation-selected': appellation.selected,
@@ -20,13 +20,13 @@ div(v-if="visible" @mouseover="tooltip = true" @mouseleave="tooltip = false")
 
 	li(v-if="manyLinesAreSelected()"
 		v-for="line in appellation.midLines"
-		v-bind:class=`{
+		:class=`{
 			'appellation': appellation.type != null,
 			'date-appellation': appellation.dateRepresentation != null,
 			'appellation-selected': appellation.selected,
 			'appellation-focused': focused
 		}`
-		v-bind:style=`{
+		:style=`{
 			height: line.height + 'px',
 			top: line.top + 'px',
 			left: line.left + 'px',
@@ -38,7 +38,7 @@ div(v-if="visible" @mouseover="tooltip = true" @mouseleave="tooltip = false")
 	)
 
 	li(v-if="multipleLinesAreSelected()"
-		v-bind:style=`{
+		:style=`{
 			height: appellation.positionStyle.height,
 			top: appellation.endPosition.top + 'px',
 			left: appellation.endPosition.left + 'px',
@@ -46,7 +46,7 @@ div(v-if="visible" @mouseover="tooltip = true" @mouseleave="tooltip = false")
 			width: appellation.endPosition.width + 'px',
 			'z-index': 2
 		}`
-		v-bind:class=`{
+		:class=`{
 			'appellation': appellation.type != null,
 			'date-appellation': appellation.dateRepresentation != null,
 			'appellation-selected': appellation.selected,
@@ -57,23 +57,23 @@ div(v-if="visible" @mouseover="tooltip = true" @mouseleave="tooltip = false")
 </template>
 
 <script lang="ts">
-import { Component, Prop, PropSync, Vue, Watch } from 'vue-property-decorator';
+import { Component, Prop, PropSync, Vue, Watch } from 'vue-property-decorator'
 
-import store from '@/store';
+import store from '@/store'
 
 @Component({
 	name: 'AppellationDisplayItem',
 })
 export default class AppellationDisplayItem extends Vue {
-	@Prop() private appellation!: any;
-	@Prop() private index!: number;
+	@Prop() private appellation!: any
+	@Prop() private index!: number
 
-	private tooltip: boolean = false;
-	private focused: boolean = false;
-	private visible: boolean = true;
+	private tooltip: boolean = false
+	private focused: boolean = false
+	private visible: boolean = true
 
 	public created() {
-		this.watchStore();
+		this.watchStore()
 	}
 
 	private watchStore() {
@@ -81,97 +81,92 @@ export default class AppellationDisplayItem extends Vue {
 			(state, getters) => getters.getAnnotatorFocusedAppellation,
 			(newValue, oldValue) => {
 				if (newValue === this.appellation.index) {
-					this.focused = true;
+					this.focused = true
 				} else {
-					this.focused = false;
+					this.focused = false
 				}
 			},
-		);
+		)
 		this.$store.watch(
 			(state, getters) => getters.getAnnotatorHideAppellation,
 			(newValue, oldValue) => {
-				this.visible = !newValue;
+				this.visible = !newValue
 			},
-		);
+		)
 		this.$store.subscribe((mutation, state) => {
 			if (mutation.type === 'setAnnotatorShowAppellation' && mutation.payload === this.appellation.index) {
-				this.visible = true;
+				this.visible = true
 			} else if (mutation.type === 'setAnnotatorHideAppellation' && mutation.payload === this.appellation.index) {
-				this.visible = false;
+				this.visible = false
 			} else if (mutation.type === 'setAnnotatorUpdatedAppellation' && mutation.payload === this.appellation.index) {
-				this.visible = true;
+				this.visible = true
 			} else if (mutation.type === 'setFocusedAppellationsForRelations') {
 				if (mutation.payload[this.appellation.index]) {
-					this.focused = true;
+					this.focused = true
 				} else {
-					this.focused = false;
+					this.focused = false
 				}
 			}
-		});
+		})
 		this.$store.watch(
 			(state, getters) => getters.getAnnotatorEditAppellationMode,
 			(newValue, oldValue) => {
 				if (newValue && newValue.index === this.appellation.index) {
-					this.visible = false;
+					this.visible = false
 				} else if (newValue === null) {
-					this.focused = false;
-					this.visible = true;
+					this.focused = false
+					this.visible = true
 				} else {
-					this.visible = true;
+					this.visible = true
 				}
 			},
-		);
+		)
 	}
 
 	private getLabel() {
 		if (this.appellation.interpretation) {
-			return this.appellation.interpretation.label;
+			return this.appellation.interpretation.label
 		} else {
-			return this.appellation.dateRepresentation;
+			return this.appellation.dateRepresentation
 		}
 	}
 
 	private multipleLinesAreSelected() {
-		return this.appellation.endPosition.top !== undefined;
+		return this.appellation.endPosition.top !== undefined
 	}
 	private manyLinesAreSelected() {
-		return this.appellation.midLines.length > 0;
+		return this.appellation.midLines.length > 0
 	}
 	private hasDateRepresentation() {
-		return 'dateRepresentation' in this.appellation;
+		return 'dateRepresentation' in this.appellation
 	}
 	private hasInterpretation() {
-		return this.appellation.type=="concept";
+		return this.appellation.type=="concept"
 	}
 	private isDateString() {
-		return this.appellation.type=="date";
+		return this.appellation.type=="date"
 	}
 	private onApellationClick() {
-		// Check if this is a currently highlighted text
-		if (this.appellation.selected) {
-			return;
-		}
+		this.$store.commit('setFocusedRelationId', null)
 
-		this.$store.commit('setFocusedRelationId', null);
-
-		const currentFieldIndex = this.$store.getters.getCurrentFieldIndex;
+		const currentFieldIndex = this.$store.getters.getCurrentFieldIndex
 		if (currentFieldIndex >= 0) {
 			this.$store.commit('setSelectedFieldAnnotationsAt', {
 				pos: currentFieldIndex,
 				annotation: this.$store.getters.getAnnotatorAppellations[this.index],
-			});
+			})
 
 			// Reset
-			this.$store.commit('setCurrentFieldIndex', -1);
-			this.$store.commit('setCurrentFieldType', null);
+			this.$store.commit('setCurrentFieldIndex', -1)
+			this.$store.commit('setCurrentFieldType', null)
 		} else {
-			this.$store.commit('setAnnotatorCurrentTab', 'tab-1');
-			const currentFocusedAppellation = this.$store.getters.getAnnotatorFocusedAppellation;
-			let focusedAppellation = this.appellation.index;
+			this.$store.commit('setAnnotatorCurrentTab', 'tab-2')
+			const currentFocusedAppellation = this.$store.getters.getAnnotatorFocusedAppellation
+			let focusedAppellation = this.appellation.id
 			if (currentFocusedAppellation > 0 && currentFocusedAppellation === focusedAppellation) {
-				focusedAppellation = 0;
+				focusedAppellation = 0
 			}
-			this.$store.commit('setAnnotatorFocusedAppellation', focusedAppellation);
+			this.$store.commit('setAnnotatorFocusedAppellation', focusedAppellation)
 		}
 	}
 }
