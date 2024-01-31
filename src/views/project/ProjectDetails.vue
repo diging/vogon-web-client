@@ -42,7 +42,10 @@ div(class="main")
 							| &nbsp;created on 
 							| &nbsp;{{moment(project.created).format('lll')}} by 
 							strong "{{ project.createdBy.username }}"
-						div(class="body-2 mt-2") {{ project.num_texts }} text(s), {{ project.num_relations }} relation(s)
+						div(class="body-2 mt-2")
+							v-list
+								v-list-item(v-for="text in project.texts")
+									| {{ text }}
 
 					v-col(md="6")
 						div(class="float-right" v-if="isEditable")
@@ -227,7 +230,7 @@ export default class ProjectDetails extends Vue {
 	}
 
 	private exportApellations() {
-		let text_ids = [];
+		let text_ids = []
 		for(const select of this.selected) {
 			text_ids.push(select.id)
 		}
@@ -244,7 +247,7 @@ export default class ProjectDetails extends Vue {
 				} else {
 					this.errorMsg = error.message
 				}
-			});
+			})
 	}
 
 	private getCSVFiles() {
@@ -293,7 +296,7 @@ export default class ProjectDetails extends Vue {
 			})
 			.finally(() => {
 				this.changingOwner = false
-			});
+			})
 	}
 
 	private setAsDefault() {
@@ -317,7 +320,7 @@ export default class ProjectDetails extends Vue {
 			.finally(() => {
 				this.settingAsDefault = false
 				this.setAsDefaultDialog = false
-			});
+			})
 	}
 
 	private exportAffiliations() {

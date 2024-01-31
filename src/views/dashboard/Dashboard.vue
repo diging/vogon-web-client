@@ -17,7 +17,7 @@ div(class="main")
 							template(v-for="(text, index) in data.recent_texts")
 								v-list-item(
 									:key="text.id"
-									:to="`/repository/citesphere/${text.repository_id}/text/${text.repository_source_id}?project_id=${data.projects[index].id}`"
+									:to="`/repository/citesphere/${text.repository_id}/groups/${text.group_id}/items/${text.file_id}/texts/${text.id}?project_id=${data.projects[index].id}`"
 								)
 									v-list-item-content
 										v-list-item-title(v-text="text.title")
@@ -32,7 +32,7 @@ div(class="main")
 							template(v-for="(text, index) in data.added_texts")
 								v-list-item(
 									:key="text.id"
-									:to="`/repository/citesphere/${text.repository_id}/text/${text.repository_source_id}?project_id=${data.projects[index].id}`"
+									:to="`/repository/citesphere/${text.repository_id}/groups/${text.group_id}/items/${text.file_id}/texts/${text.id}?project_id=${data.projects[index].id}`"
 								)
 									v-list-item-content
 										v-list-item-title(v-text="text.title")
@@ -74,15 +74,15 @@ div(class="main")
 </template>
 
 <script lang="ts">
-import { AxiosResponse } from 'axios';
-import { Component, Vue } from 'vue-property-decorator';
+import { AxiosResponse } from 'axios'
+import { Component, Vue } from 'vue-property-decorator'
 
-import EmptyView from '@/components/global/EmptyView.vue';
-import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
-import Loading from '@/components/global/Loading.vue';
-import AnnotationItem from '@/components/relations/AnnotationItem.vue';
-import { UserDashboard } from '@/interfaces/DashboardTypes';
-import { forEach } from 'lodash';
+import EmptyView from '@/components/global/EmptyView.vue'
+import ErrorIndicator from '@/components/global/ErrorIndicator.vue'
+import Loading from '@/components/global/Loading.vue'
+import AnnotationItem from '@/components/relations/AnnotationItem.vue'
+import { UserDashboard } from '@/interfaces/DashboardTypes'
+import { forEach } from 'lodash'
 
 @Component({
 	name: 'Dashboard',
@@ -94,9 +94,9 @@ import { forEach } from 'lodash';
 	},
 })
 export default class Dashboard extends Vue {
-	private loading: boolean = true;
-	private error: boolean = false;
-	private data: UserDashboard = {};
+	private loading: boolean = true
+	private error: boolean = false
+	private data: UserDashboard = {}
 
 	public async mounted(): Promise<void> {
 		Vue.$axios.get('/users/dashboard')

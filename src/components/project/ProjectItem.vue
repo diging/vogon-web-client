@@ -1,30 +1,30 @@
 <template lang="pug">
-	v-list-item(:to="`/project/${project.id}`" class="project-card")
-		v-list-item-content
-			div(class="title font-weight-regular") {{project.name}}
-			
-			div(class="text--primary") {{project.description}}
-			span
-				| Owned by 
-				strong "{{ project.ownedBy.username }}",
-				| &nbsp;created on 
-				| &nbsp;{{ moment(project.created).format('lll') }} by 
-				strong "{{ project.createdBy.username }}"
+v-list-item(:to="`/project/${project.id}`" class="project-card")
+	v-list-item-content
+		div(class="title font-weight-regular") {{project.name}}
+		
+		div(class="text--primary") {{project.description}}
+		span
+			| Owned by 
+			strong "{{ project.ownedBy.username }}",
+			| &nbsp;created on 
+			| &nbsp;{{ moment(project.created).format('lll') }} by 
+			strong "{{ project.createdBy.username }}"
 
-			div(class="teal--text") 
-				strong {{project.num_texts}} texts, {{project.num_relations}} relations
+		div(class="teal--text") 
+			strong {{project.num_texts}} texts, {{project.num_relations}} relations
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator'
 
-import { Project } from '@/interfaces/ProjectTypes';
+import { Project } from '@/interfaces/ProjectTypes'
 
 @Component({
 	name: 'ProjectItem',
 })
 export default class ProjectItem extends Vue {
-	@Prop() private readonly project!: Project;
+	@Prop() private readonly project!: Project
 }
 </script>
 

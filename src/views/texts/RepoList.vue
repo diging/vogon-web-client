@@ -1,20 +1,20 @@
 <template lang="pug">
-	div(class="main")
-		h2(class="display-1") Repositories
-		h4(class="subtitle-1") Repositories are configured by the system administrator
+div(class="main")
+	h2(class="display-1") Repositories
+	h4(class="subtitle-1") Repositories are configured by the system administrator
 
-		ErrorIndicator(v-if="error") Error while loading repositories!
-		div(v-else)
-			Loading(v-if="loading")
-			v-list(v-else color="transparent")
-				Breadcrumbs(:items="navItems" class="mt-2")
-				template(v-if="!repos.length")
-					EmptyView No repositories found!
-				template(v-else)
-					v-list-item(v-for="repo in repos" :key="repo.id" class="repo-item" v-bind:to="repoURL(repo)")
-						v-card(width="100%" elevat)
-							v-card-title {{repo.name}}
-							v-card-text {{repo.description}}
+	ErrorIndicator(v-if="error") Error while loading repositories!
+	div(v-else)
+		Loading(v-if="loading")
+		v-list(v-else color="transparent")
+			Breadcrumbs(:items="navItems" class="mt-2")
+			template(v-if="!repos.length")
+				EmptyView No repositories found!
+			template(v-else)
+				v-list-item(v-for="repo in repos" :key="repo.id" class="repo-item" v-bind:to="repoURL(repo)")
+					v-card(width="100%" elevat)
+						v-card-title {{repo.name}}
+						v-card-text {{repo.description}}
 
 </template>
 
