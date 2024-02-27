@@ -1,5 +1,7 @@
 FROM node:13.8
 
 WORKDIR /usr/src/app
+COPY startup_staging.sh .
+RUN ["chmod", "+x", "startup_staging.sh"]
 
-ENTRYPOINT ["./host/startup_staging.sh"]
+ENTRYPOINT ["./startup_staging.sh"]
