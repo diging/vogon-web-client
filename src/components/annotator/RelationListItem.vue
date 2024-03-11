@@ -6,7 +6,7 @@ v-row
 			div(class="subtitle-2 relation-subtitle")
 				| Created by <strong>{{ creator }}</strong> on {{ date }}
 	v-col(:cols="5" class="text-right")
-		v-btn(v-if="!relation.submitted" @click="editRelation" small icon class="d-inline-block mr-1")
+		v-btn(v-if="!relationset.submitted" @click="editRelation" small icon class="d-inline-block mr-1")
 			v-icon mdi-pencil
 
 </template>
@@ -20,61 +20,60 @@ import { getCreatorName, getFormattedDate } from '@/utils/annotations'
 	name: 'RelationListItem',
 })
 export default class RelationListItem extends Vue {
+	@Prop() private relationset!: any
 	@Prop() private relation!: any
 	private focused: string = ''
 	private edit: boolean = false
 	private editRelationTab: string = "tab-3"
+	private relation_parts: string[] = []
+
 
 	get creator() {
-		return getCreatorName(this.relation.createdBy)
+		return getCreatorName(this.relationset.createdBy)
 	}
 
 	get date() {
-		return getFormattedDate(this.relation.created)
+		return getFormattedDate(this.relationset.created)
 	}
 
 	get representation() {
-		if (this.relation.representation) {
-			return this.relation.representation
+		if (this.relationset.representation) {
+			return this.relationset.representation
 		} else {
-			return this.relation.appellations.map((appellation: any) => {
-				return appellation.interpretation.label
-			}).join('; ')
+			this.relation_parts = []
+			for (var appellation of this.relationset.appellations) {
+				if (appellation.id == this.relation.source_object_id) {
+					this.relation_parts[0] = appellation.interpretation.label
+				} else if (appellation.id == this.relation.predicate) {
+					this.relation_parts[1] = appellation.interpretation.label
+				} else if (appellation.id == this.relation.object_object_id) {
+					this.relation_parts[2] = appellation.interpretation.label
+				}
+			}
+			this.relationset.representation = this.relation_parts.join('; ')
+			return this.relationset.representation
 		}
 	}
 
 	private editRelation() {
-		this.$store.commit('setEditRelationQuery', this.relation.label)
+		this.$store.commit('setEditRelationQuery', this.relationset.label)
 		this.$store.commit('setAnnotatorCurrentTab', this.editRelationTab)
-		this.$store.commit('setFocusedRelationId', this.relation.id)
-		this.createFieldsList()
-	}
-
-	private createFieldsList() {
-		let apps = this.$store.getters.getAnnotatorAppellations
-		let fields = []
-		let app_iter = 0
-		for (let app of apps) {
-			if (app_iter < 3 && app.id == this.relation.appellations[app_iter].id) {
-				fields.push(this.relation.appellations[app_iter])
-				app_iter++
-			}
-		}
-		this.$store.commit('setSelectedFieldAnnotations', fields)
+		this.$store.commit('setFocusedRelationId', this.relationset.id)
+		this.$store.commit('setSelectedFieldAnnotations', this.relation_parts)
 	}
 
 	private focusAppellations() {
 		this.$store.commit('setAnnotatorFocusedAppellation', 0)
 		if (!this.focused) {
 			const appellationIds = _.map(
-				this.relation.appellations,
+				this.relationset.appellations,
 				(appellation: any) => [appellation.id, true],
 			);
 			this.$store.commit(
 				'setFocusedAppellationsForRelations',
 				_.fromPairs(appellationIds),
 			);
-			this.$store.commit('setFocusedRelationId', this.relation.id)
+			this.$store.commit('setFocusedRelationId', this.relationset.id)
 			this.focused = 'focused'
 		} else {
 			this.$store.commit('setFocusedAppellationsForRelations', {})

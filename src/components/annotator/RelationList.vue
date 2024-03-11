@@ -1,7 +1,7 @@
 <template lang="pug">
 v-list(three-line dense class="relationset-list")
-	template(v-for="(relation, i) in relationList")
-		RelationListItem(:key="relation.id" :relation="relation")
+	template(v-for="(relationset, i) in relationList")
+		RelationListItem(:key="relationset.id" :relationset="relationset" :relation="relations[i]")
 		v-divider(v-if="i + 1 < relationList.length")
 </template>
 
@@ -18,8 +18,9 @@ import { createDecorator } from 'vue-class-component'
 	},
 })
 export default class RelationList extends Vue {
+	@Prop() private relationsets!: any[]
 	@Prop() private relations!: any[]
-	private relationList: any[] = this.relations
+	private relationList: any[] = this.relationsets
 
 	public created() {
 		this.watchStore()
@@ -28,11 +29,10 @@ export default class RelationList extends Vue {
 	private watchStore() {
 		this.$store.watch(
 			(state, getters) => getters.getAnnotatorFocusedAppellation,
-			(newValue, oldValue) => {	
-				this.relationList = this.relations
+			(newValue, oldValue) => {
+				this.relationList = this.relationsets
 				var filterId = 0
 				var appellationId = this.$store.getters.getAnnotatorFocusedAppellation
-				this.relationList = this.relationList
 					.filter((relation: any) => {
 						relation.appellations.forEach((app: any) => {
 							if (app.id === appellationId) {

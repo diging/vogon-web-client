@@ -304,7 +304,6 @@ export default class AppellationCreator extends Vue {
 		this.createError = false;
 		const highlighted = this.$store.getters.getAnnotatorHighlightedText;
 		if (this.isDateAppellation) {
-			console.log("DATE APPELLATION")
 			const payload: DateAppellation  = {
 			position: {
 				occursIn: this.text.id,
@@ -353,6 +352,7 @@ export default class AppellationCreator extends Vue {
 				this.update(payload, this.$store.getters.getAnnotatorEditAppellationMode.id);
 				this.$store.commit('setAnnotatorEditAppellationMode', null);
 			} else {
+				console.log('HERE')
 				this.create(payload);
 			}
 		}
