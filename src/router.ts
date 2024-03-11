@@ -37,7 +37,6 @@ import UserDetail from './views/users/UserDetail.vue';
 import UserList from './views/users/UserList.vue';
 
 Vue.use(Router);
-
 export default new Router({
 	mode: 'history',
 	base: process.env.BASE_URL,

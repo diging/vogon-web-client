@@ -1,28 +1,28 @@
 <template lang="pug">
-	di.relation-template-selector
-		div.form-group(v-on:keyup.enter="search")
-			div.input-group
-				input(type="text"
-					class="form-control input-sm"
-					v-model="query"
-					placeholder="Search for a relation template...")
-				div.input-group-btn
-					a(v-on:click="search" class="btn btn-sm btn-success")
-						&nbsp; #[span v-if="!searching" class="glyphicon glyphicon-search"]
-						#[span v-if="searching" class="glyphicon glyphicon-hourglass"]
-		p.text-muted
-			| Relation templates are pre-configured "formulas" for encoding relational information
-			| in a text.
-		div.list-group(v-if="showingTemplates()" style="max-height: 300px; overflow-y: scroll;")
-			a(v-on:click="selectTemplate(template)"
-				v-for="template in templates"
-				v-bind:template=template
-				class="list-group-item relationtemplate-item")
-				div
-					strong {{ template.name }}
-					span.text-muted {{ template.description }}
-		div(v-if="showingTemplates()")
-			a(v-on:click="clear" class="btn btn-xs btn-danger") Cancel
+div.relation-template-selector
+	div.form-group(v-on:keyup.enter="search")
+		div.input-group
+			input(type="text"
+				class="form-control input-sm"
+				v-model="query"
+				placeholder="Search for a relation template...")
+			div.input-group-btn
+				a(v-on:click="search" class="btn btn-sm btn-success")
+					| &nbsp; #[span v-if="!searching" class="glyphicon glyphicon-search"]
+					| #[span v-if="searching" class="glyphicon glyphicon-hourglass"]
+	p.text-muted
+		| Relation templates are pre-configured "formulas" for encoding relational information
+		| in a text.
+	div.list-group(v-if="showingTemplates()" style="max-height: 300px; overflow-y: scroll;")
+		a(v-on:click="selectTemplate(template)"
+			v-for="template in templates"
+			v-bind:template=template
+			class="list-group-item relationtemplate-item")
+			div
+				strong {{ template.name }}
+				span.text-muted {{ template.description }}
+	div(v-if="showingTemplates()")
+		a(v-on:click="clear" class="btn btn-xs btn-danger") Cancel
 </template>
 
 <script lang="ts">

@@ -45,14 +45,12 @@ div(class="main")
 						div(class="body-2 mt-2")
 							v-list
 								v-list-item(v-for="text in project.texts")
-									| {{ text }}
-
 					v-col(md="6")
 						div(class="float-right" v-if="isEditable")
 							CreateUpdateProject(
 								v-if="isOwner"
 								update
-								:project="Object.assign({}, project)" 
+								:project="Object.assign({}, project)"
 								:getProjectDetails="getProjectDetails"
 							)
 							v-btn(tile depressed color="teal" class="ma-2" dark :to="`/repository?project_id=${this.$route.params.id}`")
@@ -90,7 +88,8 @@ div(class="main")
 				template(v-else)
 					v-data-table(:headers="textHeaders" :items="project.texts")
 						template(v-slot:item.title="{ item }")
-							router-link(:to="`/repository/citesphere/${item.repository_id}/text/${item.repository_source_id}?project_id=${project.id}`") {{ item.title }}
+							router-link(:to="`/repository/citesphere/${item.repository_id}/text/${item.id}?project_id=${project.id}`") {{ item }} |
+							// repository/citesphere/${text.repository_id}/groups/${text.group_id}/items/${text.file_id}/texts/${text.id}?project_id=${data.projects[index].id}
 			br
 			v-card(class="card-project-exportappellations")
 				v-card-title Export Apellations

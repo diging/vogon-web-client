@@ -10,7 +10,7 @@ div(class="tools-container")
 		v-tab-item(value="tab-1" eager)
 			AppellationList(:appellations="appellations")
 		v-tab-item(value="tab-2" eager)
-			RelationList(:relations="relationsets")
+			RelationList(:relationsets="relationsets" :relations="relations")
 		v-tab-item(value="tab-3" eager)
 			RelationTemplateRender(:template="template" :appellations="appellations")
 		v-tab-item(value="tab-4" eager)
@@ -72,6 +72,7 @@ export default class ListsSideDrawer extends Vue {
 	@Prop() private appellations!: object[]
 	@Prop() private relationsets!: object[]
 	@Prop() private network!: object[]
+
 
 	@Prop() private tab: string = 'tab-4'
 	private drawerTab: string = this.tab
