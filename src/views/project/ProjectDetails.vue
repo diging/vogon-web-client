@@ -88,8 +88,7 @@ div(class="main")
 				template(v-else)
 					v-data-table(:headers="textHeaders" :items="project.texts")
 						template(v-slot:item.title="{ item }")
-							router-link(:to="`/repository/citesphere/${item.repository_id}/text/${item.id}?project_id=${project.id}`") {{ item }} |
-							// repository/citesphere/${text.repository_id}/groups/${text.group_id}/items/${text.file_id}/texts/${text.id}?project_id=${data.projects[index].id}
+							router-link(:to="`/repository/citesphere/${item.repository_id}/groups/${item.group_id}/items/${item.file_id}/texts/${item.id}?project_id=${project.id}`") {{ item.title }}
 			br
 			v-card(class="card-project-exportappellations")
 				v-card-title Export Apellations
