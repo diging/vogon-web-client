@@ -98,7 +98,7 @@ export default class AppellationListItem extends Vue {
 					this.focused = ''
 					this.edit = false
 				}
-			},
+			}
 		)
 	}
 

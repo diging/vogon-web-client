@@ -73,7 +73,6 @@ export default class ListsSideDrawer extends Vue {
 	@Prop() private relationsets!: object[]
 	@Prop() private network!: object[]
 
-
 	@Prop() private tab: string = 'tab-4'
 	private drawerTab: string = this.tab
 	

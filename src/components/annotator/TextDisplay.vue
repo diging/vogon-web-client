@@ -1,14 +1,11 @@
 <template lang="pug">
-div(class="text-container")
-	pre(
-		id="text-content" 
-		ref="textContent" 
-		v-on:mouseup="handleMouseUp"
-	) {{ content }}
+div(class="text-container" id="text-content" ref="textContent" v-on:mouseup="handleMouseUp")
+	template(v-for="line in lines") {{ line }} {{ '\n' }}
 	AppellationDisplay
 </template>
 
 <script lang="ts">
+
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 
 import AppellationDisplay from '@/components/annotator/AppellationDisplay.vue'
@@ -33,6 +30,7 @@ export default class TextDisplay extends Vue {
 	private currentAppellations: any[] = []
 	private selectedPosition: any = null
 	private selected: boolean = false
+	private lines: string[] = []
 
 	public async mounted() {
 		this.calculatePositions()
@@ -40,6 +38,7 @@ export default class TextDisplay extends Vue {
 	}
 
 	public created() {
+		this.lines = this.content.split('\n')
 		this.currentAppellations = this.appellations
 	}
 

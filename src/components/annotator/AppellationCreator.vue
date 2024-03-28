@@ -1,5 +1,6 @@
 <template lang="pug">
 div(class="pa-2")
+	ErrorIndicator(v-if="createError") Error while loading text details!
 	v-expansion-panels
 		v-expansion-panel
 			v-expansion-panel-header 
@@ -139,14 +140,14 @@ div(class="pa-2")
 </template>
 
 <script lang="ts">
-import { AxiosResponse } from 'axios';
-import _ from 'lodash';
-import moment from 'moment';
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import ConceptCreator from './ConceptCreator.vue';
-import ConceptPicker from './ConceptPicker.vue';
-import ConceptSearch from './ConceptSearch.vue';
-import { Appellation, DateAppellation } from '@/interfaces/RelationTypes';
+import { AxiosError, AxiosResponse } from 'axios'
+import _ from 'lodash'
+import moment from 'moment'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import ConceptCreator from './ConceptCreator.vue'
+import ConceptPicker from './ConceptPicker.vue'
+import ConceptSearch from './ConceptSearch.vue'
+import { Appellation, DateAppellation } from '@/interfaces/RelationTypes'
 @Component({
 	name: 'AppellationCreator',
 	components: {
@@ -156,38 +157,38 @@ import { Appellation, DateAppellation } from '@/interfaces/RelationTypes';
 	},
 })
 export default class AppellationCreator extends Vue {
-	@Prop() private text!: any;
-	@Prop() private appellations!: any;
-	private conceptsFinal: any[] = [];
-	private createNewConcept: boolean = false;
-	private creating: boolean = false;
-	private createError: boolean = false;
+	@Prop() private text!: any
+	@Prop() private appellations!: any
+	private conceptsFinal: any[] = []
+	private createNewConcept: boolean = false
+	private creating: boolean = false
+	private createError: boolean = false
 
-	private isDateAppellation: boolean = false;
-	private isDateString: boolean = false;
+	private isDateAppellation: boolean = false
+	private isDateString: boolean = false
 	private months: any[] = [
 		{ label: 'Jan', value: 1 }, { label: 'Feb', value: 2 }, { label: 'Mar', value: 3 },
 		{ label: 'Apr', value: 4 }, { label: 'May', value: 5 }, { label: 'Jun', value: 6 },
 		{ label: 'Jul', value: 7 }, { label: 'Aug', value: 8 }, { label: 'Sep', value: 9 },
 		{ label: 'Oct', value: 10 }, { label: 'Nov', value: 11 }, { label: 'Dec', value: 12 },
 	];
-	private year: string = '';
-	private month: any = null;
-	private day: string = '';
-	private dateString: string = '';
+	private year: string = ''
+	private month: any = null
+	private day: string = ''
+	private dateString: string = ''
 
 	public created() {
-		this.merge(this.appellations);
-		this.watchStore();
+		this.merge(this.appellations)
+		this.watchStore()
 	}
 
 	private selectDateString() {
-		this.$store.commit('setAnnotatorSelectedDate', this.dateString);
+		this.$store.commit('setAnnotatorSelectedDate', this.dateString)
 	}
 
 	@Watch('createNewConcept')
 	public onCreateNewConceptChange(val: boolean) {
-		this.$store.commit('setAnnotatorCreateNewConcept', val);
+		this.$store.commit('setAnnotatorCreateNewConcept', val)
 	}
 
 	private watchStore() {
@@ -195,9 +196,9 @@ export default class AppellationCreator extends Vue {
 			(state, getters) => getters.getAnnotatorSearchingConcept,
 			(newValue, oldValue) => {
 				if (newValue) {
-					this.concepts = [];
+					this.concepts = []
 				} else {
-					this.merge(this.appellations);
+					this.merge(this.appellations)
 				}
 			},
 		);
@@ -205,11 +206,11 @@ export default class AppellationCreator extends Vue {
 			(state, getters) => getters.getAnnotatorisDateAppellation,
 			(newValue, oldValue) => {
 				if (newValue) {
-					this.isDateAppellation = true;
-					const appellation = this.$store.getters.getAnnotatorEditAppellationMode;
-					this.year = appellation.year;
-					this.month = appellation.month;
-					this.day = appellation.day;
+					this.isDateAppellation = true
+					const appellation = this.$store.getters.getAnnotatorEditAppellationMode
+					this.year = appellation.year
+					this.month = appellation.month
+					this.day = appellation.day
 				}
 			},
 		);
@@ -217,9 +218,9 @@ export default class AppellationCreator extends Vue {
 			(state, getters) => getters.getAnnotatorisDateStringAppellation,
 			(newValue, oldValue) => {
 				if (newValue === true) {
-					this.isDateString = true;
-					const appellation = this.$store.getters.getAnnotatorEditAppellationMode;
-					this.dateString = appellation.dateStringRep;
+					this.isDateString = true
+					const appellation = this.$store.getters.getAnnotatorEditAppellationMode
+					this.dateString = appellation.dateStringRep
 				}
 			},
 		);
@@ -235,74 +236,74 @@ export default class AppellationCreator extends Vue {
 	}
 
 	set concepts(newValue) {
-		this.conceptsFinal = newValue;
+		this.conceptsFinal = newValue
 	}
 
 	private merge(appellations: any) {
-		this.conceptsFinal = [];
+		this.conceptsFinal = []
 		// Sort by date
 		const appellationsSorted: any[] = _.sortBy(
 			this.appellations,
 			(o) => -moment(o.created).unix(),
 		);
-		const appellationMap = new Map();
+		const appellationMap = new Map()
 		// set map items from appellations array
 		appellationsSorted.forEach((item: any) => {
 			if (appellationMap.has(item.interpretation)) {
 				if (appellationMap.has(item.interpretation.uri)) {
-					appellationMap.get(item.interpretation.uri).push(item);
+					appellationMap.get(item.interpretation.uri).push(item)
 				} else {
-					appellationMap.set(item.interpretation.uri, [item]);
+					appellationMap.set(item.interpretation.uri, [item])
 				}
 			}
 		});
-		const appellationMapEntires = appellationMap.entries();
+		const appellationMapEntires = appellationMap.entries()
 		// add non-duplicate objects to `concepts` sorted by most recent
-		this.addConcepts(appellationMapEntires);
+		this.addConcepts(appellationMapEntires)
 		// sort appellationMap by length
 		const sortedMap = new Map(
 			[...appellationMap.entries()].sort(
 				(a, b) => b[1].length - a[1].length,
 			),
 		);
-		const sortedMapItems = sortedMap.entries();
+		const sortedMapItems = sortedMap.entries()
 		// add non-duplicate objects to `concepts` sorted by most occuring
-		this.addConcepts(sortedMapItems);
+		this.addConcepts(sortedMapItems)
 	}
 
 	private addConcepts(appellationMapEntires: any) {
-		let count = 0;
+		let count = 0
 		while (count <= 3) {
-			const appellation: any = appellationMapEntires.next().value;
+			const appellation: any = appellationMapEntires.next().value
 			if (!appellation) {
-				break;
+				break
 			}
 			if (!this.conceptsFinal.includes(appellation[1][0])) {
-				this.conceptsFinal.push(appellation[1][0]);
-				count++;
+				this.conceptsFinal.push(appellation[1][0])
+				count++
 			}
 		}
 	}
 
 	private cancel() {
-		this.$store.commit('setAnnotatorHighlightedText', null);
-		this.$store.commit('setAnnotatorSelectedConcept', null);
-		this.$store.commit('setAnnotatorEditAppellationMode', null);
-		this.$store.commit('setAnnotatorisDateStringAppellation', false);
-		this.isDateAppellation = false;
-		this.isDateString = false;
-		this.year = '';
-		this.month = null;
-		this.day = '';
-		this.dateString = '';
-		this.$store.commit('setAnnotatorisDateAppellation', false);
-		this.createNewConcept = false;
+		this.$store.commit('setAnnotatorHighlightedText', null)
+		this.$store.commit('setAnnotatorSelectedConcept', null)
+		this.$store.commit('setAnnotatorEditAppellationMode', null)
+		this.$store.commit('setAnnotatorisDateStringAppellation', false)
+		this.isDateAppellation = false
+		this.isDateString = false
+		this.year = ''
+		this.month = null
+		this.day = ''
+		this.dateString = ''
+		this.$store.commit('setAnnotatorisDateAppellation', false)
+		this.createNewConcept = false
 	}
 
 	private createOrUpdate() {
-		this.creating = true;
-		this.createError = false;
-		const highlighted = this.$store.getters.getAnnotatorHighlightedText;
+		this.creating = true
+		this.createError = false
+		const highlighted = this.$store.getters.getAnnotatorHighlightedText
 		if (this.isDateAppellation) {
 			const payload: DateAppellation  = {
 			position: {
@@ -316,14 +317,14 @@ export default class AppellationCreator extends Vue {
 			occursIn: this.text.id,
 			project: this.$store.getters.getAnnotatorMeta.project,
 		};
-			payload.year = this.year ? parseInt(this.year, 10) : null;
-			payload.month = this.month ? this.month.value : null;
-			payload.day = this.day ? parseInt(this.day, 10) : null;
+			payload.year = this.year ? parseInt(this.year, 10) : null
+			payload.month = this.month ? this.month.value : null
+			payload.day = this.day ? parseInt(this.day, 10) : null
 			if (this.$store.getters.getAnnotatorEditAppellationMode) {
-				this.updateDateAppellation(payload, this.$store.getters.getAnnotatorEditAppellationMode.id);
-				this.$store.commit('setAnnotatorEditAppellationMode', null);
+				this.updateDateAppellation(payload, this.$store.getters.getAnnotatorEditAppellationMode.id)
+				this.$store.commit('setAnnotatorEditAppellationMode', null)
 			} else {
-				this.createDateAppellation(payload);
+				this.createDateAppellation(payload)
 			}
 		} else {
 			const payload: Appellation  = {
@@ -337,23 +338,22 @@ export default class AppellationCreator extends Vue {
 			endPos: highlighted.position.endOffset,
 			occursIn: this.text.id,
 			project: this.$store.getters.getAnnotatorMeta.project,
-		    };
+		    }
 			if (!this.isDateString) {
 				payload.type = "concept"
 				payload.interpretation = this.$store.getters.getAnnotatorSelectedConcept.uri ||
-					this.$store.getters.getAnnotatorSelectedConcept.interpretation.uri;
+					this.$store.getters.getAnnotatorSelectedConcept.interpretation.uri
 			}
 			else {
-				payload.type = "date";
-				payload.dateStringRep = this.dateString;
+				payload.type = "date"
+				payload.dateStringRep = this.dateString
 			}
 
 			if (this.$store.getters.getAnnotatorEditAppellationMode) {
-				this.update(payload, this.$store.getters.getAnnotatorEditAppellationMode.id);
-				this.$store.commit('setAnnotatorEditAppellationMode', null);
+				this.update(payload, this.$store.getters.getAnnotatorEditAppellationMode.id)
+				this.$store.commit('setAnnotatorEditAppellationMode', null)
 			} else {
-				console.log('HERE')
-				this.create(payload);
+				this.create(payload)
 			}
 		}
 	}
@@ -361,71 +361,79 @@ export default class AppellationCreator extends Vue {
 	private create(payload: any) {
 		Vue.$axios.post('/appellation', payload)
 			.then((response: AxiosResponse) => {
-				const appellation: any = response.data;
-				this.$store.commit('addAnnotatorNewAppellation', appellation);
-				this.$store.commit('setAnnotatorHighlightedText', null);
-				this.$store.commit('setAnnotatorSelectedConcept', null);
-				this.$store.commit('setAnnotatorCreatedAppellation', true);
-				this.$store.commit('setAnnotatorisDateStringAppellation', false);
-				this.isDateString = false;
-				this.createNewConcept = false;
+				const appellation: any = response.data
+				this.$store.commit('addAnnotatorNewAppellation', appellation)
+				this.$store.commit('setAnnotatorHighlightedText', null)
+				this.$store.commit('setAnnotatorSelectedConcept', null)
+				this.$store.commit('setAnnotatorCreatedAppellation', true)
+				this.$store.commit('setAnnotatorisDateStringAppellation', false)
+				this.isDateString = false
+				this.createNewConcept = false
 			})
-			.catch(() => this.createError = true)
-			.finally(() => this.creating = false);
+			.catch((error: AxiosError) => {
+				this.createError = true
+			})
+			.finally(() => this.creating = false)
 	}
 
 	private update(payload: any, appellationId: number) {
 		Vue.$axios.patch(`/appellation/${appellationId}`, payload)
 			.then((response: AxiosResponse) => {
-				this.$store.commit('setAnnotatorEditAppellationMode', null);
-				this.$store.commit('setAnnotatorSelectedConcept', null);
-				this.$store.commit('setAnnotatorHighlightedText', null);
-				this.$store.commit('setAnnotatorCreatedAppellation', true);
-				this.$store.commit('setAnnotatorUpdatedAppellation', appellationId);
-				this.$store.commit('setAnnotatorisDateStringAppellation', false);
-				this.isDateString = false;
-				this.dateString = '';
-				this.createNewConcept = false;
+				this.$store.commit('setAnnotatorEditAppellationMode', null)
+				this.$store.commit('setAnnotatorSelectedConcept', null)
+				this.$store.commit('setAnnotatorHighlightedText', null)
+				this.$store.commit('setAnnotatorCreatedAppellation', true)
+				this.$store.commit('setAnnotatorUpdatedAppellation', appellationId)
+				this.$store.commit('setAnnotatorisDateStringAppellation', false)
+				this.isDateString = false
+				this.dateString = ''
+				this.createNewConcept = false
 			})
-			.catch(() => this.createError = true)
-			.finally(() => this.creating = false);
+			.catch((error: AxiosError) => {
+				this.createError = true
+			}) 
+			.finally(() => this.creating = false)
 	}
 
 	private createDateAppellation(payload: any) {
 		Vue.$axios.post('/dateappellation', payload)
 			.then((response: AxiosResponse) => {
-				const appellation: any = response.data;
-				this.$store.commit('addAnnotatorNewAppellation', appellation);
-				this.$store.commit('setAnnotatorHighlightedText', null);
-				this.$store.commit('setAnnotatorSelectedConcept', null);
-				this.$store.commit('setAnnotatorCreatedAppellation', true);
-				this.isDateAppellation = false;
-				this.year = '';
-				this.month = null;
-				this.day = '';
-				this.$store.commit('setAnnotatorisDateAppellation', false);
+				const appellation: any = response.data
+				this.$store.commit('addAnnotatorNewAppellation', appellation)
+				this.$store.commit('setAnnotatorHighlightedText', null)
+				this.$store.commit('setAnnotatorSelectedConcept', null)
+				this.$store.commit('setAnnotatorCreatedAppellation', true)
+				this.isDateAppellation = false
+				this.year = ''
+				this.month = null
+				this.day = ''
+				this.$store.commit('setAnnotatorisDateAppellation', false)
 
 			})
-			.catch(() => this.createError = true)
-			.finally(() => this.creating = false);
+			.catch((error: AxiosError) => {
+				this.createError = true
+			})
+			.finally(() => this.creating = false)
 	}
 
 	private updateDateAppellation(payload: any, dateappellationId: number) {
 		Vue.$axios.patch(`/dateappellation/${dateappellationId}`, payload)
 			.then((response: AxiosResponse) => {
-				this.$store.commit('setAnnotatorCreatedAppellation', true);
-				this.$store.commit('setAnnotatorEditAppellationMode', null);
-				this.$store.commit('setAnnotatorSelectedConcept', null);
-				this.$store.commit('setAnnotatorHighlightedText', null);
-				this.$store.commit('setAnnotatorUpdatedAppellation', dateappellationId);
-				this.isDateAppellation = false;
-				this.year = '';
-				this.month = null;
-				this.day = '';
-				this.$store.commit('setAnnotatorisDateAppellation', false);
+				this.$store.commit('setAnnotatorCreatedAppellation', true)
+				this.$store.commit('setAnnotatorEditAppellationMode', null)
+				this.$store.commit('setAnnotatorSelectedConcept', null)
+				this.$store.commit('setAnnotatorHighlightedText', null)
+				this.$store.commit('setAnnotatorUpdatedAppellation', dateappellationId)
+				this.isDateAppellation = false
+				this.year = ''
+				this.month = null
+				this.day = ''
+				this.$store.commit('setAnnotatorisDateAppellation', false)
 			})
-			.catch(() => this.createError = true)
-			.finally(() => this.creating = false);
+			.catch((error: AxiosError) => {
+				this.createError = true
+			})
+			.finally(() => this.creating = false)
 	}
 }
 </script>

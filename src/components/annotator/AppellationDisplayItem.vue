@@ -16,6 +16,7 @@ div(v-if="visible" @mouseover="tooltip = true" @mouseleave="tooltip = false")
 			'appellation-focused': focused
 		}`
 		@click="onApellationClick()"
+		ref="appellationRef"
 	)
 
 	li(v-if="manyLinesAreSelected()"
@@ -35,6 +36,7 @@ div(v-if="visible" @mouseover="tooltip = true" @mouseleave="tooltip = false")
 			'z-index': 2
 		}`
 		@click="onApellationClick()"
+		ref="appellationRef"
 	)
 
 	li(v-if="multipleLinesAreSelected()"
@@ -53,6 +55,7 @@ div(v-if="visible" @mouseover="tooltip = true" @mouseleave="tooltip = false")
 			'appellation-focused': focused
 		}`
 		@click="onApellationClick()"
+		ref="appellationRef"
 	)
 </template>
 
@@ -82,6 +85,9 @@ export default class AppellationDisplayItem extends Vue {
 			(newValue, oldValue) => {
 				if (newValue === this.appellation.index) {
 					this.focused = true
+					const appellEl = this.$refs.appellationRef as HTMLElement
+					appellEl.scrollIntoView()
+					this.$store.commit('setAnnotatorFocusedAppellationPosition', 0)
 				} else {
 					this.focused = false
 				}
