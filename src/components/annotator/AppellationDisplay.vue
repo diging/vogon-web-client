@@ -9,10 +9,10 @@ ul(v-if="appellations.length")
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 
-import store from '@/store';
-import AppellationDisplayItem from './AppellationDisplayItem.vue';
+import store from '@/store'
+import AppellationDisplayItem from './AppellationDisplayItem.vue'
 
 @Component({
 	name: 'AppellationDisplay',
@@ -21,10 +21,10 @@ import AppellationDisplayItem from './AppellationDisplayItem.vue';
 	},
 })
 export default class AppellationDisplay extends Vue {
-	private appellations: any[] = [];
+	private appellations: any[] = []
 
 	public async created() {
-		this.watchStore();
+		this.watchStore()
 	}
 
 	private watchStore() {
@@ -38,9 +38,9 @@ export default class AppellationDisplay extends Vue {
 						height: `${position.lineHeight}px`,
 						position: 'absolute',
 						zIndex: 2,
-					};
-					const midLines = position.midLines;
-					const endPosition = position.endPosition;
+					}
+					const midLines = position.midLines
+					const endPosition = position.endPosition
 
 					return {
 						...position,
@@ -48,14 +48,14 @@ export default class AppellationDisplay extends Vue {
 						midLines,
 						endPosition,
 						visible: true,
-					};
-				});
+					}
+				})
 
-				this.$forceUpdate();
+				this.$forceUpdate()
 			} else if (mutation.type === 'setAnnotatorHighlightedText' && mutation.payload === null) {
-				this.appellations.pop();
+				this.appellations.pop()
 			}
-		});
+		})
 	}
 }
 </script>
