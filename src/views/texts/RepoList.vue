@@ -11,7 +11,7 @@ div(class="main")
 			template(v-if="!repos.length")
 				EmptyView No repositories found!
 			template(v-else)
-				v-list-item(v-for="repo in repos" :key="repo.id" class="repo-item" v-bind:to="repoURL(repo)")
+				v-list-item(v-for="repo in repos" :key="repo.id" class="repo-item" :to="repoURL(repo)")
 					v-card(width="100%" elevat)
 						v-card-title {{repo.name}}
 						v-card-text {{repo.description}}
@@ -19,62 +19,66 @@ div(class="main")
 </template>
 
 <script lang="ts">
-import { AxiosResponse } from 'axios';
-import { Component, Vue } from 'vue-property-decorator';
+import { AxiosResponse } from 'axios'
+import { Component, Vue } from 'vue-property-decorator'
 
-import Breadcrumbs from '@/components/global/Breadcrumbs.vue';
-import EmptyView from '@/components/global/EmptyView.vue';
-import ErrorIndicator from '@/components/global/ErrorIndicator.vue';
-import Loading from '@/components/global/Loading.vue';
-import { Repository } from '@/interfaces/RepositoryTypes';
+import Breadcrumbs from '@/components/global/Breadcrumbs.vue'
+import EmptyView from '@/components/global/EmptyView.vue'
+import ErrorIndicator from '@/components/global/ErrorIndicator.vue'
+import Loading from '@/components/global/Loading.vue'
+import { TokenDto } from '@/interfaces/GlobalTypes'
+import { Repository } from '@/interfaces/RepositoryTypes'
+import JwtDecode from 'jwt-decode'
 
 @Component({
-	name: 'RepoList',
-	components: {
-		Breadcrumbs,
-		Loading,
-		ErrorIndicator,
-		EmptyView,
-	},
+    name: 'RepoList',
+    components: {
+        Breadcrumbs,
+        Loading,
+        ErrorIndicator,
+        EmptyView,
+    },
 })
 export default class RepoList extends Vue {
-	private repos: Repository[] = [];
-	private loading: boolean = true;
-	private error: boolean = false;
-	private queryParam: string = '';
-	private navItems = [
-		{ text: 'Projects', to: '/project', link: true, exact: true },
-		{ text: '', to: '', link: true, exact: true },
-		{ text: 'Repositories', link: false },
-	];
+    private repos: Repository[] = []
+    private loading: boolean = true
+    private error: boolean = false
+    private queryParam: string = ''
+    private navItems = [
+        { text: 'Projects', to: '/project', link: true, exact: true },
+        { text: '', to: '', link: true, exact: true },
+        { text: 'Repositories', link: false },
+    ];
 
-	public mounted(): void {
-		const projectId = this.$route.query.project_id;
-		if (projectId) {
-			this.queryParam = `?project_id=${projectId}`;
-		}
+    public mounted(): void {
+        const projectId = this.$route.query.project_id
+        if (projectId) {
+            this.queryParam = `?project_id=${projectId}`
+        }
 
-		Vue.$axios
-			.get(`/repository${this.queryParam}`)
-			.then((response: AxiosResponse) => {
-				this.repos = response.data.results;
+        Vue.$axios.get(`/repository${this.queryParam}`)
+            .then((response: AxiosResponse) => {
+                this.repos = response.data.results
+                const project = response.data.project
+                this.navItems[1].text = project.name
+                this.navItems[1].to = `/project/${project.id}`
+            })
+            .catch(() => (this.error = true))
+            .finally(() => (this.loading = false))
+    }
 
-				const project = response.data.project;
-				this.navItems[1].text = project.name;
-				this.navItems[1].to = `/project/${project.id}`;
-			})
-			.catch(() => (this.error = true))
-			.finally(() => (this.loading = false));
-	}
-
-	private repoURL(repo: Repository): string {
-		if (repo.repo_type === 'Amphora') {
-			return `/repository/amphora/${repo.id}${this.queryParam}`;
-		} else if (repo.repo_type === 'Citesphere') {
-			return `/repository/citesphere/${repo.id}${this.queryParam}`;
-		}
-		return '';
-	}
+    private repoURL(repo: Repository): string {
+        if (repo.repo_type === 'Amphora') {
+            return `/repository/amphora/${repo.id}${this.queryParam}`
+        } else if (repo.repo_type === 'Citesphere') {
+            const token: any = localStorage.getItem('token')
+            const decoded = JwtDecode<TokenDto>(token)
+            if (decoded.citesphere_token) {
+                return `/repository/citesphere/${repo.id}${this.queryParam}`
+            }
+        }
+        return ''
+    }
 }
 </script>
 

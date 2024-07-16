@@ -26,7 +26,7 @@ div(class="tools-container")
 			)
 				v-card
 					v-card-title
-						div(class="netowrk-graph-title")
+						div(class="network-graph-title")
 							div Network graph
 							v-spacer
 							v-btn(icon @click="graphDialog = false")
@@ -58,67 +58,67 @@ import RelationTemplateRender from '@/components/annotator/RelationTemplate.vue'
 import { RelationTemplate } from '@/interfaces/RelationTypes'
 
 @Component({
-	name: 'ListsSideDrawer',
-	components: {
-		AppellationCreator,
-		AppellationList,
-		NetworkGraph,
-		RelationList,
-		RelationTemplateRender,
-	},
+    name: 'ListsSideDrawer',
+    components: {
+        AppellationCreator,
+        AppellationList,
+        NetworkGraph,
+        RelationList,
+        RelationTemplateRender,
+    },
 })
 export default class ListsSideDrawer extends Vue {
-	@Prop() private relations!: object[]
-	@Prop() private appellations!: object[]
-	@Prop() private relationsets!: object[]
-	@Prop() private network!: object[]
+    @Prop() private relations!: object[]
+    @Prop() private appellations!: object[]
+    @Prop() private relationsets!: object[]
+    @Prop() private network!: object[]
 
-	@Prop() private tab: string = 'tab-4'
-	private drawerTab: string = this.tab
-	
-	private listToggle: string = ''
-	private graphDialog: boolean = false
+    @Prop() private tab: string = 'tab-4'
+    private drawerTab: string = this.tab
 
-	private relationCreated: boolean = false
-	private timeout: number = 2000
+    private listToggle: string = ''
+    private graphDialog: boolean = false
 
-	private template: RelationTemplate | null = null
+    private relationCreated: boolean = false
+    private timeout: number = 2000
 
-	public created() {
-		this.watchStore()
-	}
+    private template: RelationTemplate | null = null
 
-	public watchStore() {
-		this.$store.subscribe((mutation, state) => {
-			if (mutation.type === 'setAnnotatorCurrentTab') {
-				this.drawerTab = mutation.payload
-			}
-		})
-		this.$store.watch(
-			(state, getters) => getters.getAnnotatorTemplate,
-			(newValue, oldValue) => {
-				this.template = newValue
-			},
-		)
-		this.$store.watch(
-			(state, getters) => getters.getRelationCreated,
-			(newValue, oldValue) => {
-				this.relationCreated = newValue
-			},
-		)
-	}
+    public created() {
+        this.watchStore()
+    }
 
-	@Watch('relationCreated')
-	public onRelationCreated(val: boolean, oldVal: boolean) {
-		if (val !== oldVal) {
-			this.$store.commit('setRelationCreated', val)
-		}
-  	}
+    public watchStore() {
+        this.$store.subscribe((mutation, state) => {
+            if (mutation.type === 'setAnnotatorCurrentTab') {
+                this.drawerTab = mutation.payload
+            }
+        })
+        this.$store.watch(
+            (state, getters) => getters.getAnnotatorTemplate,
+            (newValue, oldValue) => {
+                this.template = newValue
+            },
+        )
+        this.$store.watch(
+            (state, getters) => getters.getRelationCreated,
+            (newValue, oldValue) => {
+                this.relationCreated = newValue
+            },
+        )
+    }
+
+    @Watch('relationCreated')
+    public onRelationCreated(val: boolean, oldVal: boolean) {
+        if (val !== oldVal) {
+            this.$store.commit('setRelationCreated', val)
+        }
+      }
 }
 </script>
 
 <style scoped>
-.netowrk-graph-title {
+.network-graph-title {
 	display: flex;
 	width: 100%;
 	text-align: left;

@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
+import AuthListView from './views/auth/AuthListView.vue';
 import CitesphereAuthView from './views/auth/CitesphereAuthView.vue';
 import ForgotPasswordView from './views/auth/ForgotPasswordView.vue';
 import GithubView from './views/auth/GithubView.vue';
@@ -38,175 +39,180 @@ import UserList from './views/users/UserList.vue';
 
 Vue.use(Router);
 export default new Router({
-	mode: 'history',
-	base: process.env.BASE_URL,
-	routes: [
-		{
-			path: '/',
-			name: 'home',
-			component: Home,
-		},
-		{
-			path: '/dashboard',
-			name: 'dashboard',
-			component: Dashboard,
-		},
-		{
-			path: '/project',
-			name: 'project',
-			component: ProjectList,
-		},
-		{
-			path: '/project/:id',
-			name: 'project-details',
-			component: ProjectDetails,
-		},
-		{
-			path: '/repository',
-			name: 'repo-list',
-			component: RepoList,
-		},
-		{
-			path: '/repository/amphora/:id',
-			name: 'amphora-repo-details',
-			component: RepoDetails,
-		},
-		{
-			path: '/repository/amphora/:repoId/collections/:colId',
-			name: 'amphora-collection-details',
-			component: CollectionDetails,
-		},
-		{
-			path: '/repository/amphora/:repoId/text/:textId',
-			name: 'amphora-text-details',
-			component: TextDetails,
-		},
-		{
-			path: '/repository/amphora/:repoId/text/:textId/content/:contentId',
-			name: 'amphora-text-content',
-			component: TextContent,
-		},
-		{
-			path: '/repository/citesphere/:repoId/groups/:groupId/items/:itemId/file/:contentId',
-			name: 'citesphere-text-content',
-			component: CitesphereTextContent,
-		},
-		{
-			path: '/repository/citesphere/:id',
-			name: 'citesphere-repo-details',
-			component: CitesphereRepoDetails,
-		},
-		{
-			path: '/repository/citesphere/:repoId/groups/:groupId',
-			name: 'citesphere-group-details',
-			component: CitesphereGroupDetails,
-		},
-		{
-			path: '/repository/:repoName/:repoId/groups/:groupId/items/:itemId/texts/:textId',
-			name: 'citesphere-text-details',
-			component: CitesphereTextDetails,
-		},
-		{
-			path: '/repository/:repoName/:repoId/groups/:groupId/items/:itemId',
-			name: 'citesphere-item-details',
-			component: ItemDetails,
-		},
-		{
-			path: '/concept',
-			name: 'concept-list',
-			component: ConceptList,
-		},
-		{
-			path: '/types',
-			component: ConceptTypes,
-		},
-		{
-			path: '/types/:id',
-			component: ConceptTypeDetails,
-		},
-		{
-			path: '/concept/:id',
-			name: 'concept-details',
-			component: ConceptDetails,
-		},
-		{
-			path: '/concept/:id/edit',
-			name: 'concept-edit',
-			component: ConceptEdit,
-		},
-		{
-			path: '/concept/:id/:action',
-			component: ConceptAction,
-		},
-		{
-			path: '/relations',
-			name: 'annotation-list',
-			component: Annotations,
-		},
-		{
-			path: '/users',
-			name: 'user-list',
-			component: UserList,
-		},
-		{
-			path: '/users/:id',
-			name: 'user-detail',
-			component: UserDetail,
-		},
-		{
-			path: '/relationtemplate',
-			name: 'template-list',
-			component: TemplateList,
-		},
-		{
-			path: '/relationtemplate/add',
-			name: 'template-create',
-			component: TemplateCreateOrUpdate,
-		},
-		{
-			path: '/relationtemplate/:id/edit',
-			name: 'template-update',
-			component: TemplateCreateOrUpdate,
-		},
-		{
-			path: '/about',
-			name: 'about',
-			component: About,
-		},
-		{
-			path: '/login',
-			name: 'login',
-			component: LoginView,
-		},
-		{
-			path: '/signup',
-			name: 'signup',
-			component: SignUpView,
-		},
-		{
-			path: '/forgot-password',
-			name: 'forgot-password',
-			component: ForgotPasswordView,
-		},
-		{
-			path: '/reset-password/:token',
-			name: 'reset-password',
-			component: ResetPasswordView,
-		},
-		{
-			path: '/github',
-			name: 'github',
-			component: GithubView,
-		},
-		{
-			path: '/auth/citesphere',
-			name: 'citesphere-auth',
-			component: CitesphereAuthView,
-		},
-		{
-			path: '/annotate/:id',
-			name: 'annotate-text',
-			component: TextView,
-		},
-	],
+    mode: 'history',
+    base: process.env.BASE_URL,
+    routes: [
+        {
+            path: '/',
+            name: 'home',
+            component: Home,
+        },
+        {
+            path: '/dashboard',
+            name: 'dashboard',
+            component: Dashboard,
+        },
+        {
+            path: '/project',
+            name: 'project',
+            component: ProjectList,
+        },
+        {
+            path: '/project/:id',
+            name: 'project-details',
+            component: ProjectDetails,
+        },
+        {
+            path: '/repository',
+            name: 'repo-list',
+            component: RepoList,
+        },
+        {
+            path: '/repository/amphora/:id',
+            name: 'amphora-repo-details',
+            component: RepoDetails,
+        },
+        {
+            path: '/repository/amphora/:repoId/collections/:colId',
+            name: 'amphora-collection-details',
+            component: CollectionDetails,
+        },
+        {
+            path: '/repository/amphora/:repoId/text/:textId',
+            name: 'amphora-text-details',
+            component: TextDetails,
+        },
+        {
+            path: '/repository/amphora/:repoId/text/:textId/content/:contentId',
+            name: 'amphora-text-content',
+            component: TextContent,
+        },
+        {
+            path: '/repository/citesphere/:repoId/groups/:groupId/items/:itemId/file/:contentId',
+            name: 'citesphere-text-content',
+            component: CitesphereTextContent,
+        },
+        {
+            path: '/repository/citesphere/:id',
+            name: 'citesphere-repo-details',
+            component: CitesphereRepoDetails,
+        },
+        {
+            path: '/repository/citesphere/:repoId/groups/:groupId',
+            name: 'citesphere-group-details',
+            component: CitesphereGroupDetails,
+        },
+        {
+            path: '/repository/:repoName/:repoId/groups/:groupId/items/:itemId/texts/:textId',
+            name: 'citesphere-text-details',
+            component: CitesphereTextDetails,
+        },
+        {
+            path: '/repository/:repoName/:repoId/groups/:groupId/items/:itemId',
+            name: 'citesphere-item-details',
+            component: ItemDetails,
+        },
+        {
+            path: '/concept',
+            name: 'concept-list',
+            component: ConceptList,
+        },
+        {
+            path: '/types',
+            component: ConceptTypes,
+        },
+        {
+            path: '/types/:id',
+            component: ConceptTypeDetails,
+        },
+        {
+            path: '/concept/:id',
+            name: 'concept-details',
+            component: ConceptDetails,
+        },
+        {
+            path: '/concept/:id/edit',
+            name: 'concept-edit',
+            component: ConceptEdit,
+        },
+        {
+            path: '/concept/:id/:action',
+            component: ConceptAction,
+        },
+        {
+            path: '/relations',
+            name: 'annotation-list',
+            component: Annotations,
+        },
+        {
+            path: '/users',
+            name: 'user-list',
+            component: UserList,
+        },
+        {
+            path: '/users/:id',
+            name: 'user-detail',
+            component: UserDetail,
+        },
+        {
+            path: '/relationtemplate',
+            name: 'template-list',
+            component: TemplateList,
+        },
+        {
+            path: '/relationtemplate/add',
+            name: 'template-create',
+            component: TemplateCreateOrUpdate,
+        },
+        {
+            path: '/relationtemplate/:id/edit',
+            name: 'template-update',
+            component: TemplateCreateOrUpdate,
+        },
+        {
+            path: '/about',
+            name: 'about',
+            component: About,
+        },
+        {
+            path: '/login',
+            name: 'login',
+            component: LoginView,
+        },
+        {
+            path: '/signup',
+            name: 'signup',
+            component: SignUpView,
+        },
+        {
+            path: '/forgot-password',
+            name: 'forgot-password',
+            component: ForgotPasswordView,
+        },
+        {
+            path: '/reset-password/:token',
+            name: 'reset-password',
+            component: ResetPasswordView,
+        },
+        {
+            path: '/github',
+            name: 'github',
+            component: GithubView,
+        },
+        {
+            path: '/auth/citesphere',
+            name: 'citesphere-auth',
+            component: CitesphereAuthView,
+        },
+        {
+            path: '/authlist',
+            name: 'authlist',
+            component: AuthListView,
+        },
+        {
+            path: '/annotate/:id',
+            name: 'annotate-text',
+            component: TextView,
+        },
+    ],
 });

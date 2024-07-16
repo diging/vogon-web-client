@@ -1,5 +1,5 @@
 <template lang="pug">
-v-row(align="center" justify="center")
+v-row(align="center")
 	v-col(cols="6")
 		v-card
 			v-form(ref="citesphereAuth" v-model="valid")
@@ -12,44 +12,45 @@ v-row(align="center" justify="center")
 </template>
 
 <script lang="ts">
-import { VForm } from '@/interfaces/GlobalTypes';
-import { Component, Vue } from 'vue-property-decorator';
+import { VForm } from '@/interfaces/GlobalTypes'
+import { Component, Vue } from 'vue-property-decorator'
+
 @Component({
   name: 'CitesphereAuth',
 })
 export default class CitesphereAuth extends Vue {
-	private password: string = '';
-	private username: string = '';
-	private error: boolean = false;
-	private errorMsg: string = '';
-	private valid: boolean = false;
+    private password: string = ''
+    private username: string = ''
+    private error: boolean = false
+    private errorMsg: string = ''
+    private valid: boolean = false
 
-	public created() {
-		if (this.$route.query.code) {
-			this.getAccessToken(this.$route.query.code);
-		}
-		if (this.$route.query.error) {
-			const errorCode = this.$route.query.error;
-			const errorDescription = this.$route.query.error_description;
-			this.error = true;
-			this.errorMsg = `Error while authorizing User - Code: ${errorCode}, Description: ${errorDescription}`;
-		}
-	}
+    public created() {
+        if (this.$route.query.code) {
+            this.getAccessToken(this.$route.query.code)
+        }
+        if (this.$route.query.error) {
+            const errorCode = this.$route.query.error
+            const errorDescription = this.$route.query.error_description
+            this.error = true
+            this.errorMsg = `Error while authorizing User - Code: ${errorCode}, Description: ${errorDescription}`
+        }
+    }
 
   /**
    * get access code from citesphere after getting auth code from citesphere
    * @param {String} code - Citesphere authorization code from querystring.
    */
-	public getAccessToken(code: string | Array<string | null>) {
-		Vue.$axios.get('citesphere-token/', {
-			params: { code, },
-		})
-		.then((result) => {
-			this.$router.push({name: 'dashboard'});
-		})
-		.catch((error) => {
-			this.error = true;
-		});
-	}
+    public getAccessToken(code: string | Array<string | null>) {
+        Vue.$axios.get('citesphere-token/', {
+            params: { code },
+        })
+        .then((result) => {
+            this.$router.push({name: 'dashboard'})
+        })
+        .catch((error) => {
+            this.error = true
+        })
+    }
 }
 </script>

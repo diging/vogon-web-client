@@ -25,8 +25,8 @@ v-navigation-drawer(v-model="show" absolute class="side-drawer")
 			v-list-item-content
 				v-list-item-title Part Of:
 				v-list-item-subtitle.text-capitalize
-					router-link(:to="`/repository/citesphere/${text.repository.id}/text/${text.part_of.repository_source_id}?project_id=${project.id}`")
-						| {{ text.part_of.title }}
+					router-link(:to="`/repository/citesphere/${text.repository_id}/groups/${text.group_id}/items/${text.file_id}/texts/${text.id}?project_id=${project.id}`")
+						| {{ text.title }}
 		v-list-item.text-left(two-line link)
 			v-list-item-content
 				v-list-item-title URI:
@@ -42,40 +42,40 @@ import { TextDocument } from '@/interfaces/RepositoryTypes'
 
 
 @Component({
-	name: 'SideDrawer',
+    name: 'SideDrawer',
 })
 export default class SideDrawer extends Vue {
-	@Prop() private project!: Project
-	@Prop() private text!: TextDocument
+    @Prop() private project!: Project
+    @Prop() private text!: TextDocument
 
-	private show: boolean = false
+    private show: boolean = false
 
-	public created() {
-		this.watchStore()
-	}
+    public created() {
+        this.watchStore()
+    }
 
-	get formattedDate() {
-		if (this.text && this.text.added) {
-			return moment(this.text.added).format('lll')
-		}
-		return ''
-	}
+    get formattedDate() {
+        if (this.text && this.text.added) {
+            return moment(this.text.added).format('lll')
+        }
+        return ''
+    }
 
-	public watchStore() {
-		this.$store.watch(
-			(state) => {
-				return this.$store.getters.getShowSideBar
-			},
-			(newValue, oldValue) => {
-				// something changed do something
-				this.show = newValue
-			},
-		);
-	}
+    public watchStore() {
+        this.$store.watch(
+            (state) => {
+                return this.$store.getters.getShowSideBar
+            },
+            (newValue, oldValue) => {
+                // something changed do something
+                this.show = newValue
+            },
+        );
+    }
 
-	private close() {
-		this.$store.commit('toggleSideBarMutation')
-	}
+    private close() {
+        this.$store.commit('toggleSideBarMutation')
+    }
 }
 </script>
 

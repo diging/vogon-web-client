@@ -11,7 +11,7 @@
     ]
   },
   "rules": {
-    "indent": [true, "tabs", 4],
+    "indent": [true, "spaces", 4],
     "interface-name": [true, "never-prefix"],
     "no-consecutive-blank-lines": false,
     "object-literal-sort-keys": false,
@@ -21,6 +21,6 @@
     "no-var-keyword": true,
     "class-name": true,
     "import-spacing": true,
-    "semicolon": [true, "always"]
+    "semicolon": [false, "always"]
   }
  }

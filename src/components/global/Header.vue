@@ -5,13 +5,14 @@ v-app-bar#bar-background(app fixed elevate-on-scroll dark)
 	v-btn(v-if="loggedIn" text large to="/project" class="subheading font-weight-medium") Projects
 	v-btn(v-if="loggedIn && is_admin == 'True'" text large to="/relationtemplate" class="subheading font-weight-medium") Templates
 	v-btn(text large to="/about" class="subheading font-weight-medium") About
+	v-btn(v-if="loggedIn" text large to="/authlist" class="subheading font-weight-medium") Get Authorized
 	v-menu(v-if="loggedIn" class="ml-3" offset-y open-on-hover style="display: block")
 		template(v-slot:activator="{ on }")
 			v-btn(text v-on="on" v-if="loggedIn") Data
 				v-icon mdi-menu-down
 		v-list
 			v-list-item(v-for="item in dataItems" :key="item.title" v-bind:to="item.link")
-				v-list-item-title(v-text="item.title")
+				v-list-item-title(v-text="item.title") {{ item.title }}
 	v-spacer
 	v-toolbar-items.hidden-sm-and-down(class="pr-4")
 		v-btn(text v-if="!loggedIn" @click="login") Login
@@ -68,88 +69,88 @@ v-app-bar#bar-background(app fixed elevate-on-scroll dark)
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 
-import EmptyView from '@/components/global/EmptyView.vue'
+import EmptyView from '@/components/global/EmptyView.vue';
 import { Notification } from '@/interfaces/GlobalTypes'
-import router from '@/router'
-import { getUserId } from '@/utils'
-import { AxiosResponse } from 'axios'
+import router from '@/router';
+import { getUserId } from '@/utils';
+import { AxiosResponse } from 'axios';
 
 @Component({
-	name: 'Header',
-	components: {
-		EmptyView,
-	},
+    name: 'Header',
+    components: {
+        EmptyView,
+    },
 })
 export default class Header extends Vue {
-	private activeIndex: string = '1'
-	private is_admin: string | null = ''
-	private dataItems: object[] = [
-		{ title: 'Concepts', link: '/concept' },
-		{ title: 'Concept Types', link: '/types' },
-		{ title: 'Annotations', link: '/relations' },
-		{ title: 'Contributors', link: '/users' },
-	]
-	private loggedIn: boolean = this.$store.getters.loggedIn
-	private notifications: any[] = []
-	private unreadCount: number = 0
+    private activeIndex: string = '1'
+    private is_admin: string | null = ''
+    private dataItems: object[] = [
+        { title: 'Concepts', link: '/concept' },
+        { title: 'Concept Types', link: '/types' },
+        { title: 'Annotations', link: '/relations' },
+        { title: 'Contributors', link: '/users' },
+    ]
+    private loggedIn: boolean = this.$store.getters.loggedIn
+    private notifications: any[] = []
+    private unreadCount: number = 0
 
-	public created() {
-		this.watchStore()
-		this.is_admin = localStorage.getItem('is_admin')
-	}
+    public created() {
+        this.watchStore()
+        this.is_admin = localStorage.getItem('is_admin')
+    }
 
-	private watchStore() {
-		this.$store.watch(
-			(state, getters) => getters.notifications,
-			(newValue, oldValue) => {
-				this.notifications = newValue
-				this.unreadCount = newValue.filter((i: Notification) => i.unread).length
-			},
-		)
-		this.$store.subscribe((mutation, state) => {
-			if (mutation.type === 'loggedInMutation') {
-				this.loggedIn = mutation.payload
-			}
-		})
-	}
+    private watchStore() {
+        this.$store.watch(
+            (state, getters) => getters.notifications,
+            (newValue, oldValue) => {
+                this.notifications = newValue
+                this.unreadCount = newValue.filter((i: Notification) => i.unread).length
+            },
+        )
+        this.$store.subscribe((mutation, state) => {
+            if (mutation.type === 'loggedInMutation') {
+                this.loggedIn = mutation.payload
+            }
+        })
+    }
 
-	private login() {
-		this.$router.push('/login')
-	}
+    private login() {
+        this.$router.push('/login')
+    }
 
-	private signup() {
-		this.$router.push('/signup')
-	}
+    private signup() {
+        this.$router.push('/signup')
+    }
 
-	private logout() {
-		this.$store.commit('loggedInMutation', false)
-		localStorage.removeItem('token')
-		this.login()
-	}
+    private logout() {
+        this.$store.commit('loggedInMutation', false)
+        localStorage.clear()
+        this.login()
+    }
 
-	private readNotification(notification: Notification) {
-		if (notification.unread) {
-			Vue.$axios.post(`/notifications/${notification.id}/mark_as_read`)
-				.then(() => {
-					Vue.$verify(router, true)
-				});
-		}
-	}
+    private readNotification(notification: Notification) {
+        if (notification.unread) {
+            Vue.$axios.post(`/notifications/${notification.id}/mark_as_read`)
+                .then(() => {
+                    Vue.$verify(router, true)
+                });
+        }
+    }
 
-	private deleteNotification(notification: Notification) {
-		// Clear from list
-		const newNotifications = this.notifications.filter(
-			(i: Notification) => i.id !== notification.id)
-		this.$store.commit('setNotifications', newNotifications)
+    private deleteNotification(notification: Notification) {
+        // Clear from list
+        const newNotifications = this.notifications.filter(
+            (i: Notification) => i.id !== notification.id)
+        this.$store.commit('setNotifications', newNotifications)
 
-		// Make delete call
-		Vue.$axios.post(`/notifications/${notification.id}/mark_as_deleted`)
-	}
+        // Make delete call
+        Vue.$axios.post(`/notifications/${notification.id}/mark_as_deleted`)
+    }
 
-	private deleteAllNotifications() {
-		this.$store.commit('setNotifications', [])
-		Vue.$axios.post(`/notifications/mark_all_as_deleted`)
-	}
+    private deleteAllNotifications() {
+        this.$store.commit('setNotifications', [])
+        Vue.$axios.post(`/notifications/mark_all_as_deleted`)
+    }
 }
 </script>
 

@@ -82,30 +82,32 @@ import ErrorIndicator from '@/components/global/ErrorIndicator.vue'
 import Loading from '@/components/global/Loading.vue'
 import AnnotationItem from '@/components/relations/AnnotationItem.vue'
 import { UserDashboard } from '@/interfaces/DashboardTypes'
+import { TokenDto } from '@/interfaces/GlobalTypes'
+import JwtDecode from 'jwt-decode'
 import { forEach } from 'lodash'
 
 @Component({
-	name: 'Dashboard',
-	components: {
-		AnnotationItem,
-		ErrorIndicator,
-		EmptyView,
-		Loading,
-	},
+    name: 'Dashboard',
+    components: {
+        AnnotationItem,
+        ErrorIndicator,
+        EmptyView,
+        Loading,
+    },
 })
 export default class Dashboard extends Vue {
-	private loading: boolean = true
-	private error: boolean = false
-	private data: UserDashboard = {}
+    private loading: boolean = true
+    private error: boolean = false
+    private data: UserDashboard = {}
 
-	public async mounted(): Promise<void> {
-		Vue.$axios.get('/users/dashboard')
-			.then((response: AxiosResponse) => {
-				this.data = response.data;
-			})
-			.catch(() => this.error = true)
-			.finally(() => this.loading = false);
-	}
+    public async mounted(): Promise<void> {
+        Vue.$axios.get('/users/dashboard')
+            .then((response: AxiosResponse) => {
+                this.data = response.data
+            })
+            .catch(() => this.error = true)
+            .finally(() => this.loading = false)
+    }
 }
 </script>
 

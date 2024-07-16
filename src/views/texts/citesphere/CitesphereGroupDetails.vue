@@ -78,126 +78,137 @@ import EmptyView from '@/components/global/EmptyView.vue'
 import ErrorIndicator from '@/components/global/ErrorIndicator.vue'
 import Loading from '@/components/global/Loading.vue'
 import TextItem from '@/components/texts/citesphere/TextItem.vue'
+import { TokenDto } from '@/interfaces/GlobalTypes'
+import JwtDecode from 'jwt-decode'
 
 import {
-	CitesphereCollection,
-	CitesphereGroupInfo,
-	CitesphereItem,
-	CitesphereItemAuthor,
+    CitesphereCollection,
+    CitesphereGroupInfo,
+    CitesphereItem,
+    CitesphereItemAuthor,
 } from '@/interfaces/CitesphereTypes'
 
 @Component({
-	name: 'CitesphereGroupDetails',
-	components: {
-		Loading,
-		ErrorIndicator,
-		EmptyView,
-		TextItem,
-	},
+    name: 'CitesphereGroupDetails',
+    components: {
+        Loading,
+        ErrorIndicator,
+        EmptyView,
+        TextItem,
+    },
 })
 export default class CitesphereGroupDetails extends Vue {
-	private groupDetails: CitesphereGroupInfo | null = null
-	private itemsCount: number = 0
-	private loading: boolean = true
-	private error: boolean = false
-	private errorMsg: string = ""
-	private queryParam: string = ''
-	private page: number = 1
+    private groupDetails: CitesphereGroupInfo | null = null
+    private itemsCount: number = 0
+    private loading: boolean = true
+    private error: boolean = false
+    private errorMsg: string = ''
+    private queryParam: string = ''
+    private page: number = 1
 
-	private collectionTree: any = [];
-	private selectedCollections: string[] = []
-	private isDisplayComponent: boolean = false
-	private currentElement: any = ''
-	private itemHeaders = [
-		{ text: 'Type', value: 'itemType' },
-		{ text: 'Title', value: 'title' },
-		{ text: 'Publication', value: 'publicationTitle' },
-		{ text: 'Date', value: 'dateFreetext' },
-		{ text: 'Authors/Editors', value: 'authors' },
-	];
-	private itemsLoading: boolean = false
+    private collectionTree: any = []
+    private selectedCollections: string[] = []
+    private isDisplayComponent: boolean = false
+    private currentElement: any = ''
+    private itemHeaders = [
+        { text: 'Type', value: 'itemType' },
+        { text: 'Title', value: 'title' },
+        { text: 'Publication', value: 'publicationTitle' },
+        { text: 'Date', value: 'dateFreetext' },
+        { text: 'Authors/Editors', value: 'authors' },
+    ]
+    private itemsLoading: boolean = false
 
-	public async mounted(): Promise<void> {
-		const projectId = this.$route.query.project_id
-		if (projectId) {
-			this.queryParam = `?project_id=${projectId}`
-		}
+    public created() {
+        const token: any = localStorage.getItem('token')
+        const decoded = JwtDecode<TokenDto>(token)
+        if (!decoded.citesphere_token) {
+            this.error = true
+            this.errorMsg = 'Please Obtain Citesphere Authorization'
+        }
+    }
 
-		Vue.$axios.get(`/repository/citesphere/${this.$route.params.repoId}/groups/${this.$route.params.groupId}`)
-			.then((response: AxiosResponse) => {
-				this.groupDetails = response.data as CitesphereGroupInfo
-				this.itemsCount = this.groupDetails.group.numItems
-			})
-			.catch((error: AxiosError) => {
-				this.error = true
-				if (error.response) {
-					this.errorMsg = error.response.data.message
-				}
-			})
-			.finally(() => this.loading = false)
-	}
+    public async mounted(): Promise<void> {
+        const projectId = this.$route.query.project_id
+        if (projectId) {
+            this.queryParam = `?project_id=${projectId}`
+        }
 
-	private switchPath(value: any) {
-		const query = this.$route
-		this.$router.replace({ path: `/repository/citesphere/${this.$route.params.repoId}/groups/${this.$route.params.groupId}/items/${value.key}${this.queryParam}` })
-		
-	}
+        Vue.$axios.get(`/repository/citesphere/${this.$route.params.repoId}/groups/${this.$route.params.groupId}`)
+            .then((response: AxiosResponse) => {
+                this.groupDetails = response.data as CitesphereGroupInfo
+                this.itemsCount = this.groupDetails.group.numItems
+            })
+            .catch((error: AxiosError) => {
+                this.error = true
+                if (error.response) {
+                    this.errorMsg = error.response.data.message
+                }
+            })
+            .finally(() => this.loading = false)
+    }
 
-	private async fetchCollections(collection: CitesphereCollection) {
-		return Vue.$axios.get(
-			`/repository/citesphere/${this.$route.params.repoId}/groups/${
-				this.$route.params.groupId
-			}/collections/${collection.key}/collections`,
-		).then((response: AxiosResponse) => response.data.collections)
-		.then((collections: CitesphereCollection[]) => {
-			collection.children.push(...collections)
-		})
-	}
+    private switchPath(value: any) {
+        const query = this.$route
+        this.$router.replace({ path: `/repository/citesphere/${this.$route.params.repoId}/groups/${this.$route.params.groupId}/items/${value.key}${this.queryParam}` })
 
-	private async getItems(page: number = 1) {
-		this.itemsLoading = true
-		let url
-		const queryParams = `page=${page}`
-		if (this.selectedCollections.length > 0) {
-			url = `/repository/citesphere/${this.$route.params.repoId}/groups/${
-			this.$route.params.groupId
-			}/collections/${this.selectedCollections[0]}/items?${queryParams}`
-		} else {
-			url = `/repository/citesphere/${this.$route.params.repoId}/groups/${
-			this.$route.params.groupId
-			}/items?${queryParams}`
-		}
+    }
 
-		Vue.$axios.get(url)
-			.then((response: AxiosResponse) => {
-				if (this.groupDetails) {
-					this.groupDetails.items = response.data.items
-					this.itemsCount = this.groupDetails.group.numItems
-				}
-			}).finally(() => this.itemsLoading = false)
-	}
+    private async fetchCollections(collection: CitesphereCollection) {
+        return Vue.$axios.get(
+            `/repository/citesphere/${this.$route.params.repoId}/groups/${
+                this.$route.params.groupId
+            }/collections/${collection.key}/collections`,
+        ).then((response: AxiosResponse) => response.data.collections)
+        .then((collections: CitesphereCollection[]) => {
+            collection.children.push(...collections)
+        })
+    }
 
-	private getAuthors(item: CitesphereItem): string {
-		let authors: string[] = []
-		const authorRepr = (author: CitesphereItemAuthor) => {
-			let result = ''
-			if (author.firstName && author.lastName) {
-				result = `${author.lastName}, ${author.firstName}`
-			} else if (author.lastName) {
-				result = author.lastName
-			} else if (author.lastName) {
-				result = author.firstName
-			}
-			return result
-		}
+    private async getItems(page: number = 1) {
+        this.itemsLoading = true
+        let url
+        const queryParams = `page=${page}`
+        if (this.selectedCollections.length > 0) {
+            url = `/repository/citesphere/${this.$route.params.repoId}/groups/${
+            this.$route.params.groupId
+            }/collections/${this.selectedCollections[0]}/items?${queryParams}`
+        } else {
+            url = `/repository/citesphere/${this.$route.params.repoId}/groups/${
+            this.$route.params.groupId
+            }/items?${queryParams}`
+        }
 
-		if (item.authors.length > 0) {
-			authors = item.authors.map(authorRepr)
-		} else if (item.editors.length > 0) {
-			authors = item.editors.map(authorRepr)
-		}
-		return authors.join('; ')
-	}
+        Vue.$axios.get(url)
+            .then((response: AxiosResponse) => {
+                if (this.groupDetails) {
+                    this.groupDetails.items = response.data.items
+                    this.itemsCount = this.groupDetails.group.numItems
+                }
+            }).finally(() => this.itemsLoading = false)
+    }
+
+    private getAuthors(item: CitesphereItem): string {
+        let authors: string[] = []
+        const authorRepr = (author: CitesphereItemAuthor) => {
+            let result = ''
+            if (author.firstName && author.lastName) {
+                result = `${author.lastName}, ${author.firstName}`
+            } else if (author.lastName) {
+                result = author.lastName
+            } else if (author.lastName) {
+                result = author.firstName
+            }
+            return result
+        }
+
+        if (item.authors.length > 0) {
+            authors = item.authors.map(authorRepr)
+        } else if (item.editors.length > 0) {
+            authors = item.editors.map(authorRepr)
+        }
+        return authors.join('; ')
+    }
 }
 </script>
 

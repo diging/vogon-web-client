@@ -29,7 +29,7 @@ div(class="text-container")
 </template>
 
 <script lang="ts">
-import { AxiosResponse, AxiosError } from 'axios'
+import { AxiosError, AxiosResponse } from 'axios'
 import { Component, Vue } from 'vue-property-decorator'
 
 import AppellationList from '@/components/annotator/AppellationList.vue'
@@ -48,114 +48,114 @@ import { TextDocument } from '@/interfaces/RepositoryTypes'
 import {v4 as uuidv4} from 'uuid'
 
 @Component({
-	name: 'TextView',
-	components: {
-		TextDisplay,
-		ToolBar,
-		SideDrawer,
-		RelationList,
-		AppellationList,
-		ListsSideDrawer,
-		NetworkGraph,
-		ErrorIndicator,
-		Loading,
-	},
+    name: 'TextView',
+    components: {
+        TextDisplay,
+        ToolBar,
+        SideDrawer,
+        RelationList,
+        AppellationList,
+        ListsSideDrawer,
+        NetworkGraph,
+        ErrorIndicator,
+        Loading,
+    },
 })
 export default class TextView extends Vue {
-	private content: string = ''
-	private project: Project = { name: '', participants: [] }
-	private text?: TextDocument
-	private conceptTypes: ConceptType[] = []
-	private appellations: Appellation[] = []
-	private relations: Relation[] = []
-	private relationsets: RelationSet[] = []
-	private pendingRelationsets: RelationSet[] = []
-	private network: any = null
+    private content: string = ''
+    private project: Project = { name: '', participants: [] }
+    private text?: TextDocument
+    private conceptTypes: ConceptType[] = []
+    private appellations: Appellation[] = []
+    private relations: Relation[] = []
+    private relationsets: RelationSet[] = []
+    private pendingRelationsets: RelationSet[] = []
+    private network: any = null
 
-	private loading: boolean = true
-	private error: boolean = false
-	private queryParam: string = ''
+    private loading: boolean = true
+    private error: boolean = false
+    private queryParam: string = ''
 
-	public created() {
-		this.getContent()
-		this.watchStore()
-	}
+    public created() {
+        this.getContent()
+        this.watchStore()
+    }
 
-	private getContent() {
-		const projectId = this.$route.query.project_id
-		const groupId = this.$route.query.group_id
-		const repoId = this.$route.query.repo_id
-		const fileId = this.$route.query.file_id
-		if (projectId) {
-			this.queryParam = `?project_id=${projectId}&group_id=${groupId}&repo_id=${repoId}&file_id=${fileId}`
-		}
+    private getContent() {
+        const projectId = this.$route.query.project_id
+        const groupId = this.$route.query.group_id
+        const repoId = this.$route.query.repo_id
+        const fileId = this.$route.query.file_id
+        if (projectId) {
+            this.queryParam = `?project_id=${projectId}&group_id=${groupId}&repo_id=${repoId}&file_id=${fileId}`
+        }
 
-		Vue.$axios.get(`/annotate/${this.$route.params.id}${this.queryParam}`)
-			.then((response: AxiosResponse) => {
-				this.content = response.data.content
-				this.project = response.data.project
-				this.text = response.data.text
-				this.conceptTypes = response.data.concept_types
-				this.appellations = []
-				this.appellations.push(...response.data.appellations)
-				this.appellations.push(...response.data.dateappellations)
-				for (const i in this.appellations) {
-					this.appellations[i].index = uuidv4()
-				}
-				this.appellations = this.appellations
-					.filter((item: any) => item.position)
-					.map((item: any) => ({
-						...item,
-						visible: true,
-						position: {
-							...item.position,
-							startOffset: parseInt(item.position.position_value.split(',')[0], 10),
-							endOffset: parseInt(item.position.position_value.split(',')[1], 10),
-						},
-					}))
-				this.$store.commit('setAnnotatorAppellations', this.appellations)
-				this.$store.commit('setAnnotatorText', this.text)
-				this.$store.commit('setAnnotatorConceptTypes', this.conceptTypes)
-				this.$store.commit('setAnnotatorMeta', {
-					project: response.data.project.id,
-					occursIn: response.data.textid,
-				})
+        Vue.$axios.get(`/annotate/${this.$route.params.id}${this.queryParam}`)
+            .then((response: AxiosResponse) => {
+                this.content = response.data.content
+                this.project = response.data.project
+                this.text = response.data.text
+                this.conceptTypes = response.data.concept_types
+                this.appellations = []
+                this.appellations.push(...response.data.appellations)
+                this.appellations.push(...response.data.dateappellations)
+                for (const i in this.appellations) {
+                    this.appellations[i].index = uuidv4()
+                }
+                this.appellations = this.appellations
+                    .filter((item: any) => item.position)
+                    .map((item: any) => ({
+                        ...item,
+                        visible: true,
+                        position: {
+                            ...item.position,
+                            startOffset: parseInt(item.position.position_value.split(',')[0], 10),
+                            endOffset: parseInt(item.position.position_value.split(',')[1], 10),
+                        },
+                    }))
+                this.$store.commit('setAnnotatorAppellations', this.appellations)
+                this.$store.commit('setAnnotatorText', this.text)
+                this.$store.commit('setAnnotatorConceptTypes', this.conceptTypes)
+                this.$store.commit('setAnnotatorMeta', {
+                    project: response.data.project.id,
+                    occursIn: response.data.textid,
+                })
 
-				this.relations = response.data.relations
-				this.pendingRelationsets = response.data.pending_relationsets
-				this.relationsets = response.data.relationsets
-			})
-			.catch((error: AxiosError) => {
-				this.error = true
-				console.log(error.response)
-			})
-			.finally(() => this.loading = false)
+                this.relations = response.data.relations
+                this.pendingRelationsets = response.data.pending_relationsets
+                this.relationsets = response.data.relationsets
+            })
+            .catch((error: AxiosError) => {
+                this.error = true
+                console.log(error.response)
+            })
+            .finally(() => this.loading = false)
 
-		Vue.$axios.get(`/annotate/${this.$route.params.id}/network${this.queryParam}`)
-			.then((response: AxiosResponse) => {
-				this.network = response.data.elements
-			})
-	}
+        Vue.$axios.get(`/annotate/${this.$route.params.id}/network${this.queryParam}`)
+            .then((response: AxiosResponse) => {
+                this.network = response.data.elements
+            })
+    }
 
-	private watchStore() {
-		this.$store.watch(
-			(state, getters) => getters.getAnnotatorCreatedAppellation,
-			(newValue, oldValue) => {
-				if (newValue) {
-					this.getContent()
-					this.$store.commit('setAnnotatorCreatedAppellation', false)
-				}
-			},
-		)
-		this.$store.subscribe((mutation: any, state: any) => {
-			if ((mutation.type === 'setRelationCreated' ||
-				 mutation.type === 'setAppellationDeleted') &&
-				mutation.payload === true
-			) {
-				this.getContent()
-			}
-		})
-	}
+    private watchStore() {
+        this.$store.watch(
+            (state, getters) => getters.getAnnotatorCreatedAppellation,
+            (newValue, oldValue) => {
+                if (newValue) {
+                    this.getContent()
+                    this.$store.commit('setAnnotatorCreatedAppellation', false)
+                }
+            },
+        )
+        this.$store.subscribe((mutation: any, state: any) => {
+            if ((mutation.type === 'setRelationCreated' ||
+                 mutation.type === 'setAppellationDeleted') &&
+                mutation.payload === true
+            ) {
+                this.getContent()
+            }
+        })
+    }
 }
 </script>
 

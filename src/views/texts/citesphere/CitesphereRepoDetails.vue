@@ -2,7 +2,7 @@
 div(class="main")
 	h2(class="display-1") Repository Details
 	br
-	ErrorIndicator(v-if="error") Error while loading repository details!
+	ErrorIndicator(v-if="error") {{ errorMsg }}
 	div(v-else)
 		Loading(v-if="loading")
 		div(v-else)
@@ -27,35 +27,47 @@ import ErrorIndicator from '@/components/global/ErrorIndicator.vue'
 import Loading from '@/components/global/Loading.vue'
 import RepoGroups from '@/components/texts/citesphere/RepoGroups.vue'
 import { CitesphereRepository } from '@/interfaces/CitesphereTypes'
+import { TokenDto } from '@/interfaces/GlobalTypes'
+import JwtDecode from 'jwt-decode'
 
 @Component({
-	name: 'CitesphereRepoDetails',
-	components: {
-		Loading,
-		ErrorIndicator,
-		RepoGroups,
-		EmptyView,
-	},
+    name: 'CitesphereRepoDetails',
+    components: {
+        Loading,
+        ErrorIndicator,
+        RepoGroups,
+        EmptyView,
+    },
 })
 export default class CitesphereRepoDetails extends Vue {
-	private repo: CitesphereRepository = {id: 1, name: '', repo_type: 'Citesphere'}
-	private loading: boolean = true
-	private error: boolean = false
-	private queryParam: string = ''
+    private repo: CitesphereRepository = {id: 1, name: '', repo_type: 'Citesphere'}
+    private loading: boolean = true
+    private error: boolean = false
+    private errorMsg: string = ''
+    private queryParam: string = ''
 
-	public async mounted(): Promise<void> {
-		const projectId = this.$route.query.project_id
-		if (projectId) {
-			this.queryParam = `?project_id=${projectId}`
-		}
+    public created() {
+        const token: any = localStorage.getItem('token')
+        const decoded = JwtDecode<TokenDto>(token)
+        if (!decoded.citesphere_token) {
+            this.error = true
+            this.errorMsg = 'Please Obtain Citesphere Authorization'
+        }
+    }
 
-		Vue.$axios.get(`/repository/citesphere/${this.$route.params.id}`)
-			.then((response: AxiosResponse) => {
-				this.repo = response.data as CitesphereRepository
-			})
-			.catch(() => this.error = true)
-			.finally(() => this.loading = false)
-	}
+    public async mounted(): Promise<void> {
+        const projectId = this.$route.query.project_id
+        if (projectId) {
+            this.queryParam = `?project_id=${projectId}`
+        }
+
+        Vue.$axios.get(`/repository/citesphere/${this.$route.params.id}`)
+            .then((response: AxiosResponse) => {
+                this.repo = response.data as CitesphereRepository
+            })
+            .catch(() => this.error = true)
+            .finally(() => this.loading = false)
+    }
 }
 </script>
 
